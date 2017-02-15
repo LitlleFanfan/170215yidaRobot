@@ -1163,5 +1163,10 @@ namespace yidascan {
                 w.ShowDialog();
             }
         }
+
+        private void btnTestPlc_Click(object sender, EventArgs e) {
+            var w = new wtestplc();
+            w.ShowDialog();
+        }
     }
 }

@@ -47,6 +47,7 @@
             this.btnHelp = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
             this.btnBrowsePanels = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnTestPlc = new System.Windows.Forms.ToolStripMenuItem();
             this.btnQuit = new System.Windows.Forms.ToolStripButton();
             this.grbHandwork = new System.Windows.Forms.GroupBox();
             this.panel1 = new System.Windows.Forms.Panel();
@@ -214,7 +215,8 @@
             this.toolStripMenuItem1,
             this.btnHelp,
             this.toolStripMenuItem4,
-            this.btnBrowsePanels});
+            this.btnBrowsePanels,
+            this.btnTestPlc});
             this.btnOther.Font = new System.Drawing.Font("Microsoft YaHei", 14F);
             this.btnOther.Image = ((System.Drawing.Image)(resources.GetObject("btnOther.Image")));
             this.btnOther.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -283,6 +285,13 @@
             this.btnBrowsePanels.Size = new System.Drawing.Size(217, 30);
             this.btnBrowsePanels.Text = "板状态浏览";
             this.btnBrowsePanels.Click += new System.EventHandler(this.btnBrowsePanels_Click);
+            // 
+            // btnTestPlc
+            // 
+            this.btnTestPlc.Name = "btnTestPlc";
+            this.btnTestPlc.Size = new System.Drawing.Size(217, 30);
+            this.btnTestPlc.Text = "测试";
+            this.btnTestPlc.Click += new System.EventHandler(this.btnTestPlc_Click);
             // 
             // btnQuit
             // 
@@ -882,6 +891,7 @@
         private System.Windows.Forms.ListBox lsvLog;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem4;
         private System.Windows.Forms.ToolStripMenuItem btnBrowsePanels;
+        private System.Windows.Forms.ToolStripMenuItem btnTestPlc;
     }
 }
 
