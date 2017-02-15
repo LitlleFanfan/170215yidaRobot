@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://tempuri.org/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/">
+      <s:element name="getDataForLocation">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="str" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="getDataForLocationResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="getDataForLocationResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="getDataForWeight">
+        <s:complexType />
+      </s:element>
+      <s:element name="getDataForWeightResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="getDataForWeightResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="getDataForFinish">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Board_No" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="AllBarCode" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="getDataForFinishResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="getDataForFinishResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="getDataForLocationSoapIn">
+    <wsdl:part name="parameters" element="tns:getDataForLocation" />
+  </wsdl:message>
+  <wsdl:message name="getDataForLocationSoapOut">
+    <wsdl:part name="parameters" element="tns:getDataForLocationResponse" />
+  </wsdl:message>
+  <wsdl:message name="getDataForWeightSoapIn">
+    <wsdl:part name="parameters" element="tns:getDataForWeight" />
+  </wsdl:message>
+  <wsdl:message name="getDataForWeightSoapOut">
+    <wsdl:part name="parameters" element="tns:getDataForWeightResponse" />
+  </wsdl:message>
+  <wsdl:message name="getDataForFinishSoapIn">
+    <wsdl:part name="parameters" element="tns:getDataForFinish" />
+  </wsdl:message>
+  <wsdl:message name="getDataForFinishSoapOut">
+    <wsdl:part name="parameters" element="tns:getDataForFinishResponse" />
+  </wsdl:message>
+  <wsdl:portType name="WebServiceSoap">
+    <wsdl:operation name="getDataForLocation">
+      <wsdl:input message="tns:getDataForLocationSoapIn" />
+      <wsdl:output message="tns:getDataForLocationSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="getDataForWeight">
+      <wsdl:input message="tns:getDataForWeightSoapIn" />
+      <wsdl:output message="tns:getDataForWeightSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="getDataForFinish">
+      <wsdl:input message="tns:getDataForFinishSoapIn" />
+      <wsdl:output message="tns:getDataForFinishSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="WebServiceSoap" type="tns:WebServiceSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="getDataForLocation">
+      <soap:operation soapAction="http://tempuri.org/getDataForLocation" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getDataForWeight">
+      <soap:operation soapAction="http://tempuri.org/getDataForWeight" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getDataForFinish">
+      <soap:operation soapAction="http://tempuri.org/getDataForFinish" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="WebServiceSoap12" type="tns:WebServiceSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="getDataForLocation">
+      <soap12:operation soapAction="http://tempuri.org/getDataForLocation" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getDataForWeight">
+      <soap12:operation soapAction="http://tempuri.org/getDataForWeight" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getDataForFinish">
+      <soap12:operation soapAction="http://tempuri.org/getDataForFinish" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="WebService">
+    <wsdl:port name="WebServiceSoap" binding="tns:WebServiceSoap">
+      <soap:address location="http://localhost:22582/webtest/WebService.asmx" />
+    </wsdl:port>
+    <wsdl:port name="WebServiceSoap12" binding="tns:WebServiceSoap12">
+      <soap12:address location="http://localhost:22582/webtest/WebService.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
