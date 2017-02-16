@@ -80,10 +80,10 @@ namespace yidascan {
 
         // 运行效果不正确。无红字显示。
         private void InitListBoxes() {
-            lbxLabelCode.Initstyle();
+            //lbxLabelCode.Initstyle();
             lsvBufferLog.Initstyle();
             lsvLog.Initstyle();
-            lsvRobotRollLog.Initstyle();
+            //lsvRobotRollLog.Initstyle();
             lsvRobotStackLog.Initstyle();
         }
 
@@ -925,13 +925,13 @@ namespace yidascan {
         }
 
         private void ViewAddLable(LableCode lc) {
-            lbxLabelCode.Invoke((Action)(() => {
+            lsvLableCode.Invoke((Action)(() => {
                 var msg = string.Format("[{0}] 标签: {1} 交地: {2}", DateTime.Now, lc.LCode, lc.ToLocation);
-                lbxLabelCode.Items.Insert(0, msg);
+                lsvLableCode.Items.Insert(0, msg);
 
-                var count = lbxLabelCode.Items.Count;
+                var count = lsvLableCode.Items.Count;
                 if (count > 1000) {
-                    lbxLabelCode.Items.RemoveAt(count - 1);
+                    lsvLableCode.Items.RemoveAt(count - 1);
                 }
             }));
         }
@@ -1074,7 +1074,7 @@ namespace yidascan {
                 } else if (msg.Group == LogType.ROBOT_STACK) {
                     box = lsvRobotStackLog;
                 } else if (msg.Group == LogType.ROLL_QUEUE) {
-                    box = lsvRobotRollLog;
+                    box = lsvAlarmLog;
                 }
 
                 box.Items.Insert(0, msg);
