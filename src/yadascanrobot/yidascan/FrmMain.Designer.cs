@@ -121,6 +121,9 @@
             this.lsvCacheBefor = new System.Windows.Forms.ListView();
             this.panel4 = new System.Windows.Forms.Panel();
             this.lsvLableCode = new System.Windows.Forms.ListView();
+            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+            this.label8 = new System.Windows.Forms.Label();
             this.toolStrip1.SuspendLayout();
             this.grbHandwork.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -134,6 +137,14 @@
             this.tbpALarmLog.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panel4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
+            this.splitContainer1.Panel1.SuspendLayout();
+            this.splitContainer1.Panel2.SuspendLayout();
+            this.splitContainer1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
+            this.splitContainer2.Panel1.SuspendLayout();
+            this.splitContainer2.Panel2.SuspendLayout();
+            this.splitContainer2.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStrip1
@@ -149,7 +160,7 @@
             this.btnQuit});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(1543, 67);
+            this.toolStrip1.Size = new System.Drawing.Size(2234, 67);
             this.toolStrip1.TabIndex = 48;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -336,7 +347,7 @@
             this.grbHandwork.Margin = new System.Windows.Forms.Padding(5);
             this.grbHandwork.Name = "grbHandwork";
             this.grbHandwork.Padding = new System.Windows.Forms.Padding(5);
-            this.grbHandwork.Size = new System.Drawing.Size(1116, 129);
+            this.grbHandwork.Size = new System.Drawing.Size(1623, 131);
             this.grbHandwork.TabIndex = 51;
             this.grbHandwork.TabStop = false;
             this.grbHandwork.Text = "手动操作";
@@ -350,10 +361,10 @@
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel1.Controls.Add(this.txtLableCode1);
             this.panel1.Controls.Add(this.label5);
-            this.panel1.Location = new System.Drawing.Point(16, 25);
+            this.panel1.Location = new System.Drawing.Point(16, 28);
             this.panel1.Margin = new System.Windows.Forms.Padding(4);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(916, 95);
+            this.panel1.Size = new System.Drawing.Size(1598, 95);
             this.panel1.TabIndex = 8;
             // 
             // txtLableCode1
@@ -367,7 +378,7 @@
             this.txtLableCode1.Margin = new System.Windows.Forms.Padding(4);
             this.txtLableCode1.Multiline = true;
             this.txtLableCode1.Name = "txtLableCode1";
-            this.txtLableCode1.Size = new System.Drawing.Size(719, 62);
+            this.txtLableCode1.Size = new System.Drawing.Size(1401, 62);
             this.txtLableCode1.TabIndex = 1;
             this.txtLableCode1.Text = "请将光标放置到这里扫描";
             this.txtLableCode1.Enter += new System.EventHandler(this.txtLableCode1_Enter);
@@ -388,12 +399,14 @@
             // 
             // label1
             // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.BackColor = System.Drawing.Color.SkyBlue;
             this.label1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.label1.Location = new System.Drawing.Point(0, 0);
             this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(474, 32);
+            this.label1.Size = new System.Drawing.Size(1156, 32);
             this.label1.TabIndex = 3;
             this.label1.Text = "数据";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -406,7 +419,7 @@
             this.lsvLog.ItemHeight = 28;
             this.lsvLog.Location = new System.Drawing.Point(3, 3);
             this.lsvLog.Name = "lsvLog";
-            this.lsvLog.Size = new System.Drawing.Size(1055, 195);
+            this.lsvLog.Size = new System.Drawing.Size(1146, 349);
             this.lsvLog.TabIndex = 2;
             // 
             // lsvBufferLog
@@ -441,10 +454,10 @@
             this.lblRobot,
             this.toolStripStatusLabel2,
             this.lblTimer});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 705);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 1044);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Padding = new System.Windows.Forms.Padding(1, 0, 18, 0);
-            this.statusStrip1.Size = new System.Drawing.Size(1543, 36);
+            this.statusStrip1.Size = new System.Drawing.Size(2234, 36);
             this.statusStrip1.TabIndex = 53;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -489,7 +502,7 @@
             // 
             this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
             this.toolStripStatusLabel2.Padding = new System.Windows.Forms.Padding(10, 0, 10, 0);
-            this.toolStripStatusLabel2.Size = new System.Drawing.Size(977, 31);
+            this.toolStripStatusLabel2.Size = new System.Drawing.Size(1668, 31);
             this.toolStripStatusLabel2.Spring = true;
             // 
             // lblTimer
@@ -622,22 +635,22 @@
             this.pictureBox1.Location = new System.Drawing.Point(1130, 0);
             this.pictureBox1.Margin = new System.Windows.Forms.Padding(5);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(598, 67);
+            this.pictureBox1.Size = new System.Drawing.Size(1289, 67);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox1.TabIndex = 50;
             this.pictureBox1.TabStop = false;
             // 
             // tbcLogs
             // 
-            this.tbcLogs.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.tbcLogs.Controls.Add(this.tbpScanLog);
             this.tbcLogs.Controls.Add(this.tbpCacheLog);
             this.tbcLogs.Controls.Add(this.tbpRobotLog);
             this.tbcLogs.Controls.Add(this.tbpALarmLog);
-            this.tbcLogs.Location = new System.Drawing.Point(474, 459);
+            this.tbcLogs.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tbcLogs.Location = new System.Drawing.Point(0, 0);
             this.tbcLogs.Name = "tbcLogs";
             this.tbcLogs.SelectedIndex = 0;
-            this.tbcLogs.Size = new System.Drawing.Size(1069, 243);
+            this.tbcLogs.Size = new System.Drawing.Size(1160, 397);
             this.tbcLogs.TabIndex = 55;
             // 
             // tbpScanLog
@@ -646,7 +659,7 @@
             this.tbpScanLog.Location = new System.Drawing.Point(4, 38);
             this.tbpScanLog.Name = "tbpScanLog";
             this.tbpScanLog.Padding = new System.Windows.Forms.Padding(3);
-            this.tbpScanLog.Size = new System.Drawing.Size(1061, 201);
+            this.tbpScanLog.Size = new System.Drawing.Size(1152, 355);
             this.tbpScanLog.TabIndex = 0;
             this.tbpScanLog.Text = "采集日志";
             this.tbpScanLog.UseVisualStyleBackColor = true;
@@ -694,7 +707,6 @@
             // 
             // panel3
             // 
-            this.panel3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.panel3.Controls.Add(this.label7);
             this.panel3.Controls.Add(this.lsvRobot);
             this.panel3.Controls.Add(this.label6);
@@ -705,9 +717,10 @@
             this.panel3.Controls.Add(this.lsvLableUp);
             this.panel3.Controls.Add(this.label2);
             this.panel3.Controls.Add(this.lsvCacheBefor);
-            this.panel3.Location = new System.Drawing.Point(473, 199);
+            this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel3.Location = new System.Drawing.Point(0, 0);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(1070, 257);
+            this.panel3.Size = new System.Drawing.Size(1069, 434);
             this.panel3.TabIndex = 56;
             // 
             // label7
@@ -724,12 +737,14 @@
             // 
             // lsvRobot
             // 
+            this.lsvRobot.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.lsvRobot.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
             listViewItem1,
             listViewItem2});
             this.lsvRobot.Location = new System.Drawing.Point(802, 32);
             this.lsvRobot.Name = "lsvRobot";
-            this.lsvRobot.Size = new System.Drawing.Size(267, 225);
+            this.lsvRobot.Size = new System.Drawing.Size(267, 400);
             this.lsvRobot.TabIndex = 9;
             this.lsvRobot.UseCompatibleStateImageBehavior = false;
             this.lsvRobot.View = System.Windows.Forms.View.List;
@@ -738,7 +753,7 @@
             // 
             this.label6.BackColor = System.Drawing.Color.SkyBlue;
             this.label6.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label6.Location = new System.Drawing.Point(535, 129);
+            this.label6.Location = new System.Drawing.Point(535, 208);
             this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(267, 32);
@@ -748,12 +763,14 @@
             // 
             // lsvCatch2
             // 
+            this.lsvCatch2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.lsvCatch2.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
             listViewItem3,
             listViewItem4});
-            this.lsvCatch2.Location = new System.Drawing.Point(535, 161);
+            this.lsvCatch2.Location = new System.Drawing.Point(535, 240);
             this.lsvCatch2.Name = "lsvCatch2";
-            this.lsvCatch2.Size = new System.Drawing.Size(267, 96);
+            this.lsvCatch2.Size = new System.Drawing.Size(267, 192);
             this.lsvCatch2.TabIndex = 7;
             this.lsvCatch2.UseCompatibleStateImageBehavior = false;
             this.lsvCatch2.View = System.Windows.Forms.View.List;
@@ -789,19 +806,21 @@
             listViewItem6});
             this.lsvCatch1.Location = new System.Drawing.Point(535, 32);
             this.lsvCatch1.Name = "lsvCatch1";
-            this.lsvCatch1.Size = new System.Drawing.Size(267, 97);
+            this.lsvCatch1.Size = new System.Drawing.Size(267, 176);
             this.lsvCatch1.TabIndex = 5;
             this.lsvCatch1.UseCompatibleStateImageBehavior = false;
             this.lsvCatch1.View = System.Windows.Forms.View.List;
             // 
             // lsvLableUp
             // 
+            this.lsvLableUp.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.lsvLableUp.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
             listViewItem7,
             listViewItem8});
             this.lsvLableUp.Location = new System.Drawing.Point(268, 32);
             this.lsvLableUp.Name = "lsvLableUp";
-            this.lsvLableUp.Size = new System.Drawing.Size(267, 225);
+            this.lsvLableUp.Size = new System.Drawing.Size(267, 400);
             this.lsvLableUp.TabIndex = 5;
             this.lsvLableUp.UseCompatibleStateImageBehavior = false;
             this.lsvLableUp.View = System.Windows.Forms.View.List;
@@ -820,42 +839,102 @@
             // 
             // lsvCacheBefor
             // 
+            this.lsvCacheBefor.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.lsvCacheBefor.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
             listViewItem9,
             listViewItem10});
             this.lsvCacheBefor.Location = new System.Drawing.Point(1, 32);
             this.lsvCacheBefor.Name = "lsvCacheBefor";
-            this.lsvCacheBefor.Size = new System.Drawing.Size(267, 225);
+            this.lsvCacheBefor.Size = new System.Drawing.Size(267, 400);
             this.lsvCacheBefor.TabIndex = 0;
             this.lsvCacheBefor.UseCompatibleStateImageBehavior = false;
             this.lsvCacheBefor.View = System.Windows.Forms.View.List;
             // 
             // panel4
             // 
+            this.panel4.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.panel4.Controls.Add(this.lsvLableCode);
             this.panel4.Controls.Add(this.label1);
-            this.panel4.Location = new System.Drawing.Point(0, 199);
+            this.panel4.Location = new System.Drawing.Point(4, 0);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(474, 503);
+            this.panel4.Size = new System.Drawing.Size(1156, 439);
             this.panel4.TabIndex = 57;
             // 
             // lsvLableCode
             // 
+            this.lsvLableCode.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lsvLableCode.Location = new System.Drawing.Point(1, 32);
             this.lsvLableCode.Name = "lsvLableCode";
-            this.lsvLableCode.Size = new System.Drawing.Size(473, 471);
+            this.lsvLableCode.Size = new System.Drawing.Size(1155, 407);
             this.lsvLableCode.TabIndex = 4;
             this.lsvLableCode.UseCompatibleStateImageBehavior = false;
             this.lsvLableCode.View = System.Windows.Forms.View.List;
+            // 
+            // splitContainer1
+            // 
+            this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.splitContainer1.Location = new System.Drawing.Point(1165, 204);
+            this.splitContainer1.Name = "splitContainer1";
+            this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // splitContainer1.Panel1
+            // 
+            this.splitContainer1.Panel1.Controls.Add(this.panel3);
+            // 
+            // splitContainer1.Panel2
+            // 
+            this.splitContainer1.Panel2.Controls.Add(this.label8);
+            this.splitContainer1.Size = new System.Drawing.Size(1069, 842);
+            this.splitContainer1.SplitterDistance = 434;
+            this.splitContainer1.TabIndex = 58;
+            // 
+            // splitContainer2
+            // 
+            this.splitContainer2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.splitContainer2.Location = new System.Drawing.Point(0, 204);
+            this.splitContainer2.Name = "splitContainer2";
+            this.splitContainer2.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // splitContainer2.Panel1
+            // 
+            this.splitContainer2.Panel1.Controls.Add(this.panel4);
+            // 
+            // splitContainer2.Panel2
+            // 
+            this.splitContainer2.Panel2.Controls.Add(this.tbcLogs);
+            this.splitContainer2.Size = new System.Drawing.Size(1160, 842);
+            this.splitContainer2.SplitterDistance = 441;
+            this.splitContainer2.TabIndex = 59;
+            // 
+            // label8
+            // 
+            this.label8.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.label8.BackColor = System.Drawing.Color.SkyBlue;
+            this.label8.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label8.Location = new System.Drawing.Point(0, 0);
+            this.label8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(1069, 32);
+            this.label8.TabIndex = 4;
+            this.label8.Text = "缓存区列表";
+            this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(14F, 28F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1543, 741);
-            this.Controls.Add(this.panel4);
-            this.Controls.Add(this.panel3);
-            this.Controls.Add(this.tbcLogs);
+            this.ClientSize = new System.Drawing.Size(2234, 1080);
+            this.Controls.Add(this.splitContainer2);
+            this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.grbHandwork);
             this.Controls.Add(this.pictureBox1);
@@ -888,6 +967,14 @@
             this.tbpALarmLog.ResumeLayout(false);
             this.panel3.ResumeLayout(false);
             this.panel4.ResumeLayout(false);
+            this.splitContainer1.Panel1.ResumeLayout(false);
+            this.splitContainer1.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
+            this.splitContainer1.ResumeLayout(false);
+            this.splitContainer2.Panel1.ResumeLayout(false);
+            this.splitContainer2.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
+            this.splitContainer2.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -961,6 +1048,9 @@
         private System.Windows.Forms.ListView lsvLableCode;
         private System.Windows.Forms.TabPage tbpALarmLog;
         private System.Windows.Forms.ListBox lsvAlarmLog;
+        private System.Windows.Forms.SplitContainer splitContainer1;
+        private System.Windows.Forms.SplitContainer splitContainer2;
+        private System.Windows.Forms.Label label8;
     }
 }
 
