@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace ProduceComm.OPC {
-    public class OPCClient {
+    public class OPCClient:IOpcClient {
         public delegate void ErrEventHandler(Exception ex);
 
         public event ErrEventHandler OnError;
@@ -60,13 +60,13 @@ namespace ProduceComm.OPC {
             //item.ItemName = code; //该数据项在服务器中的名字。
             //group.AddItems(new Opc.Da.Item[] { item });
 
-            //groups.Add(code, group);
-            return true;
-            //} catch (Exception ex) {
-            //    clsSetting.loger.Error(string.Format("{0}添加订阅失败！{1}", code, ex));
-            //    OnError(new Exception(string.Format("{0}添加订阅失败！", code), ex));
-            //    return false;
-            //}
+                groups.Add(code, group);
+                return true;
+            } catch (Exception ex) {
+                clsSetting.loger.Error(string.Format("{0}添加订阅失败！{1}", code, ex));
+                OnError(new Exception(string.Format("{0}添加订阅失败！", code), ex));
+                return false;
+            }
         }
 
         public bool Write(string code, object value) {
@@ -88,23 +88,23 @@ namespace ProduceComm.OPC {
         }
 
         public object Read(string code) {
-            //try {
-            //    if (!groups.Keys.Contains(code)) {
-            //        clsSetting.loger.Error(string.Format("{0}未添加订阅！", code));
-            //        OnError(new Exception(string.Format("{0}未添加订阅！", code)));
-            //        return null;
-            //    }
-            //    Opc.Da.ItemValueResult[] values = groups[code].Read(groups[code].Items);
+            try {
+                if (!groups.Keys.Contains(code)) {
+                    clsSetting.loger.Error(string.Format("{0}未添加订阅！", code));
+                    OnError(new Exception(string.Format("{0}未添加订阅！", code)));
+                    return null;
+                }
+                Opc.Da.ItemValueResult[] values = groups[code].Read(groups[code].Items);
 
-            //    if (values[0].Quality.Equals(Opc.Da.Quality.Good)) {
-            //        return values[0].Value;
-            //    }
-            return null;
-            //} catch (Exception ex) {
-            //    yidascan.FrmMain.logOpt.Write(string.Format("!{0}读取失败！{1}", code, ex));
-            //    OnError(new Exception("读取失败！", ex));
-            //    return null;
-            //}
+                if (values[0].Quality.Equals(Opc.Da.Quality.Good)) {
+                    return values[0].Value;
+                }
+                return null;
+            } catch (Exception ex) {
+                yidascan.FrmMain.logOpt.Write(string.Format("!{0}读取失败！{1}", code, ex));
+                OnError(new Exception("读取失败！", ex));
+                return null;
+            }
         }
 
         public int ReadInt(string slot) {
@@ -132,12 +132,12 @@ namespace ProduceComm.OPC {
         }
 
         public void Close() {
-            //try {
-            //    m_server.Disconnect();
-            //} catch (Exception ex) {
-            //    clsSetting.loger.Error("关闭连接失败！", ex);
-            //    OnError(new Exception("关闭连接失败！", ex));
-            //}
+            try {
+                m_server.Disconnect();
+            } catch (Exception ex) {
+                clsSetting.loger.Error("关闭连接失败！", ex);
+                OnError(new Exception("关闭连接失败！", ex));
+            }
         }
     }
 }
