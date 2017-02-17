@@ -118,7 +118,6 @@ namespace yidascan {
         private string JOB_NAME = "";
 
         RobotControl.RobotControl rCtrl;
-        public static RobotJobQueue robotJobs = new RobotJobQueue();
 
         public const int DELAY = 5;
 
@@ -255,7 +254,7 @@ namespace yidascan {
                 } else {
                     return (status["Start"] || status["Hold"]);
                 }
-            } catch (Exception ex) {                
+            } catch (Exception ex) {
                 log($"{ex}", LogType.ROBOT_STACK, LogViewType.OnlyFile);
                 return true;
             }
@@ -304,55 +303,78 @@ namespace yidascan {
 
         public void JobLoop(ref bool isrun) {
             while (isrun) {
-                if (robotJobs.Rolls.Count > 0) {
-                    // 机器人正忙，等待。
-                    if (IsBusy()) {
-                        Thread.Sleep(OPCClient.DELAY * 100);
-                        continue;
-                    }
-
-                    var roll = robotJobs.GetRoll();
-                    if (roll == null) {
-                        Thread.Sleep(OPCClient.DELAY);
-                        continue;
-                    }
-
-                    // WritePosition(roll);
-                    if (!TryWritePositionPro(roll)) {
-                        break;
-                    }
-
-                    if (TryRunJob(JOB_NAME)) {
-                        log($"发出机器人示教器动作{JOB_NAME}命令成功。", LogType.ROBOT_STACK);
-                    } else {
-                        log($"!机器人示教器动作{JOB_NAME}发送失败。", LogType.ROBOT_STACK);
-                        break;
-                    }
-
-                    Thread.Sleep(RobotHelper.DELAY * 1000);
-
-                    // 等待布卷上垛信号
-                    while (isrun) {
-                        if (IsRollOnPanel()) {
-                            log("布卷已上垛。", LogType.ROBOT_STACK, LogViewType.Both);
-                            // 写数据库。
-                            LableCode.SetOnPanelState(roll.LabelCode);
-                            break;
+                if (FrmMain.taskQ.RobotRollAQ.Count > 0) {
+                    var roll = FrmMain.taskQ.RobotRollAQ.Peek();
+                    if (roll != null) {
+                        if (JobTask(ref isrun, roll)) {
+                            FrmMain.taskQ.RobotRollAQ.Dequeue();
+                            Thread.Sleep(OPCClient.DELAY);
                         }
-                        Thread.Sleep(RobotHelper.DELAY * 200);
                     }
-
-                    // 告知OPC
-                    NotifyOpcJobFinished(roll.PnlState, roll.ToLocation);
-
-                    // 等待机器人结束码垛。
-                    while (isrun && IsBusy()) {
-                        Thread.Sleep(RobotHelper.DELAY * 100);
+                }
+                if (FrmMain.taskQ.RobotRollBQ.Count > 0) {
+                    var roll = FrmMain.taskQ.RobotRollBQ.Peek();
+                    if (roll != null) {
+                        if (JobTask(ref isrun, roll)) {
+                            FrmMain.taskQ.RobotRollBQ.Dequeue();
+                        }
                     }
-                    log($"robot job done: {roll.LabelCode}.", LogType.ROBOT_STACK);
                 }
                 Thread.Sleep(RobotHelper.DELAY);
             }
+        }
+
+        public bool JobTask(ref bool isrun, RollPosition roll) { 
+            // 等待板可放料
+            FrmMain.logOpt.Write("PushInQueue等可放料信号", LogType.ROBOT_STACK);
+            while (isrun) {
+                if (FrmMain.PanelAvailable(roll.ToLocation)) {
+                    FrmMain.logOpt.Write("PushInQueue收到可放料信号", LogType.ROBOT_STACK);
+                    break;
+                }
+                Thread.Sleep(ProduceComm.OPC.OPCClient.DELAY * 200);
+            }
+
+            // 机器人正忙，等待。
+            if (IsBusy()) {
+                Thread.Sleep(OPCClient.DELAY * 100);
+                return false;
+            }
+
+            // WritePosition(roll);
+            if (!TryWritePositionPro(roll)) {
+                return false;
+            }
+
+            if (TryRunJob(JOB_NAME)) {
+                log($"发出机器人示教器动作{JOB_NAME}命令成功。", LogType.ROBOT_STACK);
+            } else {
+                log($"!机器人示教器动作{JOB_NAME}发送失败。", LogType.ROBOT_STACK);
+                return false;
+            }
+
+            Thread.Sleep(RobotHelper.DELAY * 1000);
+
+            // 等待布卷上垛信号
+            while (isrun) {
+                if (IsRollOnPanel()) {
+                    log("布卷已上垛。", LogType.ROBOT_STACK, LogViewType.Both);
+                    // 写数据库。
+                    LableCode.SetOnPanelState(roll.LabelCode);
+                    break;
+                }
+                Thread.Sleep(RobotHelper.DELAY * 200);
+            }
+
+            // 告知OPC
+            NotifyOpcJobFinished(roll.PnlState, roll.ToLocation);
+
+            // 等待机器人结束码垛。
+            while (isrun && IsBusy()) {
+                Thread.Sleep(RobotHelper.DELAY * 100);
+            }
+            log($"robot job done: {roll.LabelCode}.", LogType.ROBOT_STACK);
+            return true;
         }
 
         private bool IsRollOnPanel() {
