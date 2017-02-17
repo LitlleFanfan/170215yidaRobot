@@ -432,20 +432,6 @@ namespace yidascan {
         }
 
         /// <summary>
-        /// 读CacheParam.BeforCacheLable1和CacheParam.BeforCacheLable2的值。
-        /// 然后拼起来。结果保证12位的长度。
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="param"></param>
-        /// <returns></returns>
-        private string ReadFullBeforeCacheLabel(OPCClient client, OPCParam param) {
-            const int MAX_LEN = 6;
-            string first = client.Read(param.CacheParam.BeforCacheLable1).ToString();
-            string second = client.Read(param.CacheParam.BeforCacheLable2).ToString();
-            return first.PadLeft(MAX_LEN, '0') + second.PadLeft(MAX_LEN, '0');
-        }
-
-        /// <summary>
         /// 读PLC的CacheParam.BeforCacheStatus值。
         /// 如果读到的不是bool值，会弹出异常。
         /// </summary>
