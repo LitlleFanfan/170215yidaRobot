@@ -8,7 +8,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-using ProduceComm.OPC;
 using yidascan.DataAccess;
 
 namespace yidascan {
