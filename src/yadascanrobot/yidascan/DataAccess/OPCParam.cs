@@ -102,20 +102,33 @@ namespace yidascan.DataAccess {
         /// 缓存前信号
         /// </summary>
         public string BeforCacheStatus { get; set; }
+        /// <summary>
+        /// 缓存前标签 
+        /// </summary>
+        public string BeforCacheLable1 { get; set; }
+        /// <summary>
+        /// 缓存前标签 
+        /// </summary>
+        public string BeforCacheLable2 { get; set; }
 
         /// <summary>
         /// 是否缓存
         /// </summary>
-        public string CacheStatus { get; set; }
+        public string IsCache { get; set; }
 
         /// <summary>
         /// 从缓存取出的标签
         /// </summary>
-        public string CachePoint { get; set; }
+        public string GetOutLable1 { get; set; }
         /// <summary>
         /// 从缓存取出的标签
         /// </summary>
-        public string GetPoint { get; set; }
+        public string GetOutLable2 { get; set; }
+
+        /// <summary>
+        /// 是否最后一个
+        /// </summary>
+        public string IsLastOftPanel { get; set; }
 
         public OPCBeforCacheParam() {
             DataTable dt = OPCParam.Query("where Class='Cache'");
@@ -166,11 +179,6 @@ namespace yidascan.DataAccess {
         /// 机器人报警地址。
         /// </summary>
         public string RobotAlarmSlot { get; set; }
-    }
-
-    public class NewParam {
-        // 缓存处来料
-        public int CacheItemIn { get; set; }
     }
 
     public class OPCParam {

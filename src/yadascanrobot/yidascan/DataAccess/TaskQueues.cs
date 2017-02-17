@@ -94,13 +94,7 @@ namespace yidascan.DataAccess {
                 rz = rz + 180;
             }
             var roll = new RollPosition(label.LCode, side, label.ToLocation, state, x, y, z, rz);
-            var success = RobotHelper.robotJobs.AddRoll(roll);
-
-            var msg = success
-                ? string.Format("布卷:{0}。", roll.LabelCode)
-                : string.Format("重复:{0}", roll.LabelCode);
-
-            FrmMain.logOpt.Write(string.Format((success ? "" : "!") + "{0} {1} {2}", side, msg, label.ToLocation), LogType.ROLL_QUEUE);
+            FrmMain.logOpt.Write(string.Format("{0} {1} {2}", side, label.LCode, label.ToLocation), LogType.ROLL_QUEUE);
             return roll;
         }
 
