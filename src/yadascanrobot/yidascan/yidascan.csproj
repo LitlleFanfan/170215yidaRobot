@@ -119,6 +119,7 @@
       <DependentUpon>FrmSet.cs</DependentUpon>
     </Compile>
     <Compile Include="Helper.cs" />
+    <Compile Include="IOpcClient.cs" />
     <Compile Include="LableCodeBll.cs" />
     <Compile Include="ListBoxHelper.cs" />
     <Compile Include="LogType.cs" />

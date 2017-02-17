@@ -29,7 +29,7 @@ namespace yidascan {
         const string SLOT_CACHE_ITEM_IN = "";
 
         // 缓存处来料信号
-        public static bool ReadItemInFromCache(OPCClient client) {
+        public static bool ReadItemInFromCache(IOpcClient client) {
             var r = client.ReadInt(SLOT_CACHE_ITEM_IN);
             return r == 1;
         }
@@ -45,7 +45,7 @@ namespace yidascan {
         /// <param name="job">动作编号。</param>
         /// /// <param name="posSave">动作编号。</param>
         /// /// <param name="posGet">动作编号。</param>
-        public static void WriteCacheJob(OPCClient client, CacheJob job, int posSave, int posGet) {
+        public static void WriteCacheJob(IOpcClient client, CacheJob job, int posSave, int posGet) {
             client.Write(SLOT_CACHE_JOB_SIGNAL, job);
             client.Write(SLOT_CACHE_JOB_POS_SAVE, posSave);
             client.Write(SLOT_CACHE_JOB_POS_GET, posGet);
@@ -60,7 +60,7 @@ namespace yidascan {
         /// </summary>
         /// <param name="client"></param>
         /// <returns></returns>
-        public static bool ReadLabelCatch(OPCClient client) {
+        public static bool ReadLabelCatch(IOpcClient client) {
             var r = client.ReadInt(SLOT_LABEL_CATCH_ITEM_IN);
             return r == 1;
         }
@@ -70,7 +70,7 @@ namespace yidascan {
         // 标签采集处去向写地址。
         public const string SLOT_LABEL_CATCH_CHANNEL = "";
 
-        public static void WriteLabelCatch(OPCClient client, int diameter, int channel) {
+        public static void WriteLabelCatch(IOpcClient client, int diameter, int channel) {
             client.Write(SLOT_LABEL_CATCH_DIAMETER, diameter);
             client.Write(SLOT_LABEL_CATCH_CHANNEL, channel);
             Thread.Sleep(DELAY);
@@ -86,7 +86,7 @@ namespace yidascan {
         /// <param name="client"></param>
         /// /// <param name="pos"></param>
         /// <returns></returns>
-        public static bool ReadItemCatchSignal(OPCClient client, int pos) {
+        public static bool ReadItemCatchSignal(IOpcClient client, int pos) {
             var slot = "";
             if (pos == 1) { slot = SLOT_ITEM_CATCH_1; }
             if (pos == 2) { slot = SLOT_ITEM_CATCH_2; }
@@ -96,7 +96,7 @@ namespace yidascan {
             return 1 == client.ReadInt(slot);
         }
 
-        public static void ResetItemCatchSignal(OPCClient client, int pos) {
+        public static void ResetItemCatchSignal(IOpcClient client, int pos) {
             var slot = "";
             if (pos == 1) { slot = SLOT_ITEM_CATCH_1; }
             if (pos == 2) { slot = SLOT_ITEM_CATCH_2; }
