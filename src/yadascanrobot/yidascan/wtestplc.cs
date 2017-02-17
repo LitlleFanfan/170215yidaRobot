@@ -22,7 +22,7 @@ namespace yidascan {
             }
         }
 
-        private OPCClient client;
+        private IOpcClient client;
         public string opc_server_ip = "127.0.0.1";
 
         public void initOpcClient() {
