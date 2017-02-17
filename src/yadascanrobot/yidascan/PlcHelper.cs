@@ -6,11 +6,6 @@ using System.Threading.Tasks;
 
 using System.Threading;
 
-using ProduceComm;
-using ProduceComm.OPC;
-using yidascan.DataAccess;
-
-
 namespace yidascan {
     /// <summary>
     /// 缓存区动作代码
@@ -26,16 +21,33 @@ namespace yidascan {
 
     public static class PlcHelper {
         private const int DELAY = 10;
+        
+        /// <summary>
+        /// 缓存处来料信号地址。 
+        /// </summary>
         const string SLOT_CACHE_ITEM_IN = "";
 
-        // 缓存处来料信号
+        /// <summary>
+        /// 缓存处来料信号
+        /// </summary>
+        /// <param name="client"></param>
+        /// <returns></returns>
         public static bool ReadItemInFromCache(IOpcClient client) {
             var r = client.ReadInt(SLOT_CACHE_ITEM_IN);
             return r == 1;
         }
 
+        /// <summary>
+        /// 缓存区动作编号地址。
+        /// </summary>
         const string SLOT_CACHE_JOB_SIGNAL = "";
+        /// <summary>
+        /// 缓存区动作地址，存布卷位置。
+        /// </summary>
         const string SLOT_CACHE_JOB_POS_SAVE = "";
+        /// <summary>
+        /// 缓存区动作地址，取布卷位置。
+        /// </summary>
         const string SLOT_CACHE_JOB_POS_GET = "";
 
         /// <summary>
@@ -54,7 +66,11 @@ namespace yidascan {
             client.Write(SLOT_CACHE_ITEM_IN, 0);
         }
 
+        /// <summary>
+        /// 标签采集处来料信号地址。
+        /// </summary>
         public const string SLOT_LABEL_CATCH_ITEM_IN = "";
+
         /// <summary>
         /// 读标签采集处来料信号。
         /// </summary>
@@ -65,11 +81,22 @@ namespace yidascan {
             return r == 1;
         }
 
-        // 标签采集处直径写地址。
+        /// <summary>
+        /// 标签采集处直径写地址。 
+        /// </summary>
         public const string SLOT_LABEL_CATCH_DIAMETER = "";
-        // 标签采集处去向写地址。
+        
+        /// <summary>
+        /// 标签采集处去向写地址。 
+        /// </summary>
         public const string SLOT_LABEL_CATCH_CHANNEL = "";
 
+        /// <summary>
+        /// 标签采集处，写布卷直径和去向。
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="diameter">直径</param>
+        /// <param name="channel">去向</param>
         public static void WriteLabelCatch(IOpcClient client, int diameter, int channel) {
             client.Write(SLOT_LABEL_CATCH_DIAMETER, diameter);
             client.Write(SLOT_LABEL_CATCH_CHANNEL, channel);
@@ -78,13 +105,19 @@ namespace yidascan {
             client.Write(SLOT_LABEL_CATCH_ITEM_IN, 0);
         }
 
+        /// <summary>
+        /// 抓料处位置1来料信号地址。
+        /// </summary>
         public const string SLOT_ITEM_CATCH_1 = "";
+        /// <summary>
+        /// 抓料处位置2来料信号地址。
+        /// </summary>
         public const string SLOT_ITEM_CATCH_2 = "";
         /// <summary>
         /// 抓料处来料信号。
         /// </summary>
         /// <param name="client"></param>
-        /// /// <param name="pos"></param>
+        /// /// <param name="pos">抓料处位置编号。</param>
         /// <returns></returns>
         public static bool ReadItemCatchSignal(IOpcClient client, int pos) {
             var slot = "";
@@ -96,6 +129,11 @@ namespace yidascan {
             return 1 == client.ReadInt(slot);
         }
 
+        /// <summary>
+        /// 复位抓料处信号。
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="pos"></param>
         public static void ResetItemCatchSignal(IOpcClient client, int pos) {
             var slot = "";
             if (pos == 1) { slot = SLOT_ITEM_CATCH_1; }
