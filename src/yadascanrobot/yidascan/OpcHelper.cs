@@ -8,6 +8,10 @@ using ProduceComm.OPC;
 using yidascan.DataAccess;
 
 namespace yidascan {    
+    /// <summary>
+    /// 这个要合并修改。
+    /// </summary>
+    [Obsolete("待重构, 2013-02-17")]
     public static class OpcHelper {
         static OPCClient client = null;
         static OPCParam param = null;
