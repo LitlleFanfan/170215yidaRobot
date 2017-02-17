@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading;
 
 namespace ProduceComm.OPC {
-    public class OPCClient {
+    public class OPCClient:IOpcClient {
         public delegate void ErrEventHandler(Exception ex);
 
         public event ErrEventHandler OnError;
@@ -29,7 +29,7 @@ namespace ProduceComm.OPC {
                 return true;
             } else {
                 clsSetting.loger.Error("没有有效的OPC服务！");
-                OnError(new Exception("没有有效的OPC服务！"));
+                OnError?.Invoke(new Exception("没有有效的OPC服务！"));
             }
             return false;
         }
@@ -64,7 +64,7 @@ namespace ProduceComm.OPC {
                 return true;
             } catch (Exception ex) {
                 clsSetting.loger.Error(string.Format("{0}添加订阅失败！{1}", code, ex));
-                OnError(new Exception(string.Format("{0}添加订阅失败！", code), ex));
+                OnError?.Invoke(new Exception(string.Format("{0}添加订阅失败！", code), ex));
                 return false;
             }
         }
@@ -91,7 +91,7 @@ namespace ProduceComm.OPC {
             try {
                 if (!groups.Keys.Contains(code)) {
                     clsSetting.loger.Error(string.Format("{0}未添加订阅！", code));
-                    OnError(new Exception(string.Format("{0}未添加订阅！", code)));
+                    OnError?.Invoke(new Exception(string.Format("{0}未添加订阅！", code)));
                     return null;
                 }
                 Opc.Da.ItemValueResult[] values = groups[code].Read(groups[code].Items);
@@ -102,7 +102,7 @@ namespace ProduceComm.OPC {
                 return null;
             } catch (Exception ex) {
                 yidascan.FrmMain.logOpt.Write(string.Format("!{0}读取失败！{1}", code, ex));
-                OnError(new Exception("读取失败！", ex));
+                OnError?.Invoke(new Exception("读取失败！", ex));
                 return null;
             }
         }
@@ -132,7 +132,7 @@ namespace ProduceComm.OPC {
                 m_server.Disconnect();
             } catch (Exception ex) {
                 clsSetting.loger.Error("关闭连接失败！", ex);
-                OnError(new Exception("关闭连接失败！", ex));
+                OnError?.Invoke(new Exception("关闭连接失败！", ex));
             }
         }
     }
