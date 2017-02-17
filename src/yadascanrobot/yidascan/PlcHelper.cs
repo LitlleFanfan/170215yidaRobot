@@ -65,8 +65,6 @@ namespace yidascan {
             return r == 1;
         }
 
-        // 标签采集处来料信号。
-        public const string SLOT_LABEL_CATCH_SIGNAL = "";
         // 标签采集处直径写地址。
         public const string SLOT_LABEL_CATCH_DIAMETER = "";
         // 标签采集处去向写地址。
@@ -106,45 +104,6 @@ namespace yidascan {
             if (slot == "") { throw new Exception("error pos."); }
 
             client.Write(slot, 0);
-        }
-
-
-        public static string[] PANEL_SLOTS = new string[] { "" };
-        /// <summary>
-        /// 读人工完成信号。
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="panelno"></param>
-        /// <returns></returns>
-        public static bool PanelCompleteByHand(OPCClient client, int panelno) {
-            var slot = PANEL_SLOTS[panelno];
-            return 1 == client.ReadInt(slot);
-        }
-
-        public static void PanelComeleteReset(OPCClient client, int panelno) {
-            var slot = PANEL_SLOTS[panelno];
-            client.Write(slot, 0);
-        }
-
-        public static string[] PANEL_HALFPANEL_SLOTS = new string[] { "" };
-        public static void SignifyPlcHalfPanel(OPCClient client, int panelno) {
-            var slot = PANEL_HALFPANEL_SLOTS[panelno];
-            client.Write(slot, 1);
-        }
-
-        public static string[] PANEL_FULLPANEL_SLOTS = new string[] { "" };
-        public static void SignifyPlcFullPanel(OPCClient client, int panelno) {
-            var slot = PANEL_FULLPANEL_SLOTS[panelno];
-            client.Write(slot, 1);
-        }
-
-        public static string SLOT_PANEL_EXISTS = "";
-        public enum PanelStatePro {
-            no = 0,
-            yes = 1
-        }
-        public static void WritePanelExistState(OPCClient client, PanelStatePro state) {
-            client.Write(SLOT_PANEL_EXISTS, state);
         }
     }
 }

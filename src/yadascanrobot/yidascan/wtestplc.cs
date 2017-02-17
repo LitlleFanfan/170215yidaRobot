@@ -84,33 +84,5 @@ namespace yidascan {
             var pos = (int)ntxtPos.Value;
             PlcHelper.ResetItemCatchSignal(client, pos);
         }
-
-        private void button7_Click(object sender, EventArgs e) {
-            // 读人工完成信号。
-            var panelno = (int)ntxtPanelNo.Value;
-            var r = PlcHelper.PanelCompleteByHand(client, panelno);
-        }
-
-        private void button8_Click(object sender, EventArgs e) {
-            // 复位人工完成信号。
-            var panelno = (int)ntxtPanelNo.Value;
-            PlcHelper.PanelComeleteReset(client, panelno);
-        }
-
-        private void button9_Click(object sender, EventArgs e) {
-            var panelno = (int)ntxtPanelNo1.Value;
-            PlcHelper.SignifyPlcHalfPanel(client, panelno);
-        }
-
-        private void button10_Click(object sender, EventArgs e) {
-            var panelno = (int)ntxtPanelNo1.Value;
-            PlcHelper.SignifyPlcFullPanel(client, panelno);
-        }
-
-        private void button12_Click(object sender, EventArgs e) {
-            // 发送板状态信号。
-            var state = (PlcHelper.PanelStatePro)((int)ntxtPanelState.Value);
-            PlcHelper.WritePanelExistState(client, state);
-        }
     }
 }
