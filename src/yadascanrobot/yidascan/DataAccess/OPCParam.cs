@@ -181,6 +181,11 @@ namespace yidascan.DataAccess {
         public string RobotAlarmSlot { get; set; }
     }
 
+    public class NewParam {
+        // 缓存处来料
+        public int CacheItemIn { get; set; }
+    }
+
     public class OPCParam {
         public OPCScanParam ScanParam;
 
