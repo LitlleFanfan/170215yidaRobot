@@ -22,6 +22,7 @@ namespace yidascan {
         NormalScan nscan1;
         NormalScan nscan2;
         private LableCodeBll lcb = new LableCodeBll();
+        public static TaskQueues taskQ = new TaskQueues();
         bool isrun = false;
 
         #region opc
@@ -41,7 +42,7 @@ namespace yidascan {
 
         private DateTime StartTime;
 
-        private decimal zStart = 0;
+        public static decimal zStart = 0;
 
         // 用于锁定手动和自动扫描标签的处理工程。
         public object LOCK_CAMERA_PROCESS = new object();
@@ -49,8 +50,6 @@ namespace yidascan {
         RobotJobQueue robotJobQueue;
 
         private int counter = 0;
-
-        private Queue<string> lablecodes = new Queue<string>();
 
         public FrmMain() {
             InitializeComponent();
@@ -85,6 +84,7 @@ namespace yidascan {
             lsvLog.Initstyle();
             //lsvRobotRollLog.Initstyle();
             lsvRobotStackLog.Initstyle();
+            lsvAlarmLog.Initstyle();
         }
 
         private void ShowTaskState(bool running) {
@@ -166,11 +166,7 @@ namespace yidascan {
                         var r = (bool)opcClient.Read(opcParam.RobotCarryA.Signal);
                         if (r) {
                             // 加入机器人布卷队列。
-                            var code1 = opcClient.Read(opcParam.RobotCarryA.LCode1).ToString();
-                            var code2 = opcClient.Read(opcParam.RobotCarryA.LCode2).ToString();
-
-                            var fullcode = code1.PadLeft(6, '0') + code2.PadLeft(6, '0');
-                            PushInQueue(fullcode, "A");
+                            taskQ.GetCatchAQ();
 
                             opcClient.Write(opcParam.RobotCarryA.Signal, false);
                         }
@@ -192,11 +188,7 @@ namespace yidascan {
                         var r = (bool)opcClient.Read(opcParam.RobotCarryB.Signal);
                         if (r) {
                             // 加入机器人布卷队列。
-                            var code1 = opcClient.Read(opcParam.RobotCarryB.LCode1).ToString();
-                            var code2 = opcClient.Read(opcParam.RobotCarryB.LCode2).ToString();
-
-                            var fullcode = code1.PadLeft(6, '0') + code2.PadLeft(6, '0');
-                            PushInQueue(fullcode, "B");
+                            taskQ.GetCatchBQ();
 
                             opcClient.Write(opcParam.RobotCarryB.Signal, false);
                         }
@@ -207,75 +199,12 @@ namespace yidascan {
             logOpt.Write("机器人抓料B布卷队列任务启动。", LogType.NORMAL);
         }
 
-        private void PushInQueue(string fullcode, string side) {
-            var label = LableCode.QueryByLCode(fullcode);
-            if (label == null) {
-                logOpt.Write($"!{side} {fullcode}找不到", LogType.ROLL_QUEUE);
-                return;
-            }
-            if (label.Status >= (int)LableState.OnPanel) {
-                logOpt.Write($"!{side} {label.LCode}已在板上,未加入队列,交地{label.ToLocation}.", LogType.ROLL_QUEUE);
-                return;
-            }
-            if (label.CoordinatesIsEmpty()) {
-                logOpt.Write("!{side} {label.LCode}未算位置，未加入队列,交地{label.ToLocation}.", LogType.ROLL_QUEUE);
-                return;
-            }
-
-
-            // 等待板可放料
-            logOpt.Write("PushInQueue等可放料信号", LogType.ROBOT_STACK);
-            while (isrun) {
-                if (PanelAvailable(label.ToLocation)) {
-                    logOpt.Write("PushInQueue收到可放料信号", LogType.ROBOT_STACK);
-                    break;
-                }
-                Thread.Sleep(OPCClient.DELAY * 200);
-            }
-
-            var pinfo = LableCode.GetPanel(label.PanelNo);
-            var state = GetPanelState(label, pinfo);
-            logOpt.Write(string.Format("{0} {1} {2}", label.LCode, label.ToLocation, Enum.GetName(typeof(PanelState), state)), LogType.ROLL_QUEUE, LogViewType.OnlyFile);
-
-            decimal x = label.Cx;
-            decimal y = label.Cy;
-            decimal z = label.Cz + zStart;
-            decimal rz = label.Crz;
-
-            if (rz == 0) {
-                y = RollPosition.GetToolOffSet(y);
-            } else {
-                x = RollPosition.GetToolOffSet(x);
-            }
-
-            if (x + y > 0) {
-                if (rz == 0) {
-                    rz = -180;
-                }
-            } else {
-                if (rz != 0) {
-                    rz = rz * -1;
-                }
-            }
-            if (RollPosition.robotRSidePanel.Contains(label.ToLocation)) {
-                rz = rz + 180;
-            }
-            var roll = new RollPosition(fullcode, side, label.ToLocation, state, x, y, z, rz);
-            var success = RobotHelper.robotJobs.AddRoll(roll);
-
-            var msg = success
-                ? string.Format("布卷:{0}。", roll.LabelCode)
-                : string.Format("重复:{0}", roll.LabelCode);
-
-            logOpt.Write(string.Format((success ? "" : "!") + "{0} {1} {2}", side, msg, label.ToLocation), LogType.ROLL_QUEUE);
-        }
-
         /// <summary>
         /// 去OPC的可放料信号。
         /// </summary>
         /// <param name="tolocation"></param>
         /// <returns></returns>
-        private bool PanelAvailable(string tolocation) {
+        public static bool PanelAvailable(string tolocation) {
             try {
                 lock (opcClient) {
                     var s = opcClient.ReadString(opcParam.BAreaPanelState[tolocation]);
@@ -287,7 +216,7 @@ namespace yidascan {
             }
         }
 
-        private static PanelState GetPanelState(LableCode label, PanelInfo pinfo) {
+        public static PanelState GetPanelState(LableCode label, PanelInfo pinfo) {
             var state = PanelState.LessHalf;
             if (label.Floor >= pinfo.MaxFloor - 1) {
                 state = PanelState.HalfFull;
@@ -362,7 +291,7 @@ namespace yidascan {
             const string CAMERA_2 = "2#相机";
             if (OpenPort(ref nscan1, CAMERA_1, FrmSet.pcfgScan1)) {
                 nscan1.logger = Logger;
-                nscan1.OnDataArrived = nscan1_OnDataArrived;                
+                nscan1.OnDataArrived = nscan1_OnDataArrived;
                 // 启动相机读取线程。
                 nscan1._StartJob();
                 lblScanner.BackColor = Color.LightGreen;
@@ -437,18 +366,14 @@ namespace yidascan {
                         lock (opcClient) {
                             var getWeight = OPCRead(opcParam.ScanParam.GetWeigh).ToString();
                             if (getWeight == TO_WEIGH) {
-                                var code = "";
+                                LableCode code = taskQ.GetWeighQ();
 
-                                lock (lablecodes) {
-                                    if (lablecodes.Count > 0) {
-                                        code = lablecodes.Dequeue();
-                                    }
+                                if (code != null) {
+                                    getWeight = NotifyWeigh(code.LCode, false) ? SUCCESS : FAIL;
+                                    logOpt.Write(code.LCode + "称重API状态: " + getWeight);
+
+                                    opcClient.Write(opcParam.ScanParam.GetWeigh, getWeight);
                                 }
-
-                                getWeight = NotifyWeigh(code, false) ? SUCCESS : FAIL;
-                                logOpt.Write(code + "称重API状态: " + getWeight);
-
-                                opcClient.Write(opcParam.ScanParam.GetWeigh, getWeight);
                             }
                         }
                     } catch (Exception ex) {
@@ -540,14 +465,14 @@ namespace yidascan {
                     lock (opcClient) {
                         try {
                             if (ReadBeforeCacheStatus(opcClient, opcParam)) {
-                                var fullLable = ReadFullBeforeCacheLabel(opcClient, opcParam);
-                                logOpt.Write(string.Format("收到缓存信号。从OPC读到号码: {0}", fullLable), LogType.BUFFER);
+                                LableCode code = taskQ.GetCacheQ();
+                                logOpt.Write(string.Format("收到缓存来料信号。从OPC读到号码: {0}", code.LCode), LogType.BUFFER);
 
-                                if (!string.IsNullOrEmpty(fullLable)) {
-                                    LableCode lc = LableCode.QueryByLCode(fullLable);
+                                if (code != null) {
+                                    LableCode lc = LableCode.QueryByLCode(code.LCode);
 
                                     if (lc == null) {
-                                        logOpt.Write(string.Format("!{0}标签找不到", fullLable), LogType.BUFFER);
+                                        logOpt.Write(string.Format("!{0}标签找不到", code.LCode), LogType.BUFFER);
                                     } else {
                                         // 检查重复计算。
                                         if (string.IsNullOrEmpty(lc.PanelNo)) {
@@ -568,12 +493,41 @@ namespace yidascan {
                                             opcClient.Write(opcParam.CacheParam.GetOutLable1, string.IsNullOrEmpty(outCacheLable) ? "0" : outCacheLable.Substring(0, 6));
                                             opcClient.Write(opcParam.CacheParam.GetOutLable2, string.IsNullOrEmpty(outCacheLable) ? "0" : outCacheLable.Substring(6, 6));
                                         } else {
-                                            logOpt.Write(string.Format("!{0}标签重复。", fullLable), LogType.BUFFER);
+                                            logOpt.Write(string.Format("!{0}标签重复。", code.LCode), LogType.BUFFER);
                                         }
                                     }
 
                                     opcClient.Write(opcParam.CacheParam.BeforCacheStatus, false);
                                 }
+                            }
+                        } catch (Exception ex) {
+                            logOpt.Write("!" + ex.ToString(), LogType.BUFFER);
+                        }
+                    }
+                    Thread.Sleep(OPCClient.DELAY * 200);
+                }
+            });
+        }
+
+        private void LableUpTask() {
+            logOpt.Write("标签朝上任务启动。", LogType.NORMAL);
+
+            Task.Factory.StartNew(() => {
+                while (isrun) {
+                    lock (opcClient) {
+                        try {
+                            bool r = bool.Parse(opcClient.Read(opcParam.CacheParam.BeforCacheStatus).ToString());
+
+                            if (r) {
+                                LableCode code = taskQ.GetLableUpQ();
+                                logOpt.Write(string.Format("收到标签朝上来料信号。号码: {0}", code.LCode), LogType.BUFFER);
+
+                                // 写标签码到OPC
+                                //opcClient.Write(opcParam.CacheParam.IsCache, cState);
+                                //opcClient.Write(opcParam.CacheParam.GetOutLable1, string.IsNullOrEmpty(outCacheLable) ? "0" : outCacheLable.Substring(0, 6));
+                                //opcClient.Write(opcParam.CacheParam.GetOutLable2, string.IsNullOrEmpty(outCacheLable) ? "0" : outCacheLable.Substring(6, 6));
+                                
+                                opcClient.Write(opcParam.CacheParam.BeforCacheStatus, false);
                             }
                         } catch (Exception ex) {
                             logOpt.Write("!" + ex.ToString(), LogType.BUFFER);
@@ -839,14 +793,14 @@ namespace yidascan {
             logOpt.Write($"取交地耗时:　{t}ms");
 
             if (string.IsNullOrEmpty(tolocation)) { return; }
-           
+
             var lc = new LableCode(code, tolocation, handwork);
             var clothsize = new ClothRollSize();
 
             logOpt.Write("等待SizeState信号。");
 
             t = TimeCount.TimeIt(() => {
-                while (isrun) {                    
+                while (isrun) {
                     var f = ScannerOpcClient.ReadBool(opcParam.ScanParam.SizeState);
                     if (f) { break; }
 
@@ -883,9 +837,9 @@ namespace yidascan {
                 ScannerOpcClient.Write(opcParam.ScanParam.ScanState, true);
             });
             logOpt.Write($"写OPC耗时: {t}ms", LogType.NORMAL);
-
-            lock (lablecodes) {
-                lablecodes.Enqueue(lc.LCode);
+            
+            lock (taskQ.WeighQ) {
+                taskQ.WeighQ.Enqueue(lc);
             }
 
             try {
@@ -897,7 +851,7 @@ namespace yidascan {
                     logOpt.Write($"!扫描号码{lc.LCode}存数据库失败。");
                     ShowWarning($"扫描号码{lc.LCode}存数据库失败。", true);
                 }
-            } catch (Exception ex){
+            } catch (Exception ex) {
                 logOpt.Write($"!扫描号码过程异常: {ex}");
             }
         }

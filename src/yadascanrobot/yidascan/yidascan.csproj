@@ -105,6 +105,7 @@
     <Compile Include="DataAccess\Panel.cs" />
     <Compile Include="DataAccess\RobotParam.cs" />
     <Compile Include="DataAccess\SqliteAccess.cs" />
+    <Compile Include="DataAccess\TaskQueues.cs" />
     <Compile Include="FrmMain.cs">
       <SubType>Form</SubType>
     </Compile>

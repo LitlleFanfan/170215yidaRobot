@@ -30,31 +30,31 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmMain));
-            System.Windows.Forms.ListViewItem listViewItem9 = new System.Windows.Forms.ListViewItem(new string[] {
-            "122450006003 B09",
-            "122450006003",
-            "B09"}, -1);
-            System.Windows.Forms.ListViewItem listViewItem10 = new System.Windows.Forms.ListViewItem("122450006013 B10");
-            System.Windows.Forms.ListViewItem listViewItem7 = new System.Windows.Forms.ListViewItem(new string[] {
-            "122450006003 B09",
-            "122450006003",
-            "B09"}, -1);
-            System.Windows.Forms.ListViewItem listViewItem8 = new System.Windows.Forms.ListViewItem("122450006013 B10");
-            System.Windows.Forms.ListViewItem listViewItem5 = new System.Windows.Forms.ListViewItem(new string[] {
-            "122450006003 B09",
-            "122450006003",
-            "B09"}, -1);
-            System.Windows.Forms.ListViewItem listViewItem6 = new System.Windows.Forms.ListViewItem("122450006013 B10");
-            System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem(new string[] {
-            "122450006003 B09",
-            "122450006003",
-            "B09"}, -1);
-            System.Windows.Forms.ListViewItem listViewItem4 = new System.Windows.Forms.ListViewItem("122450006013 B10");
             System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem(new string[] {
             "122450006003 B09",
             "122450006003",
             "B09"}, -1);
             System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("122450006013 B10");
+            System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem(new string[] {
+            "122450006003 B09",
+            "122450006003",
+            "B09"}, -1);
+            System.Windows.Forms.ListViewItem listViewItem4 = new System.Windows.Forms.ListViewItem("122450006013 B10");
+            System.Windows.Forms.ListViewItem listViewItem5 = new System.Windows.Forms.ListViewItem(new string[] {
+            "122450006003 B09",
+            "122450006003",
+            "B09"}, -1);
+            System.Windows.Forms.ListViewItem listViewItem6 = new System.Windows.Forms.ListViewItem("122450006013 B10");
+            System.Windows.Forms.ListViewItem listViewItem7 = new System.Windows.Forms.ListViewItem(new string[] {
+            "122450006003 B09",
+            "122450006003",
+            "B09"}, -1);
+            System.Windows.Forms.ListViewItem listViewItem8 = new System.Windows.Forms.ListViewItem("122450006013 B10");
+            System.Windows.Forms.ListViewItem listViewItem9 = new System.Windows.Forms.ListViewItem(new string[] {
+            "122450006003 B09",
+            "122450006003",
+            "B09"}, -1);
+            System.Windows.Forms.ListViewItem listViewItem10 = new System.Windows.Forms.ListViewItem("122450006013 B10");
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.btnRun = new System.Windows.Forms.ToolStripButton();
             this.btnStop = new System.Windows.Forms.ToolStripButton();
@@ -106,21 +106,21 @@
             this.tbpScanLog = new System.Windows.Forms.TabPage();
             this.tbpCacheLog = new System.Windows.Forms.TabPage();
             this.tbpRobotLog = new System.Windows.Forms.TabPage();
-            this.panel3 = new System.Windows.Forms.Panel();
-            this.lsvCacheBefor = new System.Windows.Forms.ListView();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.lsvLableUp = new System.Windows.Forms.ListView();
-            this.lsvCatch1 = new System.Windows.Forms.ListView();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.lsvCatch2 = new System.Windows.Forms.ListView();
-            this.label7 = new System.Windows.Forms.Label();
-            this.lsvRobot = new System.Windows.Forms.ListView();
-            this.panel4 = new System.Windows.Forms.Panel();
-            this.lsvLableCode = new System.Windows.Forms.ListView();
             this.tbpALarmLog = new System.Windows.Forms.TabPage();
             this.lsvAlarmLog = new System.Windows.Forms.ListBox();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.label7 = new System.Windows.Forms.Label();
+            this.lsvRobot = new System.Windows.Forms.ListView();
+            this.label6 = new System.Windows.Forms.Label();
+            this.lsvCatch2 = new System.Windows.Forms.ListView();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.lsvCatch1 = new System.Windows.Forms.ListView();
+            this.lsvLableUp = new System.Windows.Forms.ListView();
+            this.label2 = new System.Windows.Forms.Label();
+            this.lsvCacheBefor = new System.Windows.Forms.ListView();
+            this.panel4 = new System.Windows.Forms.Panel();
+            this.lsvLableCode = new System.Windows.Forms.ListView();
             this.toolStrip1.SuspendLayout();
             this.grbHandwork.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -131,9 +131,9 @@
             this.tbpScanLog.SuspendLayout();
             this.tbpCacheLog.SuspendLayout();
             this.tbpRobotLog.SuspendLayout();
+            this.tbpALarmLog.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panel4.SuspendLayout();
-            this.tbpALarmLog.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStrip1
@@ -149,7 +149,7 @@
             this.btnQuit});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(1542, 67);
+            this.toolStrip1.Size = new System.Drawing.Size(1543, 67);
             this.toolStrip1.TabIndex = 48;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -336,7 +336,7 @@
             this.grbHandwork.Margin = new System.Windows.Forms.Padding(5);
             this.grbHandwork.Name = "grbHandwork";
             this.grbHandwork.Padding = new System.Windows.Forms.Padding(5);
-            this.grbHandwork.Size = new System.Drawing.Size(1115, 129);
+            this.grbHandwork.Size = new System.Drawing.Size(1116, 129);
             this.grbHandwork.TabIndex = 51;
             this.grbHandwork.TabStop = false;
             this.grbHandwork.Text = "手动操作";
@@ -353,7 +353,7 @@
             this.panel1.Location = new System.Drawing.Point(16, 25);
             this.panel1.Margin = new System.Windows.Forms.Padding(4);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(915, 95);
+            this.panel1.Size = new System.Drawing.Size(916, 95);
             this.panel1.TabIndex = 8;
             // 
             // txtLableCode1
@@ -367,7 +367,7 @@
             this.txtLableCode1.Margin = new System.Windows.Forms.Padding(4);
             this.txtLableCode1.Multiline = true;
             this.txtLableCode1.Name = "txtLableCode1";
-            this.txtLableCode1.Size = new System.Drawing.Size(718, 62);
+            this.txtLableCode1.Size = new System.Drawing.Size(719, 62);
             this.txtLableCode1.TabIndex = 1;
             this.txtLableCode1.Text = "请将光标放置到这里扫描";
             this.txtLableCode1.Enter += new System.EventHandler(this.txtLableCode1_Enter);
@@ -395,7 +395,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(474, 32);
             this.label1.TabIndex = 3;
-            this.label1.Text = "机器人布卷队列";
+            this.label1.Text = "数据";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // lsvLog
@@ -444,7 +444,7 @@
             this.statusStrip1.Location = new System.Drawing.Point(0, 705);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Padding = new System.Windows.Forms.Padding(1, 0, 18, 0);
-            this.statusStrip1.Size = new System.Drawing.Size(1542, 36);
+            this.statusStrip1.Size = new System.Drawing.Size(1543, 36);
             this.statusStrip1.TabIndex = 53;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -489,7 +489,7 @@
             // 
             this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
             this.toolStripStatusLabel2.Padding = new System.Windows.Forms.Padding(10, 0, 10, 0);
-            this.toolStripStatusLabel2.Size = new System.Drawing.Size(976, 31);
+            this.toolStripStatusLabel2.Size = new System.Drawing.Size(977, 31);
             this.toolStripStatusLabel2.Spring = true;
             // 
             // lblTimer
@@ -622,7 +622,7 @@
             this.pictureBox1.Location = new System.Drawing.Point(1130, 0);
             this.pictureBox1.Margin = new System.Windows.Forms.Padding(5);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(597, 67);
+            this.pictureBox1.Size = new System.Drawing.Size(598, 67);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox1.TabIndex = 50;
             this.pictureBox1.TabStop = false;
@@ -634,7 +634,7 @@
             this.tbcLogs.Controls.Add(this.tbpCacheLog);
             this.tbcLogs.Controls.Add(this.tbpRobotLog);
             this.tbcLogs.Controls.Add(this.tbpALarmLog);
-            this.tbcLogs.Location = new System.Drawing.Point(473, 459);
+            this.tbcLogs.Location = new System.Drawing.Point(474, 459);
             this.tbcLogs.Name = "tbcLogs";
             this.tbcLogs.SelectedIndex = 0;
             this.tbcLogs.Size = new System.Drawing.Size(1069, 243);
@@ -672,6 +672,26 @@
             this.tbpRobotLog.Text = "机器人日志";
             this.tbpRobotLog.UseVisualStyleBackColor = true;
             // 
+            // tbpALarmLog
+            // 
+            this.tbpALarmLog.Controls.Add(this.lsvAlarmLog);
+            this.tbpALarmLog.Location = new System.Drawing.Point(4, 38);
+            this.tbpALarmLog.Name = "tbpALarmLog";
+            this.tbpALarmLog.Size = new System.Drawing.Size(1061, 201);
+            this.tbpALarmLog.TabIndex = 3;
+            this.tbpALarmLog.Text = "报警日志";
+            this.tbpALarmLog.UseVisualStyleBackColor = true;
+            // 
+            // lsvAlarmLog
+            // 
+            this.lsvAlarmLog.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lsvAlarmLog.ItemHeight = 28;
+            this.lsvAlarmLog.Location = new System.Drawing.Point(0, 0);
+            this.lsvAlarmLog.MinimumSize = new System.Drawing.Size(250, 4);
+            this.lsvAlarmLog.Name = "lsvAlarmLog";
+            this.lsvAlarmLog.Size = new System.Drawing.Size(1061, 201);
+            this.lsvAlarmLog.TabIndex = 5;
+            // 
             // panel3
             // 
             this.panel3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -685,106 +705,10 @@
             this.panel3.Controls.Add(this.lsvLableUp);
             this.panel3.Controls.Add(this.label2);
             this.panel3.Controls.Add(this.lsvCacheBefor);
-            this.panel3.Location = new System.Drawing.Point(472, 199);
+            this.panel3.Location = new System.Drawing.Point(473, 199);
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(1070, 257);
             this.panel3.TabIndex = 56;
-            // 
-            // lsvCacheBefor
-            // 
-            this.lsvCacheBefor.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem9,
-            listViewItem10});
-            this.lsvCacheBefor.Location = new System.Drawing.Point(1, 32);
-            this.lsvCacheBefor.Name = "lsvCacheBefor";
-            this.lsvCacheBefor.Size = new System.Drawing.Size(267, 225);
-            this.lsvCacheBefor.TabIndex = 0;
-            this.lsvCacheBefor.UseCompatibleStateImageBehavior = false;
-            this.lsvCacheBefor.View = System.Windows.Forms.View.List;
-            // 
-            // label2
-            // 
-            this.label2.BackColor = System.Drawing.Color.SkyBlue;
-            this.label2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label2.Location = new System.Drawing.Point(1, 0);
-            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(267, 32);
-            this.label2.TabIndex = 4;
-            this.label2.Text = "缓存前队列";
-            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // label3
-            // 
-            this.label3.BackColor = System.Drawing.Color.SkyBlue;
-            this.label3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label3.Location = new System.Drawing.Point(268, 0);
-            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(267, 32);
-            this.label3.TabIndex = 6;
-            this.label3.Text = "标签朝上采集队列";
-            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // lsvLableUp
-            // 
-            this.lsvLableUp.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem7,
-            listViewItem8});
-            this.lsvLableUp.Location = new System.Drawing.Point(268, 32);
-            this.lsvLableUp.Name = "lsvLableUp";
-            this.lsvLableUp.Size = new System.Drawing.Size(267, 225);
-            this.lsvLableUp.TabIndex = 5;
-            this.lsvLableUp.UseCompatibleStateImageBehavior = false;
-            this.lsvLableUp.View = System.Windows.Forms.View.List;
-            // 
-            // lsvCatch1
-            // 
-            this.lsvCatch1.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem5,
-            listViewItem6});
-            this.lsvCatch1.Location = new System.Drawing.Point(535, 32);
-            this.lsvCatch1.Name = "lsvCatch1";
-            this.lsvCatch1.Size = new System.Drawing.Size(267, 97);
-            this.lsvCatch1.TabIndex = 5;
-            this.lsvCatch1.UseCompatibleStateImageBehavior = false;
-            this.lsvCatch1.View = System.Windows.Forms.View.List;
-            // 
-            // label4
-            // 
-            this.label4.BackColor = System.Drawing.Color.SkyBlue;
-            this.label4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label4.Location = new System.Drawing.Point(535, 0);
-            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(267, 32);
-            this.label4.TabIndex = 6;
-            this.label4.Text = "抓料1队列";
-            this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // label6
-            // 
-            this.label6.BackColor = System.Drawing.Color.SkyBlue;
-            this.label6.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label6.Location = new System.Drawing.Point(535, 129);
-            this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(267, 32);
-            this.label6.TabIndex = 8;
-            this.label6.Text = "抓料1队列";
-            this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // lsvCatch2
-            // 
-            this.lsvCatch2.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem3,
-            listViewItem4});
-            this.lsvCatch2.Location = new System.Drawing.Point(535, 161);
-            this.lsvCatch2.Name = "lsvCatch2";
-            this.lsvCatch2.Size = new System.Drawing.Size(267, 96);
-            this.lsvCatch2.TabIndex = 7;
-            this.lsvCatch2.UseCompatibleStateImageBehavior = false;
-            this.lsvCatch2.View = System.Windows.Forms.View.List;
             // 
             // label7
             // 
@@ -810,6 +734,102 @@
             this.lsvRobot.UseCompatibleStateImageBehavior = false;
             this.lsvRobot.View = System.Windows.Forms.View.List;
             // 
+            // label6
+            // 
+            this.label6.BackColor = System.Drawing.Color.SkyBlue;
+            this.label6.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label6.Location = new System.Drawing.Point(535, 129);
+            this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(267, 32);
+            this.label6.TabIndex = 8;
+            this.label6.Text = "抓料1队列";
+            this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lsvCatch2
+            // 
+            this.lsvCatch2.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
+            listViewItem3,
+            listViewItem4});
+            this.lsvCatch2.Location = new System.Drawing.Point(535, 161);
+            this.lsvCatch2.Name = "lsvCatch2";
+            this.lsvCatch2.Size = new System.Drawing.Size(267, 96);
+            this.lsvCatch2.TabIndex = 7;
+            this.lsvCatch2.UseCompatibleStateImageBehavior = false;
+            this.lsvCatch2.View = System.Windows.Forms.View.List;
+            // 
+            // label4
+            // 
+            this.label4.BackColor = System.Drawing.Color.SkyBlue;
+            this.label4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label4.Location = new System.Drawing.Point(535, 0);
+            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(267, 32);
+            this.label4.TabIndex = 6;
+            this.label4.Text = "抓料1队列";
+            this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // label3
+            // 
+            this.label3.BackColor = System.Drawing.Color.SkyBlue;
+            this.label3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label3.Location = new System.Drawing.Point(268, 0);
+            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(267, 32);
+            this.label3.TabIndex = 6;
+            this.label3.Text = "标签朝上采集队列";
+            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lsvCatch1
+            // 
+            this.lsvCatch1.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
+            listViewItem5,
+            listViewItem6});
+            this.lsvCatch1.Location = new System.Drawing.Point(535, 32);
+            this.lsvCatch1.Name = "lsvCatch1";
+            this.lsvCatch1.Size = new System.Drawing.Size(267, 97);
+            this.lsvCatch1.TabIndex = 5;
+            this.lsvCatch1.UseCompatibleStateImageBehavior = false;
+            this.lsvCatch1.View = System.Windows.Forms.View.List;
+            // 
+            // lsvLableUp
+            // 
+            this.lsvLableUp.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
+            listViewItem7,
+            listViewItem8});
+            this.lsvLableUp.Location = new System.Drawing.Point(268, 32);
+            this.lsvLableUp.Name = "lsvLableUp";
+            this.lsvLableUp.Size = new System.Drawing.Size(267, 225);
+            this.lsvLableUp.TabIndex = 5;
+            this.lsvLableUp.UseCompatibleStateImageBehavior = false;
+            this.lsvLableUp.View = System.Windows.Forms.View.List;
+            // 
+            // label2
+            // 
+            this.label2.BackColor = System.Drawing.Color.SkyBlue;
+            this.label2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label2.Location = new System.Drawing.Point(1, 0);
+            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(267, 32);
+            this.label2.TabIndex = 4;
+            this.label2.Text = "缓存前队列";
+            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lsvCacheBefor
+            // 
+            this.lsvCacheBefor.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
+            listViewItem9,
+            listViewItem10});
+            this.lsvCacheBefor.Location = new System.Drawing.Point(1, 32);
+            this.lsvCacheBefor.Name = "lsvCacheBefor";
+            this.lsvCacheBefor.Size = new System.Drawing.Size(267, 225);
+            this.lsvCacheBefor.TabIndex = 0;
+            this.lsvCacheBefor.UseCompatibleStateImageBehavior = false;
+            this.lsvCacheBefor.View = System.Windows.Forms.View.List;
+            // 
             // panel4
             // 
             this.panel4.Controls.Add(this.lsvLableCode);
@@ -828,31 +848,11 @@
             this.lsvLableCode.UseCompatibleStateImageBehavior = false;
             this.lsvLableCode.View = System.Windows.Forms.View.List;
             // 
-            // tbpALarmLog
-            // 
-            this.tbpALarmLog.Controls.Add(this.lsvAlarmLog);
-            this.tbpALarmLog.Location = new System.Drawing.Point(4, 38);
-            this.tbpALarmLog.Name = "tbpALarmLog";
-            this.tbpALarmLog.Size = new System.Drawing.Size(1061, 201);
-            this.tbpALarmLog.TabIndex = 3;
-            this.tbpALarmLog.Text = "报警日志";
-            this.tbpALarmLog.UseVisualStyleBackColor = true;
-            // 
-            // lsvAlarmLog
-            // 
-            this.lsvAlarmLog.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lsvAlarmLog.ItemHeight = 28;
-            this.lsvAlarmLog.Location = new System.Drawing.Point(0, 0);
-            this.lsvAlarmLog.MinimumSize = new System.Drawing.Size(250, 4);
-            this.lsvAlarmLog.Name = "lsvAlarmLog";
-            this.lsvAlarmLog.Size = new System.Drawing.Size(1061, 201);
-            this.lsvAlarmLog.TabIndex = 5;
-            // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(14F, 28F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1542, 741);
+            this.ClientSize = new System.Drawing.Size(1543, 741);
             this.Controls.Add(this.panel4);
             this.Controls.Add(this.panel3);
             this.Controls.Add(this.tbcLogs);
@@ -885,9 +885,9 @@
             this.tbpScanLog.ResumeLayout(false);
             this.tbpCacheLog.ResumeLayout(false);
             this.tbpRobotLog.ResumeLayout(false);
+            this.tbpALarmLog.ResumeLayout(false);
             this.panel3.ResumeLayout(false);
             this.panel4.ResumeLayout(false);
-            this.tbpALarmLog.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
