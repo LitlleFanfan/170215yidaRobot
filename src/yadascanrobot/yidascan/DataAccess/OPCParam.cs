@@ -102,33 +102,20 @@ namespace yidascan.DataAccess {
         /// 缓存前信号
         /// </summary>
         public string BeforCacheStatus { get; set; }
-        /// <summary>
-        /// 缓存前标签 
-        /// </summary>
-        public string BeforCacheLable1 { get; set; }
-        /// <summary>
-        /// 缓存前标签 
-        /// </summary>
-        public string BeforCacheLable2 { get; set; }
 
         /// <summary>
         /// 是否缓存
         /// </summary>
-        public string IsCache { get; set; }
+        public string CacheStatus { get; set; }
 
         /// <summary>
         /// 从缓存取出的标签
         /// </summary>
-        public string GetOutLable1 { get; set; }
+        public string CachePoint { get; set; }
         /// <summary>
         /// 从缓存取出的标签
         /// </summary>
-        public string GetOutLable2 { get; set; }
-
-        /// <summary>
-        /// 是否最后一个
-        /// </summary>
-        public string IsLastOftPanel { get; set; }
+        public string GetPoint { get; set; }
 
         public OPCBeforCacheParam() {
             DataTable dt = OPCParam.Query("where Class='Cache'");
