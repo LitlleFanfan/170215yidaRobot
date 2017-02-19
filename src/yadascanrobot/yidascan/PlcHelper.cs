@@ -70,6 +70,7 @@ namespace yidascan {
         /// /// <param name="posSave">动作编号。</param>
         /// /// <param name="posGet">动作编号。</param>
         public static void WriteCacheJob(IOpcClient client, CacheJob job, int posSave, int posGet) {
+            System.Windows.Forms.MessageBox.Show(job.ToString());
             client.Write(PlcSlot.CACHE_JOB_SIGNAL, job);
             client.Write(PlcSlot.CACHE_JOB_POS_SAVE, posSave);
             client.Write(PlcSlot.CACHE_JOB_POS_GET, posGet);
