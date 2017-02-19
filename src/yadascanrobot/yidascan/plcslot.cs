@@ -9,7 +9,7 @@ namespace yidascan {
         /// <summary>
         /// 缓存处来料信号地址。
         /// </summary>
-        public static string CACHE_ITEM_IN = "	MicroWin.S7-1200-3.NewItem108";
+        public static string CACHE_ITEM_IN = "MicroWin.S7-1200-3.NewItem108";
 
         /// <summary>
         /// 缓存区动作编号地址。
