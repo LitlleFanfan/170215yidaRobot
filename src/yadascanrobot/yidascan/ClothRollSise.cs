@@ -24,15 +24,9 @@ public class ClothRollSize
     /// 取OPC的diameter和length两个量。
     /// 和static getFromOPC函数等价。
     /// </summary>
-    public void getFromOPC(OPCClient client, OPCParam param)
+    public void getFromOPC(IOpcClient client, OPCParam param)
     {
-        var d = client.Read(param.ScanParam.Diameter);
-        var l = client.Read(param.ScanParam.Length);
-
-        if (d == null) { throw new Exception("读OPC的Diameter参数，返回nul值。"); }
-        if (l == null) { throw new Exception("读OPC的Length参数，返回nul值。"); }
-
-        diameter = decimal.Parse(d.ToString());
-        length = decimal.Parse(l.ToString());
+        diameter = client.ReadDecimal(param.ScanParam.Diameter);
+        length = client.ReadDecimal(param.ScanParam.Length);
     }
 }

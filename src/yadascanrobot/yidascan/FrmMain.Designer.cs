@@ -395,7 +395,6 @@
             this.grbHandwork.TabIndex = 51;
             this.grbHandwork.TabStop = false;
             this.grbHandwork.Text = "手动操作";
-            this.grbHandwork.Enter += new System.EventHandler(this.grbHandwork_Enter);
             // 
             // panel1
             // 

@@ -123,7 +123,7 @@ namespace yidascan {
 
         public Action<string, string, LogViewType> _log;
 
-        private OPCClient client;
+        private IOpcClient client;
         private OPCParam param;
 
         public RobotHelper(string ip, string jobName) {
@@ -137,7 +137,7 @@ namespace yidascan {
             }
         }
 
-        public void setup(Action<string, string, LogViewType> logfunc, OPCClient c, OPCParam p) {
+        public void setup(Action<string, string, LogViewType> logfunc, IOpcClient c, OPCParam p) {
             _log = logfunc;
             client = c;
             param = p;

@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-public interface IOpcClient {
-    object Read(string slot);
+﻿public interface IOpcClient {
     string ReadString(string slot);
     int ReadInt(string slot);
     bool ReadBool(string slot);
+    decimal ReadDecimal(string slot);
     bool Write(string slot, object value);
     bool Open(string mAddr);
+    void Close();
     void AddSubscription(System.Data.DataTable p);
     bool AddSubscription(string slot);
 }

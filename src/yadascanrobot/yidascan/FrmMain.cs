@@ -25,13 +25,13 @@ namespace yidascan {
 
         #region opc
         public static OPCParam opcParam = new OPCParam();
-        public static OPCClient opcClient = new OPCClient();
 
-        public static OPCClient ScannerOpcClient = new OPCClient();
-        public static OPCClient RobotOpcClient = new OPCClient();
+        public static IOpcClient opcClient = GetOpcClient(false);
+        public static IOpcClient ScannerOpcClient = GetOpcClient(false);
+        public static IOpcClient RobotOpcClient = GetOpcClient(false);
         #endregion
 
-        DataTable dtopc = new DataTable();
+        DataTable dtopc;
 
         RobotHelper robot;
         private bool robotRun = false;
@@ -50,7 +50,7 @@ namespace yidascan {
         public FrmMain() {
             InitializeComponent();
             logOpt = new ProduceComm.LogOpreate();
-            logOpt.Write(string.Format("打开软件"), LogType.NORMAL);
+            logOpt.Write("打开软件", LogType.NORMAL);
 
             try {
                 // 显示效果不对，以后再说。
@@ -65,7 +65,7 @@ namespace yidascan {
 
                 lblOpcIp.BackColor = Color.LightGreen;
             } catch (Exception ex) {
-                logOpt.Write(string.Format("!启动opc失败.\n{0}", ex), LogType.NORMAL);
+                logOpt.Write(string.Format("!启动失败.\n{0}", ex), LogType.NORMAL);
             }
         }
 
@@ -104,13 +104,17 @@ namespace yidascan {
             }
         }
 
+        private void initOpcParam() {
+            dtopc = OPCParam.Query();
+            dtopc.Columns.Remove("Class");
+            dtopc.Columns.Add(new DataColumn("Value"));
+        }
+
         /// <summary>
         /// 在主程序启动时运行。
         /// </summary>
         private void StartOpc() {
-            dtopc = OPCParam.Query();
-            dtopc.Columns.Remove("Class");
-            dtopc.Columns.Add(new DataColumn("Value"));
+            initOpcParam();
 
             if (opcClient.Open(clsSetting.OPCServerIP)) {
                 logOpt.Write("OPC服务连接成功。", LogType.NORMAL);
@@ -155,7 +159,7 @@ namespace yidascan {
                 while (isrun) {
                     lock (opcClient) {
                         // 等待布卷
-                        var r = (bool)opcClient.Read(opcParam.RobotCarryA.Signal);
+                        var r = opcClient.ReadBool(opcParam.RobotCarryA.Signal);
                         if (r) {
                             // 加入机器人布卷队列。
                             taskQ.GetCatchAQ();
@@ -177,7 +181,7 @@ namespace yidascan {
                 while (isrun) {
                     lock (opcClient) {
                         // 等待布卷
-                        var r = (bool)opcClient.Read(opcParam.RobotCarryB.Signal);
+                        var r = opcClient.ReadBool(opcParam.RobotCarryB.Signal);
                         if (r) {
                             // 加入机器人布卷队列。
                             taskQ.GetCatchBQ();
@@ -244,7 +248,7 @@ namespace yidascan {
                 Task.Factory.StartNew(() => {
                     while (isrun) {
                         lock (opcClient) {
-                            var signal = OPCRead(kv.Value).ToString();
+                            var signal = opcClient.ReadString(kv.Value);
 
                             if (signal == "1") {
                                 LableCode.SetMaxFloor(kv.Key);
@@ -279,7 +283,7 @@ namespace yidascan {
         }
 
         private void StartScanner() {
-            const string CAMERA_1 = "1#相机";            
+            const string CAMERA_1 = "1#相机";
             if (OpenPort(ref nscan1, CAMERA_1, FrmSet.pcfgScan1)) {
                 nscan1.logger = Logger;
                 nscan1.OnDataArrived = nscan1_OnDataArrived;
@@ -306,32 +310,26 @@ namespace yidascan {
             StartScanner();
             isrun = true;
 
-            if (opcClient.Connected) {
-                WeighTask();
-                ACAreaFinishTask();
-                BeforCacheTask();
+            WeighTask();
+            ACAreaFinishTask();
+            BeforCacheTask();
 
-                StartRobotJobATask();
-                StartRobotJobBTask();
-                BAreaUserFinalLayerTask();
+            StartRobotJobATask();
+            StartRobotJobBTask();
+            BAreaUserFinalLayerTask();
 
-                if (chkUseRobot.Checked) {
-                    StartAllRobotTasks();
-                } else {
-                    logOpt.Write("未使用机器人。", LogType.NORMAL);
-                }
-
-                // 焦点设在手工输入框。
-                txtLableCode1.Focus();
-
-                chkUseRobot.Enabled = false;
-                ShowTaskState(isrun);
-                RefreshRobotMenuState();
+            if (chkUseRobot.Checked) {
+                StartAllRobotTasks();
             } else {
-                var msg = "连接OPC设备失败！";
-                ShowWarning(msg);
-                logOpt.Write("!" + msg, LogType.NORMAL);
+                logOpt.Write("未使用机器人。", LogType.NORMAL);
             }
+
+            // 焦点设在手工输入框。
+            txtLableCode1.Focus();
+
+            chkUseRobot.Enabled = false;
+            ShowTaskState(isrun);
+            RefreshRobotMenuState();
         }
 
         private void WeighTask() {
@@ -343,7 +341,7 @@ namespace yidascan {
                 while (isrun) {
                     try {
                         lock (opcClient) {
-                            var getWeight = OPCRead(opcParam.ScanParam.GetWeigh).ToString();
+                            var getWeight = opcClient.ReadString(opcParam.ScanParam.GetWeigh);
                             if (getWeight == TO_WEIGH) {
                                 var code = taskQ.GetWeighQ();
 
@@ -371,24 +369,22 @@ namespace yidascan {
                 Task.Factory.StartNew(() => {
                     while (isrun) {
                         lock (opcClient) {
-                            var signal = OPCRead(kv.Value.Signal).ToString();
+                            var signal = opcClient.ReadBool(kv.Value.Signal);
+                            var fullLable = ReadCompleteLable(opcClient, kv.Value);
 
-                            if (bool.Parse(signal)) {
-                                var fullLable = ReadCompleteLable(kv.Value);
+                            logOpt.Write(string.Format("{0} 收到完成信号。标签:{1}", kv.Value.Signal, fullLable), LogType.NORMAL);
 
-                                logOpt.Write(string.Format("{0} 收到完成信号。标签:{1}", kv.Value.Signal, fullLable), LogType.NORMAL);
-
-                                try {
-                                    if (!string.IsNullOrEmpty(fullLable)) {
-                                        logOpt.Write(string.Format("执行状态:{0}",
-                                            AreaAAndCFinish(fullLable)), LogType.NORMAL);
-                                    }
-                                } catch (Exception ex) {
-                                    logOpt.Write("!" + ex.Message);
+                            try {
+                                if (!string.IsNullOrEmpty(fullLable)) {
+                                    logOpt.Write(string.Format("执行状态:{0}",
+                                        AreaAAndCFinish(fullLable)), LogType.NORMAL);
                                 }
-
-                                opcClient.Write(kv.Value.Signal, 0);
+                            } catch (Exception ex) {
+                                logOpt.Write("!" + ex.Message);
                             }
+
+                            opcClient.Write(kv.Value.Signal, 0);
+
                         }
                         Thread.Sleep(OPCClient.DELAY * 2000);
                     }
@@ -403,10 +399,10 @@ namespace yidascan {
         /// </summary>
         /// <param name="slot"></param>
         /// <returns></returns>
-        private static string ReadCompleteLable(LCodeSignal slot) {
+        private static string ReadCompleteLable(IOpcClient client, LCodeSignal slot) {
             const int MAX_LEN = 6;
-            var lable1 = OPCRead(slot.LCode1).ToString();
-            var lable2 = OPCRead(slot.LCode2).ToString();
+            var lable1 = client.ReadString(slot.LCode1).ToString();
+            var lable2 = client.ReadString(slot.LCode2).ToString();
             return lable1.PadLeft(MAX_LEN, '0') + lable2.PadLeft(MAX_LEN, '0');
         }
 
@@ -417,9 +413,8 @@ namespace yidascan {
         /// <param name="client">OPCClient实例</param>
         /// <param name="param">OPCParam实例</param>
         /// <returns></returns>
-        private static bool ReadBeforeCacheStatus(OPCClient client, OPCParam param) {
-            var r = client.Read(param.CacheParam.BeforCacheStatus);
-            return bool.Parse(r.ToString());
+        private static bool ReadBeforeCacheStatus(IOpcClient client, OPCParam param) {
+            return client.ReadBool(param.CacheParam.BeforCacheStatus);
         }
 
         private void BeforCacheTask() {
@@ -484,7 +479,7 @@ namespace yidascan {
                 while (isrun) {
                     lock (opcClient) {
                         try {
-                            var r = bool.Parse(opcClient.Read(opcParam.CacheParam.BeforCacheStatus).ToString());
+                            var r = opcClient.ReadBool(opcParam.CacheParam.BeforCacheStatus);
 
                             if (r) {
                                 var code = taskQ.GetLableUpQ();
@@ -501,16 +496,6 @@ namespace yidascan {
                     Thread.Sleep(OPCClient.DELAY * 200);
                 }
             });
-        }
-
-        private static object OPCRead(string code) {
-            var val = opcClient.Read(code);
-            if (val == null) {
-                logOpt.Write(string.Format("!警告:OPC项目[{0}]质量:坏。", code), LogType.NORMAL);
-                return string.Empty;
-            } else {
-                return val;
-            }
         }
 
         void nscan1_OnDataArrived(string type, string code) {
@@ -1035,7 +1020,7 @@ namespace yidascan {
         /// <param name="erpAlarm"></param>
         /// <param name="opcClient">opc client</param>
         /// <param name="opcParam">opc param</param>
-        public static void ERPAlarm(OPCClient opcClient, OPCParam opcParam, ERPAlarmNo erpAlarm) {
+        public static void ERPAlarm(IOpcClient opcClient, OPCParam opcParam, ERPAlarmNo erpAlarm) {
             try {
                 opcClient.Write(opcParam.None.ERPAlarm, (int)erpAlarm);
             } catch (Exception ex) {
@@ -1075,10 +1060,6 @@ namespace yidascan {
             opcClient.Write(opcParam.ScanParam.GetWeigh, 0);
         }
 
-        private void grbHandwork_Enter(object sender, EventArgs e) {
-
-        }
-
         private void btnBrowsePanels_Click(object sender, EventArgs e) {
             using (var w = new WRollBrowser()) {
                 w.ShowDialog();
@@ -1088,6 +1069,15 @@ namespace yidascan {
         private void btnTestPlc_Click(object sender, EventArgs e) {
             using (var w = new wtestplc()) {
                 w.ShowDialog();
+            }
+        }
+
+        private static IOpcClient GetOpcClient(bool isRealOpc) {
+            if (isRealOpc) {
+                return new OPCClient();                
+            } else {
+                // logOpt.ViewInfo("!模拟opc client.", LogViewType.OnlyForm);
+                return new FakeOpcClient();
             }
         }
     }
