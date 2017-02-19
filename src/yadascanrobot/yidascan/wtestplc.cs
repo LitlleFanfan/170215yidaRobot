@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using yidascan.DataAccess;
+using ProduceComm.OPC;
 
 namespace yidascan {
     public partial class wtestplc : Form {
@@ -19,18 +20,18 @@ namespace yidascan {
             for (var i = 1; i <= 6; i++) {
                 cbxJob.Items.Add(i.ToString());
             }
+
+            txPlcIP.Text = opc_server_ip;
         }
 
         private IOpcClient client;
         public string opc_server_ip = "127.0.0.1";
 
         public void initOpcClient() {
-            var dtopc = OPCParam.Query();
-            dtopc.Columns.Remove("Class");
-            dtopc.Columns.Add(new DataColumn("Value"));
-
+            client = new OPCClient();
+            
             if (client.Open(opc_server_ip)) {
-                client.AddSubscription(dtopc);
+                PlcHelper.subscribe(client);
             } else {
                 MessageBox.Show("访问OPC server失败。");
             }
@@ -82,6 +83,14 @@ namespace yidascan {
             // 复位抓料处信号。
             var pos = (int)ntxtPos.Value;
             PlcHelper.ResetItemCatchSignal(client, pos);
+        }
+
+        private void btnPushAside_Click(object sender, EventArgs e) {
+            PlcHelper.PushAsideClothRoll(client);
+        }
+
+        private void btnSetPlcIP_Click(object sender, EventArgs e) {
+            opc_server_ip = txPlcIP.Text;
         }
     }
 }
