@@ -12,5 +12,6 @@ public interface IOpcClient {
     bool Write(string slot, object value);
     bool Open(string mAddr);
     void AddSubscription(System.Data.DataTable p);
+    void AddSubscription(string slot);
 }
 

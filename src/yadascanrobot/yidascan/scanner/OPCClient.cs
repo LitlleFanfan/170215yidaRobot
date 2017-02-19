@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace ProduceComm.OPC {
-    public class OPCClient {
+    public class OPCClient: IOpcClient {
         public delegate void ErrEventHandler(Exception ex);
 
         public event ErrEventHandler OnError;
