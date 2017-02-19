@@ -18,9 +18,7 @@ using ListBoxHelper.ext;
 
 namespace yidascan {
     public partial class FrmMain : Form {
-        private DataTable dtview = new DataTable();
         NormalScan nscan1;
-        NormalScan nscan2;
         private LableCodeBll lcb = new LableCodeBll();
         public static TaskQueues taskQ = new TaskQueues();
         bool isrun = false;
@@ -47,29 +45,23 @@ namespace yidascan {
         // 用于锁定手动和自动扫描标签的处理工程。
         public object LOCK_CAMERA_PROCESS = new object();
 
-        RobotJobQueue robotJobQueue;
-
         private int counter = 0;
 
         public FrmMain() {
             InitializeComponent();
+            logOpt = new ProduceComm.LogOpreate();
+            logOpt.Write(string.Format("打开软件"), LogType.NORMAL);
 
             try {
                 // 显示效果不对，以后再说。
                 InitListBoxes();
 
-                // 初始化机器人布卷消息队列。
-                robotJobQueue = new RobotJobQueue();
-
-                logOpt = new ProduceComm.LogOpreate();
                 timer_message.Enabled = true;
 
                 var msgStart = string.Format("{0} V{1} 启动。",
                                   clsSetting.PRODUCT_NAME,
                                   Application.ProductVersion.ToString());
                 logOpt.Write(msgStart, LogType.NORMAL);
-
-                StartOpc();
 
                 lblOpcIp.BackColor = Color.LightGreen;
             } catch (Exception ex) {
@@ -98,6 +90,8 @@ namespace yidascan {
 
         private void FrmMain_Load(object sender, EventArgs e) {
             try {
+                StartOpc();
+
                 ShowTitle();
                 ShowTaskState(false);
                 RefreshRobotMenuState();
@@ -512,7 +506,7 @@ namespace yidascan {
                                 //opcClient.Write(opcParam.CacheParam.IsCache, cState);
                                 //opcClient.Write(opcParam.CacheParam.GetOutLable1, string.IsNullOrEmpty(outCacheLable) ? "0" : outCacheLable.Substring(0, 6));
                                 //opcClient.Write(opcParam.CacheParam.GetOutLable2, string.IsNullOrEmpty(outCacheLable) ? "0" : outCacheLable.Substring(6, 6));
-                                
+
                                 opcClient.Write(opcParam.CacheParam.BeforCacheStatus, false);
                             }
                         } catch (Exception ex) {
@@ -614,7 +608,6 @@ namespace yidascan {
             Thread.Sleep(500);
 
             StopScanner(nscan1);
-            StopScanner(nscan2);
             StopAllRobotTasks();
         }
 
@@ -823,7 +816,7 @@ namespace yidascan {
                 ScannerOpcClient.Write(opcParam.ScanParam.ScanState, true);
             });
             logOpt.Write($"写OPC耗时: {t}ms", LogType.NORMAL);
-            
+
             lock (taskQ.WeighQ) {
                 taskQ.WeighQ.Enqueue(lc);
             }
