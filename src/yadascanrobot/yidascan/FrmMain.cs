@@ -18,9 +18,7 @@ using ListBoxHelper.ext;
 
 namespace yidascan {
     public partial class FrmMain : Form {
-        private DataTable dtview = new DataTable();
         NormalScan nscan1;
-        NormalScan nscan2;
         private LableCodeBll lcb = new LableCodeBll();
         public static TaskQueues taskQ = new TaskQueues();
         bool isrun = false;
@@ -53,7 +51,7 @@ namespace yidascan {
 
         public FrmMain() {
             InitializeComponent();
-
+            logOpt.Write(string.Format("打开软件"), LogType.NORMAL);
             try {
                 // 显示效果不对，以后再说。
                 InitListBoxes();
@@ -614,7 +612,6 @@ namespace yidascan {
             Thread.Sleep(500);
 
             StopScanner(nscan1);
-            StopScanner(nscan2);
             StopAllRobotTasks();
         }
 
