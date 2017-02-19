@@ -51,9 +51,10 @@
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.btnPushAside = new System.Windows.Forms.Button();
             this.tabPage5 = new System.Windows.Forms.TabPage();
-            this.btnSetPlcIP = new System.Windows.Forms.Button();
-            this.label3 = new System.Windows.Forms.Label();
             this.txPlcIP = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.btnSetPlcIP = new System.Windows.Forms.Button();
+            this.label4 = new System.Windows.Forms.Label();
             this.tabPage3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ntxtPos)).BeginInit();
             this.tabPage2.SuspendLayout();
@@ -144,6 +145,7 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.label4);
             this.tabPage2.Controls.Add(this.ntxtChannel);
             this.tabPage2.Controls.Add(this.label7);
             this.tabPage2.Controls.Add(this.label6);
@@ -163,9 +165,24 @@
             // ntxtChannel
             // 
             this.ntxtChannel.Location = new System.Drawing.Point(486, 79);
+            this.ntxtChannel.Maximum = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+            this.ntxtChannel.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
             this.ntxtChannel.Name = "ntxtChannel";
             this.ntxtChannel.Size = new System.Drawing.Size(83, 21);
             this.ntxtChannel.TabIndex = 7;
+            this.ntxtChannel.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
             // 
             // label7
             // 
@@ -379,15 +396,13 @@
             this.tabPage5.Text = "plc ip设置";
             this.tabPage5.UseVisualStyleBackColor = true;
             // 
-            // btnSetPlcIP
+            // txPlcIP
             // 
-            this.btnSetPlcIP.Location = new System.Drawing.Point(28, 86);
-            this.btnSetPlcIP.Name = "btnSetPlcIP";
-            this.btnSetPlcIP.Size = new System.Drawing.Size(130, 23);
-            this.btnSetPlcIP.TabIndex = 0;
-            this.btnSetPlcIP.Text = "设置";
-            this.btnSetPlcIP.UseVisualStyleBackColor = true;
-            this.btnSetPlcIP.Click += new System.EventHandler(this.btnSetPlcIP_Click);
+            this.txPlcIP.Location = new System.Drawing.Point(100, 33);
+            this.txPlcIP.Name = "txPlcIP";
+            this.txPlcIP.Size = new System.Drawing.Size(181, 21);
+            this.txPlcIP.TabIndex = 2;
+            this.txPlcIP.Text = "127.0.0.1";
             // 
             // label3
             // 
@@ -398,13 +413,24 @@
             this.label3.TabIndex = 1;
             this.label3.Text = "plc ip";
             // 
-            // txPlcIP
+            // btnSetPlcIP
             // 
-            this.txPlcIP.Location = new System.Drawing.Point(100, 33);
-            this.txPlcIP.Name = "txPlcIP";
-            this.txPlcIP.Size = new System.Drawing.Size(181, 21);
-            this.txPlcIP.TabIndex = 2;
-            this.txPlcIP.Text = "127.0.0.1";
+            this.btnSetPlcIP.Location = new System.Drawing.Point(28, 86);
+            this.btnSetPlcIP.Name = "btnSetPlcIP";
+            this.btnSetPlcIP.Size = new System.Drawing.Size(130, 23);
+            this.btnSetPlcIP.TabIndex = 0;
+            this.btnSetPlcIP.Text = "设置";
+            this.btnSetPlcIP.UseVisualStyleBackColor = true;
+            this.btnSetPlcIP.Click += new System.EventHandler(this.btnSetPlcIP_Click);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(393, 82);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(17, 12);
+            this.label4.TabIndex = 8;
+            this.label4.Text = "mm";
             // 
             // wtestplc
             // 
@@ -468,5 +494,6 @@
         private System.Windows.Forms.TextBox txPlcIP;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button btnSetPlcIP;
+        private System.Windows.Forms.Label label4;
     }
 }

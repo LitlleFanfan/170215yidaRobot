@@ -6,12 +6,47 @@ namespace yidascan {
     /// 缓存区动作代码
     /// </summary>
     public enum CacheJob {
-        CACHE_JOB_GO = 1, // 直接走。
-        CACHE_JOB_SAVE = 2, // 直接存。
-        CACHE_JOB_GET_THEN_SAVE = 3, // 先取后存。
-        CACHE_JOB_GO_THEN_GET = 4, // 先走后取。
-        CACHE_JOB_GET_THEN_GO = 5, // 先取后走。
-        CACHE_JOB_SAVE_THEN_GET = 6, // 显存后取。
+        /// <summary>
+        /// 直接走
+        /// </summary>
+        GO = 1,
+
+        /// <summary>
+        /// 直接存
+        /// </summary>
+        SAVE = 2,
+
+        /// <summary>
+        /// 先取后存
+        /// </summary>
+        GET_THEN_SAVE = 3,
+
+        /// <summary>
+        /// 先走后取
+        /// </summary>
+        GO_THEN_GET = 4,
+
+        /// <summary>
+        /// 先取后走
+        /// </summary>
+        GET_THEN_GO = 5,
+
+        /// <summary>
+        /// 显存后取
+        /// </summary>
+        SAVE_THEN_GET = 6,
+    }
+
+    public enum RollCatchChannel {
+        /// <summary>
+        /// 通道1
+        /// </summary>
+        channel_1 = 1,
+
+        /// <summary>
+        /// 通道2
+        /// </summary>
+        channel_2 = 2,
     }
     
     public static class PlcHelper {
@@ -59,7 +94,7 @@ namespace yidascan {
         /// <param name="client"></param>
         /// <param name="diameter">直径</param>
         /// <param name="channel">去向, 1 or 2.</param>
-        public static void WriteLabelCatch(IOpcClient client, int diameter, int channel) {
+        public static void WriteLabelCatch(IOpcClient client, int diameter, RollCatchChannel channel) {
             // diameter单位是毫米。
             client.Write(PlcSlot.LABEL_UP_CATCH_DIAMETER, diameter);
             client.Write(PlcSlot.LABEL_UP_CATCH_CHANNEL, channel);

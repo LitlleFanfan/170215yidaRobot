@@ -1033,9 +1033,11 @@ namespace yidascan {
         }
 
         private void toolStripButton1_Click(object sender, EventArgs e) {
-            var w = new WinDeleteLabel();
-            w.mainwin = this;
-            w.ShowDialog();
+            using (var w = new WinDeleteLabel {
+                mainwin = this
+            }) {
+                w.ShowDialog();
+            }
         }
 
         /// <summary>
@@ -1105,8 +1107,9 @@ namespace yidascan {
         }
 
         private void btnTestPlc_Click(object sender, EventArgs e) {
-            var w = new wtestplc();
-            w.ShowDialog();
+            using (var w = new wtestplc()) {
+                w.ShowDialog();
+            }
         }
     }
 }
