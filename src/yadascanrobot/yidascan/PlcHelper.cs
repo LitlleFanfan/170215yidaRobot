@@ -58,8 +58,7 @@ namespace yidascan {
         /// <param name="client"></param>
         /// <returns></returns>
         public static bool ReadItemInFromCache(IOpcClient client) {
-            var r = client.ReadInt(PlcSlot.CACHE_ITEM_IN);
-            return r == 1;
+            return client.ReadBool(PlcSlot.CACHE_ITEM_IN);
         }
         
         /// <summary>

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace yidascan {
+﻿namespace yidascan {
     public static class PlcSlot {
         /// <summary>
         /// 缓存处来料信号地址。
