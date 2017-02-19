@@ -83,8 +83,7 @@ namespace yidascan {
         /// <param name="client"></param>
         /// <returns></returns>
         public static bool ReadLabelCatch(IOpcClient client) {
-            var r = client.ReadInt(PlcSlot.LABEL_UP_CATCH_ITEM_IN);
-            return r == 1;
+            return client.ReadBool(PlcSlot.LABEL_UP_CATCH_ITEM_IN);
         }
        
         /// <summary>
@@ -115,7 +114,7 @@ namespace yidascan {
 
             if (slot == "") { throw new Exception("error pos."); }
 
-            return 1 == client.ReadInt(slot);
+            return client.ReadBool(slot);
         }
 
         /// <summary>
