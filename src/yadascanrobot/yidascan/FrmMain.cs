@@ -10,7 +10,7 @@ using ProduceComm.OPC;
 using System.Threading.Tasks;
 using System.Threading;
 using System.IO;
-using System.Linq;
+using System.Diagnostics;
 using System.Drawing;
 
 using commonhelper;
@@ -929,9 +929,13 @@ namespace yidascan {
             }
         }
 
-        private void btnLog_Click(object sender, EventArgs e) {
+        private void openLogDirectory() {
             var path = Path.Combine(Application.StartupPath, "log");
-            System.Diagnostics.Process.Start(path);
+            Process.Start(path);
+        }
+
+        private void btnLog_Click(object sender, EventArgs e) {
+            openLogDirectory();
         }
 
         /// <summary>

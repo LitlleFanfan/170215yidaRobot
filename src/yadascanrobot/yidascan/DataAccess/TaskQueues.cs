@@ -70,10 +70,10 @@ namespace yidascan.DataAccess {
             var state = FrmMain.GetPanelState(label, pinfo);
             FrmMain.logOpt.Write(string.Format("{0} {1} {2}", label.LCode, label.ToLocation, Enum.GetName(typeof(PanelState), state)), LogType.ROLL_QUEUE, ProduceComm.LogViewType.OnlyFile);
 
-            decimal x = label.Cx;
-            decimal y = label.Cy;
-            decimal z = label.Cz + FrmMain.zStart;
-            decimal rz = label.Crz;
+            var x = label.Cx;
+            var y = label.Cy;
+            var z = label.Cz + FrmMain.zStart;
+            var rz = label.Crz;
 
             if (rz == 0) {
                 y = RollPosition.GetToolOffSet(y);
