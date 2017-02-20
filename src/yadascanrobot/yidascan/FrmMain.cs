@@ -411,8 +411,8 @@ namespace yidascan {
         /// <returns></returns>
         private static string ReadCompleteLable(IOpcClient client, LCodeSignal slot) {
             const int MAX_LEN = 6;
-            var lable1 = client.ReadString(slot.LCode1).ToString();
-            var lable2 = client.ReadString(slot.LCode2).ToString();
+            var lable1 = client.ReadString(slot.LCode1);
+            var lable2 = client.ReadString(slot.LCode2);
             return lable1.PadLeft(MAX_LEN, '0') + lable2.PadLeft(MAX_LEN, '0');
         }
 
@@ -912,20 +912,6 @@ namespace yidascan {
             txtLableCode1.Text = "请将光标放置到这里扫描";
         }
 
-        private void FrmMain_KeyDown(object sender, KeyEventArgs e) {
-            switch (e.KeyCode) {
-                case Keys.F1:
-                    //帮助
-                    break;
-                case Keys.F2:
-                    txtLableCode1.Focus();
-                    break;
-                case Keys.F3:
-                    btnToWeigh_Click(null, null);
-                    break;
-            }
-        }
-
         private void FrmMain_FormClosing(object sender, FormClosingEventArgs e) {
             if (btnStop.Enabled) {
                 MessageBox.Show(string.Format("正在运行无法关闭软件！"));
@@ -939,13 +925,13 @@ namespace yidascan {
             }
         }
 
-        private void openLogDirectory() {
-            var path = Path.Combine(Application.StartupPath, "log");
+        private static void openDirectory(string basedir, string dir) {
+            var path = Path.Combine(basedir, dir);
             Process.Start(path);
         }
 
         private void btnLog_Click(object sender, EventArgs e) {
-            openLogDirectory();
+            openDirectory(Application.StartupPath, "log");
         }
 
         /// <summary>
