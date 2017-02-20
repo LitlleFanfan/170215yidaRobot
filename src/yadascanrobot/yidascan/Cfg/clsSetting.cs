@@ -15,7 +15,7 @@ namespace ProduceComm {
         public static long TimeIt(Action act) {
             var sp = new System.Diagnostics.Stopwatch();
             sp.Start();
-            act();
+            act?.Invoke();
             sp.Stop();
             return sp.ElapsedMilliseconds;
         }
@@ -37,10 +37,6 @@ namespace ProduceComm {
                     clsSetting.loger.Error(string.Format("[{0}] {1}", group, msg));
                     break;
             }
-        }
-
-        internal void ViewInfo(string v, LogViewType onlyFile) {
-            throw new NotImplementedException();
         }
     }
 

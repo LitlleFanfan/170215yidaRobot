@@ -64,6 +64,12 @@ namespace yidascan {
                 logOpt.Write(msgStart, LogType.NORMAL);
 
                 lblOpcIp.BackColor = Color.LightGreen;
+
+                TaskQueues.onlog = (string msg, string group) => {
+                    this.Invoke((Action)(() => {
+                        logOpt.Write(msg, group);
+                    }));
+                };
             } catch (Exception ex) {
                 logOpt.Write(string.Format("!启动失败.\n{0}", ex), LogType.NORMAL);
             }
@@ -116,33 +122,37 @@ namespace yidascan {
         private void StartOpc() {
             initOpcParam();
 
-            if (opcClient.Open(clsSetting.OPCServerIP)) {
-                logOpt.Write("OPC服务连接成功。", LogType.NORMAL);
-                opcClient.AddSubscription(dtopc);
-            } else {
-                logOpt.Write("!OPC服务连接失败。", LogType.NORMAL);
-            }
+            setupOpcClient(opcClient, "扫描");
+            setupOpcClient(ScannerOpcClient, "相机");
+            setupOpcClient(RobotOpcClient, "机器人");
 
-            if (ScannerOpcClient.Open(clsSetting.OPCServerIP)) {
-                logOpt.Write("相机OPC client连接成功。", LogType.NORMAL);
-                ScannerOpcClient.AddSubscription(dtopc);
-            } else {
-                logOpt.Write("!相机OPC client务连接失败。", LogType.NORMAL);
-            }
+            //if (opcClient.Open(clsSetting.OPCServerIP)) {
+            //    logOpt.Write("OPC服务连接成功。", LogType.NORMAL);
+            //    opcClient.AddSubscription(dtopc);
+            //} else {
+            //    logOpt.Write("!OPC服务连接失败。", LogType.NORMAL);
+            //}
 
-            if (RobotOpcClient.Open(clsSetting.OPCServerIP)) {
-                logOpt.Write("机器人OPC client连接成功。", LogType.NORMAL);
-                RobotOpcClient.AddSubscription(dtopc);
-            } else {
-                logOpt.Write("!机器人OPC client务连接失败。", LogType.NORMAL);
-            }
+            //if (ScannerOpcClient.Open(clsSetting.OPCServerIP)) {
+            //    logOpt.Write("相机OPC client连接成功。", LogType.NORMAL);
+            //    ScannerOpcClient.AddSubscription(dtopc);
+            //} else {
+            //    logOpt.Write("!相机OPC client务连接失败。", LogType.NORMAL);
+            //}
+
+            //if (RobotOpcClient.Open(clsSetting.OPCServerIP)) {
+            //    logOpt.Write("机器人OPC client连接成功。", LogType.NORMAL);
+            //    RobotOpcClient.AddSubscription(dtopc);
+            //} else {
+            //    logOpt.Write("!机器人OPC client务连接失败。", LogType.NORMAL);
+            //}
 
             opcParam.Init();
 
             logOpt.Write(JsonConvert.SerializeObject(opcParam), LogType.NORMAL, LogViewType.OnlyFile);
         }
 
-        private void setutOpcClient(OPCClient c, string name) {
+        private void setupOpcClient(IOpcClient c, string name) {
             if (c.Open(clsSetting.OPCServerIP)) {
                 logOpt.Write($"{name}OPC client连接成功。", LogType.NORMAL);
                 c.AddSubscription(dtopc);
