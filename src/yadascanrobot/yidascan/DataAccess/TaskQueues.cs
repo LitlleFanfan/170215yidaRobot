@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using ProduceComm;
 
 namespace yidascan.DataAccess {
     public class TaskQueues {
@@ -16,6 +17,12 @@ namespace yidascan.DataAccess {
         public Queue<RollPosition> RobotRollBQ = new Queue<RollPosition>();
         public LableCode[] CacheSide = new LableCode[20];
 
+        public static Action<string, string> onlog;
+
+        /// <summary>
+        /// CatchBQ -> RobotRollQ_B
+        /// </summary>
+        /// <returns></returns>
         public LableCode GetCatchBQ() {
             LableCode code = null;
             lock (CatchBQ) {
@@ -34,6 +41,10 @@ namespace yidascan.DataAccess {
             return code;
         }
 
+        /// <summary>
+        /// CatchAQ -> RobotRollQ_A
+        /// </summary>
+        /// <returns></returns>
         public LableCode GetCatchAQ() {
             LableCode code = null;
             lock (CatchAQ) {
@@ -52,23 +63,29 @@ namespace yidascan.DataAccess {
             return code;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="label"></param>
+        /// <param name="side"></param>
+        /// <returns></returns>
         private RollPosition AddRobotRollQ(LableCode label, string side) {
             if (label == null) {
                 FrmMain.logOpt.Write($"!{side} {label.LCode}找不到", LogType.ROLL_QUEUE);
                 return null;
             }
             if (label.Status >= (int)LableState.OnPanel) {
-                FrmMain.logOpt.Write($"!{side} {label.LCode}已在板上,未加入队列,交地{label.ToLocation}.", LogType.ROLL_QUEUE);
+                onlog?.Invoke($"!{side} {label.LCode}已在板上,未加入队列,交地{label.ToLocation}.", LogType.ROLL_QUEUE);
                 return null;
             }
             if (label.CoordinatesIsEmpty()) {
-                FrmMain.logOpt.Write("!{side} {label.LCode}未算位置，未加入队列,交地{label.ToLocation}.", LogType.ROLL_QUEUE);
+                onlog?.Invoke("!{side} {label.LCode}未算位置，未加入队列,交地{label.ToLocation}.", LogType.ROLL_QUEUE);
                 return null;
             }
 
             var pinfo = LableCode.GetPanel(label.PanelNo);
             var state = FrmMain.GetPanelState(label, pinfo);
-            FrmMain.logOpt.Write(string.Format("{0} {1} {2}", label.LCode, label.ToLocation, Enum.GetName(typeof(PanelState), state)), LogType.ROLL_QUEUE, ProduceComm.LogViewType.OnlyFile);
+            onlog?.Invoke($"{label.LCode} {label.ToLocation} {Enum.GetName(typeof(PanelState),state)}", LogType.ROLL_QUEUE);
 
             var x = label.Cx;
             var y = label.Cy;
@@ -94,10 +111,14 @@ namespace yidascan.DataAccess {
                 rz = rz + 180;
             }
             var roll = new RollPosition(label.LCode, side, label.ToLocation, state, x, y, z, rz);
-            FrmMain.logOpt.Write(string.Format("{0} {1} {2}", side, label.LCode, label.ToLocation), LogType.ROLL_QUEUE);
+            onlog?.Invoke($"{side} {label.LCode} {label.ToLocation}", LogType.ROLL_QUEUE);
             return roll;
         }
 
+        /// <summary>
+        /// LableUpQ -> CatchAQ or CatchBQ
+        /// </summary>
+        /// <returns></returns>
         public LableCode GetLableUpQ() {
             LableCode code = null;
             lock (LableUpQ) {
@@ -119,6 +140,10 @@ namespace yidascan.DataAccess {
             return code;
         }
 
+        /// <summary>
+        /// CatcheQ -> LableUpQ
+        /// </summary>
+        /// <returns></returns>
         public LableCode GetCacheQ() {
             LableCode code = null;
             lock (CacheQ) {
@@ -134,6 +159,10 @@ namespace yidascan.DataAccess {
             return code;
         }
 
+        /// <summary>
+        /// WeighQ -> CacheQ
+        /// </summary>
+        /// <returns></returns>
         public LableCode GetWeighQ() {
             LableCode code = null;
             lock (WeighQ) {

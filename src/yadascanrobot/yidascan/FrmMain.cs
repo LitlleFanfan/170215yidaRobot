@@ -997,7 +997,7 @@ namespace yidascan {
 
         private void btnHelp_Click(object sender, EventArgs e) {
             var path = Path.Combine(Application.StartupPath, @"help\index.html");
-            System.Diagnostics.Process.Start(path);
+            Process.Start(path);
         }
 
         private void toolStripButton1_Click(object sender, EventArgs e) {
