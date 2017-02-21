@@ -165,9 +165,9 @@ namespace yidascan {
             return pf;
         }
 
-        public CacheState AreaBCalculate(IErpApi erpapi, LableCode lc, string dateShiftNo, out string outCacheLable, out string msg) {
+        public CacheState AreaBCalculate(IErpApi erpapi, LableCode lc, string dateShiftNo, out LableCode outCacheLable, out string msg) {
             var cState = CacheState.Error;
-            outCacheLable = string.Empty;
+            outCacheLable = null;
             msg = string.Empty;
 
             var pinfo = GetPanelNo(lc, dateShiftNo);
@@ -185,7 +185,7 @@ namespace yidascan {
 
                 // 取当前交地、当前板、当前层所有标签。
                 var lcs = LableCode.GetLableCodesOfRecentFloor(lc.ToLocation, pinfo);
-                
+
                 if (lcs != null && lcs.Count > 0) {
                     // 最近一层没满。
                     lc2 = IsPanelFull(lcs, lc);
@@ -211,7 +211,7 @@ namespace yidascan {
 
                 if (lc2 != null) {
                     if (LableCode.Update(fp, pinfo, lc, lc2))
-                        outCacheLable = lc2.LCode;
+                        outCacheLable = lc2;
                     cState = lc.FloorIndex == 0 ? CacheState.GetThenCache : CacheState.GoThenGet;
                 } else {
                     if (LableCode.Update(fp, pinfo, lc))
@@ -223,7 +223,7 @@ namespace yidascan {
                     FrmMain.logOpt.Write(string.Format("{0} {1}", lc.ToLocation, msg), LogType.NORMAL);
                 }
                 msg = string.Format(@"交地:{0};当前标签:{1};直径:{2};长:{3};缓存状态:{4};取出标签:{5};直径:{6};长:{7};",
-                       lc.ToLocation, lc.LCode, lc.Diameter, lc.Length, cState, outCacheLable,
+                       lc.ToLocation, lc.LCode, lc.Diameter, lc.Length, cState, outCacheLable == null ? "" : outCacheLable.LCode,
                        (lc2 == null ? 0 : lc2.Diameter),//outCacheLable
                        (lc2 == null ? 0 : lc2.Length));//outCacheLable
             }

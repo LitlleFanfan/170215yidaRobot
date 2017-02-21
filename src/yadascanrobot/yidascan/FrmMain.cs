@@ -22,7 +22,7 @@ namespace yidascan {
         private LableCodeBll lcb = new LableCodeBll();
         public static TaskQueues taskQ = new TaskQueues();
         bool isrun = false;
-
+        CacheHelper cacheher = new CacheHelper();
         #region opc
         public static OPCParam opcParam = new OPCParam();
 
@@ -444,7 +444,8 @@ namespace yidascan {
                                             // 板号以前没算过。                                            
 
                                             // 计算位置
-                                            string outCacheLable, msg;
+                                            LableCode outCacheLable;
+                                            string msg;
                                             var cState = lcb.AreaBCalculate(callErpApi,
                                                 lc,
                                                 string.Format("{0}{1}",
@@ -454,10 +455,14 @@ namespace yidascan {
 
                                             logOpt.Write(msg, LogType.BUFFER);
 
+                                            CacheResult cr = cacheher.WhenRollArrived(cState, lc, outCacheLable);
+
+                                            logOpt.Write(JsonConvert.SerializeObject(cr), LogType.BUFFER);
+
                                             // 写标签码到OPC
                                             opcClient.Write(opcParam.CacheParam.IsCache, cState);
-                                            opcClient.Write(opcParam.CacheParam.GetOutLable1, string.IsNullOrEmpty(outCacheLable) ? "0" : outCacheLable.Substring(0, 6));
-                                            opcClient.Write(opcParam.CacheParam.GetOutLable2, string.IsNullOrEmpty(outCacheLable) ? "0" : outCacheLable.Substring(6, 6));
+                                            opcClient.Write(opcParam.CacheParam.GetOutLable1, outCacheLable == null ? "0" : outCacheLable.LCode.Substring(0, 6));
+                                            opcClient.Write(opcParam.CacheParam.GetOutLable2, outCacheLable == null ? "0" : outCacheLable.LCode.Substring(6, 6));
                                         } else {
                                             logOpt.Write(string.Format("!{0}标签重复。", code.LCode), LogType.BUFFER);
                                         }

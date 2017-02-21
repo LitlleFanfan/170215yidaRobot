@@ -26,6 +26,7 @@ namespace yidascan {
         }
     }
 
+    [Serializable]
     public class CacheResult {
         public int savepos { get; set; }
         public int getpos { get; set; }
@@ -42,7 +43,11 @@ namespace yidascan {
         public CachePos[] cacheposes { get; set; }
 
         public CacheHelper() {
-            cacheposes = new CachePos[20];
+            int len = 20;
+            cacheposes = new CachePos[len];
+            for (int i = 0; i < len; i++) {
+                cacheposes[i] = new CachePos(i + 1, null);
+            }
         }
 
         /// <summary>
@@ -99,7 +104,7 @@ namespace yidascan {
 
         public int getPosByCode(LableCode getcode) {
             var pp = from p in cacheposes
-                     where p.labelcode.LCode == getcode.LCode
+                     where p.labelcode != null && p.labelcode.LCode == getcode.LCode
                      select p;
             if (pp.Count() == 1) {
                 return pp.First().id;
