@@ -233,7 +233,7 @@ namespace yidascan {
                     lblRobot.BackColor = Color.LightGreen;
 
                     SetRobotTip(true);
-                    robot.JobLoop(ref robotRun);
+                    robot.JobLoop(ref robotRun, lsvRobotA, lsvRobotB);
                     logOpt.Write("机器人启动正常。", LogType.NORMAL);
                 } else {
                     SetRobotTip(false, "机器人网络故障");
