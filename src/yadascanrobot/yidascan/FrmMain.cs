@@ -107,7 +107,7 @@ namespace yidascan {
                 SetButtonState(false);
                 InitCfgView();
                 LableCode.DeleteAllFinished();
-                
+
             } catch (Exception ex) {
                 logOpt.Write($"!初始化失败。\n{ex}", LogType.NORMAL);
             }
@@ -329,15 +329,15 @@ namespace yidascan {
         }
 
         private void WeighTask() {
-            const string TO_WEIGH = "1";
-            const string SUCCESS = "0";
-            const string FAIL = "2";
+            const int TO_WEIGH = 1;
+            const int SUCCESS = 0;
+            const int FAIL = 2;
 
             Task.Factory.StartNew(() => {
                 while (isrun) {
                     try {
                         lock (opcClient) {
-                            var getWeight = opcClient.ReadString(opcParam.ScanParam.GetWeigh);
+                            var getWeight = opcClient.ReadInt(opcParam.ScanParam.GetWeigh);
                             if (getWeight == TO_WEIGH) {
                                 var code = taskQ.GetWeighQ();
 
@@ -422,9 +422,9 @@ namespace yidascan {
                         try {
                             if (ReadBeforeCacheStatus(opcClient, opcParam)) {
                                 var code = taskQ.GetCacheQ();
-                                logOpt.Write(string.Format("收到缓存来料信号。从OPC读到号码: {0}", code.LCode), LogType.BUFFER);
 
                                 if (code != null) {
+                                    logOpt.Write(string.Format("收到缓存来料信号。从OPC读到号码: {0}", code.LCode), LogType.BUFFER);
                                     var lc = LableCode.QueryByLCode(code.LCode);
 
                                     if (lc == null) {

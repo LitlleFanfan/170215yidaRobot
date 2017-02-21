@@ -17,7 +17,7 @@ namespace yidascan {
         static System.Windows.Forms.Timer timerItemCatchA;
         static System.Windows.Forms.Timer timerItemCatchB;
         
-        public static bool WEIGTH_SIGNAL = false;
+        public static int WEIGTH_SIGNAL = 0;
         public static bool CACHE_SIGNAL = false;
         public static bool LABELUP_SIGNAL = false;
         public static bool ITEMCATCH_A_SIGNAL = false;
@@ -66,7 +66,7 @@ namespace yidascan {
         }
 
         private static void TimerWeigh_Tick(object sender, EventArgs e) {
-            WEIGTH_SIGNAL = true;
+            WEIGTH_SIGNAL = 1;
         }
 
         private static void TimerCache_Tick(object sender, EventArgs e) {
@@ -100,7 +100,18 @@ namespace yidascan {
         }
         public int ReadInt(string slot) {
             Thread.Sleep(100);
+            // 称重处信号
+            if (slot == param.ScanParam.GetWeigh) {
+                return getIntSignal(ref SignalGen.WEIGTH_SIGNAL);
+            }
+
             return 1;
+        }
+
+        private static int getIntSignal(ref int signal) {
+            var b = signal;
+            if (b==1) { signal = 0; }
+            return b;
         }
 
         private static bool getSignal(ref bool signal) {
@@ -119,11 +130,6 @@ namespace yidascan {
             }
             if(slot== param.ScanParam.ScanState) {
                 return false;
-            }
-
-            // 称重处信号
-            if (slot == param.ScanParam.GetWeigh) {
-                return getSignal(ref SignalGen.WEIGTH_SIGNAL);
             }
 
             // 缓存区来料信号
@@ -146,7 +152,7 @@ namespace yidascan {
                 return getSignal(ref SignalGen.ITEMCATCH_B_SIGNAL);
             }                
 
-            return false;
+            return true;
         }
         public decimal ReadDecimal(string slot) {
             Thread.Sleep(100);
