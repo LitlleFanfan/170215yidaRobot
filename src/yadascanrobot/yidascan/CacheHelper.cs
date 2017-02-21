@@ -66,7 +66,7 @@ namespace yidascan {
         /// <returns></returns>
         public static int findNearestPos(IList<CachePos> lst) {
             if (lst.Count() == 0) {
-                throw new Exception("空list");
+                throw new Exception("IList<CachePos> side = null, 空lst");
             }
 
             var head = lst.First();
@@ -123,10 +123,16 @@ namespace yidascan {
             } else {
                 IList<CachePos> side = null;
 
-                if ((smallside.Count() != 0 && awayfrom <= 10) || bigside.Count() == 0) {
+                if (smallside.Count() != 0 && bigside.Count() == 0) {
                     side = smallside.ToList();
-                } else if ((bigside.Count() != 0 && awayfrom > 10) || smallside.Count() == 0) {
+                } else if (smallside.Count() == 0 && bigside.Count() != 0) {
                     side = bigside.ToList();
+                } else { // 两侧都有空位。
+                    if (awayfrom > 10) { // 避开长边
+                        side = smallside.ToList();
+                    } else { // 避开短边。
+                        side = bigside.ToList();
+                    }
                 }
 
                 return findNearestPos(side);
@@ -138,10 +144,11 @@ namespace yidascan {
                      where p.labelcode != null && p.labelcode.LCode == getcode.LCode
                      select p;
             if (pp.Count() == 1) {
-                cacheposes[pp.First().id].labelcode = null;
-                return pp.First().id;
+                var id = pp.First().id;
+                cacheposes[id].labelcode = null;
+                return id;
             } else {
-                throw new Exception("取缓存位异常。");
+                throw new Exception($"取缓存位异常: getcode: {getcode}");
             }
         }
 
