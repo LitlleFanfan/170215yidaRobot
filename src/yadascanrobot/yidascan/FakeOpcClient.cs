@@ -27,7 +27,7 @@ namespace yidascan {
 
         public static void startTimerWeigh() {
             timerWeigh = new System.Windows.Forms.Timer {
-                Interval = DELAY
+                Interval = 1000
             };
             timerWeigh.Tick += TimerWeigh_Tick;
             timerWeigh.Enabled = true;

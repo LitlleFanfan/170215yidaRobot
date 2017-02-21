@@ -58,7 +58,7 @@ namespace yidascan {
                 p.Reset();
             }
         }
-        
+
         /// <summary>
         /// 选最近的位置。
         /// </summary>
@@ -110,10 +110,10 @@ namespace yidascan {
                 if (bigside.Count() == 0) {
                     return findNearestPos(smallside.ToList());
                 }
-                
+
                 var p1 = findNearestPos(smallside.ToList());
                 var p2 = findNearestPos(bigside.ToList());
-                
+
                 if (Math.Abs(p1 - 5.5) >= Math.Abs(p2 - 15.5)) {
                     // p2近
                     return p2;
@@ -130,7 +130,7 @@ namespace yidascan {
                 }
 
                 return findNearestPos(side);
-            }            
+            }
         }
 
         public int getPosByCode(LableCode getcode) {
@@ -138,6 +138,7 @@ namespace yidascan {
                      where p.labelcode != null && p.labelcode.LCode == getcode.LCode
                      select p;
             if (pp.Count() == 1) {
+                cacheposes[pp.First().id].labelcode = null;
                 return pp.First().id;
             } else {
                 throw new Exception("取缓存位异常。");

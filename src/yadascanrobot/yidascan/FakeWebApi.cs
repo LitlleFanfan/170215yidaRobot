@@ -27,8 +27,9 @@ namespace yidascan {
                 dic.Add("ERPState", "OK");
                 return dic;
             } else if (url == clsSetting.ToWeight || url == clsSetting.PanelFinish) {
-                var s = "{\"State\":\"成功\",\"Msg\":null,\"Data\":\"[{\"result\":\"OK\"}]\",\"ContinueCount\":0}";
+                var s = "{\"State\":\"成功\",\"Msg\":null,\"Data\":\"\",\"ContinueCount\":0}";
                 var dic = JsonConvert.DeserializeObject<Dictionary<string, string>>(s);
+                dic["Data"] = "[{\"result\":\"OK\"}]";
                 dic.Add("ERPState", "OK");
                 return dic;
             } else {
