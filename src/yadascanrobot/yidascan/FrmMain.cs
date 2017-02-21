@@ -47,6 +47,8 @@ namespace yidascan {
 
         private int counter = 0;
 
+        private IErpApi callErpApi;
+
         public FrmMain() {
             InitializeComponent();
             logOpt = new ProduceComm.LogOpreate();
@@ -294,6 +296,10 @@ namespace yidascan {
             SetButtonState(true);
             logOpt.Write(string.Format("!系统流程开始运行"), LogType.NORMAL);
 
+            // 产生一个IErpApi实例，如果参数是false，则生成模拟的接口。
+            // 如果参数是true，则调用真正的web api接口。
+            initErpApi(false);
+
             PanelGen.Init(dtpDate.Value);
 
             StartScanner();
@@ -429,7 +435,8 @@ namespace yidascan {
 
                                             // 计算位置
                                             string outCacheLable, msg;
-                                            var cState = lcb.AreaBCalculate(lc,
+                                            var cState = lcb.AreaBCalculate(callErpApi, 
+                                                lc,
                                                 string.Format("{0}{1}",
                                                         dtpDate.Value.ToString(clsSetting.LABEL_CODE_DATE_FORMAT),
                                                         cmbShiftNo.SelectedIndex.ToString()),
@@ -651,9 +658,9 @@ namespace yidascan {
         /// <param name="handwork"></param>
         /// <param name="code">标签号码</param>
         /// <returns></returns>
-        private static bool NotifyWeigh(string code, bool handwork = true) {
+        private bool NotifyWeigh(string code, bool handwork = true) {
             try {
-                var re = CallWebApi.Post(clsSetting.ToWeight,
+                var re = callErpApi.Post(clsSetting.ToWeight,
                     new Dictionary<string, string>() { { "Fabric_Code", code } });
 
                 var msg = string.Format("{0} {1}称重{2}", code, (handwork ? "手工" : "自动"), JsonConvert.SerializeObject(re));
@@ -804,7 +811,7 @@ namespace yidascan {
             LableCode.SetPanelNo(lCode);
 
             string msg;
-            var re = lcb.NotifyPanelEnd(lc.PanelNo, out msg);
+            var re = lcb.NotifyPanelEnd(callErpApi, lc.PanelNo, out msg);
             logOpt.Write(string.Format("{0} {1}", lc.ToLocation, msg), LogType.NORMAL);
 
             return re;
@@ -848,7 +855,7 @@ namespace yidascan {
             } else {
                 Dictionary<string, string> str;
                 try {
-                    str = CallWebApi.Post(clsSetting.GetLocation, new Dictionary<string, string>()
+                    str = callErpApi.Post(clsSetting.GetLocation, new Dictionary<string, string>()
                     { { "Bar_Code", code } });
                     var res = JsonConvert.DeserializeObject<DataTable>(str["Data"].ToString());
                     if (str["ERPState"] == "OK") {
@@ -1058,12 +1065,20 @@ namespace yidascan {
             }
         }
 
+        private void initErpApi(bool isRealWebApi) {
+            if (isRealWebApi) {
+                callErpApi = new CallWebApi();
+            } else {
+                callErpApi = new FakeWebApi();
+            }
+        }
+
         private static IOpcClient GetOpcClient(bool isRealOpc) {
             if (isRealOpc) {
                 return new OPCClient();                
             } else {
                 // logOpt.ViewInfo("!模拟opc client.", LogViewType.OnlyForm);
-                return new FakeOpcClient();
+                return new FakeOpcClient(opcParam);
             }
         }
     }

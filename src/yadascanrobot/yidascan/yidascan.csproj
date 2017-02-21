@@ -107,6 +107,7 @@
     <Compile Include="DataAccess\RobotParam.cs" />
     <Compile Include="DataAccess\SqliteAccess.cs" />
     <Compile Include="DataAccess\TaskQueues.cs" />
+    <Compile Include="FakeWebApi.cs" />
     <Compile Include="FaleP[cClient.cs" />
     <Compile Include="FrmMain.cs">
       <SubType>Form</SubType>
@@ -121,6 +122,7 @@
       <DependentUpon>FrmSet.cs</DependentUpon>
     </Compile>
     <Compile Include="Helper.cs" />
+    <Compile Include="IErp.cs" />
     <Compile Include="IOpcClient.cs" />
     <Compile Include="LableCodeBll.cs" />
     <Compile Include="ListBoxHelper.cs" />

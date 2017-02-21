@@ -9,48 +9,39 @@ using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
-namespace ProduceComm
-{
-    public class CallWebApi
-    {
-        public static bool CheckValidationResult(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors errors)
-        {
+namespace ProduceComm {
+    public class CallWebApi : IErpApi {
+        public bool CheckValidationResult(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors errors) {
             //直接确认，否则打不开    
             return true;
         }
 
-        public static Dictionary<string, string> Post(string url, Dictionary<string, string> agr, int timeout = 100)
-        {
+        public Dictionary<string, string> Post(string url, Dictionary<string, string> agr, int timeout = 100) {
             System.GC.Collect();//垃圾回收，回收没有正常关闭的http连接
 
-            Dictionary<string, string> result = new Dictionary<string, string>();//返回结果
+            var result = new Dictionary<string, string>();//返回结果
 
             System.Net.ServicePointManager.Expect100Continue = true;
 
             HttpWebRequest myHttpWebRequest = null;
 
-            List<string> re = new List<string>();
+            var re = new List<string>();
 
-            foreach (KeyValuePair<string, string> k in agr)
-            {
+            foreach (KeyValuePair<string, string> k in agr) {
                 re.Add(string.Format("{0}={1}", k.Key, k.Value));
             }
             url = string.Format("{0}{1}{2}", url, re.Count > 0 ? "?" : "", re.Count > 0 ? string.Join("&", re.ToArray()) : "");
 
             //如果是发送HTTPS请求  
-            if (url.StartsWith("https", StringComparison.OrdinalIgnoreCase))
-            {
+            if (url.StartsWith("https", StringComparison.OrdinalIgnoreCase)) {
                 ServicePointManager.ServerCertificateValidationCallback = new System.Net.Security.RemoteCertificateValidationCallback(CheckValidationResult);
                 myHttpWebRequest = (HttpWebRequest)HttpWebRequest.Create(url);
                 myHttpWebRequest.ProtocolVersion = HttpVersion.Version10;
-            }
-            else
-            {
+            } else {
                 myHttpWebRequest = (HttpWebRequest)HttpWebRequest.Create(url);
             }
             myHttpWebRequest.Timeout = timeout * 1000;
-            try
-            {
+            try {
                 byte[] bs;
                 myHttpWebRequest.Method = "POST";
                 myHttpWebRequest.ContentType = "application/json";
@@ -59,19 +50,15 @@ namespace ProduceComm
 
                 myHttpWebRequest.ContentLength = bs.Length;
 
-                using (Stream reqStream = myHttpWebRequest.GetRequestStream())
-                {
+                using (Stream reqStream = myHttpWebRequest.GetRequestStream()) {
                     reqStream.Write(bs, 0, bs.Length);
                 }
-                using (WebResponse myWebResponse = myHttpWebRequest.GetResponse())
-                {
-                    StreamReader readStream = new StreamReader(myWebResponse.GetResponseStream(), Encoding.UTF8);
+                using (WebResponse myWebResponse = myHttpWebRequest.GetResponse()) {
+                    var readStream = new StreamReader(myWebResponse.GetResponseStream(), Encoding.UTF8);
                     result = JsonConvert.DeserializeObject<Dictionary<string, string>>(readStream.ReadToEnd());
                     result.Add("ERPState", "OK");
                 }
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 result = new Dictionary<string, string>() { { "ERPState", "Fail" }, { "ERR", "请求接口信息出错 " + ex } };
             }
             return result;
@@ -82,22 +69,19 @@ namespace ProduceComm
         /// </summary>
         /// <param name="url">请求的url地址</param>
         /// <returns>http GET成功后返回的数据，失败抛WebException异常</returns>
-        public static string Get(string url)
-        {
+        public string Get(string url) {
             System.GC.Collect();
-            string result = "";
+            var result = "";
 
             HttpWebRequest request = null;
             HttpWebResponse response = null;
 
             //请求url以获取数据
-            try
-            {
+            try {
                 //设置最大连接数
                 ServicePointManager.DefaultConnectionLimit = 200;
                 //设置https验证方式
-                if (url.StartsWith("https", StringComparison.OrdinalIgnoreCase))
-                {
+                if (url.StartsWith("https", StringComparison.OrdinalIgnoreCase)) {
                     ServicePointManager.ServerCertificateValidationCallback =
                             new RemoteCertificateValidationCallback(CheckValidationResult);
                 }
@@ -118,32 +102,21 @@ namespace ProduceComm
                 response = (HttpWebResponse)request.GetResponse();
 
                 //获取HTTP返回数据
-                StreamReader sr = new StreamReader(response.GetResponseStream(), Encoding.UTF8);
+                var sr = new StreamReader(response.GetResponseStream(), Encoding.UTF8);
                 result = sr.ReadToEnd().Trim();
                 sr.Close();
-            }
-            catch (System.Threading.ThreadAbortException e)
-            {
+            } catch (System.Threading.ThreadAbortException e) {
                 System.Threading.Thread.ResetAbort();
-            }
-            catch (WebException e)
-            {
-                if (e.Status == WebExceptionStatus.ProtocolError)
-                {
+            } catch (WebException e) {
+                if (e.Status == WebExceptionStatus.ProtocolError) {
                 }
-            }
-            catch (Exception e)
-            {
-            }
-            finally
-            {
+            } catch (Exception e) {
+            } finally {
                 //关闭连接和流
-                if (response != null)
-                {
+                if (response != null) {
                     response.Close();
                 }
-                if (request != null)
-                {
+                if (request != null) {
                     request.Abort();
                 }
             }

@@ -165,7 +165,7 @@ namespace yidascan {
             return pf;
         }
 
-        public CacheState AreaBCalculate(LableCode lc, string dateShiftNo, out string outCacheLable, out string msg) {
+        public CacheState AreaBCalculate(IErpApi erpapi, LableCode lc, string dateShiftNo, out string outCacheLable, out string msg) {
             var cState = CacheState.Error;
             outCacheLable = string.Empty;
             msg = string.Empty;
@@ -219,7 +219,7 @@ namespace yidascan {
                 }
 
                 if (fp == FloorPerformance.BothFinish && lc.Floor == pinfo.MaxFloor) {
-                    bool re = NotifyPanelEnd(lc.PanelNo, out msg);
+                    bool re = NotifyPanelEnd(erpapi, lc.PanelNo, out msg);
                     FrmMain.logOpt.Write(string.Format("{0} {1}", lc.ToLocation, msg), LogType.NORMAL);
                 }
                 msg = string.Format(@"交地:{0};当前标签:{1};直径:{2};长:{3};缓存状态:{4};取出标签:{5};直径:{6};长:{7};",
@@ -230,7 +230,7 @@ namespace yidascan {
             return cState;
         }
 
-        public bool NotifyPanelEnd(string panelNo, out string msg, bool handwork = false) {
+        public bool NotifyPanelEnd(IErpApi erpapi, string panelNo, out string msg, bool handwork = false) {
             if (!string.IsNullOrEmpty(panelNo)) {
                 // 这个从数据库取似更合理。                
                 var data = LableCode.QueryLabelcodeByPanelNo(panelNo);
@@ -244,7 +244,7 @@ namespace yidascan {
                         { "Board_No", panelNo },  // first item.
                         { "AllBarCode", string.Join(",", data.ToArray()) } // second item.
                     };
-                var re = CallWebApi.Post(clsSetting.PanelFinish, erpParam);
+                var re = erpapi.Post(clsSetting.PanelFinish, erpParam);
 
                 // show result.
                 if (re["ERPState"] == "OK") {
