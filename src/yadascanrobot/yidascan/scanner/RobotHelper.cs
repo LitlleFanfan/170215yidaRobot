@@ -321,6 +321,7 @@ namespace yidascan {
                     if (roll != null) {
                         if (JobTask(ref isrun, roll)) {
                             FrmMain.taskQ.RobotRollAQ.Dequeue();
+                            QueuesView.Remove(FrmMain.lsvRobotA);
                             Thread.Sleep(OPCClient.DELAY);
                         }
                     }
@@ -330,6 +331,7 @@ namespace yidascan {
                     if (roll != null) {
                         if (JobTask(ref isrun, roll)) {
                             FrmMain.taskQ.RobotRollBQ.Dequeue();
+                            QueuesView.Remove(FrmMain.lsvRobotB);
                         }
                     }
                 }

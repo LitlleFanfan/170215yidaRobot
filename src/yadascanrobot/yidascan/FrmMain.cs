@@ -96,6 +96,7 @@ namespace yidascan {
 
         private void FrmMain_Load(object sender, EventArgs e) {
             try {
+                QueuesView.f = this;
                 StartOpc();
 
                 ShowTitle();
@@ -154,9 +155,12 @@ namespace yidascan {
                         var r = opcClient.ReadBool(opcParam.RobotCarryA.Signal);
                         if (r) {
                             // 加入机器人布卷队列。
-                            taskQ.GetCatchAQ();
+                            var code = taskQ.GetCatchAQ();
+                            if (code != null) {
+                                opcClient.Write(opcParam.RobotCarryA.Signal, false);
 
-                            opcClient.Write(opcParam.RobotCarryA.Signal, false);
+                                QueuesView.Move(lsvCatch1, lsvRobotA);
+                            }
                         }
                     }
                     Thread.Sleep(5000);
@@ -176,9 +180,12 @@ namespace yidascan {
                         var r = opcClient.ReadBool(opcParam.RobotCarryB.Signal);
                         if (r) {
                             // 加入机器人布卷队列。
-                            taskQ.GetCatchBQ();
+                            var code = taskQ.GetCatchBQ();
+                            if (code != null) {
+                                opcClient.Write(opcParam.RobotCarryB.Signal, false);
 
-                            opcClient.Write(opcParam.RobotCarryB.Signal, false);
+                                QueuesView.Move(lsvCatch2, lsvRobotB);
+                            }
                         }
                     }
                     Thread.Sleep(5000);
@@ -346,6 +353,8 @@ namespace yidascan {
                                     logOpt.Write(code.LCode + "称重API状态: " + getWeight);
 
                                     opcClient.Write(opcParam.ScanParam.GetWeigh, getWeight);
+
+                                    QueuesView.Add(lsvCacheBefor, code);//加到缓存列表中显示
                                 }
                             }
                         }
@@ -455,6 +464,8 @@ namespace yidascan {
                                     }
 
                                     opcClient.Write(opcParam.CacheParam.BeforCacheStatus, false);
+
+                                    QueuesView.Move(lsvCacheBefor, lsvLableUp);
                                 }
                             }
                         } catch (Exception ex) {
@@ -485,6 +496,8 @@ namespace yidascan {
                                 // ???未完成
 
                                 opcClient.Write(opcParam.CacheParam.BeforCacheStatus, false);
+
+                                QueuesView.Move(lsvLableUp, int.Parse(code.ParseLocationNo()) < 6 ? lsvCatch1 : lsvCatch2);
                             }
                         } catch (Exception ex) {
                             logOpt.Write("!" + ex.ToString(), LogType.BUFFER);
