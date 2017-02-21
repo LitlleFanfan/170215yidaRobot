@@ -1066,6 +1066,11 @@ namespace yidascan {
             }
         }
 
+        private bool doit() {
+            MessageBox.Show("doit");
+            return false;
+        }
+
         private void btnTestPlc_Click(object sender, EventArgs e) {
             using (var w = new wtestplc()) {
                 w.ShowDialog();

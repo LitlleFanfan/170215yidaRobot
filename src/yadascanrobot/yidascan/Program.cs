@@ -14,7 +14,7 @@ namespace yidascan {
         /// </summary>
         [STAThread]
         static void Main() {
-            bool created = true;
+            var created = true;
             var mutex = new Mutex(true, "ABCDEFG_MUTEX_ROBOT_CONTROL_YIDA_X", out created);
 
             // 在创建mutex之后，执行此代码。

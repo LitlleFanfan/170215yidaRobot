@@ -231,16 +231,29 @@ namespace yidascan {
             }
         }
 
-        public bool TryRunJob(string jobName, int times = 5) {
-            const int DELAY = 30;
-            while (times > 0) {
-                if (rCtrl.StartJob(jobName)) {
-                    return true;
-                }
-                times--;
-                Thread.Sleep(DELAY);
-            }
-            return false;
+        /// <summary>
+        /// 发出执行示教程序的指令
+        /// 如果失败，则重复执行
+        /// </summary>
+        /// <param name="jobName">示教程序名， 默认10次</param>
+        /// <param name="times">尝试次数</param>
+        /// <returns></returns>
+        public bool TryRunJob(string jobName, int times = 10) {
+            // 新写法, 需要测试。2017-02-20
+            return Helper.retry(() => {
+                return rCtrl.StartJob(jobName);
+            }, 10, 80);
+
+            // 原来的写法
+            //const int DELAY = 30;
+            //while (times > 0) {
+            //    if (rCtrl.StartJob(jobName)) {
+            //        return true;
+            //    }
+            //    times--;
+            //    Thread.Sleep(DELAY);
+            //}
+            //return false;
         }
 
         public bool IsBusy() {
@@ -332,7 +345,7 @@ namespace yidascan {
                     FrmMain.logOpt.Write("PushInQueue收到可放料信号", LogType.ROBOT_STACK);
                     break;
                 }
-                Thread.Sleep(ProduceComm.OPC.OPCClient.DELAY * 200);
+                Thread.Sleep(OPCClient.DELAY * 200);
             }
 
             // 机器人正忙，等待。
