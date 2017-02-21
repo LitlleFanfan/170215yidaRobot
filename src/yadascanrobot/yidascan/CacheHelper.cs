@@ -32,7 +32,7 @@ namespace yidascan {
         public int getpos { get; set; }
         public CacheState state { get; set; }
 
-        public CacheResult(CacheState state, int savepos, int getpos) {
+        public CacheResult(CacheState state, int getpos, int savepos) {
             this.state = state;
             this.savepos = savepos;
             this.getpos = getpos;
