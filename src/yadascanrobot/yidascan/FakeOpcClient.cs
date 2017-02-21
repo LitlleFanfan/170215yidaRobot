@@ -9,6 +9,7 @@ using yidascan.DataAccess;
 namespace yidascan {
    class FakeOpcClient: IOpcClient {
         OPCParam param;
+        private Random rand = new Random();
 
         public FakeOpcClient(OPCParam param_) {
             param = param_;
@@ -23,7 +24,7 @@ namespace yidascan {
             return 1;
         }
         public bool ReadBool(string slot) {
-            Thread.Sleep(500);
+            Thread.Sleep(100);
             foreach(var p in param.ACAreaPanelFinish) {
                 if (p.Value.Signal == slot) {
                     return false;
@@ -37,6 +38,13 @@ namespace yidascan {
         }
         public decimal ReadDecimal(string slot) {
             Thread.Sleep(100);
+            if (slot == param.ScanParam.Diameter) {
+                return 50 + (decimal)(rand.NextDouble() * 150);
+            }
+
+            if (slot == param.ScanParam.Length) {
+                return 1000 + (decimal)(rand.NextDouble() * 1000);
+            }
             return 0;
         }
         public bool Write(string slot, object value) {

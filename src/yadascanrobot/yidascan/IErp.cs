@@ -13,6 +13,12 @@ namespace ProduceComm {
     public interface IErpApi {
         bool CheckValidationResult(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors err);
         Dictionary<string, string> Post(string url, Dictionary<string, string> agr, int timeout = 100);
+
+        /// <summary>
+        /// 这个函数没用到。
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
         string Get(string url);
     }
 }
