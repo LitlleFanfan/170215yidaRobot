@@ -107,6 +107,7 @@ namespace yidascan {
                 SetButtonState(false);
                 InitCfgView();
                 LableCode.DeleteAllFinished();
+                
             } catch (Exception ex) {
                 logOpt.Write($"!初始化失败。\n{ex}", LogType.NORMAL);
             }
@@ -364,13 +365,13 @@ namespace yidascan {
                 Task.Factory.StartNew(() => {
                     while (isrun) {
                         lock (opcClient) {
-                            var signal = opcClient.ReadBool(kv.Value.Signal);
-                            var fullLable = ReadCompleteLable(opcClient, kv.Value);
-
-                            logOpt.Write(string.Format("{0} 收到完成信号。标签:{1}", kv.Value.Signal, fullLable), LogType.NORMAL);
-
                             try {
-                                if (!string.IsNullOrEmpty(fullLable)) {
+                                var signal = opcClient.ReadBool(kv.Value.Signal);
+                                if (signal) {
+                                    var fullLable = ReadCompleteLable(opcClient, kv.Value);
+
+                                    logOpt.Write(string.Format("{0} 收到完成信号。标签:{1}", kv.Value.Signal, fullLable), LogType.NORMAL);
+
                                     logOpt.Write(string.Format("执行状态:{0}",
                                         AreaAAndCFinish(fullLable)), LogType.NORMAL);
                                 }
@@ -435,7 +436,7 @@ namespace yidascan {
 
                                             // 计算位置
                                             string outCacheLable, msg;
-                                            var cState = lcb.AreaBCalculate(callErpApi, 
+                                            var cState = lcb.AreaBCalculate(callErpApi,
                                                 lc,
                                                 string.Format("{0}{1}",
                                                         dtpDate.Value.ToString(clsSetting.LABEL_CODE_DATE_FORMAT),
@@ -883,12 +884,12 @@ namespace yidascan {
         }
 
         private void ShowWarning(string msg, bool isError = true) {
-            this.Invoke((Action)(() => { 
-            lbTaskState.Text = msg;
-            lbTaskState.BackColor = isError
-                ? Color.Red
-                : Color.Green;
-            lbTaskState.ForeColor = Color.White;
+            this.Invoke((Action)(() => {
+                lbTaskState.Text = msg;
+                lbTaskState.BackColor = isError
+                    ? Color.Red
+                    : Color.Green;
+                lbTaskState.ForeColor = Color.White;
             }));
         }
 
@@ -1075,7 +1076,7 @@ namespace yidascan {
 
         private static IOpcClient GetOpcClient(bool isRealOpc) {
             if (isRealOpc) {
-                return new OPCClient();                
+                return new OPCClient();
             } else {
                 // logOpt.ViewInfo("!模拟opc client.", LogViewType.OnlyForm);
                 return new FakeOpcClient(opcParam);

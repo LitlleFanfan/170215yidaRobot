@@ -29,6 +29,9 @@ namespace yidascan {
                     return false;
                 }
             }
+            if(slot== param.ScanParam.ScanState) {
+                return false;
+            }
             
             return true;
         }

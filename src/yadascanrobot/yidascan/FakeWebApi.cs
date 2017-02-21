@@ -18,8 +18,9 @@ namespace yidascan {
         public Dictionary<string, string> Post(string url, Dictionary<string, string> agr, int timeout = 100) {
             // 取布卷交地。
             if (url == clsSetting.GetLocation) {
-                var s = "{ \"State\":\"成功\",\"Msg\":null,\"Data\":\"[{\"LOCATION\":\"A03\"}]\",\"ContinueCount\":0}";
+                var s = "{ \"State\":\"成功\",\"Msg\":null,\"Data\":\"\",\"ContinueCount\":0}";
                 var dic = JsonConvert.DeserializeObject<Dictionary<string, string>>(s);
+                dic["Data"] = "[{\"LOCATION\":\"A03\"}]";
                 dic.Add("ERPState", "OK");
                 return dic;
             } else {
@@ -27,7 +28,7 @@ namespace yidascan {
                     { "ERPState", "false" } };
                 return dic;
             }
-            
+
         }
         public string Get(string url) {
             return "";
