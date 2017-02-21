@@ -65,13 +65,20 @@ namespace yidascan {
         /// <param name="lst"></param>
         /// <returns></returns>
         public static int findNearestPos(IList<CachePos> lst) {
-            const int CENTER = 10;
-            var pWithD = from p in lst
-                    select new { id = p.id, d = CENTER - p.id };
-            var dmin = pWithD.Min((x) => Math.Abs(x.d));
-            return pWithD.Where(x => x.d == dmin)
-                .Select(x => x.id)
-                .First();
+            if (lst.Count() == 0) {
+                throw new Exception("空list");
+            }
+
+            var head = lst.First();
+            if (head.id > 10) {
+                var mean = 15.5;
+                var dmin = (from x in lst select Math.Abs(x.id - mean)).Min();
+                return lst.First(x => { return Math.Abs(x.id - mean) == dmin; }).id;
+            } else {
+                var mean = 5.5;
+                var dmin = (from x in lst select Math.Abs(x.id - mean)).Min();
+                return lst.First(x => { return Math.Abs(x.id - mean) == dmin; }).id;
+            }
         }
 
         /// <summary>
@@ -83,23 +90,47 @@ namespace yidascan {
         public int SelectNearestNullPos(string tolocation, int awayfrom) {
             // 号码按奇数和偶数分侧。
             // 按照交地区分位置的重要性???。
-            var side = awayfrom % 2;
-            var nullPoses = from p in cacheposes
-                     where p.labelcode == null
-                     orderby p.id descending select p;
 
-            if (nullPoses.Count() == 0) {
-                throw new Exception("没有空缓存位。");
+            var smallside = from p in cacheposes
+                            where p.labelcode == null && p.id <= 10
+                            select p;
+            var bigside = from p in cacheposes
+                          where p.labelcode == null && p.id > 10
+                          select p;
+
+            if (smallside.Count() == 0 && bigside.Count() == 0) {
+                throw new Exception("缓存区没有空位。");
             }
 
-            var pOfOtherSide = from p in nullPoses
-                               where p.id % 2 != side
-                               select p;
-            if (pOfOtherSide.Count() != 0) {
-                return findNearestPos(pOfOtherSide.ToList());
+            if (awayfrom == -1) {
+                if (smallside.Count() == 0) {
+                    return findNearestPos(bigside.ToList());
+                }
+
+                if (bigside.Count() == 0) {
+                    return findNearestPos(smallside.ToList());
+                }
+                
+                var p1 = findNearestPos(smallside.ToList());
+                var p2 = findNearestPos(bigside.ToList());
+                
+                if (Math.Abs(p1 - 5.5) >= Math.Abs(p2 - 15.5)) {
+                    // p2近
+                    return p2;
+                } else {
+                    return p1;
+                }
             } else {
-                return findNearestPos(nullPoses.ToList());
-            }
+                IList<CachePos> side = null;
+
+                if ((smallside.Count() != 0 && awayfrom <= 10) || bigside.Count() == 0) {
+                    side = smallside.ToList();
+                } else if ((bigside.Count() != 0 && awayfrom > 10) || smallside.Count() == 0) {
+                    side = bigside.ToList();
+                }
+
+                return findNearestPos(side);
+            }            
         }
 
         public int getPosByCode(LableCode getcode) {
