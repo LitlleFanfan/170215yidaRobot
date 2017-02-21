@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using yidascan.DataAccess;
+using System.Windows.Forms;
 
 namespace yidascan {
     public enum PanelState {
@@ -314,14 +315,14 @@ namespace yidascan {
             }
         }
 
-        public void JobLoop(ref bool isrun) {
+        public void JobLoop(ref bool isrun,ListView la,ListView lb) {
             while (isrun) {
                 if (FrmMain.taskQ.RobotRollAQ.Count > 0) {
                     var roll = FrmMain.taskQ.RobotRollAQ.Peek();
                     if (roll != null) {
                         if (JobTask(ref isrun, roll)) {
                             FrmMain.taskQ.RobotRollAQ.Dequeue();
-                            QueuesView.Remove(FrmMain.lsvRobotA);
+                            QueuesView.Remove(la);
                             Thread.Sleep(OPCClient.DELAY);
                         }
                     }
@@ -331,7 +332,7 @@ namespace yidascan {
                     if (roll != null) {
                         if (JobTask(ref isrun, roll)) {
                             FrmMain.taskQ.RobotRollBQ.Dequeue();
-                            QueuesView.Remove(FrmMain.lsvRobotB);
+                            QueuesView.Remove(lb);
                         }
                     }
                 }
