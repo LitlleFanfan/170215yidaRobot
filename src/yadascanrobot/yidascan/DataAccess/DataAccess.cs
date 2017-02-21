@@ -28,7 +28,7 @@ namespace yidascan.DataAccess
         public string Com = clsSetting.ConStr; // @"server=AIOVQOPOOHCLF4X\SQL2008R2;database=tt2;uid=sa;pwd=sasa;Integrated Security=True";
 #endif
 #if DEBUG
-        public string Com = @"server=WIN-BK7Q2BLK53K\SQL2005;database=Test;uid=sa;pwd=sasa;";
+        public string Com = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=yada_stacking;Integrated Security=True;Persist Security Info=False;Pooling=False;MultipleActiveResultSets=False;Encrypt=False;TrustServerCertificate=True";
 #endif
         public DataAccess()
         {

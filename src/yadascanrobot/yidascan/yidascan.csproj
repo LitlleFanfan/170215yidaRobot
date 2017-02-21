@@ -63,10 +63,10 @@
       <HintPath>..\..\..\..\packages\NLog.dll</HintPath>
     </Reference>
     <Reference Include="OpcNetApi">
-      <HintPath>..\..\..\..\packages\OpcNetApi.dll</HintPath>
+      <HintPath>..\packages\OpcNetApi.dll</HintPath>
     </Reference>
     <Reference Include="OpcNetApi.Com">
-      <HintPath>..\..\..\..\packages\OpcNetApi.Com.dll</HintPath>
+      <HintPath>..\packages\OpcNetApi.Com.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

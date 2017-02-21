@@ -897,11 +897,13 @@ namespace yidascan {
         }
 
         private void ShowWarning(string msg, bool isError = true) {
+            this.Invoke((Action)(() => { 
             lbTaskState.Text = msg;
             lbTaskState.BackColor = isError
                 ? Color.Red
                 : Color.Green;
             lbTaskState.ForeColor = Color.White;
+            }));
         }
 
         private void txtLableCode1_Enter(object sender, EventArgs e) {
