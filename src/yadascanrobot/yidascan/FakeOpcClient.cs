@@ -39,11 +39,13 @@ namespace yidascan {
         public decimal ReadDecimal(string slot) {
             Thread.Sleep(100);
             if (slot == param.ScanParam.Diameter) {
-                return 50 + (decimal)(rand.NextDouble() * 150);
+                var d = 50 + (decimal)(rand.NextDouble() * 150);
+                return Math.Floor(d);
             }
 
             if (slot == param.ScanParam.Length) {
-                return 1000 + (decimal)(rand.NextDouble() * 1000);
+                var d = 1000 + (decimal)(rand.NextDouble() * 1000);
+                return Math.Floor(d);
             }
             return 0;
         }
