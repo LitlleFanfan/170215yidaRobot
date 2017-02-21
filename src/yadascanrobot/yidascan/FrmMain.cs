@@ -757,7 +757,10 @@ namespace yidascan {
             });
             logOpt.Write($"取交地耗时:　{t}ms");
 
-            if (string.IsNullOrEmpty(tolocation)) { return; }
+            if (string.IsNullOrEmpty(tolocation)) {
+                PlcHelper.PushAsideClothRoll(ScannerOpcClient);
+                return;
+            }
 
             var lc = new LableCode(code, tolocation, handwork);
             var clothsize = new ClothRollSize();
