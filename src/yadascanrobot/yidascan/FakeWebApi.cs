@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
+
 using ProduceComm;
 using Newtonsoft.Json;
 
@@ -16,6 +18,7 @@ namespace yidascan {
         }
 
         public Dictionary<string, string> Post(string url, Dictionary<string, string> agr, int timeout = 100) {
+            Thread.Sleep(30);
             // 取布卷交地。
             if (url == clsSetting.GetLocation) {
                 var s = "{ \"State\":\"成功\",\"Msg\":null,\"Data\":\"\",\"ContinueCount\":0}";
@@ -23,12 +26,16 @@ namespace yidascan {
                 dic["Data"] = "[{\"LOCATION\":\"A03\"}]";
                 dic.Add("ERPState", "OK");
                 return dic;
-            } else {
-                var dic = new Dictionary<string, string> {
-                    { "ERPState", "false" } };
+            } else if (url == clsSetting.ToWeight || url == clsSetting.PanelFinish) {
+                var s = "{\"State\":\"成功\",\"Msg\":null,\"Data\":\"[{\"result\":\"OK\"}]\",\"ContinueCount\":0}";
+                var dic = JsonConvert.DeserializeObject<Dictionary<string, string>>(s);
+                dic.Add("ERPState", "OK");
                 return dic;
+            } else {
+                return new Dictionary<string, string> {
+                    {"ERPState", "OK" }
+                };
             }
-
         }
         public string Get(string url) {
             return "";
