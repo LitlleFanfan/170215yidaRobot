@@ -1082,5 +1082,25 @@ namespace yidascan {
                 return new FakeOpcClient(opcParam);
             }
         }
+
+        private void btnSignalWeigh_Click(object sender, EventArgs e) {
+            SignalGen.startTimerWeigh();
+        }
+
+        private void btnSignalCache_Click(object sender, EventArgs e) {
+            SignalGen.startTimerCache();
+        }
+
+        private void btnSignalLabelUp_Click(object sender, EventArgs e) {
+            SignalGen.startTimerLabelUp();
+        }
+
+        private void btnSignalItemCatchA_Click(object sender, EventArgs e) {
+            SignalGen.startTimerItemCatchA();
+        }
+
+        private void btnSignalItemCatchB_Click(object sender, EventArgs e) {
+            SignalGen.startTimerItemCatchB();
+        }
     }
 }

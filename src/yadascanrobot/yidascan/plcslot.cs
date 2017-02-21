@@ -3,7 +3,7 @@
         /// <summary>
         /// 缓存处来料信号地址。
         /// </summary>
-        public static string CACHE_ITEM_IN = "MicroWin.S7-1200-3.NewItem108";
+        public static string CACHE_SIGNAL = "MicroWin.S7-1200-3.NewItem108";
 
         /// <summary>
         /// 缓存区动作编号地址。
@@ -23,7 +23,7 @@
         /// <summary>
         /// 标签朝上采集处来料信号地址。
         /// </summary>
-        public static string LABEL_UP_CATCH_ITEM_IN = "MicroWin.S7-1200-3.NewItem113";
+        public static string LABEL_UP_SIGNAL = "MicroWin.S7-1200-3.NewItem113";
 
         /// <summary>
         /// 标签朝上采集处直径写地址。
@@ -38,12 +38,12 @@
         /// <summary>
         /// 抓料处位置1来料信号地址。
         /// </summary>
-        public static string ROLL_CATCH_1 = "MicroWin.S7-1200-3.NewItem109";
+        public static string ITEM_CATCH_A = "MicroWin.S7-1200-3.NewItem109";
 
         /// <summary>
         /// 抓料处位置2来料信号地址。
         /// </summary>
-        public static string ROLL_CATCH_2 = "MicroWin.S7-1200-3.NewItem110";
+        public static string ITEM_CATCH_B = "MicroWin.S7-1200-3.NewItem110";
         
         /// <summary>
         /// 扫描失败勾料信号。 

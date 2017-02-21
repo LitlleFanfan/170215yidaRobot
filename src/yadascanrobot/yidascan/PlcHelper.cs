@@ -58,7 +58,7 @@ namespace yidascan {
         /// <param name="client"></param>
         /// <returns></returns>
         public static bool ReadItemInFromCache(IOpcClient client) {
-            return client.ReadBool(PlcSlot.CACHE_ITEM_IN);
+            return client.ReadBool(PlcSlot.CACHE_SIGNAL);
         }
         
         /// <summary>
@@ -74,7 +74,7 @@ namespace yidascan {
             client.Write(PlcSlot.CACHE_JOB_POS_GET, posGet);
             Thread.Sleep(DELAY);
             // 复位来料信号。
-            client.Write(PlcSlot.CACHE_ITEM_IN, 0);
+            client.Write(PlcSlot.CACHE_SIGNAL, 0);
         }
         
         /// <summary>
@@ -83,7 +83,7 @@ namespace yidascan {
         /// <param name="client"></param>
         /// <returns></returns>
         public static bool ReadLabelCatch(IOpcClient client) {
-            return client.ReadBool(PlcSlot.LABEL_UP_CATCH_ITEM_IN);
+            return client.ReadBool(PlcSlot.LABEL_UP_SIGNAL);
         }
        
         /// <summary>
@@ -98,7 +98,7 @@ namespace yidascan {
             client.Write(PlcSlot.LABEL_UP_CATCH_CHANNEL, channel);
             Thread.Sleep(DELAY);
             // 复位标签采集处来料信号。
-            client.Write(PlcSlot.LABEL_UP_CATCH_ITEM_IN, 0);
+            client.Write(PlcSlot.LABEL_UP_SIGNAL, 0);
         }
                
         /// <summary>
@@ -109,8 +109,8 @@ namespace yidascan {
         /// <returns></returns>
         public static bool ReadItemCatchSignal(IOpcClient client, int pos) {
             var slot = "";
-            if (pos == 1) { slot = PlcSlot.ROLL_CATCH_1; }
-            if (pos == 2) { slot = PlcSlot.ROLL_CATCH_2; }
+            if (pos == 1) { slot = PlcSlot.ITEM_CATCH_A; }
+            if (pos == 2) { slot = PlcSlot.ITEM_CATCH_B; }
 
             if (slot == "") { throw new Exception("error pos."); }
 
@@ -124,8 +124,8 @@ namespace yidascan {
         /// <param name="pos"></param>
         public static void ResetItemCatchSignal(IOpcClient client, int pos) {
             var slot = "";
-            if (pos == 1) { slot = PlcSlot.ROLL_CATCH_1; }
-            if (pos == 2) { slot = PlcSlot.ROLL_CATCH_2; }
+            if (pos == 1) { slot = PlcSlot.ITEM_CATCH_A; }
+            if (pos == 2) { slot = PlcSlot.ITEM_CATCH_B; }
 
             if (slot == "") { throw new Exception("error pos."); }
 
@@ -137,16 +137,16 @@ namespace yidascan {
         }
 
         public static void subscribe(IOpcClient client) {
-            client.AddSubscription(PlcSlot.CACHE_ITEM_IN);
+            client.AddSubscription(PlcSlot.CACHE_SIGNAL);
             client.AddSubscription(PlcSlot.CACHE_JOB_POS_GET);
             client.AddSubscription(PlcSlot.CACHE_JOB_POS_SAVE);
             client.AddSubscription(PlcSlot.CACHE_JOB_SIGNAL);
             client.AddSubscription(PlcSlot.LABEL_UP_CATCH_CHANNEL);
             client.AddSubscription(PlcSlot.LABEL_UP_CATCH_DIAMETER);
-            client.AddSubscription(PlcSlot.LABEL_UP_CATCH_ITEM_IN);
+            client.AddSubscription(PlcSlot.LABEL_UP_SIGNAL);
             client.AddSubscription(PlcSlot.PUSH_ASIDE_SIGNAL);
-            client.AddSubscription(PlcSlot.ROLL_CATCH_1);
-            client.AddSubscription(PlcSlot.ROLL_CATCH_2);
+            client.AddSubscription(PlcSlot.ITEM_CATCH_A);
+            client.AddSubscription(PlcSlot.ITEM_CATCH_B);
         }
     }
 }

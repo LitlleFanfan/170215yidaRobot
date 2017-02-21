@@ -7,6 +7,83 @@ using System.Threading;
 using yidascan.DataAccess;
 
 namespace yidascan {
+    /// <summary>
+    /// 模拟信号发生。
+    /// </summary>
+    public class SignalGen {
+        static System.Windows.Forms.Timer timerWeigh;
+        static System.Windows.Forms.Timer timerCache;
+        static System.Windows.Forms.Timer timerLabelUp;
+        static System.Windows.Forms.Timer timerItemCatchA;
+        static System.Windows.Forms.Timer timerItemCatchB;
+        
+        public static bool WEIGTH_SIGNAL = false;
+        public static bool CACHE_SIGNAL = false;
+        public static bool LABELUP_SIGNAL = false;
+        public static bool ITEMCATCH_A_SIGNAL = false;
+        public static bool ITEMCATCH_B_SIGNAL = false;
+
+        public static void startTimerWeigh() {
+            timerWeigh = new System.Windows.Forms.Timer {
+                Interval = 500
+            };
+            timerWeigh.Tick += TimerWeigh_Tick;
+            timerWeigh.Enabled = true;
+        }
+
+        public static void startTimerCache() {
+            timerCache = new System.Windows.Forms.Timer {
+                Interval = 15000
+            };
+            timerCache.Tick += TimerCache_Tick;
+            timerCache.Enabled = true;
+        }
+
+        public static void startTimerLabelUp() {
+            timerLabelUp = new System.Windows.Forms.Timer {
+                Interval = 15000
+            };
+            timerLabelUp.Tick += TimerLabelUp_Tick;
+            timerLabelUp.Enabled = true;
+        }
+
+        public static void startTimerItemCatchA() {
+            timerItemCatchA = new System.Windows.Forms.Timer {
+                Interval = 15000
+            };
+            timerItemCatchA.Tick += TimerItemCatchA_Tick;
+            timerItemCatchA.Enabled = true;
+        }
+
+        public static void startTimerItemCatchB() {
+            timerItemCatchB = new System.Windows.Forms.Timer {
+                Interval = 15000
+            };
+            timerItemCatchB.Tick += TimerItemCatchB_Tick;
+            timerItemCatchB.Enabled = true;
+        }
+
+        private static void TimerWeigh_Tick(object sender, EventArgs e) {
+            WEIGTH_SIGNAL = true;
+        }
+
+        private static void TimerCache_Tick(object sender, EventArgs e) {
+            CACHE_SIGNAL = true;
+        }
+
+        private static void TimerLabelUp_Tick(object sender, EventArgs e) {
+            LABELUP_SIGNAL = true;
+        }
+
+        private static void TimerItemCatchA_Tick(object sender, EventArgs e) {
+            ITEMCATCH_A_SIGNAL = true;
+        }
+
+        private static void TimerItemCatchB_Tick(object sender, EventArgs e) {
+            ITEMCATCH_B_SIGNAL = true;
+        }
+    }
+
    class FakeOpcClient: IOpcClient {
         OPCParam param;
         private Random rand = new Random();
@@ -23,8 +100,16 @@ namespace yidascan {
             Thread.Sleep(100);
             return 1;
         }
+
+        private static bool getSignal(ref bool signal) {
+            var b = signal;
+            if (b) { signal = false; }
+            return b;
+        }
+
         public bool ReadBool(string slot) {
             Thread.Sleep(100);
+
             foreach(var p in param.ACAreaPanelFinish) {
                 if (p.Value.Signal == slot) {
                     return false;
@@ -33,8 +118,33 @@ namespace yidascan {
             if(slot== param.ScanParam.ScanState) {
                 return false;
             }
+
+            // 称重处信号
+            if (slot == param.ScanParam.GetWeigh) {
+                return getSignal(ref SignalGen.WEIGTH_SIGNAL);
+            }
+
+            // 缓存区来料信号
+            if (slot == PlcSlot.CACHE_SIGNAL) {
+                return getSignal(ref SignalGen.CACHE_SIGNAL);
+            }
+
+            // 标签向上处来料信号
+            if (slot == PlcSlot.LABEL_UP_SIGNAL) {
+                return getSignal(ref SignalGen.LABELUP_SIGNAL);
+            }
             
-            return true;
+            // 抓料处A
+            if (slot == PlcSlot.ITEM_CATCH_A) {
+                return getSignal(ref SignalGen.ITEMCATCH_A_SIGNAL);
+            }
+
+            // 抓料处B
+            if (slot == PlcSlot.ITEM_CATCH_B) {
+                return getSignal(ref SignalGen.ITEMCATCH_B_SIGNAL);
+            }                
+
+            return false;
         }
         public decimal ReadDecimal(string slot) {
             Thread.Sleep(100);
