@@ -126,27 +126,6 @@ namespace yidascan {
             setupOpcClient(ScannerOpcClient, "相机");
             setupOpcClient(RobotOpcClient, "机器人");
 
-            //if (opcClient.Open(clsSetting.OPCServerIP)) {
-            //    logOpt.Write("OPC服务连接成功。", LogType.NORMAL);
-            //    opcClient.AddSubscription(dtopc);
-            //} else {
-            //    logOpt.Write("!OPC服务连接失败。", LogType.NORMAL);
-            //}
-
-            //if (ScannerOpcClient.Open(clsSetting.OPCServerIP)) {
-            //    logOpt.Write("相机OPC client连接成功。", LogType.NORMAL);
-            //    ScannerOpcClient.AddSubscription(dtopc);
-            //} else {
-            //    logOpt.Write("!相机OPC client务连接失败。", LogType.NORMAL);
-            //}
-
-            //if (RobotOpcClient.Open(clsSetting.OPCServerIP)) {
-            //    logOpt.Write("机器人OPC client连接成功。", LogType.NORMAL);
-            //    RobotOpcClient.AddSubscription(dtopc);
-            //} else {
-            //    logOpt.Write("!机器人OPC client务连接失败。", LogType.NORMAL);
-            //}
-
             opcParam.Init();
 
             logOpt.Write(JsonConvert.SerializeObject(opcParam), LogType.NORMAL, LogViewType.OnlyFile);
@@ -375,7 +354,7 @@ namespace yidascan {
         }
 
         private void ACAreaFinishTask() {
-            foreach (KeyValuePair<string, LCodeSignal> kv in opcParam.ACAreaPanelFinish) {
+            foreach (var kv in opcParam.ACAreaPanelFinish) {
                 Task.Factory.StartNew(() => {
                     while (isrun) {
                         lock (opcClient) {
