@@ -23,7 +23,7 @@ namespace yidascan {
             if (url == clsSetting.GetLocation) {
                 var s = "{ \"State\":\"成功\",\"Msg\":null,\"Data\":\"\",\"ContinueCount\":0}";
                 var dic = JsonConvert.DeserializeObject<Dictionary<string, string>>(s);
-                dic["Data"] = "[{\"LOCATION\":\"A03\"}]";
+                dic["Data"] = "[{\"LOCATION\":\"B11\"}]";
                 dic.Add("ERPState", "OK");
                 return dic;
             } else if (url == clsSetting.ToWeight || url == clsSetting.PanelFinish) {

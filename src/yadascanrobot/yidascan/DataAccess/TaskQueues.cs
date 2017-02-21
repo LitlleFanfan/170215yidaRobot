@@ -85,7 +85,7 @@ namespace yidascan.DataAccess {
 
             var pinfo = LableCode.GetPanel(label.PanelNo);
             var state = FrmMain.GetPanelState(label, pinfo);
-            onlog?.Invoke($"{label.LCode} {label.ToLocation} {Enum.GetName(typeof(PanelState),state)}", LogType.ROLL_QUEUE);
+            onlog?.Invoke($"{label.LCode} {label.ToLocation} {Enum.GetName(typeof(PanelState), state)}", LogType.ROLL_QUEUE);
 
             var x = label.Cx;
             var y = label.Cy;
@@ -170,7 +170,7 @@ namespace yidascan.DataAccess {
                     code = WeighQ.Dequeue();
                 }
             }
-            if (code != null) {
+            if (code != null && code.ToLocation.Substring(0, 1) == "B") {
                 lock (CacheQ) {
                     CacheQ.Enqueue(code);
                 }
