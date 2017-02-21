@@ -23,9 +23,11 @@ namespace yidascan {
         public static bool ITEMCATCH_A_SIGNAL = false;
         public static bool ITEMCATCH_B_SIGNAL = false;
 
+        private static int DELAY = 5000;
+
         public static void startTimerWeigh() {
             timerWeigh = new System.Windows.Forms.Timer {
-                Interval = 500
+                Interval = DELAY
             };
             timerWeigh.Tick += TimerWeigh_Tick;
             timerWeigh.Enabled = true;
@@ -33,7 +35,7 @@ namespace yidascan {
 
         public static void startTimerCache() {
             timerCache = new System.Windows.Forms.Timer {
-                Interval = 15000
+                Interval = DELAY
             };
             timerCache.Tick += TimerCache_Tick;
             timerCache.Enabled = true;
@@ -41,7 +43,7 @@ namespace yidascan {
 
         public static void startTimerLabelUp() {
             timerLabelUp = new System.Windows.Forms.Timer {
-                Interval = 15000
+                Interval = DELAY
             };
             timerLabelUp.Tick += TimerLabelUp_Tick;
             timerLabelUp.Enabled = true;
@@ -49,7 +51,7 @@ namespace yidascan {
 
         public static void startTimerItemCatchA() {
             timerItemCatchA = new System.Windows.Forms.Timer {
-                Interval = 15000
+                Interval = DELAY
             };
             timerItemCatchA.Tick += TimerItemCatchA_Tick;
             timerItemCatchA.Enabled = true;
@@ -57,7 +59,7 @@ namespace yidascan {
 
         public static void startTimerItemCatchB() {
             timerItemCatchB = new System.Windows.Forms.Timer {
-                Interval = 15000
+                Interval = DELAY
             };
             timerItemCatchB.Tick += TimerItemCatchB_Tick;
             timerItemCatchB.Enabled = true;
