@@ -23,7 +23,7 @@ namespace yidascan {
         /// </summary>
         /// <param name="client"></param>
         /// <returns></returns>
-        public static bool ReadItemInFromCache(IOpcClient client) {
+        public static bool ReadCacheSignal(IOpcClient client) {
             return client.ReadBool(PlcSlot.CACHE_SIGNAL);
         }
         
@@ -48,7 +48,7 @@ namespace yidascan {
         /// </summary>
         /// <param name="client"></param>
         /// <returns></returns>
-        public static bool ReadLabelCatch(IOpcClient client) {
+        public static bool ReadLabelUpSignal(IOpcClient client) {
             return client.ReadBool(PlcSlot.LABEL_UP_SIGNAL);
         }
        
@@ -58,7 +58,7 @@ namespace yidascan {
         /// <param name="client"></param>
         /// <param name="diameter">直径</param>
         /// <param name="channel">去向, 1 or 2.</param>
-        public static void WriteLabelCatch(IOpcClient client, int diameter, RollCatchChannel channel) {
+        public static void WriteLabelUpData(IOpcClient client, int diameter, RollCatchChannel channel) {
             // diameter单位是毫米。
             client.Write(PlcSlot.LABEL_UP_CATCH_DIAMETER, diameter);
             client.Write(PlcSlot.LABEL_UP_CATCH_CHANNEL, channel);
@@ -98,6 +98,9 @@ namespace yidascan {
             client.Write(slot, 0);
         }
 
+        /// <summary>
+        /// </summary>
+        /// <param name="client"></param>
         public static void PushAsideClothRoll(IOpcClient client) {
             client.Write(PlcSlot.PUSH_ASIDE_SIGNAL, 1);
         }
