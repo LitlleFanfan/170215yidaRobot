@@ -293,8 +293,10 @@ namespace yidascan {
                         rt.state = lc.FloorIndex == 0 ? CacheState.Cache : CacheState.Go;
                 }
 
+                var msg = "";
                 if (fp == FloorPerformance.BothFinish && lc.Floor == pinfo.MaxFloor) {
-                    var re = NotifyPanelEnd(erpapi, lc.PanelNo, out rt.message);
+                    var re = NotifyPanelEnd(erpapi, lc.PanelNo, out msg);
+                    rt.message = msg;
                 }
             }
             return rt;
