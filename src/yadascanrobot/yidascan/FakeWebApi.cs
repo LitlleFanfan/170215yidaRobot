@@ -17,13 +17,14 @@ namespace yidascan {
             return true;
         }
 
+        readonly List<string> location = new List<string>() {  "B01","B02", "B03", "B04", "B05", "B06", "B07", "B08", "B09", "B10", "A01", "A02", "A03", "C01", "C02", "C03" };//, "A04", "A05", "A06", "A07", "A08", "A09", "A10", "A11", "B02","B01"
         public Dictionary<string, string> Post(string url, Dictionary<string, string> agr, int timeout = 100) {
             Thread.Sleep(30);
             // 取布卷交地。
             if (url == clsSetting.GetLocation) {
                 var s = "{ \"State\":\"成功\",\"Msg\":null,\"Data\":\"\",\"ContinueCount\":0}";
                 var dic = JsonConvert.DeserializeObject<Dictionary<string, string>>(s);
-                dic["Data"] = "[{\"LOCATION\":\"B11\"}]";
+                dic["Data"] = "[{\"LOCATION\":\""+ location[new Random().Next(0, location.Count - 1)] + "\"}]";
                 dic.Add("ERPState", "OK");
                 return dic;
             } else if (url == clsSetting.ToWeight || url == clsSetting.PanelFinish) {
