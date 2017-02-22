@@ -151,11 +151,6 @@ namespace yidascan.DataAccess {
                     code = CacheQ.Dequeue();
                 }
             }
-            if (code != null) {
-                lock (LableUpQ) {
-                    LableUpQ.Enqueue(code);
-                }
-            }
             return code;
         }
 

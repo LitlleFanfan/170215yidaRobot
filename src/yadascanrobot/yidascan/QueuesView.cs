@@ -9,9 +9,9 @@ using yidascan.DataAccess;
 namespace yidascan {
     public class QueuesView {
         public static Form f;
-        public static void Add(ListView lsv, LableCode lc) {
+        public static void Add(ListView lsv, string lc) {
             f.Invoke((EventHandler)(delegate {
-                ListViewItem lsvItem = new ListViewItem(string.Format("{0} {1}", lc.LCode, lc.ToLocation));
+                ListViewItem lsvItem = new ListViewItem(lc);
                 lsv.Items.Insert(0, lsvItem);
             }));
         }

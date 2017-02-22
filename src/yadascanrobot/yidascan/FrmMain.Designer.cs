@@ -492,7 +492,7 @@
             this.lsvLog.ItemHeight = 19;
             this.lsvLog.Location = new System.Drawing.Point(3, 3);
             this.lsvLog.Name = "lsvLog";
-            this.lsvLog.Size = new System.Drawing.Size(517, 191);
+            this.lsvLog.Size = new System.Drawing.Size(517, 178);
             this.lsvLog.TabIndex = 2;
             // 
             // lsvBufferLog
@@ -723,7 +723,7 @@
             this.tbcLogs.Location = new System.Drawing.Point(0, 0);
             this.tbcLogs.Name = "tbcLogs";
             this.tbcLogs.SelectedIndex = 0;
-            this.tbcLogs.Size = new System.Drawing.Size(531, 230);
+            this.tbcLogs.Size = new System.Drawing.Size(531, 217);
             this.tbcLogs.TabIndex = 55;
             // 
             // tbpScanLog
@@ -732,7 +732,7 @@
             this.tbpScanLog.Location = new System.Drawing.Point(4, 29);
             this.tbpScanLog.Name = "tbpScanLog";
             this.tbpScanLog.Padding = new System.Windows.Forms.Padding(3);
-            this.tbpScanLog.Size = new System.Drawing.Size(523, 197);
+            this.tbpScanLog.Size = new System.Drawing.Size(523, 184);
             this.tbpScanLog.TabIndex = 0;
             this.tbpScanLog.Text = "采集日志";
             this.tbpScanLog.UseVisualStyleBackColor = true;
@@ -795,7 +795,7 @@
             this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel3.Location = new System.Drawing.Point(0, 0);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(743, 252);
+            this.panel3.Size = new System.Drawing.Size(743, 237);
             this.panel3.TabIndex = 56;
             // 
             // label9
@@ -816,7 +816,7 @@
             | System.Windows.Forms.AnchorStyles.Left)));
             this.lsvRobotB.Location = new System.Drawing.Point(556, 192);
             this.lsvRobotB.Name = "lsvRobotB";
-            this.lsvRobotB.Size = new System.Drawing.Size(185, 58);
+            this.lsvRobotB.Size = new System.Drawing.Size(185, 43);
             this.lsvRobotB.TabIndex = 11;
             this.lsvRobotB.UseCompatibleStateImageBehavior = false;
             this.lsvRobotB.View = System.Windows.Forms.View.List;
@@ -860,7 +860,7 @@
             | System.Windows.Forms.AnchorStyles.Left)));
             this.lsvCatch2.Location = new System.Drawing.Point(371, 192);
             this.lsvCatch2.Name = "lsvCatch2";
-            this.lsvCatch2.Size = new System.Drawing.Size(185, 58);
+            this.lsvCatch2.Size = new System.Drawing.Size(185, 43);
             this.lsvCatch2.TabIndex = 7;
             this.lsvCatch2.UseCompatibleStateImageBehavior = false;
             this.lsvCatch2.View = System.Windows.Forms.View.List;
@@ -904,7 +904,7 @@
             | System.Windows.Forms.AnchorStyles.Left)));
             this.lsvLableUp.Location = new System.Drawing.Point(186, 32);
             this.lsvLableUp.Name = "lsvLableUp";
-            this.lsvLableUp.Size = new System.Drawing.Size(185, 218);
+            this.lsvLableUp.Size = new System.Drawing.Size(185, 203);
             this.lsvLableUp.TabIndex = 5;
             this.lsvLableUp.UseCompatibleStateImageBehavior = false;
             this.lsvLableUp.View = System.Windows.Forms.View.List;
@@ -927,7 +927,7 @@
             | System.Windows.Forms.AnchorStyles.Left)));
             this.lsvCacheBefor.Location = new System.Drawing.Point(1, 32);
             this.lsvCacheBefor.Name = "lsvCacheBefor";
-            this.lsvCacheBefor.Size = new System.Drawing.Size(185, 218);
+            this.lsvCacheBefor.Size = new System.Drawing.Size(185, 203);
             this.lsvCacheBefor.TabIndex = 0;
             this.lsvCacheBefor.UseCompatibleStateImageBehavior = false;
             this.lsvCacheBefor.View = System.Windows.Forms.View.List;
@@ -937,7 +937,7 @@
             this.lsvLableCode.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lsvLableCode.Location = new System.Drawing.Point(0, 32);
             this.lsvLableCode.Name = "lsvLableCode";
-            this.lsvLableCode.Size = new System.Drawing.Size(531, 224);
+            this.lsvLableCode.Size = new System.Drawing.Size(531, 208);
             this.lsvLableCode.TabIndex = 4;
             this.lsvLableCode.UseCompatibleStateImageBehavior = false;
             this.lsvLableCode.View = System.Windows.Forms.View.List;
@@ -958,8 +958,8 @@
             // 
             this.splitContainer1.Panel2.Controls.Add(this.splitContainer3);
             this.splitContainer1.Panel2.Controls.Add(this.label8);
-            this.splitContainer1.Size = new System.Drawing.Size(743, 490);
-            this.splitContainer1.SplitterDistance = 252;
+            this.splitContainer1.Size = new System.Drawing.Size(743, 461);
+            this.splitContainer1.SplitterDistance = 237;
             this.splitContainer1.TabIndex = 58;
             // 
             // splitContainer3
@@ -978,8 +978,8 @@
             // splitContainer3.Panel2
             // 
             this.splitContainer3.Panel2.Controls.Add(this.splitContainer5);
-            this.splitContainer3.Size = new System.Drawing.Size(743, 199);
-            this.splitContainer3.SplitterDistance = 98;
+            this.splitContainer3.Size = new System.Drawing.Size(743, 185);
+            this.splitContainer3.SplitterDistance = 91;
             this.splitContainer3.TabIndex = 5;
             // 
             // splitContainer4
@@ -995,7 +995,7 @@
             // splitContainer4.Panel2
             // 
             this.splitContainer4.Panel2.Controls.Add(this.lsvCacheQ2);
-            this.splitContainer4.Size = new System.Drawing.Size(743, 98);
+            this.splitContainer4.Size = new System.Drawing.Size(743, 91);
             this.splitContainer4.SplitterDistance = 357;
             this.splitContainer4.TabIndex = 0;
             // 
@@ -1010,7 +1010,7 @@
             listViewItem5});
             this.lsvCacheQ1.Location = new System.Drawing.Point(0, 0);
             this.lsvCacheQ1.Name = "lsvCacheQ1";
-            this.lsvCacheQ1.Size = new System.Drawing.Size(357, 98);
+            this.lsvCacheQ1.Size = new System.Drawing.Size(357, 91);
             this.lsvCacheQ1.TabIndex = 0;
             this.lsvCacheQ1.UseCompatibleStateImageBehavior = false;
             this.lsvCacheQ1.View = System.Windows.Forms.View.List;
@@ -1026,7 +1026,7 @@
             listViewItem10});
             this.lsvCacheQ2.Location = new System.Drawing.Point(0, 0);
             this.lsvCacheQ2.Name = "lsvCacheQ2";
-            this.lsvCacheQ2.Size = new System.Drawing.Size(382, 98);
+            this.lsvCacheQ2.Size = new System.Drawing.Size(382, 91);
             this.lsvCacheQ2.TabIndex = 1;
             this.lsvCacheQ2.UseCompatibleStateImageBehavior = false;
             this.lsvCacheQ2.View = System.Windows.Forms.View.List;
@@ -1044,7 +1044,7 @@
             // splitContainer5.Panel2
             // 
             this.splitContainer5.Panel2.Controls.Add(this.lsvCacheQ4);
-            this.splitContainer5.Size = new System.Drawing.Size(743, 97);
+            this.splitContainer5.Size = new System.Drawing.Size(743, 90);
             this.splitContainer5.SplitterDistance = 357;
             this.splitContainer5.TabIndex = 0;
             // 
@@ -1059,7 +1059,7 @@
             listViewItem15});
             this.lsvCacheQ3.Location = new System.Drawing.Point(0, 0);
             this.lsvCacheQ3.Name = "lsvCacheQ3";
-            this.lsvCacheQ3.Size = new System.Drawing.Size(357, 97);
+            this.lsvCacheQ3.Size = new System.Drawing.Size(357, 90);
             this.lsvCacheQ3.TabIndex = 1;
             this.lsvCacheQ3.UseCompatibleStateImageBehavior = false;
             this.lsvCacheQ3.View = System.Windows.Forms.View.List;
@@ -1075,7 +1075,7 @@
             listViewItem20});
             this.lsvCacheQ4.Location = new System.Drawing.Point(0, 0);
             this.lsvCacheQ4.Name = "lsvCacheQ4";
-            this.lsvCacheQ4.Size = new System.Drawing.Size(382, 97);
+            this.lsvCacheQ4.Size = new System.Drawing.Size(382, 90);
             this.lsvCacheQ4.TabIndex = 1;
             this.lsvCacheQ4.UseCompatibleStateImageBehavior = false;
             this.lsvCacheQ4.View = System.Windows.Forms.View.List;
@@ -1111,8 +1111,8 @@
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.Controls.Add(this.tbcLogs);
-            this.splitContainer2.Size = new System.Drawing.Size(531, 490);
-            this.splitContainer2.SplitterDistance = 256;
+            this.splitContainer2.Size = new System.Drawing.Size(531, 461);
+            this.splitContainer2.SplitterDistance = 240;
             this.splitContainer2.TabIndex = 59;
             // 
             // label1
