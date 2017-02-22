@@ -36,6 +36,57 @@ namespace yidascan {
             return lc2;
         }
 
+        /// <summary>
+        /// 2期缓存计算办法
+        /// </summary>
+        /// <param name="pinfo"></param>
+        /// <param name="lc"></param>
+        /// <param name="lcs"></param>
+        /// <param name="cacheq">缓存队列</param>
+        /// <returns>返回的是需要从缓存位取出的布卷。如果不需要取出，返回null。</returns>
+        public LableCode CalculateCachePro(PanelInfo pinfo, LableCode lc, List<LableCode> lcs, Queue<LableCode> cacheq) {
+            LableCode lc2 = null;
+            var cachecount = (pinfo.OddStatus ? 0 : 1) + (pinfo.EvenStatus ? 0 : 1);
+            var cachedRools = from s in lcs
+                      where s.FloorIndex == 0
+                      orderby s.Diameter ascending
+                      select s;
+            switch (cachedRools.Count()) {
+                case 0://当前层已没有了缓存。//当前布卷直接缓存起来。
+                    break;
+                case 1://当前层只有一卷缓存。
+                case 2://当前层有两卷缓存。
+                    if (cachedRools.Count() == cachecount)//缓存卷数与需要缓存卷数相等
+                    {
+                        var lcObjs = new List<LableCode>();
+                        foreach (LableCode l in cachedRools) {
+                            // 缓存的比当前的直径大
+                            var cachedBiggerThanCurrent = (l.Diameter + clsSetting.CacheIgnoredDiff < lc.Diameter);
+                            if (cachedBiggerThanCurrent && NoMoreBiggerRoolsInCacheQ(lc, cacheq)) {
+                                lcObjs.Add(l);
+                            }
+                        }
+                        if (lcObjs.Count > 0) {
+                            lc2 = lcObjs[0];
+                            lc.GetOutLCode = lc2.LCode;//换掉的标签
+                            CalculatePosition(lcs, lc2);//当前布卷直接缓存起来。缓存的两卷中小的拿出来并计算位置。
+                        } else {
+                            CalculatePosition(lcs, lc);//当前布卷不需要缓存，计算位置。
+                        }
+                    }
+                    break;
+            }
+            return lc2;
+        }
+
+        private static bool NoMoreBiggerRoolsInCacheQ(LableCode lc, Queue<LableCode> cacheq) {
+            // 同一个板上直径比当前大的。
+            var q = cacheq.Count((x) => {
+                return x.PanelNo == lc.PanelNo && x.Diameter - lc.Diameter > clsSetting.CacheIgnoredDiff;
+            });
+            return q > 0;
+        }
+
         private bool IsRollInSameSide(LableCode lc, int flindex) {
             return lc.FloorIndex > 0 && lc.FloorIndex % 2 == flindex % 2;
         }
@@ -238,8 +289,9 @@ namespace yidascan {
         /// <param name="dateShiftNo"></param>
         /// <param name="outCacheLable"></param>
         /// <param name="msg"></param>
+        /// <param name="cacheq">缓存队列</param>
         /// <returns></returns>
-        public CalResult AreaBCalculatePro(IErpApi erpapi, LableCode lc, string dateShiftNo) {
+        public CalResult AreaBCalculatePro(IErpApi erpapi, LableCode lc, string dateShiftNo, Queue<LableCode> cacheq) {
             var rt = new CalResult(CacheState.Error, lc, null);
 
             var pinfo = GetPanelNo(lc, dateShiftNo);
@@ -274,7 +326,7 @@ namespace yidascan {
                         }
                     } else {
                         //计算缓存，lc2不为NULL需要缓存
-                        lc2 = CalculateCache(pinfo, lc, lcs);
+                        lc2 = CalculateCachePro(pinfo, lc, lcs, cacheq);
                     }
                 }
 

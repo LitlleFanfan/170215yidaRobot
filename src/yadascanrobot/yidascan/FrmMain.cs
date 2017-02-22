@@ -507,7 +507,7 @@ namespace yidascan {
                                 // 计算位置, lc和cache队列里比较。
                                 var calResultt = lcb.AreaBCalculatePro(callErpApi,
                                     lc,
-                                    createShiftNo()); //计算位置
+                                    createShiftNo(), taskQ.CacheQ); //计算位置
 
                                 if (calResultt.message != "") {
                                     logOpt.Write(calResultt.message, LogType.BUFFER);
