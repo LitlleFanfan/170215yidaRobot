@@ -446,15 +446,13 @@ namespace yidascan {
                                             // 计算位置
                                             LableCode outCacheLable = null;
                                             string msg = "";
-                                            //var cState = lcb.AreaBCalculate(callErpApi,
-                                            //    lc,
-                                            //    string.Format("{0}{1}",
-                                            //            dtpDate.Value.ToString(clsSetting.LABEL_CODE_DATE_FORMAT),
-                                            //            cmbShiftNo.SelectedIndex.ToString()),
-                                            //    out outCacheLable, out msg); //计算位置
-
-                                            var cState = new CacheJob();
-
+                                            var cState = lcb.AreaBCalculate(callErpApi,
+                                                lc,
+                                                string.Format("{0}{1}",
+                                                        dtpDate.Value.ToString(clsSetting.LABEL_CODE_DATE_FORMAT),
+                                                        cmbShiftNo.SelectedIndex.ToString()),
+                                                out outCacheLable, out msg); //计算位置
+                                            
                                             logOpt.Write(msg, LogType.BUFFER);
 
                                             var cr = cacheher.WhenRollArrived(cState, lc, outCacheLable);
@@ -514,7 +512,7 @@ namespace yidascan {
         //                            logOpt.Write(string.Format("!{0}标签重复。", code.LCode), LogType.BUFFER);
         //                        }
 
-                                
+
         //                    }
 
         //                    QueuesView.Move(lsvCacheBefor, lsvLableUp);
