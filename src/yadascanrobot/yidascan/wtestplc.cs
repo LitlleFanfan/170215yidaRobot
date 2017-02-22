@@ -36,7 +36,7 @@ namespace yidascan {
         }
 
         private void btnReadCacheSignal_Click(object sender, EventArgs e) {
-            var r = PlcHelper.ReadItemInFromCache(client); // 读来料处信号
+            var r = PlcHelper.ReadCacheSignal(client); // 读来料处信号
             WriteLog($"缓存来料信号: {r}");
         }
 
@@ -53,7 +53,7 @@ namespace yidascan {
 
         private void button3_Click(object sender, EventArgs e) {
             // 测试标签采集处来料信号。
-            var r = PlcHelper.ReadLabelCatch(client); // 读来料处信号
+            var r = PlcHelper.ReadLabelUpSignal(client); // 读来料处信号
             WriteLog($"标签采集处信号: {r}");
         }
 
@@ -61,7 +61,7 @@ namespace yidascan {
             // 写标签采集处来料信号。
             var d = Int32.Parse(txDiameter.Text);
             var c = (RollCatchChannel)ntxtChannel.Value;
-            PlcHelper.WriteLabelCatch(client, d, c);
+            PlcHelper.WriteLabelUpData(client, d, c);
         }
 
         private void button5_Click(object sender, EventArgs e) {

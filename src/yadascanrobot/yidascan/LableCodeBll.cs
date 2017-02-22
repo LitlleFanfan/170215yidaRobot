@@ -230,6 +230,87 @@ namespace yidascan {
             return cState;
         }
 
+        /// <summary>
+        /// 计算指定号码需要采取的缓存区动作。
+        /// </summary>
+        /// <param name="erpapi"></param>
+        /// <param name="lc"></param>
+        /// <param name="dateShiftNo"></param>
+        /// <param name="outCacheLable"></param>
+        /// <param name="msg"></param>
+        /// <returns></returns>
+        public CalResult AreaBCalculatePro(IErpApi erpapi, LableCode lc, string dateShiftNo) {
+            var rt = new CalResult(CacheState.Error, lc, null);
+
+            var pinfo = GetPanelNo(lc, dateShiftNo);
+
+            if (pinfo == null) {
+                // 产生新板号赋予当前标签。
+                //板第一卷
+                LableCode.Update(lc);
+                rt.state = CacheState.Cache;
+            } else {
+                var fp = FloorPerformance.None;
+
+                // 取当前交地、当前板、当前层所有标签。
+                var lcs = LableCode.GetLableCodesOfRecentFloor(lc.ToLocation, pinfo);
+
+                LableCode lc2 = null;
+                if (lcs != null && lcs.Count > 0) {
+                    // 最近一层没满。
+                    lc2 = IsPanelFull(lcs, lc);
+
+                    if (lc2 != null) //不为NULL，表示满
+                    {
+                        //计算位置坐标
+                        CalculatePosition(lcs, lc, lc2);
+
+                        if (lc.FloorIndex % 2 == 0) {
+                            pinfo.EvenStatus = true;
+                            fp = FloorPerformance.EvenFinish;
+                        } else {
+                            pinfo.OddStatus = true;
+                            fp = FloorPerformance.OddFinish;
+                        }
+                    } else {
+                        //计算缓存，lc2不为NULL需要缓存
+                        lc2 = CalculateCache(pinfo, lc, lcs);
+                    }
+                }
+
+                if (pinfo.EvenStatus && pinfo.OddStatus)
+                    fp = FloorPerformance.BothFinish;
+
+                if (lc2 != null) {
+                    if (LableCode.Update(fp, pinfo, lc, lc2)) {
+                        rt.CodeFromCache = lc2;
+                    }
+                    rt.state = lc.FloorIndex == 0
+                        ? CacheState.GetThenCache
+                        : CacheState.GoThenGet;
+                } else {
+                    if (LableCode.Update(fp, pinfo, lc))
+                        rt.state = lc.FloorIndex == 0 ? CacheState.Cache : CacheState.Go;
+                }
+
+                if (fp == FloorPerformance.BothFinish && lc.Floor == pinfo.MaxFloor) {
+                    var re = NotifyPanelEnd(erpapi, lc.PanelNo, out rt.message);
+                }
+            }
+            return rt;
+        }
+
+        // AreaBCalculate调用之后， 用此函数显示缓存操作状态。
+        public string ShowCacheOperationInfo(LableCode in_, LableCode out_, CacheState state) {
+            return string.Format(@"缓存状态:{0},交地:{1},当前标签:{2},直径:{3},长:{4},取出标签:{5},直径:{6},长:{7};",
+                state,
+                in_.ToLocation,
+                in_.LCode, in_.Diameter, in_.Length,
+                out_ == null ? "" : out_.LCode,
+                (out_ == null ? 0 : out_.Diameter),
+                (out_ == null ? 0 : out_.Length));
+        }
+
         public bool NotifyPanelEnd(IErpApi erpapi, string panelNo, out string msg, bool handwork = false) {
             if (!string.IsNullOrEmpty(panelNo)) {
                 // 这个从数据库取似更合理。                
@@ -262,6 +343,34 @@ namespace yidascan {
             }
             msg = "!板号完成失败，板号为空。";
             return false;
+        }
+    }
+
+    /// <summary>
+    /// 用于传递缓存区号码比对处理的结果。
+    /// </summary>
+    public class CalResult {
+        public CacheState state { get; set; }
+        /// <summary>
+        /// 缓存区来料标签
+        /// </summary>
+        public LableCode CodeToCache { get; set; }
+
+        /// <summary>
+        /// 将要从缓存区取出的标签
+        /// </summary>
+        public LableCode CodeFromCache { get; set; }
+
+        /// <summary>
+        /// 附加消息
+        /// </summary>
+        public string message { get; set; }
+
+        public CalResult(CacheState state_, LableCode codeToCache_, LableCode codeFromCache_) {
+            state = state_;
+            CodeToCache = codeToCache_;
+            CodeFromCache = codeFromCache_;
+            message = "";
         }
     }
 }
