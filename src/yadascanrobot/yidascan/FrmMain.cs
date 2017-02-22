@@ -422,7 +422,7 @@ namespace yidascan {
             return client.ReadBool(param.CacheParam.BeforCacheStatus);
         }
 
-        private void BeforCacheTask() {
+        private void BeforCacheTask_old() {
             logOpt.Write("缓存任务启动。", LogType.NORMAL);
 
             Task.Factory.StartNew(() => {
@@ -433,7 +433,6 @@ namespace yidascan {
                                 var code = taskQ.GetCacheQ();
 
                                 if (code != null) {
-                                    logOpt.Write(string.Format("收到缓存来料信号。从OPC读到号码: {0}", code.LCode), LogType.BUFFER);
                                     var lc = LableCode.QueryByLCode(code.LCode);
 
                                     if (lc == null) {
@@ -444,35 +443,82 @@ namespace yidascan {
                                             // 板号以前没算过。                                            
 
                                             // 计算位置
-                                            LableCode outCacheLable;
-                                            string msg;
-                                            var cState = lcb.AreaBCalculate(callErpApi,
-                                                lc,
-                                                string.Format("{0}{1}",
-                                                        dtpDate.Value.ToString(clsSetting.LABEL_CODE_DATE_FORMAT),
-                                                        cmbShiftNo.SelectedIndex.ToString()),
-                                                out outCacheLable, out msg); //计算位置
+                                            LableCode outCacheLable = null;
+                                            string msg = "";
+                                            //var cState = lcb.AreaBCalculate(callErpApi,
+                                            //    lc,
+                                            //    string.Format("{0}{1}",
+                                            //            dtpDate.Value.ToString(clsSetting.LABEL_CODE_DATE_FORMAT),
+                                            //            cmbShiftNo.SelectedIndex.ToString()),
+                                            //    out outCacheLable, out msg); //计算位置
+
+                                            var cState = new CacheJob();
 
                                             logOpt.Write(msg, LogType.BUFFER);
 
-                                            CacheResult cr = cacheher.WhenRollArrived(cState, lc, outCacheLable);
+                                            var cr = cacheher.WhenRollArrived(cState, lc, outCacheLable);
 
                                             logOpt.Write(JsonConvert.SerializeObject(cr), LogType.BUFFER);
-
-                                            // 写标签码到OPC
-                                            opcClient.Write(opcParam.CacheParam.IsCache, cState);
-                                            opcClient.Write(opcParam.CacheParam.GetOutLable1, outCacheLable == null ? "0" : outCacheLable.LCode.Substring(0, 6));
-                                            opcClient.Write(opcParam.CacheParam.GetOutLable2, outCacheLable == null ? "0" : outCacheLable.LCode.Substring(6, 6));
                                         } else {
                                             logOpt.Write(string.Format("!{0}标签重复。", code.LCode), LogType.BUFFER);
                                         }
                                     }
 
-                                    opcClient.Write(opcParam.CacheParam.BeforCacheStatus, false);
-
                                     QueuesView.Move(lsvCacheBefor, lsvLableUp);
-                                }
+                                } // if code != null
                             }
+                        } catch (Exception ex) {
+                            logOpt.Write("!" + ex.ToString(), LogType.BUFFER);
+                        }
+                    }
+                    Thread.Sleep(OPCClient.DELAY * 200);
+                }
+            });
+        }
+
+        private void BeforCacheTask() {
+            logOpt.Write("缓存任务启动。", LogType.NORMAL);
+
+            Task.Factory.StartNew(() => {
+                while (isrun) {
+                    lock (opcClient) {
+                        try {
+                            if (PlcHelper.ReadItemInFromCache(opcClient)) {
+                                var lc = taskQ.GetCacheQ();
+
+                                if (lc == null) {
+                                    logOpt.Write(string.Format("!{0}标签找不到", code.LCode), LogType.BUFFER);
+                                    continue;
+                                }
+
+                                // 检查重复计算。
+                                if (string.IsNullOrEmpty(lc.PanelNo)) {
+                                    // 计算位置
+                                    LableCode outCacheLable;
+                                    string msg;
+                                    var cState = lcb.AreaBCalculate(callErpApi,
+                                        lc,
+                                        string.Format("{0}{1}",
+                                                dtpDate.Value.ToString(clsSetting.LABEL_CODE_DATE_FORMAT),
+                                                cmbShiftNo.SelectedIndex.ToString()),
+                                        out outCacheLable, out msg); //计算位置
+
+                                    logOpt.Write(msg, LogType.BUFFER);
+
+                                    var cr = cacheher.WhenRollArrived(cState, lc, outCacheLable);
+                                    logOpt.Write(JsonConvert.SerializeObject(cr), LogType.BUFFER);
+
+                                    PlcHelper.WriteCacheJob(opcClient, cr.state, cr.savepos, cr.getpos);
+                                } else {
+                                    logOpt.Write(string.Format("!{0}标签重复。", code.LCode), LogType.BUFFER);
+                                }
+
+                                
+                            }
+
+                            QueuesView.Move(lsvCacheBefor, lsvLableUp);
+
+
                         } catch (Exception ex) {
                             logOpt.Write("!" + ex.ToString(), LogType.BUFFER);
                         }
