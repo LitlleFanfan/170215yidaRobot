@@ -30,9 +30,9 @@ namespace yidascan {
     public class CacheResult {
         public int savepos { get; set; }
         public int getpos { get; set; }
-        public CacheState state { get; set; }
+        public CacheJob state { get; set; }
 
-        public CacheResult(CacheState state, int getpos, int savepos) {
+        public CacheResult(CacheJob state, int getpos, int savepos) {
             this.state = state;
             this.savepos = savepos;
             this.getpos = getpos;
@@ -168,33 +168,33 @@ namespace yidascan {
         /// <param name="saveCode"></param>
         /// <param name="getCode"></param>
         /// <returns></returns>
-        public CacheResult WhenRollArrived(CacheState state, LableCode saveCode, LableCode getCode) {
+        public CacheResult WhenRollArrived(CacheJob state, LableCode saveCode, LableCode getCode) {
             CacheResult result = null;
             const int NULL_POS = 0;
             var posToGet = 0;
             var posToSave = 0;
 
             switch (state) {
-                case CacheState.Go:
+                case CacheJob.GO:
                     result = new CacheResult(state, NULL_POS, NULL_POS);
                     break;
-                case CacheState.Cache:
+                case CacheJob.SAVE:
                     posToSave = SelectNearestNullPos(saveCode.ToLocation, -1);
                     save(saveCode, posToSave);
                     result = new CacheResult(state, NULL_POS, posToSave);
                     break;
-                case CacheState.GetThenCache:
+                case CacheJob.GET_THEN_SAVE:
                     // 考虑错开机械手。
                     posToGet = getPosByCode(getCode);
                     posToSave = SelectNearestNullPos(saveCode.ToLocation, posToGet);
                     save(saveCode, posToSave);
                     result = new CacheResult(state, posToGet, posToSave);
                     break;
-                case CacheState.GetThenGo:
+                case CacheJob.GET_THEN_GO:
                     posToGet = getPosByCode(getCode);
                     result = new CacheResult(state, posToGet, NULL_POS);
                     break;
-                case CacheState.GoThenGet:
+                case CacheJob.GO_THEN_GET:
                     posToGet = getPosByCode(getCode);
                     result = new CacheResult(state, posToGet, NULL_POS);
                     break;
