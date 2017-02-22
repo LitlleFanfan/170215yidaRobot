@@ -30,6 +30,46 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmMain));
+            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem(new string[] {
+            "                "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.ControlLight, null);
+            System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem(new string[] {
+            "                "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.ControlLight, null);
+            System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem(new string[] {
+            "                "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.ControlLight, null);
+            System.Windows.Forms.ListViewItem listViewItem4 = new System.Windows.Forms.ListViewItem(new string[] {
+            "                "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.ControlLight, null);
+            System.Windows.Forms.ListViewItem listViewItem5 = new System.Windows.Forms.ListViewItem(new string[] {
+            "                "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.ControlLight, null);
+            System.Windows.Forms.ListViewItem listViewItem6 = new System.Windows.Forms.ListViewItem(new string[] {
+            "                "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.ControlLight, null);
+            System.Windows.Forms.ListViewItem listViewItem7 = new System.Windows.Forms.ListViewItem(new string[] {
+            "                "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.ControlLight, null);
+            System.Windows.Forms.ListViewItem listViewItem8 = new System.Windows.Forms.ListViewItem(new string[] {
+            "                "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.ControlLight, null);
+            System.Windows.Forms.ListViewItem listViewItem9 = new System.Windows.Forms.ListViewItem(new string[] {
+            "                "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.ControlLight, null);
+            System.Windows.Forms.ListViewItem listViewItem10 = new System.Windows.Forms.ListViewItem(new string[] {
+            "                "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.ControlLight, null);
+            System.Windows.Forms.ListViewItem listViewItem11 = new System.Windows.Forms.ListViewItem(new string[] {
+            "                "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.ControlLight, null);
+            System.Windows.Forms.ListViewItem listViewItem12 = new System.Windows.Forms.ListViewItem(new string[] {
+            "                "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.ControlLight, null);
+            System.Windows.Forms.ListViewItem listViewItem13 = new System.Windows.Forms.ListViewItem(new string[] {
+            "                "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.ControlLight, null);
+            System.Windows.Forms.ListViewItem listViewItem14 = new System.Windows.Forms.ListViewItem(new string[] {
+            "                "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.ControlLight, null);
+            System.Windows.Forms.ListViewItem listViewItem15 = new System.Windows.Forms.ListViewItem(new string[] {
+            "                "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.ControlLight, null);
+            System.Windows.Forms.ListViewItem listViewItem16 = new System.Windows.Forms.ListViewItem(new string[] {
+            "                "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.ControlLight, null);
+            System.Windows.Forms.ListViewItem listViewItem17 = new System.Windows.Forms.ListViewItem(new string[] {
+            "                "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.ControlLight, null);
+            System.Windows.Forms.ListViewItem listViewItem18 = new System.Windows.Forms.ListViewItem(new string[] {
+            "                "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.ControlLight, null);
+            System.Windows.Forms.ListViewItem listViewItem19 = new System.Windows.Forms.ListViewItem(new string[] {
+            "                "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.ControlLight, null);
+            System.Windows.Forms.ListViewItem listViewItem20 = new System.Windows.Forms.ListViewItem(new string[] {
+            "                "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.ControlLight, null);
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.btnRun = new System.Windows.Forms.ToolStripButton();
             this.btnStop = new System.Windows.Forms.ToolStripButton();
@@ -105,11 +145,11 @@
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
             this.splitContainer4 = new System.Windows.Forms.SplitContainer();
-            this.listView1 = new System.Windows.Forms.ListView();
-            this.listView2 = new System.Windows.Forms.ListView();
+            this.lsvCacheQ1 = new System.Windows.Forms.ListView();
+            this.lsvCacheQ2 = new System.Windows.Forms.ListView();
             this.splitContainer5 = new System.Windows.Forms.SplitContainer();
-            this.listView3 = new System.Windows.Forms.ListView();
-            this.listView4 = new System.Windows.Forms.ListView();
+            this.lsvCacheQ3 = new System.Windows.Forms.ListView();
+            this.lsvCacheQ4 = new System.Windows.Forms.ListView();
             this.label8 = new System.Windows.Forms.Label();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.label1 = new System.Windows.Forms.Label();
@@ -462,7 +502,7 @@
             this.lsvBufferLog.Location = new System.Drawing.Point(3, 3);
             this.lsvBufferLog.MinimumSize = new System.Drawing.Size(250, 4);
             this.lsvBufferLog.Name = "lsvBufferLog";
-            this.lsvBufferLog.Size = new System.Drawing.Size(499, 205);
+            this.lsvBufferLog.Size = new System.Drawing.Size(517, 198);
             this.lsvBufferLog.TabIndex = 4;
             // 
             // lsvRobotStackLog
@@ -472,7 +512,7 @@
             this.lsvRobotStackLog.Location = new System.Drawing.Point(0, 0);
             this.lsvRobotStackLog.MinimumSize = new System.Drawing.Size(250, 4);
             this.lsvRobotStackLog.Name = "lsvRobotStackLog";
-            this.lsvRobotStackLog.Size = new System.Drawing.Size(505, 211);
+            this.lsvRobotStackLog.Size = new System.Drawing.Size(523, 204);
             this.lsvRobotStackLog.TabIndex = 4;
             // 
             // statusStrip1
@@ -703,7 +743,7 @@
             this.tbpCacheLog.Location = new System.Drawing.Point(4, 22);
             this.tbpCacheLog.Name = "tbpCacheLog";
             this.tbpCacheLog.Padding = new System.Windows.Forms.Padding(3);
-            this.tbpCacheLog.Size = new System.Drawing.Size(505, 211);
+            this.tbpCacheLog.Size = new System.Drawing.Size(523, 204);
             this.tbpCacheLog.TabIndex = 1;
             this.tbpCacheLog.Text = "缓存日志";
             this.tbpCacheLog.UseVisualStyleBackColor = true;
@@ -713,7 +753,7 @@
             this.tbpRobotLog.Controls.Add(this.lsvRobotStackLog);
             this.tbpRobotLog.Location = new System.Drawing.Point(4, 22);
             this.tbpRobotLog.Name = "tbpRobotLog";
-            this.tbpRobotLog.Size = new System.Drawing.Size(505, 211);
+            this.tbpRobotLog.Size = new System.Drawing.Size(523, 204);
             this.tbpRobotLog.TabIndex = 2;
             this.tbpRobotLog.Text = "机器人日志";
             this.tbpRobotLog.UseVisualStyleBackColor = true;
@@ -723,7 +763,7 @@
             this.tbpALarmLog.Controls.Add(this.lsvAlarmLog);
             this.tbpALarmLog.Location = new System.Drawing.Point(4, 22);
             this.tbpALarmLog.Name = "tbpALarmLog";
-            this.tbpALarmLog.Size = new System.Drawing.Size(505, 211);
+            this.tbpALarmLog.Size = new System.Drawing.Size(523, 204);
             this.tbpALarmLog.TabIndex = 3;
             this.tbpALarmLog.Text = "报警日志";
             this.tbpALarmLog.UseVisualStyleBackColor = true;
@@ -735,7 +775,7 @@
             this.lsvAlarmLog.Location = new System.Drawing.Point(0, 0);
             this.lsvAlarmLog.MinimumSize = new System.Drawing.Size(250, 4);
             this.lsvAlarmLog.Name = "lsvAlarmLog";
-            this.lsvAlarmLog.Size = new System.Drawing.Size(505, 211);
+            this.lsvAlarmLog.Size = new System.Drawing.Size(523, 204);
             this.lsvAlarmLog.TabIndex = 5;
             // 
             // panel3
@@ -950,34 +990,46 @@
             // 
             // splitContainer4.Panel1
             // 
-            this.splitContainer4.Panel1.Controls.Add(this.listView1);
+            this.splitContainer4.Panel1.Controls.Add(this.lsvCacheQ1);
             // 
             // splitContainer4.Panel2
             // 
-            this.splitContainer4.Panel2.Controls.Add(this.listView2);
+            this.splitContainer4.Panel2.Controls.Add(this.lsvCacheQ2);
             this.splitContainer4.Size = new System.Drawing.Size(743, 98);
             this.splitContainer4.SplitterDistance = 357;
             this.splitContainer4.TabIndex = 0;
             // 
-            // listView1
+            // lsvCacheQ1
             // 
-            this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listView1.Location = new System.Drawing.Point(0, 0);
-            this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(357, 98);
-            this.listView1.TabIndex = 0;
-            this.listView1.UseCompatibleStateImageBehavior = false;
-            this.listView1.View = System.Windows.Forms.View.List;
+            this.lsvCacheQ1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lsvCacheQ1.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
+            listViewItem1,
+            listViewItem2,
+            listViewItem3,
+            listViewItem4,
+            listViewItem5});
+            this.lsvCacheQ1.Location = new System.Drawing.Point(0, 0);
+            this.lsvCacheQ1.Name = "lsvCacheQ1";
+            this.lsvCacheQ1.Size = new System.Drawing.Size(357, 98);
+            this.lsvCacheQ1.TabIndex = 0;
+            this.lsvCacheQ1.UseCompatibleStateImageBehavior = false;
+            this.lsvCacheQ1.View = System.Windows.Forms.View.List;
             // 
-            // listView2
+            // lsvCacheQ2
             // 
-            this.listView2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listView2.Location = new System.Drawing.Point(0, 0);
-            this.listView2.Name = "listView2";
-            this.listView2.Size = new System.Drawing.Size(382, 98);
-            this.listView2.TabIndex = 1;
-            this.listView2.UseCompatibleStateImageBehavior = false;
-            this.listView2.View = System.Windows.Forms.View.List;
+            this.lsvCacheQ2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lsvCacheQ2.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
+            listViewItem6,
+            listViewItem7,
+            listViewItem8,
+            listViewItem9,
+            listViewItem10});
+            this.lsvCacheQ2.Location = new System.Drawing.Point(0, 0);
+            this.lsvCacheQ2.Name = "lsvCacheQ2";
+            this.lsvCacheQ2.Size = new System.Drawing.Size(382, 98);
+            this.lsvCacheQ2.TabIndex = 1;
+            this.lsvCacheQ2.UseCompatibleStateImageBehavior = false;
+            this.lsvCacheQ2.View = System.Windows.Forms.View.List;
             // 
             // splitContainer5
             // 
@@ -987,34 +1039,46 @@
             // 
             // splitContainer5.Panel1
             // 
-            this.splitContainer5.Panel1.Controls.Add(this.listView3);
+            this.splitContainer5.Panel1.Controls.Add(this.lsvCacheQ3);
             // 
             // splitContainer5.Panel2
             // 
-            this.splitContainer5.Panel2.Controls.Add(this.listView4);
+            this.splitContainer5.Panel2.Controls.Add(this.lsvCacheQ4);
             this.splitContainer5.Size = new System.Drawing.Size(743, 97);
             this.splitContainer5.SplitterDistance = 357;
             this.splitContainer5.TabIndex = 0;
             // 
-            // listView3
+            // lsvCacheQ3
             // 
-            this.listView3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listView3.Location = new System.Drawing.Point(0, 0);
-            this.listView3.Name = "listView3";
-            this.listView3.Size = new System.Drawing.Size(357, 97);
-            this.listView3.TabIndex = 1;
-            this.listView3.UseCompatibleStateImageBehavior = false;
-            this.listView3.View = System.Windows.Forms.View.List;
+            this.lsvCacheQ3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lsvCacheQ3.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
+            listViewItem11,
+            listViewItem12,
+            listViewItem13,
+            listViewItem14,
+            listViewItem15});
+            this.lsvCacheQ3.Location = new System.Drawing.Point(0, 0);
+            this.lsvCacheQ3.Name = "lsvCacheQ3";
+            this.lsvCacheQ3.Size = new System.Drawing.Size(357, 97);
+            this.lsvCacheQ3.TabIndex = 1;
+            this.lsvCacheQ3.UseCompatibleStateImageBehavior = false;
+            this.lsvCacheQ3.View = System.Windows.Forms.View.List;
             // 
-            // listView4
+            // lsvCacheQ4
             // 
-            this.listView4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listView4.Location = new System.Drawing.Point(0, 0);
-            this.listView4.Name = "listView4";
-            this.listView4.Size = new System.Drawing.Size(382, 97);
-            this.listView4.TabIndex = 1;
-            this.listView4.UseCompatibleStateImageBehavior = false;
-            this.listView4.View = System.Windows.Forms.View.List;
+            this.lsvCacheQ4.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lsvCacheQ4.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
+            listViewItem16,
+            listViewItem17,
+            listViewItem18,
+            listViewItem19,
+            listViewItem20});
+            this.lsvCacheQ4.Location = new System.Drawing.Point(0, 0);
+            this.lsvCacheQ4.Name = "lsvCacheQ4";
+            this.lsvCacheQ4.Size = new System.Drawing.Size(382, 97);
+            this.lsvCacheQ4.TabIndex = 1;
+            this.lsvCacheQ4.UseCompatibleStateImageBehavior = false;
+            this.lsvCacheQ4.View = System.Windows.Forms.View.List;
             // 
             // label8
             // 
@@ -1196,11 +1260,11 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.SplitContainer splitContainer3;
         private System.Windows.Forms.SplitContainer splitContainer4;
-        private System.Windows.Forms.ListView listView1;
-        private System.Windows.Forms.ListView listView2;
+        private System.Windows.Forms.ListView lsvCacheQ1;
+        private System.Windows.Forms.ListView lsvCacheQ2;
         private System.Windows.Forms.SplitContainer splitContainer5;
-        private System.Windows.Forms.ListView listView3;
-        private System.Windows.Forms.ListView listView4;
+        private System.Windows.Forms.ListView lsvCacheQ3;
+        private System.Windows.Forms.ListView lsvCacheQ4;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ToolStripMenuItem btnSignalGen;
         private System.Windows.Forms.ToolStripMenuItem btnSignalWeigh;
