@@ -422,7 +422,7 @@ namespace yidascan {
             return client.ReadBool(param.CacheParam.BeforCacheStatus);
         }
 
-        private void BeforCacheTask_old() {
+        private void BeforCacheTask() {
             logOpt.Write("缓存任务启动。", LogType.NORMAL);
 
             Task.Factory.StartNew(() => {
@@ -476,57 +476,57 @@ namespace yidascan {
             });
         }
 
-        private void BeforCacheTask() {
-            logOpt.Write("缓存任务启动。", LogType.NORMAL);
+        //private void BeforCacheTask() {
+        //    logOpt.Write("缓存任务启动。", LogType.NORMAL);
 
-            Task.Factory.StartNew(() => {
-                while (isrun) {
-                    lock (opcClient) {
-                        try {
-                            if (PlcHelper.ReadItemInFromCache(opcClient)) {
-                                var lc = taskQ.GetCacheQ();
+        //    Task.Factory.StartNew(() => {
+        //        while (isrun) {
+        //            lock (opcClient) {
+        //                try {
+        //                    if (PlcHelper.ReadItemInFromCache(opcClient)) {
+        //                        var lc = taskQ.GetCacheQ();
 
-                                if (lc == null) {
-                                    logOpt.Write(string.Format("!{0}标签找不到", code.LCode), LogType.BUFFER);
-                                    continue;
-                                }
+        //                        if (lc == null) {
+        //                            logOpt.Write(string.Format("!{0}标签找不到", code.LCode), LogType.BUFFER);
+        //                            continue;
+        //                        }
 
-                                // 检查重复计算。
-                                if (string.IsNullOrEmpty(lc.PanelNo)) {
-                                    // 计算位置
-                                    LableCode outCacheLable;
-                                    string msg;
-                                    var cState = lcb.AreaBCalculate(callErpApi,
-                                        lc,
-                                        string.Format("{0}{1}",
-                                                dtpDate.Value.ToString(clsSetting.LABEL_CODE_DATE_FORMAT),
-                                                cmbShiftNo.SelectedIndex.ToString()),
-                                        out outCacheLable, out msg); //计算位置
+        //                        // 检查重复计算。
+        //                        if (string.IsNullOrEmpty(lc.PanelNo)) {
+        //                            // 计算位置
+        //                            LableCode outCacheLable;
+        //                            string msg;
+        //                            var cState = lcb.AreaBCalculate(callErpApi,
+        //                                lc,
+        //                                string.Format("{0}{1}",
+        //                                        dtpDate.Value.ToString(clsSetting.LABEL_CODE_DATE_FORMAT),
+        //                                        cmbShiftNo.SelectedIndex.ToString()),
+        //                                out outCacheLable, out msg); //计算位置
 
-                                    logOpt.Write(msg, LogType.BUFFER);
+        //                            logOpt.Write(msg, LogType.BUFFER);
 
-                                    var cr = cacheher.WhenRollArrived(cState, lc, outCacheLable);
-                                    logOpt.Write(JsonConvert.SerializeObject(cr), LogType.BUFFER);
+        //                            var cr = cacheher.WhenRollArrived(cState, lc, outCacheLable);
+        //                            logOpt.Write(JsonConvert.SerializeObject(cr), LogType.BUFFER);
 
-                                    PlcHelper.WriteCacheJob(opcClient, cr.state, cr.savepos, cr.getpos);
-                                } else {
-                                    logOpt.Write(string.Format("!{0}标签重复。", code.LCode), LogType.BUFFER);
-                                }
+        //                            PlcHelper.WriteCacheJob(opcClient, cr.state, cr.savepos, cr.getpos);
+        //                        } else {
+        //                            logOpt.Write(string.Format("!{0}标签重复。", code.LCode), LogType.BUFFER);
+        //                        }
 
                                 
-                            }
+        //                    }
 
-                            QueuesView.Move(lsvCacheBefor, lsvLableUp);
+        //                    QueuesView.Move(lsvCacheBefor, lsvLableUp);
 
 
-                        } catch (Exception ex) {
-                            logOpt.Write("!" + ex.ToString(), LogType.BUFFER);
-                        }
-                    }
-                    Thread.Sleep(OPCClient.DELAY * 200);
-                }
-            });
-        }
+        //                } catch (Exception ex) {
+        //                    logOpt.Write("!" + ex.ToString(), LogType.BUFFER);
+        //                }
+        //            }
+        //            Thread.Sleep(OPCClient.DELAY * 200);
+        //        }
+        //    });
+        //}
 
         /// <summary>
         /// 2期代码。
