@@ -316,6 +316,7 @@ namespace yidascan {
             WeighTask();
             ACAreaFinishTask();
             BeforCacheTask();
+            LableUpTask();
 
             StartRobotJobATask();
             StartRobotJobBTask();
@@ -538,7 +539,7 @@ namespace yidascan {
                 while (isrun) {
                     lock (opcClient) {
                         try {
-                            var r = opcClient.ReadBool(opcParam.CacheParam.BeforCacheStatus);
+                            var r = opcClient.ReadBool(PlcSlot.LABEL_UP_SIGNAL);
 
                             if (r) {
                                 var code = taskQ.GetLableUpQ();
@@ -546,7 +547,7 @@ namespace yidascan {
 
                                 // ???未完成
 
-                                opcClient.Write(opcParam.CacheParam.BeforCacheStatus, false);
+                                opcClient.Write(PlcSlot.LABEL_UP_SIGNAL, false);
 
                                 QueuesView.Move(lsvLableUp, int.Parse(code.ParseLocationNo()) < 6 ? lsvCatch1 : lsvCatch2);
                             }
