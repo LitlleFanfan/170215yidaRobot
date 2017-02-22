@@ -1,42 +1,8 @@
 ﻿using System;
-
 using System.Threading;
+using yidascan.DataAccess;
+
 namespace yidascan {
-    /// <summary>
-    /// 缓存区动作代码
-    /// </summary>
-    public enum CacheJob {
-        /// <summary>
-        /// 直接走
-        /// </summary>
-        GO = 1,
-
-        /// <summary>
-        /// 直接存
-        /// </summary>
-        SAVE = 2,
-
-        /// <summary>
-        /// 先取后存
-        /// </summary>
-        GET_THEN_SAVE = 3,
-
-        /// <summary>
-        /// 先走后取
-        /// </summary>
-        GO_THEN_GET = 4,
-
-        /// <summary>
-        /// 先取后走
-        /// </summary>
-        GET_THEN_GO = 5,
-
-        /// <summary>
-        /// 显存后取
-        /// </summary>
-        SAVE_THEN_GET = 6,
-    }
-
     public enum RollCatchChannel {
         /// <summary>
         /// 通道1
@@ -68,7 +34,7 @@ namespace yidascan {
         /// <param name="job">动作编号。</param>
         /// /// <param name="posSave">动作编号。</param>
         /// /// <param name="posGet">动作编号。</param>
-        public static void WriteCacheJob(IOpcClient client, CacheJob job, int posSave, int posGet) {
+        public static void WriteCacheJob(IOpcClient client, CacheState job, int posSave, int posGet) {
             client.Write(PlcSlot.CACHE_JOB_SIGNAL, job);
             client.Write(PlcSlot.CACHE_JOB_POS_SAVE, posSave);
             client.Write(PlcSlot.CACHE_JOB_POS_GET, posGet);

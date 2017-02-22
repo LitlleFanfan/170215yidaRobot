@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using ProduceComm.OPC;
+using yidascan.DataAccess;
 
 namespace yidascan {
     public partial class wtestplc : Form {
@@ -46,7 +47,7 @@ namespace yidascan {
             var job = Int32.Parse(cbxJob.Text);
             var possave = (int)ntxtCachePosSave.Value;
             var posget = (int)ntxtCachePosGet.Value;
-            PlcHelper.WriteCacheJob(client, (CacheJob)job, possave, posget);
+            PlcHelper.WriteCacheJob(client, (CacheState)job, possave, posget);
             WriteLog($"写缓存区动作: {job}");
         }
 

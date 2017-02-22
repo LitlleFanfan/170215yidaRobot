@@ -19,12 +19,13 @@ namespace yidascan.DataAccess {
     }
 
     public enum CacheState {
-        Error,
-        Go,
-        Cache,
-        GetThenCache,
-        GoThenGet,
-        GetThenGo
+        Error = 0,
+        Go = 1,
+        Cache = 2,
+        GetThenCache = 3,
+        GoThenGet = 4,
+        GetThenGo = 5,
+        CacheAndGet = 6
     }
 
     public class LableCode {

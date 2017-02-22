@@ -198,6 +198,11 @@ namespace yidascan {
                     posToGet = getPosByCode(getCode);
                     result = new CacheResult(state, posToGet, NULL_POS);
                     break;
+                case CacheState.CacheAndGet:
+                    posToGet = getPosByCode(getCode);
+                    posToSave = SelectNearestNullPos(saveCode.ToLocation, posToGet); ;
+                    result = new CacheResult(state, posToGet, posToSave);
+                    break;
             }
 
             return result;
