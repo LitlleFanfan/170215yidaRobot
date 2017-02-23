@@ -124,7 +124,7 @@ namespace yidascan {
         }
 
         private decimal CalculateXory(List<LableCode> lcs) {
-            int index = CalculateFloorIndex(lcs);
+            var index = CalculateFloorIndex(lcs);
             decimal xory;
             if (index <= 2) {
                 xory = index % 2 == 1 ? 0 : -clsSetting.RollSep;
@@ -177,42 +177,98 @@ namespace yidascan {
         /// <param name="lc">当前标签</param>
         /// <returns></returns>
         public LableCode IsPanelFull(List<LableCode> lcs, LableCode lc) {
-            LableCode result = null;
-            decimal MAX_LEN = clsSetting.SplintLength / 2;
-            if (lc.Floor > 1) {
-                MAX_LEN = LableCode.GetFloorHalfAvgLength(lc.PanelNo, lc.Floor);
-                MAX_LEN = MAX_LEN == 0 ? (clsSetting.SplintLength / 2) : MAX_LEN;
-                FrmMain.logOpt.Write(string.Format("板号{0}层号{1}层的平均长度{2}", lc.PanelNo, lc.Floor - 1, MAX_LEN), LogType.BUFFER, LogViewType.OnlyFile);
-            }
-            var cache = from s in lcs where s.FloorIndex == 0 select s;
-            decimal xory = CalculateXory(lcs);//计算要码上去布的Xory
+            // LableCode result = null;
 
-            foreach (LableCode item in cache) {
-                // 当前卷的坐标。
-                decimal itemXory = Math.Abs(xory) + lc.Diameter + clsSetting.RollSep;
-                // 当前对应的边界余量。
-                decimal tmp = MAX_LEN - (item.Diameter + Math.Abs(itemXory));
+            //var MAX_LEN = clsSetting.SplintLength / 2;
+            //if (lc.Floor > 1) {
+            //    MAX_LEN = LableCode.GetFloorHalfAvgLength(lc.PanelNo, lc.Floor);
+            //    MAX_LEN = MAX_LEN == 0 ? (clsSetting.SplintLength / 2) : MAX_LEN;
+            //    FrmMain.logOpt.Write(string.Format("板号{0}层号{1}层的平均长度{2}", lc.PanelNo, lc.Floor - 1, MAX_LEN), LogType.BUFFER, LogViewType.OnlyFile);
+            //}
 
-                if (tmp > clsSetting.EdgeSpace) { continue; }
+            // var MAX_LEN = FindMaxWidth(lc);
 
-                if (result == null || (item.Diameter < result.Diameter)) {
-                    result = item;
-                }
-            }
-            return result;
+            // var cached = (from s in lcs where s.FloorIndex == 0 select s).ToList();
+
+            //var xory = CalculateXory(lcs);//计算要码上去布的Xory
+
+            //foreach (LableCode item in cached) {
+            //    // 当前卷的坐标。
+            //    var itemXory = Math.Abs(xory) + lc.Diameter + clsSetting.RollSep;
+            //    // 当前对应的边界余量。
+            //    var tmp = MAX_LEN - (item.Diameter + Math.Abs(itemXory));
+
+            //    // not full
+            //    if (tmp > clsSetting.EdgeSpace) { continue; }
+
+            //    if (result == null || (item.Diameter < result.Diameter)) {
+            //        result = item; // 满
+            //    }
+            //}
+
+            // 以下是新的做法。
+            // 满则返回莫格缓存中的布卷
+            // 不满则返回null
+            var cachedRolls = (from s in lcs where s.FloorIndex == 0 select s).ToList();
+            var MAX_WIDTH = FindMaxHalfWidth(lc);
+            // 板上宽度
+            var installedWidth = Math.Abs(CalculateXory(lcs));
+            return findSmallerFromCachedRolls(cachedRolls, lc, installedWidth, MAX_WIDTH);
         }
 
-        public PanelInfo GetPanelNo(LableCode lc, string dateShiftNo) {
-            var pf = LableCode.GetTolactionCurrPanelNo(lc.ToLocation, dateShiftNo);
-            if (pf == null) {
-                var panelNo = PanelGen.NewPanelNo();
-                lc.PanelNo = panelNo;
-                lc.FloorIndex = 0;
-                lc.Floor = 1;
-                lc.Coordinates = "";
+        private static decimal FindMaxHalfWidth(LableCode lc) {
+            var lenOfUpperFloor = lc.Floor > 1 
+                ? LableCode.GetFloorHalfAvgLength(lc.PanelNo, lc.Floor)
+                : 0;
+            
+           if (lenOfUpperFloor > 0) {
+                return lenOfUpperFloor;
             } else {
-                lc.SetupPanelInfo(pf);
+                // 默认最大宽度
+                return (clsSetting.SplintLength / 2);
             }
+        }
+
+        /// <summary>
+        /// 当前布卷和缓存中的一个布卷可能占用的坐标
+        /// </summary>
+        /// <param name="l1"></param>
+        /// <param name="l2"></param>
+        /// <param name="installedWidth">板上已有布卷总宽度</param>
+        /// <returns></returns>
+        private static decimal expectedWidth(decimal installedWidth, LableCode l1, LableCode l2) {
+            // 预期宽度
+            return installedWidth + l1.Diameter + clsSetting.RollSep + l2.Diameter + clsSetting.EdgeSpace;
+        }
+
+        /// <summary>
+        /// 从缓存布卷中，小于当前直径的布卷中，取最小的那个。
+        /// </summary>
+        /// <param name="cachedRolls"></param>
+        /// <param name="current"></param>
+        /// <param name="installedWidth">todo: describe installedWidth parameter on findSmallerFromCachedRolls</param>
+        /// <param name="maxedWidth">todo: describe maxedWidth parameter on findSmallerFromCachedRolls</param>
+        /// <returns></returns>
+        private static LableCode findSmallerFromCachedRolls(List<LableCode> cachedRolls, LableCode current, decimal installedWidth, decimal maxedWidth) {
+            var p = from x in cachedRolls
+                    where (x.Diameter < current.Diameter) && (expectedWidth(installedWidth, current, x) > maxedWidth)
+                    orderby x.Diameter ascending
+                    select x;
+            return p.FirstOrDefault();
+        }
+
+        public static PanelInfo GetPanelNo(LableCode lc, string dateShiftNo) {
+            var pf = LableCode.GetTolactionCurrPanelNo(lc.ToLocation, dateShiftNo);
+            //if (pf == null) {
+            //    var panelNo = PanelGen.NewPanelNo();
+            //    lc.PanelNo = panelNo;
+            //    lc.FloorIndex = 0;
+            //    lc.Floor = 1;
+            //    lc.Coordinates = "";
+            //} else {
+            //    lc.SetupPanelInfo(pf);
+            //}
+            lc.SetupPanelInfo(pf);
             return pf;
         }
 
@@ -305,17 +361,17 @@ namespace yidascan {
                 var fp = FloorPerformance.None;
 
                 // 取当前交地、当前板、当前层所有标签。
-                var lcs = LableCode.GetLableCodesOfRecentFloor(lc.ToLocation, pinfo);
+                var layerLabels = LableCode.GetLableCodesOfRecentFloor(lc.ToLocation, pinfo);
 
                 LableCode lc2 = null;
-                if (lcs != null && lcs.Count > 0) {
+                if (layerLabels != null && layerLabels.Count > 0) {
                     // 最近一层没满。
-                    lc2 = IsPanelFull(lcs, lc);
+                    lc2 = IsPanelFull(layerLabels, lc);
 
                     if (lc2 != null) //不为NULL，表示满
                     {
-                        //计算位置坐标
-                        CalculatePosition(lcs, lc, lc2);
+                        //计算位置坐标, 赋予层号
+                        CalculatePosition(layerLabels, lc, lc2);
 
                         if (lc.FloorIndex % 2 == 0) {
                             pinfo.EvenStatus = true;
@@ -326,7 +382,7 @@ namespace yidascan {
                         }
                     } else {
                         //计算缓存，lc2不为NULL需要缓存
-                        lc2 = CalculateCachePro(pinfo, lc, lcs, cacheq);
+                        lc2 = CalculateCachePro(pinfo, lc, layerLabels, cacheq);
                     }
                 }
 
@@ -342,7 +398,9 @@ namespace yidascan {
                         : CacheState.GoThenGet;
                 } else {
                     if (LableCode.Update(fp, pinfo, lc))
-                        rt.state = lc.FloorIndex == 0 ? CacheState.Cache : CacheState.Go;
+                        rt.state = lc.FloorIndex == 0 
+                            ? CacheState.Cache 
+                            : CacheState.Go;
                 }
 
                 var msg = "";

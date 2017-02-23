@@ -166,7 +166,7 @@ namespace yidascan.DataAccess {
             get { return floor; }
             set { floor = value; }
         }
-        
+
         public LableCode() { }
 
         public LableCode(string code, string tolocation, bool scanByMan) {
@@ -236,7 +236,7 @@ namespace yidascan.DataAccess {
         }
 
         public static void SetOnPanelState(string lablecode) {
-            List<CommandParameter> cp = new List<CommandParameter>() { new CommandParameter(@"UPDATE LableCode SET [Status] = @Status,[UpdateDate] = @UpdateDate
+            var cp = new List<CommandParameter>() { new CommandParameter(@"UPDATE LableCode SET [Status] = @Status,[UpdateDate] = @UpdateDate
                   WHERE [LCode] = @LCode",
                 new SqlParameter[]{
                     new SqlParameter("@Status",LableState.OnPanel),
@@ -246,7 +246,7 @@ namespace yidascan.DataAccess {
         }
 
         public static bool Add(LableCode c) {
-            List<CommandParameter> cps = CreateLableCodeInsert(c);
+            var cps = CreateLableCodeInsert(c);
             return DataAccess.CreateDataAccess.sa.NonQueryTran(cps);
         }
 
@@ -255,14 +255,14 @@ namespace yidascan.DataAccess {
         /// </summary>
         /// <param name="pinfo"></param>
         public void SetupPanelInfo(PanelInfo pinfo) {
-            PanelNo = pinfo.PanelNo;
-            Floor = pinfo.CurrFloor;
+            PanelNo = pinfo != null ? pinfo.PanelNo : PanelGen.NewPanelNo();
+            Floor = pinfo != null ? pinfo.CurrFloor : 1;
             FloorIndex = 0;
             Coordinates = "";
         }
 
         public static bool Update(FloorPerformance fp, PanelInfo pInfo, LableCode c, LableCode c2 = null) {
-            List<CommandParameter> cps = CreateLableCodeUpdate(c);
+            var cps = CreateLableCodeUpdate(c);
             if (c2 != null) {
                 cps.Add(new CommandParameter(@"update LableCode set FloorIndex=@FloorIndex,Coordinates=@Coordinates,
                     Cx=@Cx,Cy=@Cy,Cz=@Cz,Crz=@Crz,UpdateDate=@UpdateDate where LCode=@LCode",
@@ -336,10 +336,10 @@ namespace yidascan.DataAccess {
         }
 
         public static PanelInfo GetPanel(string panelNo) {
-            string sql = "select * from Panel where PanelNo=@PanelNo";
-            SqlParameter[] sp = new SqlParameter[]{
+            var sql = "select * from Panel where PanelNo=@PanelNo";
+            var sp = new SqlParameter[]{
                 new SqlParameter("@PanelNo",panelNo)};
-            DataTable dt = DataAccess.CreateDataAccess.sa.Query(sql, sp);
+            var dt = DataAccess.CreateDataAccess.sa.Query(sql, sp);
             if (dt == null || dt.Rows.Count < 1) {
                 return null;
             }
@@ -347,18 +347,18 @@ namespace yidascan.DataAccess {
         }
 
         public static bool SetMaxFloor(string tolocation) {
-            string sql = "update panel set maxfloor=currfloor where status!= 5 and tolocation = @tolocation";
-            SqlParameter[] sp = new SqlParameter[]{
+            var sql = "update panel set maxfloor=currfloor where status!= 5 and tolocation = @tolocation";
+            var sp = new SqlParameter[]{
                 new SqlParameter("@tolocation",tolocation)};
             return DataAccess.CreateDataAccess.sa.NonQuery(sql, sp);
         }
 
         public static decimal GetWidth(string panelNo, int floorIndex) {
-            string sql = "select sum(Diameter) from LableCode where PanelNo=@PanelNo and FloorIndex%2=@FloorIndex%2 and FloorIndex<>0";
-            SqlParameter[] sp = new SqlParameter[]{
+            var sql = "select sum(Diameter) from LableCode where PanelNo=@PanelNo and FloorIndex%2=@FloorIndex%2 and FloorIndex<>0";
+            var sp = new SqlParameter[]{
                 new SqlParameter("@PanelNo",panelNo),
                 new SqlParameter("@FloorIndex",floorIndex)};
-            DataTable dt = DataAccess.CreateDataAccess.sa.Query(sql, sp);
+            var dt = DataAccess.CreateDataAccess.sa.Query(sql, sp);
             if (dt == null || dt.Rows.Count < 1) {
                 return 0;
             }
@@ -366,7 +366,7 @@ namespace yidascan.DataAccess {
         }
 
         public static bool Update(string panelNo) {
-            List<CommandParameter> cps = new List<CommandParameter>() {
+            var cps = new List<CommandParameter>() {
                 new CommandParameter(@"update LableCode set UpdateDate=@UpdateDate,Status=@Status where panelNo=@panelNo",
                 new SqlParameter[]{
                 new SqlParameter("@UpdateDate",DateTime.Now),
@@ -381,7 +381,7 @@ namespace yidascan.DataAccess {
         }
 
         public static bool Update(LableCode obj) {
-            List<CommandParameter> cps = CreateLableCodeUpdate(obj);
+            var cps = CreateLableCodeUpdate(obj);
             cps.Add(new CommandParameter("INSERT INTO Panel (PanelNo,ToLocation,Status,CurrFloor,MaxFloor,Remark)" +
                     "VALUES(@PanelNo,@ToLocation,@Status,1,@MaxFloor,@Remark)",
                 new SqlParameter[]{
@@ -417,46 +417,46 @@ namespace yidascan.DataAccess {
         }
 
         public static bool DeleteAllFinished() {
-            string sql = "delete from LableCode where Status=5";
+            var sql = "delete from LableCode where Status=5";
             return DataAccess.CreateDataAccess.sa.NonQuery(sql);
         }
 
         public static bool Delete(string code) {
-            string sql = "delete from LableCode where LCode=@LCode";
-            SqlParameter[] sp = new SqlParameter[]{
+            var sql = "delete from LableCode where LCode=@LCode";
+            var sp = new SqlParameter[]{
                 new SqlParameter("@LCode",code)};
             return DataAccess.CreateDataAccess.sa.NonQuery(sql, sp);
         }
 
         public static bool DeleteByLocation(string tolocation) {
-            string sql = "delete from LableCode where tolocation=@tolocation";
-            SqlParameter[] sp = new SqlParameter[]{
+            var sql = "delete from LableCode where tolocation=@tolocation";
+            var sp = new SqlParameter[]{
                 new SqlParameter("@tolocation",tolocation)};
             return DataAccess.CreateDataAccess.sa.NonQuery(sql, sp);
         }
 
         public static DataTable QueryByLocation(string location) {
-            string sql = "select * from LableCode where tolocation=@tolocation";
-            SqlParameter[] sp = new SqlParameter[]{
+            var sql = "select * from LableCode where tolocation=@tolocation";
+            var sp = new SqlParameter[]{
                 new SqlParameter("@tolocation",location)};
             return DataAccess.CreateDataAccess.sa.Query(sql, sp);
         }
 
         public static bool PanelNoFinished(string panelNo) {
-            string sql = "select * from LableCode where PanelNo=@PanelNo and Status=5";
-            SqlParameter[] sp = new SqlParameter[]{
+            var sql = "select * from LableCode where PanelNo=@PanelNo and Status=5";
+            var sp = new SqlParameter[]{
                 new SqlParameter("@PanelNo",panelNo)};
-            DataTable dt = DataAccess.CreateDataAccess.sa.Query(sql, sp);
+            var dt = DataAccess.CreateDataAccess.sa.Query(sql, sp);
             return dt != null && dt.Rows.Count > 0;
         }
 
         public static bool IsPanelLastRoll(string panelNo, string lcode) {
-            string sql = @"select top 1 * from LableCode
+            var sql = @"select top 1 * from LableCode
 where panelNo=@PanelNo and exists (select top 1 panelNo from Panel where PanelNo=@PanelNo and LableCode.floor=panel.MaxFloor)
 order by floorindex desc;";
-            SqlParameter[] sp = new SqlParameter[]{
+            var sp = new SqlParameter[]{
                 new SqlParameter("@PanelNo",panelNo)};
-            DataTable dt = DataAccess.CreateDataAccess.sa.Query(sql, sp);
+            var dt = DataAccess.CreateDataAccess.sa.Query(sql, sp);
             if (dt != null && dt.Rows.Count > 0) {
                 return dt.Rows[0]["LCode"].ToString() == lcode;
             }
@@ -464,8 +464,8 @@ order by floorindex desc;";
         }
 
         public static bool PanelNoHas(string panelNo) {
-            string sql = "select * from LableCode where PanelNo=@PanelNo";
-            DataTable dt = DataAccess.CreateDataAccess.sa.Query(sql,
+            var sql = "select * from LableCode where PanelNo=@PanelNo";
+            var dt = DataAccess.CreateDataAccess.sa.Query(sql,
                 new System.Data.SqlClient.SqlParameter[] {
                     new System.Data.SqlClient.SqlParameter("@PanelNo",panelNo)
             });
@@ -476,16 +476,16 @@ order by floorindex desc;";
         /// 从数据库读取指定交地和板的当前层的所有标签。
         /// </summary>
         /// <param name="tolocation">交地</param>
-        /// <param name="panelDate">板号字头</param>
+        /// <param name="pinfo">板信息</param>
         /// <returns></returns>
         public static List<LableCode> GetLableCodesOfRecentFloor(string tolocation, PanelInfo pinfo) {
-            string sql = @"select * from LableCode where ToLocation=@ToLocation and 
+            var sql = @"select * from LableCode where ToLocation=@ToLocation and 
                                     PanelNo=@PanelNo and Floor=@Floor";
-            SqlParameter[] sp = new SqlParameter[]{
+            var sp = new SqlParameter[]{
                 new SqlParameter("@ToLocation",tolocation),
                 new SqlParameter("@PanelNo",pinfo.PanelNo),
                 new SqlParameter("@Floor",pinfo.CurrFloor)};
-            DataTable dt = DataAccess.CreateDataAccess.sa.Query(sql, sp);
+            var dt = DataAccess.CreateDataAccess.sa.Query(sql, sp);
             if (dt == null || dt.Rows.Count < 1) {
                 return null;
             }
@@ -493,11 +493,11 @@ order by floorindex desc;";
         }
 
         public static PanelInfo GetTolactionCurrPanelNo(string tolocation, string dateShiftNo) {
-            string sql = "select * from Panel where ToLocation=@ToLocation and PanelNo like @PanelDate+'%'  and Status=0 order by PanelNo desc";
-            SqlParameter[] sp = new SqlParameter[]{
+            var sql = "select * from Panel where ToLocation=@ToLocation and PanelNo like @PanelDate+'%'  and Status=0 order by PanelNo desc";
+            var sp = new SqlParameter[]{
                 new SqlParameter("@ToLocation",tolocation),
                 new SqlParameter("@PanelDate",dateShiftNo)};
-            DataTable dt = DataAccess.CreateDataAccess.sa.Query(sql, sp);
+            var dt = DataAccess.CreateDataAccess.sa.Query(sql, sp);
             if (dt == null || dt.Rows.Count < 1) {
                 return null;
             }
@@ -505,22 +505,22 @@ order by floorindex desc;";
         }
 
         public static bool SetPanelNo(string lCode) {
-            string sql = @"update lablecode set PanelNo=tmp.PanelNo,updatedate=getdate(),Status=5 from 
+            var sql = @"update lablecode set PanelNo=tmp.PanelNo,updatedate=getdate(),Status=5 from 
                 (select SequenceNo,ToLocation,PanelNo from lablecode where LCode=@lCode) tmp 
                 where
                 tmp.ToLocation = lablecode.ToLocation and
                 tmp.SequenceNo > lablecode.SequenceNo and lablecode.Status = 0";
-            SqlParameter[] sp = new SqlParameter[]{
+            var sp = new SqlParameter[]{
                 new SqlParameter("@lCode",lCode)};
             return DataAccess.CreateDataAccess.sa.NonQuery(sql, sp);
         }
 
         public static List<LableCode> GetLastLableCode(string panelNo, int currFloor) {
-            string sql = "select * from LableCode where PanelNo=@PanelNo and Floor=@Floor";
-            SqlParameter[] sp = new SqlParameter[]{
+            var sql = "select * from LableCode where PanelNo=@PanelNo and Floor=@Floor";
+            var sp = new SqlParameter[]{
                 new SqlParameter("@PanelNo",panelNo),
                 new SqlParameter("@Floor",currFloor)};
-            DataTable dt = DataAccess.CreateDataAccess.sa.Query(sql, sp);
+            var dt = DataAccess.CreateDataAccess.sa.Query(sql, sp);
             if (dt == null || dt.Rows.Count < 1) {
                 return null;
             }
@@ -528,11 +528,11 @@ order by floorindex desc;";
         }
 
         public static string GetLastPanelNo(string shiftNo) {
-            string sql = "select top 1 PanelNo from LableCode where PanelNo like @shiftNo+'%' group by PanelNo order by PanelNo desc";
+            var sql = "select top 1 PanelNo from LableCode where PanelNo like @shiftNo+'%' group by PanelNo order by PanelNo desc";
 
-            SqlParameter[] sp = new SqlParameter[]{
+            var sp = new SqlParameter[]{
                 new SqlParameter("@shiftNo",shiftNo)};
-            DataTable dt = DataAccess.CreateDataAccess.sa.Query(sql, sp);
+            var dt = DataAccess.CreateDataAccess.sa.Query(sql, sp);
             if (dt == null || dt.Rows.Count < 1) {
                 return string.Empty;
             }
@@ -540,13 +540,13 @@ order by floorindex desc;";
         }
 
         public static decimal GetFloorMaxDiameter(string panelNo, int currFloor) {
-            string sql = "select  MAX(Diameter+Cz) " +
+            var sql = "select  MAX(Diameter+Cz) " +
                 "from LableCode where PanelNo = @PanelNo and Floor=@Floor";
 
-            SqlParameter[] sp = new SqlParameter[]{
+            var sp = new SqlParameter[]{
                 new SqlParameter("@PanelNo",panelNo),
                 new SqlParameter("@Floor",currFloor-1)};
-            DataTable dt = DataAccess.CreateDataAccess.sa.Query(sql, sp);
+            var dt = DataAccess.CreateDataAccess.sa.Query(sql, sp);
             if (dt == null || dt.Rows.Count < 1) {
                 return 0;
             }
@@ -554,13 +554,13 @@ order by floorindex desc;";
         }
 
         public static decimal GetFloorHalfAvgLength(string panelNo, int currFloor) {
-            string sql = "select  avg(Length)/2 " +
+            var sql = "select  avg(Length)/2 " +
                 "from LableCode where PanelNo = @PanelNo and Floor=@Floor";
 
-            SqlParameter[] sp = new SqlParameter[]{
+            var sp = new SqlParameter[]{
                 new SqlParameter("@PanelNo",panelNo),
                 new SqlParameter("@Floor",currFloor-1)};
-            DataTable dt = DataAccess.CreateDataAccess.sa.Query(sql, sp);
+            var dt = DataAccess.CreateDataAccess.sa.Query(sql, sp);
             if (dt == null || dt.Rows.Count < 1) {
                 return 0;
             }
@@ -568,11 +568,11 @@ order by floorindex desc;";
         }
 
         public static int GetPanelMaxFloor(string panelNo) {
-            string sql = "select max(Floor) from LableCode b where PanelNo = @PanelNo";
+            var sql = "select max(Floor) from LableCode b where PanelNo = @PanelNo";
 
-            SqlParameter[] sp = new SqlParameter[]{
+            var sp = new SqlParameter[]{
                 new SqlParameter("@PanelNo",panelNo)};
-            DataTable dt = DataAccess.CreateDataAccess.sa.Query(sql, sp);
+            var dt = DataAccess.CreateDataAccess.sa.Query(sql, sp);
             if (dt == null || dt.Rows.Count < 1) {
                 return 0;
             }
@@ -580,14 +580,14 @@ order by floorindex desc;";
         }
 
         public static decimal GetFloorMaxLength(string panelNo, int currFloor) {
-            string sql = "select isnull(sum(Length),0) from (select (select max(Length) Length " +
+            var sql = "select isnull(sum(Length),0) from (select (select max(Length) Length " +
                 "from LableCode b where PanelNo=@PanelNo and b.Floor=a.Floor)Length " +
                 "from LableCode a where PanelNo = @PanelNo and Floor<@Floor group by Floor)tmp";
 
-            SqlParameter[] sp = new SqlParameter[]{
+            var sp = new SqlParameter[]{
                 new SqlParameter("@PanelNo",panelNo),
                 new SqlParameter("@Floor",currFloor)};
-            DataTable dt = DataAccess.CreateDataAccess.sa.Query(sql, sp);
+            var dt = DataAccess.CreateDataAccess.sa.Query(sql, sp);
             if (dt == null || dt.Rows.Count < 1) {
                 return 0;
             }
@@ -595,25 +595,25 @@ order by floorindex desc;";
         }
 
         public static bool SetPanelFloorFill(string panelNo, int floor) {
-            string sql = "update LableCode set Status=5 where PanelNo='@PanelNo' and Floor=@Floor";
-            SqlParameter[] sp = new SqlParameter[]{
+            var sql = "update LableCode set Status=5 where PanelNo='@PanelNo' and Floor=@Floor";
+            var sp = new SqlParameter[]{
                 new SqlParameter("@PanelNo",panelNo),
                 new SqlParameter("@Floor",floor)};
             return DataAccess.CreateDataAccess.sa.NonQuery(sql, sp);
         }
 
         public static DataTable Query(string panelDate) {
-            string sql = "select LCode Code,ToLocation,PanelNo,Floor,FloorIndex,Diameter,Coordinates,case status when 5 then '完成' else '未完成' end Finished from LableCode where PanelNo like @PanelDate+'%'  order by SequenceNo desc";
-            SqlParameter[] sp = new SqlParameter[]{
+            var sql = "select LCode Code,ToLocation,PanelNo,Floor,FloorIndex,Diameter,Coordinates,case status when 5 then '完成' else '未完成' end Finished from LableCode where PanelNo like @PanelDate+'%'  order by SequenceNo desc";
+            var sp = new SqlParameter[]{
                 new SqlParameter("@PanelDate",panelDate)};
             return DataAccess.CreateDataAccess.sa.Query(sql, sp);
         }
 
         public static LableCode QueryByLCode(string lcode) {
-            string sql = "select * from LableCode where lcode=@lcode";
-            SqlParameter[] sp = new SqlParameter[]{
+            var sql = "select * from LableCode where lcode=@lcode";
+            var sp = new SqlParameter[]{
                 new SqlParameter("@lcode",lcode)};
-            DataTable dt = DataAccess.CreateDataAccess.sa.Query(sql, sp);
+            var dt = DataAccess.CreateDataAccess.sa.Query(sql, sp);
             if (dt == null || dt.Rows.Count < 1) {
                 return null;
             }
@@ -621,10 +621,10 @@ order by floorindex desc;";
         }
 
         public static List<string> QueryLabelcodeByPanelNo(string panelno) {
-            string sql = "select lcode from LableCode where panelno=@panelno";
-            SqlParameter[] sp = new SqlParameter[]{
+            var sql = "select lcode from LableCode where panelno=@panelno";
+            var sp = new SqlParameter[]{
                 new SqlParameter("@panelno",panelno)};
-            DataTable dt = DataAccess.CreateDataAccess.sa.Query(sql, sp);
+            var dt = DataAccess.CreateDataAccess.sa.Query(sql, sp);
             if (dt == null || dt.Rows.Count < 1) {
                 return null;
             }
