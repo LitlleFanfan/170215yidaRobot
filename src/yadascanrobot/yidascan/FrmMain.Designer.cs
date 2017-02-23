@@ -300,69 +300,69 @@
             // btnStartRobot
             // 
             this.btnStartRobot.Name = "btnStartRobot";
-            this.btnStartRobot.Size = new System.Drawing.Size(217, 30);
+            this.btnStartRobot.Size = new System.Drawing.Size(262, 36);
             this.btnStartRobot.Text = "启动机器人任务";
             this.btnStartRobot.Click += new System.EventHandler(this.btnStartRobot_Click);
             // 
             // btnStopRobot
             // 
             this.btnStopRobot.Name = "btnStopRobot";
-            this.btnStopRobot.Size = new System.Drawing.Size(217, 30);
+            this.btnStopRobot.Size = new System.Drawing.Size(262, 36);
             this.btnStopRobot.Text = "停止机器人任务";
             this.btnStopRobot.Click += new System.EventHandler(this.btnStopRobot_Click);
             // 
             // toolStripMenuItem3
             // 
             this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-            this.toolStripMenuItem3.Size = new System.Drawing.Size(214, 6);
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(259, 6);
             // 
             // btnWeighReset
             // 
             this.btnWeighReset.Name = "btnWeighReset";
-            this.btnWeighReset.Size = new System.Drawing.Size(217, 30);
+            this.btnWeighReset.Size = new System.Drawing.Size(262, 36);
             this.btnWeighReset.Text = "称重复位";
             this.btnWeighReset.Click += new System.EventHandler(this.btnWeighReset_Click);
             // 
             // toolStripMenuItem2
             // 
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(214, 6);
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(259, 6);
             // 
             // btnDelete
             // 
             this.btnDelete.Name = "btnDelete";
-            this.btnDelete.Size = new System.Drawing.Size(217, 30);
+            this.btnDelete.Size = new System.Drawing.Size(262, 36);
             this.btnDelete.Text = "删除标签(&D)";
             this.btnDelete.Click += new System.EventHandler(this.toolStripButton1_Click);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(214, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(259, 6);
             // 
             // btnHelp
             // 
             this.btnHelp.Name = "btnHelp";
-            this.btnHelp.Size = new System.Drawing.Size(217, 30);
+            this.btnHelp.Size = new System.Drawing.Size(262, 36);
             this.btnHelp.Text = "帮助(&H)";
             this.btnHelp.Click += new System.EventHandler(this.btnHelp_Click);
             // 
             // toolStripMenuItem4
             // 
             this.toolStripMenuItem4.Name = "toolStripMenuItem4";
-            this.toolStripMenuItem4.Size = new System.Drawing.Size(214, 6);
+            this.toolStripMenuItem4.Size = new System.Drawing.Size(259, 6);
             // 
             // btnBrowsePanels
             // 
             this.btnBrowsePanels.Name = "btnBrowsePanels";
-            this.btnBrowsePanels.Size = new System.Drawing.Size(217, 30);
+            this.btnBrowsePanels.Size = new System.Drawing.Size(262, 36);
             this.btnBrowsePanels.Text = "板状态浏览";
             this.btnBrowsePanels.Click += new System.EventHandler(this.btnBrowsePanels_Click);
             // 
             // btnTestPlc
             // 
             this.btnTestPlc.Name = "btnTestPlc";
-            this.btnTestPlc.Size = new System.Drawing.Size(217, 30);
+            this.btnTestPlc.Size = new System.Drawing.Size(262, 36);
             this.btnTestPlc.Text = "测试";
             this.btnTestPlc.Click += new System.EventHandler(this.btnTestPlc_Click);
             // 
@@ -375,41 +375,41 @@
             this.btnSignalItemCatchA,
             this.btnSignalItemCatchB});
             this.btnSignalGen.Name = "btnSignalGen";
-            this.btnSignalGen.Size = new System.Drawing.Size(217, 30);
+            this.btnSignalGen.Size = new System.Drawing.Size(262, 36);
             this.btnSignalGen.Text = "模拟信号发生";
             // 
             // btnSignalWeigh
             // 
             this.btnSignalWeigh.Name = "btnSignalWeigh";
-            this.btnSignalWeigh.Size = new System.Drawing.Size(255, 30);
+            this.btnSignalWeigh.Size = new System.Drawing.Size(310, 36);
             this.btnSignalWeigh.Text = "称重信号启动";
             this.btnSignalWeigh.Click += new System.EventHandler(this.btnSignalWeigh_Click);
             // 
             // btnSignalCache
             // 
             this.btnSignalCache.Name = "btnSignalCache";
-            this.btnSignalCache.Size = new System.Drawing.Size(255, 30);
+            this.btnSignalCache.Size = new System.Drawing.Size(310, 36);
             this.btnSignalCache.Text = "缓存信号启动";
             this.btnSignalCache.Click += new System.EventHandler(this.btnSignalCache_Click);
             // 
             // btnSignalLabelUp
             // 
             this.btnSignalLabelUp.Name = "btnSignalLabelUp";
-            this.btnSignalLabelUp.Size = new System.Drawing.Size(255, 30);
+            this.btnSignalLabelUp.Size = new System.Drawing.Size(310, 36);
             this.btnSignalLabelUp.Text = "标签向上处信号启动";
             this.btnSignalLabelUp.Click += new System.EventHandler(this.btnSignalLabelUp_Click);
             // 
             // btnSignalItemCatchA
             // 
             this.btnSignalItemCatchA.Name = "btnSignalItemCatchA";
-            this.btnSignalItemCatchA.Size = new System.Drawing.Size(255, 30);
+            this.btnSignalItemCatchA.Size = new System.Drawing.Size(310, 36);
             this.btnSignalItemCatchA.Text = "抓料处A信号启动";
             this.btnSignalItemCatchA.Click += new System.EventHandler(this.btnSignalItemCatchA_Click);
             // 
             // btnSignalItemCatchB
             // 
             this.btnSignalItemCatchB.Name = "btnSignalItemCatchB";
-            this.btnSignalItemCatchB.Size = new System.Drawing.Size(255, 30);
+            this.btnSignalItemCatchB.Size = new System.Drawing.Size(310, 36);
             this.btnSignalItemCatchB.Text = "抓料处B信号启动";
             this.btnSignalItemCatchB.Click += new System.EventHandler(this.btnSignalItemCatchB_Click);
             // 
@@ -489,30 +489,30 @@
             this.lsvLog.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lsvLog.Font = new System.Drawing.Font("宋体", 14F);
             this.lsvLog.FormattingEnabled = true;
-            this.lsvLog.ItemHeight = 19;
+            this.lsvLog.ItemHeight = 23;
             this.lsvLog.Location = new System.Drawing.Point(3, 3);
             this.lsvLog.Name = "lsvLog";
-            this.lsvLog.Size = new System.Drawing.Size(517, 178);
+            this.lsvLog.Size = new System.Drawing.Size(517, 174);
             this.lsvLog.TabIndex = 2;
             // 
             // lsvBufferLog
             // 
             this.lsvBufferLog.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lsvBufferLog.ItemHeight = 19;
+            this.lsvBufferLog.ItemHeight = 23;
             this.lsvBufferLog.Location = new System.Drawing.Point(3, 3);
             this.lsvBufferLog.MinimumSize = new System.Drawing.Size(250, 4);
             this.lsvBufferLog.Name = "lsvBufferLog";
-            this.lsvBufferLog.Size = new System.Drawing.Size(517, 198);
+            this.lsvBufferLog.Size = new System.Drawing.Size(517, 174);
             this.lsvBufferLog.TabIndex = 4;
             // 
             // lsvRobotStackLog
             // 
             this.lsvRobotStackLog.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lsvRobotStackLog.ItemHeight = 19;
+            this.lsvRobotStackLog.ItemHeight = 23;
             this.lsvRobotStackLog.Location = new System.Drawing.Point(0, 0);
             this.lsvRobotStackLog.MinimumSize = new System.Drawing.Size(250, 4);
             this.lsvRobotStackLog.Name = "lsvRobotStackLog";
-            this.lsvRobotStackLog.Size = new System.Drawing.Size(523, 204);
+            this.lsvRobotStackLog.Size = new System.Drawing.Size(523, 188);
             this.lsvRobotStackLog.TabIndex = 4;
             // 
             // statusStrip1
@@ -527,10 +527,10 @@
             this.lblRobot,
             this.toolStripStatusLabel2,
             this.lblTimer});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 667);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 661);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Padding = new System.Windows.Forms.Padding(1, 0, 18, 0);
-            this.statusStrip1.Size = new System.Drawing.Size(1276, 26);
+            this.statusStrip1.Size = new System.Drawing.Size(1276, 32);
             this.statusStrip1.TabIndex = 53;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -540,7 +540,7 @@
             this.toolStripStatusLabel1.ForeColor = System.Drawing.Color.Gray;
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
             this.toolStripStatusLabel1.Padding = new System.Windows.Forms.Padding(10, 0, 10, 0);
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(306, 21);
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(377, 27);
             this.toolStripStatusLabel1.Text = "guangzhou golden beaver software.";
             // 
             // lblScanner
@@ -548,34 +548,34 @@
             this.lblScanner.BackColor = System.Drawing.Color.LightGray;
             this.lblScanner.Name = "lblScanner";
             this.lblScanner.Padding = new System.Windows.Forms.Padding(10, 0, 10, 0);
-            this.lblScanner.Size = new System.Drawing.Size(20, 21);
+            this.lblScanner.Size = new System.Drawing.Size(20, 27);
             // 
             // lblScanner2
             // 
             this.lblScanner2.BackColor = System.Drawing.Color.LightGray;
             this.lblScanner2.Name = "lblScanner2";
             this.lblScanner2.Padding = new System.Windows.Forms.Padding(10, 0, 10, 0);
-            this.lblScanner2.Size = new System.Drawing.Size(20, 21);
+            this.lblScanner2.Size = new System.Drawing.Size(20, 27);
             // 
             // lblOpcIp
             // 
             this.lblOpcIp.BackColor = System.Drawing.Color.LightGray;
             this.lblOpcIp.Name = "lblOpcIp";
             this.lblOpcIp.Padding = new System.Windows.Forms.Padding(10, 0, 10, 0);
-            this.lblOpcIp.Size = new System.Drawing.Size(20, 21);
+            this.lblOpcIp.Size = new System.Drawing.Size(20, 27);
             // 
             // lblRobot
             // 
             this.lblRobot.BackColor = System.Drawing.Color.LightGray;
             this.lblRobot.Name = "lblRobot";
             this.lblRobot.Padding = new System.Windows.Forms.Padding(10, 0, 10, 0);
-            this.lblRobot.Size = new System.Drawing.Size(20, 21);
+            this.lblRobot.Size = new System.Drawing.Size(20, 27);
             // 
             // toolStripStatusLabel2
             // 
             this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
             this.toolStripStatusLabel2.Padding = new System.Windows.Forms.Padding(10, 0, 10, 0);
-            this.toolStripStatusLabel2.Size = new System.Drawing.Size(851, 21);
+            this.toolStripStatusLabel2.Size = new System.Drawing.Size(780, 27);
             this.toolStripStatusLabel2.Spring = true;
             // 
             // lblTimer
@@ -583,7 +583,7 @@
             this.lblTimer.BackColor = System.Drawing.Color.LightPink;
             this.lblTimer.Name = "lblTimer";
             this.lblTimer.Padding = new System.Windows.Forms.Padding(10, 0, 10, 0);
-            this.lblTimer.Size = new System.Drawing.Size(20, 21);
+            this.lblTimer.Size = new System.Drawing.Size(20, 27);
             // 
             // timer1
             // 
@@ -664,7 +664,7 @@
             "夜班"});
             this.cmbShiftNo.Location = new System.Drawing.Point(272, 31);
             this.cmbShiftNo.Name = "cmbShiftNo";
-            this.cmbShiftNo.Size = new System.Drawing.Size(321, 27);
+            this.cmbShiftNo.Size = new System.Drawing.Size(321, 31);
             this.cmbShiftNo.TabIndex = 10;
             this.cmbShiftNo.Text = "白班";
             this.cmbShiftNo.Visible = false;
@@ -675,7 +675,7 @@
             this.dtpDate.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
             this.dtpDate.Location = new System.Drawing.Point(63, 29);
             this.dtpDate.Name = "dtpDate";
-            this.dtpDate.Size = new System.Drawing.Size(203, 29);
+            this.dtpDate.Size = new System.Drawing.Size(203, 34);
             this.dtpDate.TabIndex = 9;
             this.dtpDate.Visible = false;
             // 
@@ -729,10 +729,10 @@
             // tbpScanLog
             // 
             this.tbpScanLog.Controls.Add(this.lsvLog);
-            this.tbpScanLog.Location = new System.Drawing.Point(4, 29);
+            this.tbpScanLog.Location = new System.Drawing.Point(4, 33);
             this.tbpScanLog.Name = "tbpScanLog";
             this.tbpScanLog.Padding = new System.Windows.Forms.Padding(3);
-            this.tbpScanLog.Size = new System.Drawing.Size(523, 184);
+            this.tbpScanLog.Size = new System.Drawing.Size(523, 180);
             this.tbpScanLog.TabIndex = 0;
             this.tbpScanLog.Text = "采集日志";
             this.tbpScanLog.UseVisualStyleBackColor = true;
@@ -740,10 +740,10 @@
             // tbpCacheLog
             // 
             this.tbpCacheLog.Controls.Add(this.lsvBufferLog);
-            this.tbpCacheLog.Location = new System.Drawing.Point(4, 22);
+            this.tbpCacheLog.Location = new System.Drawing.Point(4, 33);
             this.tbpCacheLog.Name = "tbpCacheLog";
             this.tbpCacheLog.Padding = new System.Windows.Forms.Padding(3);
-            this.tbpCacheLog.Size = new System.Drawing.Size(523, 204);
+            this.tbpCacheLog.Size = new System.Drawing.Size(523, 180);
             this.tbpCacheLog.TabIndex = 1;
             this.tbpCacheLog.Text = "缓存日志";
             this.tbpCacheLog.UseVisualStyleBackColor = true;
@@ -751,9 +751,9 @@
             // tbpRobotLog
             // 
             this.tbpRobotLog.Controls.Add(this.lsvRobotStackLog);
-            this.tbpRobotLog.Location = new System.Drawing.Point(4, 22);
+            this.tbpRobotLog.Location = new System.Drawing.Point(4, 25);
             this.tbpRobotLog.Name = "tbpRobotLog";
-            this.tbpRobotLog.Size = new System.Drawing.Size(523, 204);
+            this.tbpRobotLog.Size = new System.Drawing.Size(523, 188);
             this.tbpRobotLog.TabIndex = 2;
             this.tbpRobotLog.Text = "机器人日志";
             this.tbpRobotLog.UseVisualStyleBackColor = true;
@@ -761,9 +761,9 @@
             // tbpALarmLog
             // 
             this.tbpALarmLog.Controls.Add(this.lsvAlarmLog);
-            this.tbpALarmLog.Location = new System.Drawing.Point(4, 22);
+            this.tbpALarmLog.Location = new System.Drawing.Point(4, 25);
             this.tbpALarmLog.Name = "tbpALarmLog";
-            this.tbpALarmLog.Size = new System.Drawing.Size(523, 204);
+            this.tbpALarmLog.Size = new System.Drawing.Size(523, 188);
             this.tbpALarmLog.TabIndex = 3;
             this.tbpALarmLog.Text = "报警日志";
             this.tbpALarmLog.UseVisualStyleBackColor = true;
@@ -771,11 +771,11 @@
             // lsvAlarmLog
             // 
             this.lsvAlarmLog.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lsvAlarmLog.ItemHeight = 19;
+            this.lsvAlarmLog.ItemHeight = 23;
             this.lsvAlarmLog.Location = new System.Drawing.Point(0, 0);
             this.lsvAlarmLog.MinimumSize = new System.Drawing.Size(250, 4);
             this.lsvAlarmLog.Name = "lsvAlarmLog";
-            this.lsvAlarmLog.Size = new System.Drawing.Size(523, 204);
+            this.lsvAlarmLog.Size = new System.Drawing.Size(523, 188);
             this.lsvAlarmLog.TabIndex = 5;
             // 
             // panel3
@@ -1130,7 +1130,7 @@
             // 
             // FrmMain
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 19F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 23F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1276, 693);
             this.Controls.Add(this.splitContainer1);

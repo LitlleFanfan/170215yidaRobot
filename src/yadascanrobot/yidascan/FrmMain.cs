@@ -26,9 +26,16 @@ namespace yidascan {
         #region opc
         public static OPCParam opcParam = new OPCParam();
 
+#if !DEBUG
         public static IOpcClient opcClient = GetOpcClient(true);
         public static IOpcClient ScannerOpcClient = GetOpcClient(true);
         public static IOpcClient RobotOpcClient = GetOpcClient(true);
+#endif
+#if DEBUG
+        public static IOpcClient opcClient = GetOpcClient(false);
+        public static IOpcClient ScannerOpcClient = GetOpcClient(false);
+        public static IOpcClient RobotOpcClient = GetOpcClient(false);
+#endif
         #endregion
 
         DataTable dtopc;
@@ -860,7 +867,7 @@ namespace yidascan {
                 if (string.IsNullOrEmpty(code)) { return; }
 
                 txtLableCode1.Enabled = false;
-                
+
                 await Task.Run(() => {
                     // waiting for mutex available.
                     lock (LOCK_CAMERA_PROCESS) {
