@@ -313,7 +313,13 @@ namespace yidascan {
 
             // 产生一个IErpApi实例，如果参数是false，则生成模拟的接口。
             // 如果参数是true，则调用真正的web api接口。
+
+#if !DEBUG
+            initErpApi(true);
+#endif
+#if DEBUG
             initErpApi(false);
+#endif
 
             PanelGen.Init(dtpDate.Value);
 
@@ -527,31 +533,33 @@ namespace yidascan {
 
         private void CachePosViewSave(LableCode lc, CacheResult cr) {
             this.Invoke((Action)(() => {
+                var str = $"{lc.LCode} {lc.ToLocation} {lc.Diameter.ToString().PadRight(4, ' ')} {cr.savepos}";
                 if (cr.savepos <= 5) {
-                    lsvCacheQ1.Items[cr.savepos - 1].Text = string.Format("{0} {1}", lc.LCode, lc.ToLocation);
+                    lsvCacheQ1.Items[cr.savepos - 1].Text = str;
                 } else if (cr.savepos >= 6 && cr.savepos <= 10) {
-                    lsvCacheQ2.Items[cr.savepos - 1 - 5].Text = string.Format("{0} {1}", lc.LCode, lc.ToLocation);
+                    lsvCacheQ2.Items[cr.savepos - 1 - 5].Text = str;
                 } else if (cr.savepos >= 11 && cr.savepos <= 15) {
-                    lsvCacheQ3.Items[cr.savepos - 1 - 10].Text = string.Format("{0} {1}", lc.LCode, lc.ToLocation);
+                    lsvCacheQ3.Items[cr.savepos - 1 - 10].Text = str;
                 } else if (cr.savepos >= 16 && cr.savepos <= 20) {
-                    lsvCacheQ4.Items[cr.savepos - 1 - 15].Text = string.Format("{0} {1}", lc.LCode, lc.ToLocation);
+                    lsvCacheQ4.Items[cr.savepos - 1 - 15].Text = str;
                 }
             }));
         }
         private void CachePosViewGet(CacheResult cr) {
             this.Invoke((Action)(() => {
+                var str = $"                      {cr.getpos}";
                 if (cr.getpos <= 5) {
-                    QueuesView.Add(lsvLableUp, lsvCacheQ1.Items[cr.getpos - 1].Text);
-                    lsvCacheQ1.Items[cr.getpos - 1].Text = "                ";
+                    QueuesView.Add(lsvLableUp, lsvCacheQ1.Items[cr.getpos - 1].Text.Substring(0, 16));
+                    lsvCacheQ1.Items[cr.getpos - 1].Text = str;
                 } else if (cr.getpos >= 6 && cr.getpos <= 10) {
-                    QueuesView.Add(lsvLableUp, lsvCacheQ2.Items[cr.getpos - 1 - 5].Text);
-                    lsvCacheQ2.Items[cr.getpos - 1 - 5].Text = "                ";
+                    QueuesView.Add(lsvLableUp, lsvCacheQ2.Items[cr.getpos - 1 - 5].Text.Substring(0, 16));
+                    lsvCacheQ2.Items[cr.getpos - 1 - 5].Text = str;
                 } else if (cr.getpos >= 11 && cr.getpos <= 15) {
-                    QueuesView.Add(lsvLableUp, lsvCacheQ3.Items[cr.getpos - 1 - 10].Text);
-                    lsvCacheQ3.Items[cr.getpos - 1 - 10].Text = "                ";
+                    QueuesView.Add(lsvLableUp, lsvCacheQ3.Items[cr.getpos - 1 - 10].Text.Substring(0, 16));
+                    lsvCacheQ3.Items[cr.getpos - 1 - 10].Text = str;
                 } else if (cr.getpos >= 16 && cr.getpos <= 20) {
-                    QueuesView.Add(lsvLableUp, lsvCacheQ4.Items[cr.getpos - 1 - 15].Text);
-                    lsvCacheQ4.Items[cr.getpos - 1 - 15].Text = "                ";
+                    QueuesView.Add(lsvLableUp, lsvCacheQ4.Items[cr.getpos - 1 - 15].Text.Substring(0, 16));
+                    lsvCacheQ4.Items[cr.getpos - 1 - 15].Text = str;
                 }
             }));
         }
@@ -885,6 +893,16 @@ namespace yidascan {
         private void ScanLableCode(string code, int scanNo, bool handwork) {
             ShowWarning(code, false);
 
+#if !DEBUG
+            Thread.Sleep(40);
+            //PLC已将布卷勾走
+            if (ScannerOpcClient.ReadBool(opcParam.ScanParam.PlcPushAside)) {
+                ScannerOpcClient.Write(opcParam.ScanParam.PlcPushAside, 0);
+                logOpt.Write($"采集超时，号码{code}被勾走。");
+                return;
+            }
+#endif
+
             var tolocation = string.Empty;
 
             var t = TimeCount.TimeIt(() => {
@@ -893,7 +911,7 @@ namespace yidascan {
             logOpt.Write($"取交地耗时:　{t}ms");
 
             if (string.IsNullOrEmpty(tolocation)) {
-                PlcHelper.PushAsideClothRoll(ScannerOpcClient);
+                ScannerOpcClient.Write(opcParam.ScanParam.PushAside, 1);
                 return;
             }
 
@@ -939,6 +957,16 @@ namespace yidascan {
                 ScannerOpcClient.Write(opcParam.ScanParam.ScanState, true);
             });
             logOpt.Write($"写OPC耗时: {t}ms", LogType.NORMAL);
+
+#if !DEBUG
+            Thread.Sleep(40);
+            //PLC已将布卷勾走
+            if (ScannerOpcClient.ReadBool(opcParam.ScanParam.PlcPushAside)) {
+                ScannerOpcClient.Write(opcParam.ScanParam.PlcPushAside, 0);
+                logOpt.Write($"采集超时，号码{code}被勾走。");
+                return;
+            }
+#endif
 
             lock (taskQ.WeighQ) {
                 taskQ.WeighQ.Enqueue(lc);

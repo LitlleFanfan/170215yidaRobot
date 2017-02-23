@@ -82,7 +82,7 @@ namespace yidascan {
             client.Write(param.ScanParam.ScanLable1, label1);
             client.Write(param.ScanParam.ScanLable2, label2);
             // 相机
-            client.Write(param.ScanParam.CameraNo, camera);
+            client.Write(param.ScanParam.PushAside, camera);
             // 完成信号。
             WriteScanOK(client, param);
         }

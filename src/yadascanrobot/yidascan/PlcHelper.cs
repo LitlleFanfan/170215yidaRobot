@@ -98,13 +98,6 @@ namespace yidascan {
             client.Write(slot, 0);
         }
 
-        /// <summary>
-        /// </summary>
-        /// <param name="client"></param>
-        public static void PushAsideClothRoll(IOpcClient client) {
-            client.Write(PlcSlot.PUSH_ASIDE_SIGNAL, 1);
-        }
-
         public static void subscribe(IOpcClient client) {
             client.AddSubscription(PlcSlot.CACHE_SIGNAL);
             client.AddSubscription(PlcSlot.CACHE_JOB_POS_GET);
@@ -113,7 +106,6 @@ namespace yidascan {
             client.AddSubscription(PlcSlot.LABEL_UP_CATCH_CHANNEL);
             client.AddSubscription(PlcSlot.LABEL_UP_CATCH_DIAMETER);
             client.AddSubscription(PlcSlot.LABEL_UP_SIGNAL);
-            client.AddSubscription(PlcSlot.PUSH_ASIDE_SIGNAL);
             client.AddSubscription(PlcSlot.ITEM_CATCH_A);
             client.AddSubscription(PlcSlot.ITEM_CATCH_B);
         }

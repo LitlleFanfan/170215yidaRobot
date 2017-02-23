@@ -72,9 +72,14 @@ namespace yidascan.DataAccess {
         public string ToLocationNo { get; set; }
 
         /// <summary>
-        /// 相机编号
+        /// 通知PLC勾料信号
         /// </summary>
-        public string CameraNo { get; set; }
+        public string PushAside { get; set; }
+
+        /// <summary>
+        /// PLC勾料信号（扫描超时）
+        /// </summary>
+        public string PlcPushAside { get; set; }
 
         /// <summary>
         /// 称重
