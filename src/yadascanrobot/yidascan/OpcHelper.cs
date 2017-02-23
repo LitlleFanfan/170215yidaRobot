@@ -5,7 +5,7 @@ namespace yidascan {
     /// <summary>
     /// 这个要合并修改。
     /// </summary>
-    [Obsolete("待重构, 2013-02-17")]
+    [Obsolete("待重构, 2017-02-17")]
     public static class OpcHelper {
         public static string ReadACAreaLabel(IOpcClient client, LCodeSignal signal) {
             const int MAX_LEN = 6;

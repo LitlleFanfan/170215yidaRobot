@@ -26,9 +26,9 @@ namespace yidascan {
         #region opc
         public static OPCParam opcParam = new OPCParam();
 
-        public static IOpcClient opcClient = GetOpcClient(false);
-        public static IOpcClient ScannerOpcClient = GetOpcClient(false);
-        public static IOpcClient RobotOpcClient = GetOpcClient(false);
+        public static IOpcClient opcClient = GetOpcClient(true);
+        public static IOpcClient ScannerOpcClient = GetOpcClient(true);
+        public static IOpcClient RobotOpcClient = GetOpcClient(true);
         #endregion
 
         DataTable dtopc;
@@ -52,7 +52,6 @@ namespace yidascan {
         public FrmMain() {
             InitializeComponent();
             logOpt = new ProduceComm.LogOpreate();
-            logOpt.Write("打开软件", LogType.NORMAL);
 
             try {
                 // 显示效果不对，以后再说。
@@ -98,6 +97,7 @@ namespace yidascan {
             try {
                 QueuesView.f = this;
                 StartOpc();
+                PlcHelper.subscribe(RobotOpcClient);
 
                 ShowTitle();
                 ShowTaskState(false);
@@ -355,7 +355,9 @@ namespace yidascan {
 
                                     opcClient.Write(opcParam.ScanParam.GetWeigh, getWeight);
 
-                                    QueuesView.Add(lsvCacheBefor, code);//加到缓存列表中显示
+                                    if (code.ToLocation.Substring(0, 1) == "B") {
+                                        QueuesView.Add(lsvCacheBefor, string.Format("{0} {1}", code.LCode, code.ToLocation));//加到缓存列表中显示
+                                    }
                                 }
                             }
                         }
@@ -428,9 +430,9 @@ namespace yidascan {
 
             Task.Factory.StartNew(() => {
                 while (isrun) {
-                    lock (opcClient) {
+                    lock (RobotOpcClient) {
                         try {
-                            if (ReadBeforeCacheStatus(opcClient, opcParam)) {
+                            if (PlcHelper.ReadCacheSignal(RobotOpcClient)) {
                                 var code = taskQ.GetCacheQ();
 
                                 if (code != null) {
@@ -458,21 +460,93 @@ namespace yidascan {
                                             var cr = cacheher.WhenRollArrived(cState, lc, outCacheLable);
 
                                             logOpt.Write(JsonConvert.SerializeObject(cr), LogType.BUFFER);
+
+                                            BindQueue(code, lc, outCacheLable, cState, cr);
+
+                                            PlcHelper.WriteCacheJob(RobotOpcClient, cState, cr.savepos, cr.getpos);
                                         } else {
                                             logOpt.Write(string.Format("!{0}标签重复。", code.LCode), LogType.BUFFER);
                                         }
                                     }
 
-                                    QueuesView.Move(lsvCacheBefor, lsvLableUp);
-                                } // if code != null
+                                }
                             }
                         } catch (Exception ex) {
-                            logOpt.Write("!" + ex.ToString(), LogType.BUFFER);
+                            logOpt.Write(string.Format("!{0}", ex), LogType.BUFFER);
                         }
                     }
                     Thread.Sleep(OPCClient.DELAY * 200);
                 }
             });
+        }
+
+        private void BindQueue(LableCode code, LableCode lc, LableCode outCacheLable, CacheState cState, CacheResult cr) {
+            switch (cState) {
+                case CacheState.Go:
+                    taskQ.LableUpQ.Enqueue(code);
+
+                    QueuesView.Move(lsvCacheBefor, lsvLableUp);
+                    break;
+                case CacheState.Cache:
+                    QueuesView.Remove(lsvCacheBefor);
+                    CachePosViewSave(lc, cr);
+                    break;
+                case CacheState.GetThenCache:
+                case CacheState.CacheAndGet:
+                    taskQ.LableUpQ.Enqueue(outCacheLable);
+
+                    QueuesView.Remove(lsvCacheBefor);
+                    CachePosViewSave(lc, cr);
+                    CachePosViewGet(cr);
+                    break;
+                case CacheState.GoThenGet:
+                    taskQ.LableUpQ.Enqueue(code);
+                    taskQ.LableUpQ.Enqueue(outCacheLable);
+
+                    QueuesView.Move(lsvCacheBefor, lsvLableUp);
+                    CachePosViewGet(cr);
+                    break;
+                case CacheState.GetThenGo:
+                    taskQ.LableUpQ.Enqueue(outCacheLable);
+                    taskQ.LableUpQ.Enqueue(code);
+
+                    CachePosViewGet(cr);
+                    QueuesView.Move(lsvCacheBefor, lsvLableUp);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void CachePosViewSave(LableCode lc, CacheResult cr) {
+            this.Invoke((Action)(() => {
+                if (cr.savepos <= 5) {
+                    lsvCacheQ1.Items[cr.savepos - 1].Text = string.Format("{0} {1}", lc.LCode, lc.ToLocation);
+                } else if (cr.savepos >= 6 && cr.savepos <= 10) {
+                    lsvCacheQ2.Items[cr.savepos - 1 - 5].Text = string.Format("{0} {1}", lc.LCode, lc.ToLocation);
+                } else if (cr.savepos >= 11 && cr.savepos <= 15) {
+                    lsvCacheQ3.Items[cr.savepos - 1 - 10].Text = string.Format("{0} {1}", lc.LCode, lc.ToLocation);
+                } else if (cr.savepos >= 16 && cr.savepos <= 20) {
+                    lsvCacheQ4.Items[cr.savepos - 1 - 15].Text = string.Format("{0} {1}", lc.LCode, lc.ToLocation);
+                }
+            }));
+        }
+        private void CachePosViewGet(CacheResult cr) {
+            this.Invoke((Action)(() => {
+                if (cr.getpos <= 5) {
+                    QueuesView.Add(lsvLableUp, lsvCacheQ1.Items[cr.getpos - 1].Text);
+                    lsvCacheQ1.Items[cr.getpos - 1].Text = "                ";
+                } else if (cr.getpos >= 6 && cr.getpos <= 10) {
+                    QueuesView.Add(lsvLableUp, lsvCacheQ2.Items[cr.getpos - 1 - 5].Text);
+                    lsvCacheQ2.Items[cr.getpos - 1 - 5].Text = "                ";
+                } else if (cr.getpos >= 11 && cr.getpos <= 15) {
+                    QueuesView.Add(lsvLableUp, lsvCacheQ3.Items[cr.getpos - 1 - 10].Text);
+                    lsvCacheQ3.Items[cr.getpos - 1 - 10].Text = "                ";
+                } else if (cr.getpos >= 16 && cr.getpos <= 20) {
+                    QueuesView.Add(lsvLableUp, lsvCacheQ4.Items[cr.getpos - 1 - 15].Text);
+                    lsvCacheQ4.Items[cr.getpos - 1 - 15].Text = "                ";
+                }
+            }));
         }
 
         private string createShiftNo() {
@@ -543,22 +617,23 @@ namespace yidascan {
 
             Task.Factory.StartNew(() => {
                 while (isrun) {
-                    lock (opcClient) {
+                    lock (RobotOpcClient) {
                         try {
-                            var r = opcClient.ReadBool(PlcSlot.LABEL_UP_SIGNAL);
+                            var r = RobotOpcClient.ReadBool(PlcSlot.LABEL_UP_SIGNAL);
 
                             if (r) {
-                                var code = taskQ.GetLableUpQ();
-                                logOpt.Write(string.Format("收到标签朝上来料信号。号码: {0}", code.LCode), LogType.BUFFER);
+                                var code = taskQ.GetLableUpQ(); if (code != null) {
+                                    logOpt.Write(string.Format("收到标签朝上来料信号。号码: {0}", code.LCode), LogType.BUFFER);
 
-                                // ???未完成
+                                    // ???未完成
 
-                                opcClient.Write(PlcSlot.LABEL_UP_SIGNAL, false);
+                                    RobotOpcClient.Write(PlcSlot.LABEL_UP_SIGNAL, false);
 
-                                QueuesView.Move(lsvLableUp, int.Parse(code.ParseLocationNo()) < 6 ? lsvCatch1 : lsvCatch2);
+                                    QueuesView.Move(lsvLableUp, int.Parse(code.ParseLocationNo()) < 6 ? lsvCatch1 : lsvCatch2);
+                                }
                             }
                         } catch (Exception ex) {
-                            logOpt.Write("!" + ex.ToString(), LogType.BUFFER);
+                            logOpt.Write(string.Format("!{0}", ex), LogType.BUFFER);
                         }
                     }
                     Thread.Sleep(OPCClient.DELAY * 200);
@@ -785,7 +860,7 @@ namespace yidascan {
                 if (string.IsNullOrEmpty(code)) { return; }
 
                 txtLableCode1.Enabled = false;
-
+                
                 await Task.Run(() => {
                     // waiting for mutex available.
                     lock (LOCK_CAMERA_PROCESS) {
@@ -854,7 +929,6 @@ namespace yidascan {
                 ScannerOpcClient.Write(opcParam.ScanParam.ScanLable1, lc.CodePart1());
                 ScannerOpcClient.Write(opcParam.ScanParam.ScanLable2, lc.CodePart2());
                 // write camera no. and set state true.
-                ScannerOpcClient.Write(opcParam.ScanParam.CameraNo, scanNo);
                 ScannerOpcClient.Write(opcParam.ScanParam.ScanState, true);
             });
             logOpt.Write($"写OPC耗时: {t}ms", LogType.NORMAL);
