@@ -109,26 +109,42 @@ namespace ProduceComm.OPC {
 
         public int ReadInt(string slot) {
             var val = Read(slot);
-            return val != null ? (int)val : 0;
-            //return 0;
+            try {
+                return val != null ? int.Parse(val.ToString()) : 0;
+            } catch (Exception ex) {
+                yidascan.FrmMain.logOpt.Write(string.Format("!{0}读取失败!{1} {2}", slot, val, ex));
+                return 0;
+            }
         }
 
         public string ReadString(string slot) {
             var val = Read(slot);
-            return val != null ? val.ToString() : string.Empty;
-            // return string.Empty;
+            try {
+                return val != null ? val.ToString() : string.Empty;
+            } catch (Exception ex) {
+                yidascan.FrmMain.logOpt.Write(string.Format("!{0}读取失败!{1} {2}", slot, val, ex));
+                return string.Empty;
+            }
         }
 
         public bool ReadBool(string slot) {
             var val = Read(slot);
-            return val != null ? (bool)val : false;
-            //return false;
+            try {
+                return val != null ? bool.Parse(val.ToString()) : false;
+            } catch (Exception ex) {
+                yidascan.FrmMain.logOpt.Write(string.Format("!{0}读取失败!{1} {2}", slot, val, ex));
+                return false;
+            }
         }
 
         public decimal ReadDecimal(string slot) {
             var val = Read(slot);
-            return val != null ? (decimal)val : 0;
-            //return 0;
+            try {
+                return val != null ? decimal.Parse(val.ToString()) : 0;
+            } catch (Exception ex) {
+                yidascan.FrmMain.logOpt.Write(string.Format("!{0}读取失败!{1} {2}", slot, val, ex));
+                return 0;
+            }
         }
 
         public void Close() {
