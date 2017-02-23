@@ -860,7 +860,7 @@ namespace yidascan {
                 if (string.IsNullOrEmpty(code)) { return; }
 
                 txtLableCode1.Enabled = false;
-                
+
                 await Task.Run(() => {
                     // waiting for mutex available.
                     lock (LOCK_CAMERA_PROCESS) {
@@ -1248,6 +1248,18 @@ namespace yidascan {
         }
 
         private void btnSignalItemCatchB_Click(object sender, EventArgs e) {
+            SignalGen.startTimerItemCatchB();
+        }
+
+        private void btnStartAllSignals_Click(object sender, EventArgs e) {
+            SignalGen.startTimerWeigh();
+            Thread.Sleep(100);
+            SignalGen.startTimerCache();
+            Thread.Sleep(100);
+            SignalGen.startTimerLabelUp();
+            Thread.Sleep(100);
+            SignalGen.startTimerItemCatchA();
+            Thread.Sleep(100);
             SignalGen.startTimerItemCatchB();
         }
     }
