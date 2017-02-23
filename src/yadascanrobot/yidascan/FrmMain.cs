@@ -962,7 +962,6 @@ namespace yidascan {
             var lc = LableCode.QueryByLCode(lCode);
             if (lc == null) { return false; }
 
-
             LableCodeBll.GetPanelNo(lc, "");
             LableCode.Update(lc);
             LableCode.SetPanelNo(lCode);
