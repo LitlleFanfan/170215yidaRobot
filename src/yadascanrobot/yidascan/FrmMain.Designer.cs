@@ -153,6 +153,8 @@
             this.label8 = new System.Windows.Forms.Label();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.label1 = new System.Windows.Forms.Label();
+            this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripSeparator();
+            this.btnStartAllSignals = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1.SuspendLayout();
             this.grbHandwork.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -209,7 +211,7 @@
             this.btnRun.AutoSize = false;
             this.btnRun.BackColor = System.Drawing.Color.LimeGreen;
             this.btnRun.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.btnRun.Font = new System.Drawing.Font("微软雅黑", 14F);
+            this.btnRun.Font = new System.Drawing.Font("Microsoft YaHei", 14F);
             this.btnRun.ForeColor = System.Drawing.Color.Honeydew;
             this.btnRun.Image = ((System.Drawing.Image)(resources.GetObject("btnRun.Image")));
             this.btnRun.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -224,7 +226,7 @@
             this.btnStop.BackColor = System.Drawing.Color.Red;
             this.btnStop.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.btnStop.Enabled = false;
-            this.btnStop.Font = new System.Drawing.Font("微软雅黑", 14.25F);
+            this.btnStop.Font = new System.Drawing.Font("Microsoft YaHei", 14.25F);
             this.btnStop.ForeColor = System.Drawing.Color.White;
             this.btnStop.Image = ((System.Drawing.Image)(resources.GetObject("btnStop.Image")));
             this.btnStop.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -238,7 +240,7 @@
             this.btnReset.AutoSize = false;
             this.btnReset.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
             this.btnReset.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.btnReset.Font = new System.Drawing.Font("微软雅黑", 14F);
+            this.btnReset.Font = new System.Drawing.Font("Microsoft YaHei", 14F);
             this.btnReset.Image = ((System.Drawing.Image)(resources.GetObject("btnReset.Image")));
             this.btnReset.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnReset.Name = "btnReset";
@@ -251,7 +253,7 @@
             this.btnSet.AutoSize = false;
             this.btnSet.BackColor = System.Drawing.Color.DeepSkyBlue;
             this.btnSet.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.btnSet.Font = new System.Drawing.Font("微软雅黑", 14F);
+            this.btnSet.Font = new System.Drawing.Font("Microsoft YaHei", 14F);
             this.btnSet.Image = ((System.Drawing.Image)(resources.GetObject("btnSet.Image")));
             this.btnSet.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnSet.Name = "btnSet";
@@ -264,7 +266,7 @@
             this.btnLog.AutoSize = false;
             this.btnLog.BackColor = System.Drawing.Color.CornflowerBlue;
             this.btnLog.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.btnLog.Font = new System.Drawing.Font("微软雅黑", 14F);
+            this.btnLog.Font = new System.Drawing.Font("Microsoft YaHei", 14F);
             this.btnLog.Image = ((System.Drawing.Image)(resources.GetObject("btnLog.Image")));
             this.btnLog.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnLog.Name = "btnLog";
@@ -290,7 +292,7 @@
             this.btnBrowsePanels,
             this.btnTestPlc,
             this.btnSignalGen});
-            this.btnOther.Font = new System.Drawing.Font("微软雅黑", 14F);
+            this.btnOther.Font = new System.Drawing.Font("Microsoft YaHei", 14F);
             this.btnOther.Image = ((System.Drawing.Image)(resources.GetObject("btnOther.Image")));
             this.btnOther.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnOther.Name = "btnOther";
@@ -373,7 +375,9 @@
             this.btnSignalCache,
             this.btnSignalLabelUp,
             this.btnSignalItemCatchA,
-            this.btnSignalItemCatchB});
+            this.btnSignalItemCatchB,
+            this.toolStripMenuItem5,
+            this.btnStartAllSignals});
             this.btnSignalGen.Name = "btnSignalGen";
             this.btnSignalGen.Size = new System.Drawing.Size(262, 36);
             this.btnSignalGen.Text = "模拟信号发生";
@@ -418,7 +422,7 @@
             this.btnQuit.AutoSize = false;
             this.btnQuit.BackColor = System.Drawing.Color.Orange;
             this.btnQuit.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.btnQuit.Font = new System.Drawing.Font("微软雅黑", 14F);
+            this.btnQuit.Font = new System.Drawing.Font("Microsoft YaHei", 14F);
             this.btnQuit.Image = ((System.Drawing.Image)(resources.GetObject("btnQuit.Image")));
             this.btnQuit.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnQuit.Name = "btnQuit";
@@ -459,7 +463,7 @@
             this.txtLableCode1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtLableCode1.Font = new System.Drawing.Font("宋体", 24F);
+            this.txtLableCode1.Font = new System.Drawing.Font("SimSun", 24F);
             this.txtLableCode1.ForeColor = System.Drawing.Color.DarkRed;
             this.txtLableCode1.Location = new System.Drawing.Point(183, 18);
             this.txtLableCode1.Margin = new System.Windows.Forms.Padding(4);
@@ -475,7 +479,7 @@
             // label5
             // 
             this.label5.BackColor = System.Drawing.Color.Moccasin;
-            this.label5.Font = new System.Drawing.Font("宋体", 24F);
+            this.label5.Font = new System.Drawing.Font("SimSun", 24F);
             this.label5.Location = new System.Drawing.Point(14, 18);
             this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label5.Name = "label5";
@@ -487,7 +491,7 @@
             // lsvLog
             // 
             this.lsvLog.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lsvLog.Font = new System.Drawing.Font("宋体", 14F);
+            this.lsvLog.Font = new System.Drawing.Font("SimSun", 14F);
             this.lsvLog.FormattingEnabled = true;
             this.lsvLog.ItemHeight = 23;
             this.lsvLog.Location = new System.Drawing.Point(3, 3);
@@ -517,7 +521,7 @@
             // 
             // statusStrip1
             // 
-            this.statusStrip1.Font = new System.Drawing.Font("微软雅黑", 12F);
+            this.statusStrip1.Font = new System.Drawing.Font("Microsoft YaHei", 12F);
             this.statusStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel1,
@@ -610,7 +614,7 @@
             // lbRobotState
             // 
             this.lbRobotState.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
-            this.lbRobotState.Font = new System.Drawing.Font("黑体", 20F);
+            this.lbRobotState.Font = new System.Drawing.Font("SimHei", 20F);
             this.lbRobotState.Location = new System.Drawing.Point(260, 89);
             this.lbRobotState.Name = "lbRobotState";
             this.lbRobotState.Size = new System.Drawing.Size(333, 37);
@@ -621,7 +625,7 @@
             // chkUseRobot
             // 
             this.chkUseRobot.BackColor = System.Drawing.Color.White;
-            this.chkUseRobot.Font = new System.Drawing.Font("宋体", 20F);
+            this.chkUseRobot.Font = new System.Drawing.Font("SimSun", 20F);
             this.chkUseRobot.Location = new System.Drawing.Point(7, 89);
             this.chkUseRobot.Name = "chkUseRobot";
             this.chkUseRobot.Size = new System.Drawing.Size(253, 37);
@@ -633,7 +637,7 @@
             // 
             this.lbTaskState.BackColor = System.Drawing.Color.Green;
             this.lbTaskState.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.lbTaskState.Font = new System.Drawing.Font("黑体", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbTaskState.Font = new System.Drawing.Font("SimHei", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbTaskState.ForeColor = System.Drawing.Color.White;
             this.lbTaskState.Location = new System.Drawing.Point(260, 26);
             this.lbTaskState.Name = "lbTaskState";
@@ -646,7 +650,7 @@
             // 
             this.lblCount.BackColor = System.Drawing.Color.White;
             this.lblCount.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.lblCount.Font = new System.Drawing.Font("微软雅黑", 35F, System.Drawing.FontStyle.Bold);
+            this.lblCount.Font = new System.Drawing.Font("Microsoft YaHei", 35F, System.Drawing.FontStyle.Bold);
             this.lblCount.ForeColor = System.Drawing.Color.Black;
             this.lblCount.Location = new System.Drawing.Point(3, 26);
             this.lblCount.Name = "lblCount";
@@ -1128,6 +1132,18 @@
             this.label1.Text = "数据";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // toolStripMenuItem5
+            // 
+            this.toolStripMenuItem5.Name = "toolStripMenuItem5";
+            this.toolStripMenuItem5.Size = new System.Drawing.Size(252, 6);
+            // 
+            // btnStartAllSignals
+            // 
+            this.btnStartAllSignals.Name = "btnStartAllSignals";
+            this.btnStartAllSignals.Size = new System.Drawing.Size(255, 30);
+            this.btnStartAllSignals.Text = "启动全部";
+            this.btnStartAllSignals.Click += new System.EventHandler(this.btnStartAllSignals_Click);
+            // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 23F);
@@ -1140,7 +1156,7 @@
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.groupBox1);
-            this.Font = new System.Drawing.Font("宋体", 14F);
+            this.Font = new System.Drawing.Font("SimSun", 14F);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
             this.Margin = new System.Windows.Forms.Padding(5);
@@ -1275,6 +1291,8 @@
         private System.Windows.Forms.Label label9;
         public System.Windows.Forms.ListView lsvRobotA;
         public System.Windows.Forms.ListView lsvRobotB;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem5;
+        private System.Windows.Forms.ToolStripMenuItem btnStartAllSignals;
     }
 }
 

@@ -588,7 +588,7 @@ namespace yidascan {
                                 // 计算位置, lc和cache队列里比较。
                                 var calResultt = lcb.AreaBCalculatePro(callErpApi,
                                     lc,
-                                    createShiftNo()); //计算位置
+                                    createShiftNo(), taskQ.CacheQ); //计算位置
 
                                 if (calResultt.message != "") {
                                     logOpt.Write(calResultt.message, LogType.BUFFER);
@@ -1255,6 +1255,18 @@ namespace yidascan {
         }
 
         private void btnSignalItemCatchB_Click(object sender, EventArgs e) {
+            SignalGen.startTimerItemCatchB();
+        }
+
+        private void btnStartAllSignals_Click(object sender, EventArgs e) {
+            SignalGen.startTimerWeigh();
+            Thread.Sleep(100);
+            SignalGen.startTimerCache();
+            Thread.Sleep(100);
+            SignalGen.startTimerLabelUp();
+            Thread.Sleep(100);
+            SignalGen.startTimerItemCatchA();
+            Thread.Sleep(100);
             SignalGen.startTimerItemCatchB();
         }
     }
