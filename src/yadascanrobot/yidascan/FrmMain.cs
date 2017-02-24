@@ -20,7 +20,7 @@ namespace yidascan {
     public partial class FrmMain : Form {
         NormalScan nscan1;
         private LableCodeBll lcb = new LableCodeBll();
-        public static TaskQueues taskQ = new TaskQueues();
+        public static TaskQueues taskQ;
         bool isrun = false;
         CacheHelper cacheher = new CacheHelper();
         #region opc
@@ -83,6 +83,16 @@ namespace yidascan {
             }
         }
 
+        private static TaskQueues loadconf() {
+            try {
+                var confpath = Path.Combine(Application.StartupPath, TASKQUE_CONF);
+                return TaskQueConf<TaskQueues>.load(confpath);
+            } catch (Exception ex) {
+                logOpt.Write($"!加载队列文件异常: {ex}。");
+                return null;
+            }
+        }
+
         // 运行效果不正确。无红字显示。
         private void InitListBoxes() {
             lsvBufferLog.Initstyle();
@@ -100,12 +110,38 @@ namespace yidascan {
             Text = $"{clsSetting.PRODUCT_NAME} V{Application.ProductVersion.ToString()}";
         }
 
+        private void showQ(ListView view, Queue<LableCode> labels) {
+            foreach (var item in labels) {
+                QueuesView.Add(view, $"{item.LCode} {item.ToLocation}");
+            }
+        }
+
+        private void showQ1(ListView view, Queue<RollPosition> rolls) {
+            foreach (var item in rolls) {
+                QueuesView.Add(view, $"{item.LabelCode} {item.ToLocation}");
+            }
+        }
+
+        private void initShowTaskQ() {
+            showQ(lsvCacheBefor, taskQ.CacheQ);
+            showQ(lsvCatch1, taskQ.CatchAQ);
+            showQ(lsvCatch2, taskQ.CatchBQ);
+            showQ(lsvLableUp, taskQ.LableUpQ);
+            showQ1(lsvRobotA, taskQ.RobotRollAQ);
+            showQ1(lsvRobotB, taskQ.RobotRollBQ);
+            
+            //var cacheq1 = 
+        }
+
         private void FrmMain_Load(object sender, EventArgs e) {
             try {
                 QueuesView.f = this;
+                taskQ = loadconf() ?? new TaskQueues();
+                
+
                 StartOpc();
                 PlcHelper.subscribe(RobotOpcClient);
-
+                
                 ShowTitle();
                 ShowTaskState(false);
                 RefreshRobotMenuState();
@@ -419,6 +455,7 @@ namespace yidascan {
         /// 读取完整标签号码。
         /// </summary>
         /// <param name="slot"></param>
+        /// <param name="client"></param>
         /// <returns></returns>
         private static string ReadCompleteLable(IOpcClient client, LCodeSignal slot) {
             const int MAX_LEN = 6;
@@ -460,7 +497,7 @@ namespace yidascan {
 
                                             // 计算位置
                                             LableCode outCacheLable = null;
-                                            string msg = "";
+                                            var msg = "";
                                             var cState = lcb.AreaBCalculate(callErpApi,
                                                 lc,
                                                 string.Format("{0}{1}",
@@ -1084,12 +1121,16 @@ namespace yidascan {
             txtLableCode1.Text = "请将光标放置到这里扫描";
         }
 
+        private const string TASKQUE_CONF = "taskq.json";
+
         private void FrmMain_FormClosing(object sender, FormClosingEventArgs e) {
             if (btnStop.Enabled) {
                 MessageBox.Show(string.Format("正在运行无法关闭软件！"));
                 e.Cancel = true;
             } else {
                 try {
+                    var path = Path.Combine(Application.StartupPath, TASKQUE_CONF);
+                    TaskQueConf<TaskQueues>.save(path, taskQ);
                     opcClient.Close();
                 } catch (Exception ex) {
                     logOpt.Write("!关闭OPC异常。\n" + ex, LogType.NORMAL);
