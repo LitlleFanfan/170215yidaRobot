@@ -512,34 +512,33 @@ namespace yidascan {
                                             // 板号以前没算过。                                            
 
                                             // 计算位置
-                                            // LableCode outCacheLable = null;
+                                            LableCode outCacheLable = null;
                                             var msg = "";
-                                            //var cState = lcb.AreaBCalculate(callErpApi,
-                                            //    lc,
-                                            //    string.Format("{0}{1}",
-                                            //            dtpDate.Value.ToString(clsSetting.LABEL_CODE_DATE_FORMAT),
-                                            //            cmbShiftNo.SelectedIndex.ToString()),
-                                            //    out outCacheLable, out msg); //计算位置
-
-                                            // new method.
-                                            var rt = lcb.AreaBCalculatePro(callErpApi,
+                                            var cState = lcb.AreaBCalculate(callErpApi,
                                                 lc,
                                                 string.Format("{0}{1}",
                                                         dtpDate.Value.ToString(clsSetting.LABEL_CODE_DATE_FORMAT),
                                                         cmbShiftNo.SelectedIndex.ToString()),
-                                                taskQ.CacheQ); //计算位置
+                                                out outCacheLable, out msg); //计算位置
 
-                                            msg = rt.message;
-                                            var cState = rt.state;
+                                            // new method.
+                                            //var rt = lcb.AreaBCalculatePro(callErpApi,
+                                            //    lc,
+                                            //    string.Format("{0}{1}",
+                                            //            dtpDate.Value.ToString(clsSetting.LABEL_CODE_DATE_FORMAT),
+                                            //            cmbShiftNo.SelectedIndex.ToString()),
+                                            //    taskQ.CacheQ); //计算位置
+                                            //msg = rt.message;
+                                            // var cState = rt.state;
                                             // end of new method.
 
                                             logOpt.Write(msg, LogType.BUFFER);
 
-                                            var cr = cacheher.WhenRollArrived(cState, lc, rt.CodeFromCache);
+                                            var cr = cacheher.WhenRollArrived(cState, lc, outCacheLable);
 
                                             logOpt.Write(JsonConvert.SerializeObject(cr), LogType.BUFFER);
 
-                                            BindQueue(code, lc, rt.CodeFromCache, cState, cr);
+                                            BindQueue(code, lc, outCacheLable, cState, cr);
 
                                             PlcHelper.WriteCacheJob(RobotOpcClient, cState, cr.savepos, cr.getpos);
                                         } else {
