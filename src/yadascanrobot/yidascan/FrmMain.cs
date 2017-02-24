@@ -211,14 +211,14 @@ namespace yidascan {
         private void StartRobotJobATask() {
             Task.Factory.StartNew(() => {
                 while (isrun) {
-                    lock (opcClient) {
+                    lock (RobotOpcClient) {
                         // 等待布卷
-                        var r = opcClient.ReadBool(opcParam.RobotCarryA.Signal);
+                        var r = RobotOpcClient.ReadBool(PlcSlot.ITEM_CATCH_A);
                         if (r) {
                             // 加入机器人布卷队列。
                             var code = taskQ.GetCatchAQ();
                             if (code != null) {
-                                opcClient.Write(opcParam.RobotCarryA.Signal, false);
+                                RobotOpcClient.Write(PlcSlot.ITEM_CATCH_A, false);
 
                                 QueuesView.Move(lsvCatch1, lsvRobotA);
                             }
@@ -236,14 +236,14 @@ namespace yidascan {
         private void StartRobotJobBTask() {
             Task.Factory.StartNew(() => {
                 while (isrun) {
-                    lock (opcClient) {
-                        // 等待布卷
-                        var r = opcClient.ReadBool(opcParam.RobotCarryB.Signal);
+                    lock (RobotOpcClient) {
+                        // 等待布卷                        
+                        var r = RobotOpcClient.ReadBool(PlcSlot.ITEM_CATCH_B);
                         if (r) {
                             // 加入机器人布卷队列。
                             var code = taskQ.GetCatchBQ();
                             if (code != null) {
-                                opcClient.Write(opcParam.RobotCarryB.Signal, false);
+                                RobotOpcClient.Write(PlcSlot.ITEM_CATCH_B, false);
 
                                 QueuesView.Move(lsvCatch2, lsvRobotB);
                             }
