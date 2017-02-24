@@ -515,6 +515,7 @@ namespace yidascan {
                                             // 计算位置
                                             LableCode outCacheLable = null;
                                             var msg = "";
+
                                             var cState = lcb.AreaBCalculate(callErpApi,
                                                 lc,
                                                 string.Format("{0}{1}",
@@ -546,7 +547,6 @@ namespace yidascan {
                                             logOpt.Write(string.Format("!{0}标签重复。", code.LCode), LogType.BUFFER);
                                         }
                                     }
-
                                 }
                             }
                         } catch (Exception ex) {
@@ -1162,6 +1162,7 @@ namespace yidascan {
                 try {
                     var path = Path.Combine(Application.StartupPath, TASKQUE_CONF);
                     TaskQueConf<TaskQueues>.save(path, taskQ);
+
                     opcClient.Close();
                 } catch (Exception ex) {
                     logOpt.Write("!关闭OPC异常。\n" + ex, LogType.NORMAL);
