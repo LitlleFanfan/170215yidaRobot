@@ -124,7 +124,7 @@ namespace yidascan {
 
         private void showCacheq(IList<LableCode> cache) {
             for (var i = 0; i < cache.Count; i++) {
-                if (cache[i] == null) { break; }
+                if (cache[i] == null) { continue; }
                 var side = i + 1;
                 var str = $"{cache[i].LCode} {cache[i].ToLocation} {cache[i].Diameter.ToString().PadRight(4, ' ')} {side}";
                 if (side <= 5) {
@@ -211,14 +211,14 @@ namespace yidascan {
         private void StartRobotJobATask() {
             Task.Factory.StartNew(() => {
                 while (isrun) {
-                    lock (opcClient) {
+                    lock (RobotOpcClient) {
                         // 等待布卷
-                        var r = opcClient.ReadBool(opcParam.RobotCarryA.Signal);
+                        var r = RobotOpcClient.ReadBool(PlcSlot.ITEM_CATCH_A);
                         if (r) {
                             // 加入机器人布卷队列。
                             var code = taskQ.GetCatchAQ();
                             if (code != null) {
-                                opcClient.Write(opcParam.RobotCarryA.Signal, false);
+                                RobotOpcClient.Write(PlcSlot.ITEM_CATCH_A, false);
 
                                 QueuesView.Move(lsvCatch1, lsvRobotA);
                             }
@@ -236,14 +236,14 @@ namespace yidascan {
         private void StartRobotJobBTask() {
             Task.Factory.StartNew(() => {
                 while (isrun) {
-                    lock (opcClient) {
-                        // 等待布卷
-                        var r = opcClient.ReadBool(opcParam.RobotCarryB.Signal);
+                    lock (RobotOpcClient) {
+                        // 等待布卷                        
+                        var r = RobotOpcClient.ReadBool(PlcSlot.ITEM_CATCH_B);
                         if (r) {
                             // 加入机器人布卷队列。
                             var code = taskQ.GetCatchBQ();
                             if (code != null) {
-                                opcClient.Write(opcParam.RobotCarryB.Signal, false);
+                                RobotOpcClient.Write(PlcSlot.ITEM_CATCH_B, false);
 
                                 QueuesView.Move(lsvCatch2, lsvRobotB);
                             }
@@ -610,6 +610,7 @@ namespace yidascan {
                     lsvCacheQ4.Items[cr.savepos - 1 - 15].Text = str;
                 }
             }));
+            taskQ.CacheSide[cr.savepos - 1] = lc;
         }
         private void CachePosViewGet(CacheResult cr) {
             this.Invoke((Action)(() => {
@@ -628,6 +629,7 @@ namespace yidascan {
                     lsvCacheQ4.Items[cr.getpos - 1 - 15].Text = str;
                 }
             }));
+            taskQ.CacheSide[cr.getpos - 1] = null;
         }
 
         private string createShiftNo() {

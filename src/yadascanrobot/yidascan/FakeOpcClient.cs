@@ -23,7 +23,7 @@ namespace yidascan {
         public static bool ITEMCATCH_A_SIGNAL = false;
         public static bool ITEMCATCH_B_SIGNAL = false;
 
-        private static int DELAY = 5000;
+        private static int DELAY = 3000;
 
         public static void startTimerWeigh() {
             timerWeigh = new System.Windows.Forms.Timer {
