@@ -36,7 +36,7 @@ namespace yidascan {
             try {
                 var s = File.ReadAllText(path);
                 return JsonConvert.DeserializeObject<T>(s);
-            } catch (Exception) {
+            } catch (Exception ex) {
                 return default(T);
             }
         }
