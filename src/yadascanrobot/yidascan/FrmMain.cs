@@ -122,6 +122,22 @@ namespace yidascan {
             }
         }
 
+        private void showCacheq(IList<LableCode> cache) {
+            for (var i = 0; i < cache.Count; i++) {
+                var side = i + 1;
+                var str = $"{cache[i].LCode} {cache[i].ToLocation} {cache[i].Diameter.ToString().PadRight(4, ' ')} {side}";
+                if (side <= 5) {
+                    lsvCacheQ1.Items[i].Text = str;
+                } else if (side >= 6 && side <= 10) {
+                    lsvCacheQ2.Items[i - 5].Text = str;
+                } else if (side >= 11 && side <= 15) {
+                    lsvCacheQ3.Items[i - 10].Text = str;
+                } else if (side >= 16 && side <= 20) {
+                    lsvCacheQ4.Items[i - 15].Text = str;
+                }
+            }
+        }
+
         private void initShowTaskQ() {
             showQ(lsvCacheBefor, taskQ.CacheQ);
             showQ(lsvCatch1, taskQ.CatchAQ);
@@ -129,19 +145,19 @@ namespace yidascan {
             showQ(lsvLableUp, taskQ.LableUpQ);
             showQ1(lsvRobotA, taskQ.RobotRollAQ);
             showQ1(lsvRobotB, taskQ.RobotRollBQ);
-            
-            //var cacheq1 = 
-        }
+            showQ(lsvWeigh, taskQ.WeighQ);
+            showCacheq(taskQ.CacheSide);
+        }   
 
         private void FrmMain_Load(object sender, EventArgs e) {
             try {
                 QueuesView.f = this;
                 taskQ = loadconf() ?? new TaskQueues();
-                
+
 
                 StartOpc();
                 PlcHelper.subscribe(RobotOpcClient);
-                
+
                 ShowTitle();
                 ShowTaskState(false);
                 RefreshRobotMenuState();
