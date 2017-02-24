@@ -44,6 +44,22 @@ namespace yidascan.DataAccess {
         }
 
         /// <summary>
+        /// 清空所有队列数据
+        /// </summary>
+        public void clearAll() {
+            WeighQ.Clear();
+            CacheQ.Clear();
+            LableUpQ.Clear();
+            CatchAQ.Clear();
+            CatchBQ.Clear();
+            RobotRollAQ.Clear();
+            RobotRollBQ.Clear();
+            for (int i = 0; i < CacheSide.Count(); i++) {
+                CacheSide[i] = null;
+            }
+        }
+
+        /// <summary>
         /// CatchAQ -> RobotRollQ_A
         /// </summary>
         /// <returns></returns>
