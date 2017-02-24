@@ -318,6 +318,7 @@ namespace yidascan {
 
         public void JobLoop(ref bool isrun,ListView la,ListView lb) {
             while (isrun) {
+                FrmMain.logOpt.Write($"RobotRollAQ count: {FrmMain.taskQ.RobotRollAQ.Count}", LogType.ROBOT_STACK);
                 if (FrmMain.taskQ.RobotRollAQ.Count > 0) {
                     var roll = FrmMain.taskQ.RobotRollAQ.Peek();
                     if (roll != null) {
@@ -328,6 +329,7 @@ namespace yidascan {
                         }
                     }
                 }
+                FrmMain.logOpt.Write($"RobotRollBQ count: {FrmMain.taskQ.RobotRollBQ.Count}", LogType.ROBOT_STACK);
                 if (FrmMain.taskQ.RobotRollBQ.Count > 0) {
                     var roll = FrmMain.taskQ.RobotRollBQ.Peek();
                     if (roll != null) {
