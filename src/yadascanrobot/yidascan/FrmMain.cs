@@ -404,6 +404,7 @@ namespace yidascan {
 
                                     opcClient.Write(opcParam.ScanParam.GetWeigh, getWeight);
 
+                                    QueuesView.Remove(lsvWeigh);
                                     if (code.ToLocation.Substring(0, 1) == "B") {
                                         QueuesView.Add(lsvCacheBefor, string.Format("{0} {1}", code.LCode, code.ToLocation));//加到缓存列表中显示
                                     }
@@ -1008,6 +1009,7 @@ namespace yidascan {
             lock (taskQ.WeighQ) {
                 taskQ.WeighQ.Enqueue(lc);
             }
+            QueuesView.Add(lsvWeigh, string.Format("{0} {1}", lc.LCode, lc.ToLocation));
 
             try {
                 if (LableCode.Add(lc)) {
