@@ -124,6 +124,7 @@ namespace yidascan {
 
         private void showCacheq(IList<LableCode> cache) {
             for (var i = 0; i < cache.Count; i++) {
+                if (cache[i] == null) { break; }
                 var side = i + 1;
                 var str = $"{cache[i].LCode} {cache[i].ToLocation} {cache[i].Diameter.ToString().PadRight(4, ' ')} {side}";
                 if (side <= 5) {
@@ -153,7 +154,7 @@ namespace yidascan {
             try {
                 QueuesView.f = this;
                 taskQ = loadconf() ?? new TaskQueues();
-
+                initShowTaskQ();
 
                 StartOpc();
                 PlcHelper.subscribe(RobotOpcClient);
