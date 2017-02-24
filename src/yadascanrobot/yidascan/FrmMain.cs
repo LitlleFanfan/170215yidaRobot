@@ -364,9 +364,7 @@ namespace yidascan {
 
                                 if (code != null) {
                                     getWeight = NotifyWeigh(code.LCode, false) ? SUCCESS : FAIL;
-                                    logOpt.Write(code.LCode + "称重API状态: " + getWeight);
-
-                                    opcClient.Write(opcParam.ScanParam.GetWeigh, getWeight);
+                                    logOpt.Write($"{code.LCode}称重API状态：{getWeight} 写OPC状态：{opcClient.Write(opcParam.ScanParam.GetWeigh, getWeight)}" );
 
                                     QueuesView.Remove(lsvWeigh);
                                     if (code.ToLocation.Substring(0, 1) == "B") {
