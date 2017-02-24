@@ -284,22 +284,27 @@ namespace yidascan {
         }
 
         private void StartRobotTask() {
-            logOpt.Write("机器人正在启动...", LogType.NORMAL);
-            Task.Factory.StartNew(() => {
-                robot = new RobotHelper(clsSetting.RobotIP, clsSetting.JobName);
-                robot.setup(logOpt.Write, RobotOpcClient, opcParam);
+            try {
+                logOpt.Write("机器人正在启动...", LogType.NORMAL);
+                Task.Factory.StartNew(() => {
+                    robot = new RobotHelper(clsSetting.RobotIP, clsSetting.JobName);
+                    robot.setup(logOpt.Write, RobotOpcClient, opcParam);
 
-                if (robot.IsConnected()) {
-                    lblRobot.BackColor = Color.LightGreen;
+                    if (robot.IsConnected()) {
+                        lblRobot.BackColor = Color.LightGreen;
 
-                    SetRobotTip(true);
-                    robot.JobLoop(ref robotRun, lsvRobotA, lsvRobotB);
-                } else {
-                    SetRobotTip(false, "机器人网络故障");
-                    logOpt.Write("!机器人网络故障。", LogType.NORMAL);
-                }
-            });
-            logOpt.Write("机器人启动正常。", LogType.NORMAL);
+                        SetRobotTip(true);
+                        logOpt.Write("开始机器人线程。", LogType.NORMAL);
+                        robot.JobLoop(ref robotRun, lsvRobotA, lsvRobotB);
+                        logOpt.Write("机器人启动正常。", LogType.NORMAL);
+                    } else {
+                        SetRobotTip(false, "机器人网络故障");
+                        logOpt.Write("!机器人网络故障。", LogType.NORMAL);
+                    }
+                });
+            }catch(Exception ex) {
+                logOpt.Write($"机器人启动异常。{ex}", LogType.NORMAL);
+            }
         }
 
         private void BAreaUserFinalLayerTask() {
@@ -539,6 +544,14 @@ namespace yidascan {
                                             logOpt.Write(JsonConvert.SerializeObject(cr), LogType.BUFFER);
 
                                             BindQueue(code, lc, outCacheLable, cState, cr);
+
+                                            if (cState == CacheState.CacheAndGet || cState == CacheState.GetThenCache) {
+                                                if ((cr.savepos < 11 && cr.getpos < 11) || (cr.savepos > 10 && cr.getpos > 10)) {
+                                                    cState = CacheState.GetThenCache;
+                                                } else {
+                                                    cState = CacheState.CacheAndGet;
+                                                }
+                                            }
 
                                             PlcHelper.WriteCacheJob(RobotOpcClient, cState, cr.savepos, cr.getpos);
                                         } else {
