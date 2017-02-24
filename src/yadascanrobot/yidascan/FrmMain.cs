@@ -515,12 +515,24 @@ namespace yidascan {
                                             // 计算位置
                                             LableCode outCacheLable = null;
                                             var msg = "";
-                                            var cState = lcb.AreaBCalculate(callErpApi,
+                                            //var cState = lcb.AreaBCalculate(callErpApi,
+                                            //    lc,
+                                            //    string.Format("{0}{1}",
+                                            //            dtpDate.Value.ToString(clsSetting.LABEL_CODE_DATE_FORMAT),
+                                            //            cmbShiftNo.SelectedIndex.ToString()),
+                                            //    out outCacheLable, out msg); //计算位置
+
+                                            // new method.
+                                            var rt = lcb.AreaBCalculatePro(callErpApi,
                                                 lc,
                                                 string.Format("{0}{1}",
                                                         dtpDate.Value.ToString(clsSetting.LABEL_CODE_DATE_FORMAT),
                                                         cmbShiftNo.SelectedIndex.ToString()),
-                                                out outCacheLable, out msg); //计算位置
+                                                taskQ.CacheQ); //计算位置
+
+                                            msg = rt.message;
+                                            var cState = rt.state;
+                                            // end of new method.
 
                                             logOpt.Write(msg, LogType.BUFFER);
 
