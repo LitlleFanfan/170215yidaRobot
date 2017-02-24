@@ -148,7 +148,7 @@ namespace yidascan {
             showQ1(lsvRobotB, taskQ.RobotRollBQ);
             showQ(lsvWeigh, taskQ.WeighQ);
             showCacheq(taskQ.CacheSide);
-        }   
+        }
 
         private void FrmMain_Load(object sender, EventArgs e) {
             try {
@@ -284,9 +284,8 @@ namespace yidascan {
         }
 
         private void StartRobotTask() {
+            logOpt.Write("机器人正在启动...", LogType.NORMAL);
             Task.Factory.StartNew(() => {
-                logOpt.Write("机器人正在启动...", LogType.NORMAL);
-
                 robot = new RobotHelper(clsSetting.RobotIP, clsSetting.JobName);
                 robot.setup(logOpt.Write, RobotOpcClient, opcParam);
 
@@ -295,12 +294,12 @@ namespace yidascan {
 
                     SetRobotTip(true);
                     robot.JobLoop(ref robotRun, lsvRobotA, lsvRobotB);
-                    logOpt.Write("机器人启动正常。", LogType.NORMAL);
                 } else {
                     SetRobotTip(false, "机器人网络故障");
                     logOpt.Write("!机器人网络故障。", LogType.NORMAL);
                 }
             });
+            logOpt.Write("机器人启动正常。", LogType.NORMAL);
         }
 
         private void BAreaUserFinalLayerTask() {
@@ -418,7 +417,7 @@ namespace yidascan {
 
                                 if (code != null) {
                                     getWeight = NotifyWeigh(code.LCode, false) ? SUCCESS : FAIL;
-                                    logOpt.Write($"{code.LCode}称重API状态：{getWeight} 写OPC状态：{opcClient.Write(opcParam.ScanParam.GetWeigh, getWeight)}" );
+                                    logOpt.Write($"{code.LCode}称重API状态：{getWeight} 写OPC状态：{opcClient.Write(opcParam.ScanParam.GetWeigh, getWeight)}");
 
                                     QueuesView.Remove(lsvWeigh);
                                     if (code.ToLocation.Substring(0, 1) == "B") {
