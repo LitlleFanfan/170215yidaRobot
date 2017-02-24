@@ -16,6 +16,7 @@ namespace yidascan {
         Full
     }
     public class RollPosition {
+        public RollPosition() { }
         public RollPosition(string label, string side, string locationNo, PanelState pnlState, decimal x, decimal y, decimal z, decimal rz) {
             this.LabelCode = label;
 

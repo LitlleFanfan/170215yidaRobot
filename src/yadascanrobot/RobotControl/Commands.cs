@@ -95,6 +95,8 @@ namespace RobotControl {
     public class PostionVar {
         decimal _sOrX;
 
+        public PostionVar() { }
+
         public decimal sOrX {
             get { return _sOrX; }
         }

@@ -152,8 +152,7 @@ namespace yidascan {
         private void FrmMain_Load(object sender, EventArgs e) {
             try {
                 QueuesView.f = this;
-                taskQ = loadconf() ?? new TaskQueues();
-
+                taskQ = loadconf() ?? new TaskQueues();           
 
                 StartOpc();
                 PlcHelper.subscribe(RobotOpcClient);
