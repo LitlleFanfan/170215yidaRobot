@@ -43,12 +43,6 @@
         /// <summary>
         /// 抓料处位置2来料信号地址。
         /// </summary>
-        public static string ITEM_CATCH_B = "MicroWin.S7-1200-3.NewItem110";
-        
-        /// <summary>
-        /// 扫描失败勾料信号。 
-        /// </summary>
-        public static string PUSH_ASIDE_SIGNAL = "MicroWin.S7-1200.NewItem15";
-
+        public static string ITEM_CATCH_B = "MicroWin.S7-1200-3.NewItem110";        
     }
 }

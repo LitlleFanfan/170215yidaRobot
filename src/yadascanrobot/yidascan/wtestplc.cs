@@ -78,7 +78,7 @@ namespace yidascan {
         }
 
         private void btnPushAside_Click(object sender, EventArgs e) {
-            PlcHelper.PushAsideClothRoll(client);
+            //PlcHelper.PushAsideClothRoll(client);
         }
 
         private void btnSetPlcIP_Click(object sender, EventArgs e) {
