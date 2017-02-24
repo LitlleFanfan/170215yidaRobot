@@ -139,7 +139,7 @@ namespace yidascan {
             }
         }
 
-        private void initShowTaskQ() {
+        private void ShowTaskQ() {
             showQ(lsvCacheBefor, taskQ.CacheQ);
             showQ(lsvCatch1, taskQ.CatchAQ);
             showQ(lsvCatch2, taskQ.CatchBQ);
@@ -155,7 +155,7 @@ namespace yidascan {
                 QueuesView.f = this;
 
                 taskQ = loadconf() ?? new TaskQueues();
-                initShowTaskQ();
+                ShowTaskQ();
 
                 StartOpc();
                 PlcHelper.subscribe(RobotOpcClient);
@@ -513,7 +513,7 @@ namespace yidascan {
                                             // 板号以前没算过。                                            
 
                                             // 计算位置
-                                            LableCode outCacheLable = null;
+                                            // LableCode outCacheLable = null;
                                             var msg = "";
                                             //var cState = lcb.AreaBCalculate(callErpApi,
                                             //    lc,
@@ -536,11 +536,11 @@ namespace yidascan {
 
                                             logOpt.Write(msg, LogType.BUFFER);
 
-                                            var cr = cacheher.WhenRollArrived(cState, lc, outCacheLable);
+                                            var cr = cacheher.WhenRollArrived(cState, lc, rt.CodeFromCache);
 
                                             logOpt.Write(JsonConvert.SerializeObject(cr), LogType.BUFFER);
 
-                                            BindQueue(code, lc, outCacheLable, cState, cr);
+                                            BindQueue(code, lc, rt.CodeFromCache, cState, cr);
 
                                             PlcHelper.WriteCacheJob(RobotOpcClient, cState, cr.savepos, cr.getpos);
                                         } else {
@@ -1367,6 +1367,42 @@ namespace yidascan {
             SignalGen.startTimerItemCatchA();
             Thread.Sleep(100);
             SignalGen.startTimerItemCatchB();
+        }
+
+        private void clearAllTaskViews() {
+            var views = new List<ListView> {
+                lsvCacheBefor,
+                lsvCatch1,
+                lsvCatch2,
+                lsvLableUp,
+                lsvRobotA,
+                lsvRobotB,
+                lsvWeigh,
+                lsvCacheQ1,
+                lsvCacheQ2,
+                lsvCacheQ3,
+                lsvCacheQ4
+            };
+
+            foreach (var view in views) {
+                view.Items.Clear();
+            }
+        }
+
+        private void btnClearAllRunningData_Click(object sender, EventArgs e) {
+            if (taskQ != null) {
+                taskQ.clearAll();
+                clearAllTaskViews();
+
+                showQ(lsvCacheBefor, taskQ.CacheQ);
+                showQ(lsvCatch1, taskQ.CatchAQ);
+                showQ(lsvCatch2, taskQ.CatchBQ);
+                showQ(lsvLableUp, taskQ.LableUpQ);
+                showQ1(lsvRobotA, taskQ.RobotRollAQ);
+                showQ1(lsvRobotB, taskQ.RobotRollBQ);
+                showQ(lsvWeigh, taskQ.WeighQ);
+                showCacheq(taskQ.CacheSide);
+            }
         }
     }
 }
