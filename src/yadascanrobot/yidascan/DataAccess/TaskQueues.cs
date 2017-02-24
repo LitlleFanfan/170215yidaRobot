@@ -19,6 +19,8 @@ namespace yidascan.DataAccess {
 
         public static Action<string, string> onlog;
 
+        public TaskQueues() { }
+
         /// <summary>
         /// CatchBQ -> RobotRollQ_B
         /// </summary>
