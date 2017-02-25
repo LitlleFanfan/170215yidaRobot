@@ -109,5 +109,15 @@ namespace yidascan {
             client.AddSubscription(PlcSlot.ITEM_CATCH_A);
             client.AddSubscription(PlcSlot.ITEM_CATCH_B);
         }
+
+        /// <summary>
+        /// 代替主窗口的同名函数。
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="param"></param>
+        /// <param name="errorcode">错误码</param>
+        public static void ERPAlarmNo(IOpcClient client, OPCParam param, int errorcode) {
+            client.Write(param.None.ERPAlarm, errorcode);
+        }
     }
 }

@@ -515,7 +515,8 @@ namespace yidascan {
                                     var lc = LableCode.QueryByLCode(code.LCode);
 
                                     if (lc == null) {
-                                        logOpt.Write(string.Format("!{0}标签找不到", code.LCode), LogType.BUFFER);
+                                        logOpt.Write(string.Format("!{0}标签在数据库中找不到", code.LCode), LogType.BUFFER);
+                                        // ???取不到信息后面的操作无法进行。此时应当停机。
                                     } else {
                                         // 检查重复计算。
                                         if (string.IsNullOrEmpty(lc.PanelNo)) {
@@ -546,21 +547,20 @@ namespace yidascan {
                                             logOpt.Write(msg, LogType.BUFFER);
 
                                             var cr = cacheher.WhenRollArrived(cState, lc, outCacheLable);
-
-                                            logOpt.Write($"1 {JsonConvert.SerializeObject(cr)}", LogType.BUFFER);
-
-                                            BindQueue(code, lc, outCacheLable, cr);
-                                            taskQ.CacheQ.Dequeue();
-
+                                            
                                             if (cr.state == CacheState.CacheAndGet || cr.state== CacheState.GetThenCache) {
                                                 if ((cr.savepos < 11 && cr.getpos < 11) || (cr.savepos > 10 && cr.getpos > 10)) {
+                                                    // 在同一侧
                                                     cr.state = CacheState.GetThenCache;
                                                 } else {
                                                     cr.state = CacheState.CacheAndGet;
                                                 }
                                             }
-                                            logOpt.Write($"2 {JsonConvert.SerializeObject(cr)}", LogType.BUFFER);
 
+                                            BindQueue(code, lc, outCacheLable, cr);
+                                            taskQ.CacheQ.Dequeue();
+
+                                            logOpt.Write($"**写plc动作: {JsonConvert.SerializeObject(cr)}", LogType.BUFFER);
                                             PlcHelper.WriteCacheJob(RobotOpcClient, cr.state, cr.savepos, cr.getpos);
                                         } else {
                                             logOpt.Write(string.Format("!{0}标签重复。", code.LCode), LogType.BUFFER);
@@ -911,6 +911,7 @@ namespace yidascan {
         /// <param name="handwork"></param>
         /// <param name="code">标签号码</param>
         /// <returns></returns>
+        [Obsolete("应使用erphelper.NotifyErp函数")]
         private bool NotifyWeigh(string code, bool handwork = true) {
             try {
                 var re = callErpApi.Post(clsSetting.ToWeight,
@@ -1289,6 +1290,7 @@ namespace yidascan {
         /// <param name="erpAlarm"></param>
         /// <param name="opcClient">opc client</param>
         /// <param name="opcParam">opc param</param>
+        [Obsolete("应使用lchelper.ERPAlarm函数")]
         public static void ERPAlarm(IOpcClient opcClient, OPCParam opcParam, ERPAlarmNo erpAlarm) {
             try {
                 opcClient.Write(opcParam.None.ERPAlarm, (int)erpAlarm);

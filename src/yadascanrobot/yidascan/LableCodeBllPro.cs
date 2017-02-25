@@ -1,16 +1,18 @@
-﻿using Newtonsoft.Json;
-using ProduceComm;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+using Newtonsoft.Json;
+using ProduceComm;
 using yidascan.DataAccess;
 
-namespace yidascan {
-
-    public class LableCodeBll {
+namespace yidascan.labelcodepro {
+    class LableCodeBllPro {
         public LableCode CalculateCache(PanelInfo pinfo, LableCode lc, List<LableCode> lcs) {
             LableCode lc2 = null;
-            int cachecount = (pinfo.OddStatus ? 0 : 1) + (pinfo.EvenStatus ? 0 : 1);
+            var cachecount = (pinfo.OddStatus ? 0 : 1) + (pinfo.EvenStatus ? 0 : 1);
             var tmp = from s in lcs where s.FloorIndex == 0 orderby s.Diameter ascending select s;
             switch (tmp.Count()) {
                 case 0://当前层已没有了缓存。//当前布卷直接缓存起来。
@@ -19,7 +21,7 @@ namespace yidascan {
                 case 2://当前层有两卷缓存。
                     if (tmp.Count() == cachecount)//缓存卷数与需要缓存卷数相等
                     {
-                        List<LableCode> lcObjs = new List<LableCode>();
+                        var lcObjs = new List<LableCode>();
                         foreach (LableCode l in tmp) {
                             if (l.Diameter + clsSetting.CacheIgnoredDiff < lc.Diameter) { lcObjs.Add(l); }
                         }
@@ -36,19 +38,19 @@ namespace yidascan {
             return lc2;
         }
 
-        private bool IsRollInSameSide(LableCode lc, int flindex) {
+        private static bool IsRollInSameSide(LableCode lc, int flindex) {
             return lc.FloorIndex > 0 && lc.FloorIndex % 2 == flindex % 2;
         }
 
         public void CalculatePosition(List<LableCode> lcs, LableCode lc) {
             lc.FloorIndex = CalculateFloorIndex(lcs);
 
-            decimal z = lc.Floor == 1 ? -35 : LableCode.GetFloorMaxDiameter(lc.PanelNo, lc.Floor) - 10;
-            decimal r = clsSetting.OddTurn ?
+            var z = lc.Floor == 1 ? -35 : LableCode.GetFloorMaxDiameter(lc.PanelNo, lc.Floor) - 10;
+            var r = clsSetting.OddTurn ?
                 (lc.Floor % 2 == 1 ? 0 : 90) : //奇数层横放
                 (lc.Floor % 2 == 1 ? 90 : 0); //偶数层横放
 
-            decimal xory = CalculateXory(lcs, lc);
+            var xory = CalculateXory(lcs, lc);
 
             //z,r,x/y
             lc.Coordinates = string.Format("{0},{1},{2}", z, r, xory);
@@ -58,7 +60,7 @@ namespace yidascan {
             lc.Crz = r;
         }
 
-        private decimal CalculateXory(List<LableCode> lcs, LableCode lc) {
+        private static decimal CalculateXory(List<LableCode> lcs, LableCode lc) {
             decimal xory;
             if (lc.FloorIndex <= 2) {
                 xory = lc.FloorIndex % 2 == 1 ? 0 : -clsSetting.RollSep;
@@ -73,7 +75,7 @@ namespace yidascan {
         }
 
         private decimal CalculateXory(List<LableCode> lcs) {
-            int index = CalculateFloorIndex(lcs);
+            var index = CalculateFloorIndex(lcs);
             decimal xory;
             if (index <= 2) {
                 xory = index % 2 == 1 ? 0 : -clsSetting.RollSep;
@@ -87,7 +89,7 @@ namespace yidascan {
             return xory;
         }
 
-        private int CalculateFloorIndex(List<LableCode> lcs) {
+        private static int CalculateFloorIndex(List<LableCode> lcs) {
             var oddcount = lcs.Count(x => { return x.isOddSide(); });
             var evencount = lcs.Count(x => { return x.isEvenSide(); });
 
@@ -98,13 +100,6 @@ namespace yidascan {
 
         public void CalculatePosition(List<LableCode> lcs, LableCode lc, LableCode lc2) {
             lc.Floor = lc2.Floor;
-
-            //if (lc.Diameter > lc2.Diameter) {
-            //    LableCode tmp = lc2;
-            //    lc2 = lc;
-            //    lc = tmp;
-            //}
-
             CalculatePosition(lcs, lc);
             lc2.FloorIndex = lc.FloorIndex + 2;
 
@@ -127,20 +122,20 @@ namespace yidascan {
         /// <returns></returns>
         public LableCode IsPanelFull(List<LableCode> lcs, LableCode lc) {
             LableCode result = null;
-            decimal MAX_LEN = clsSetting.SplintLength / 2;
+            var MAX_LEN = clsSetting.SplintLength / 2;
             if (lc.Floor > 1) {
                 MAX_LEN = LableCode.GetFloorHalfAvgLength(lc.PanelNo, lc.Floor);
                 MAX_LEN = MAX_LEN == 0 ? (clsSetting.SplintLength / 2) : MAX_LEN;
                 FrmMain.logOpt.Write(string.Format("板号{0}层号{1}层的平均长度{2}", lc.PanelNo, lc.Floor - 1, MAX_LEN), LogType.BUFFER, LogViewType.OnlyFile);
             }
             var cache = from s in lcs where s.FloorIndex == 0 select s;
-            decimal xory = CalculateXory(lcs);//计算要码上去布的Xory
+            var xory = CalculateXory(lcs);//计算要码上去布的Xory
 
             foreach (LableCode item in cache) {
                 // 当前卷的坐标。
-                decimal itemXory = Math.Abs(xory) + lc.Diameter + clsSetting.RollSep;
+                var itemXory = Math.Abs(xory) + lc.Diameter + clsSetting.RollSep;
                 // 当前对应的边界余量。
-                decimal tmp = MAX_LEN - (item.Diameter + Math.Abs(itemXory));
+                var tmp = MAX_LEN - (item.Diameter + Math.Abs(itemXory));
 
                 if (tmp > clsSetting.EdgeSpace) { continue; }
 
@@ -219,7 +214,11 @@ namespace yidascan {
                 }
 
                 if (fp == FloorPerformance.BothFinish && lc.Floor == pinfo.MaxFloor) {
-                    var re = NotifyPanelEnd(erpapi, lc.PanelNo, out msg);
+                    var re = ErpHelper.NotifyPanelEnd(erpapi, lc.PanelNo, out msg);
+                    if (re == false) {
+                        // FrmMain.ERPAlarm(FakeOpcClient, ParamArrayAttribute, ERPAlarmNo.COMMUNICATION_ERROR);
+                        FrmMain.logOpt.Write(msg);
+                    }
                     FrmMain.logOpt.Write(string.Format("{0} {1}", lc.ToLocation, msg), LogType.NORMAL);
                 }
                 msg = string.Format(@"交地:{0};当前标签:{1};直径:{2};长:{3};缓存状态:{4};取出标签:{5};直径:{6};长:{7};",
@@ -228,41 +227,6 @@ namespace yidascan {
                        (lc2 == null ? 0 : lc2.Length));//outCacheLable
             }
             return cState;
-        }
-
-        [Obsolete("应当使用ErpHelper.NotifyPanelEnd")]
-        public bool NotifyPanelEnd(IErpApi erpapi, string panelNo, out string msg, bool handwork = false) {
-            if (!string.IsNullOrEmpty(panelNo)) {
-                // 这个从数据库取似更合理。                
-                var data = LableCode.QueryLabelcodeByPanelNo(panelNo);
-
-                if (data == null) {
-                    msg = "!板号完成失败，未能查到数据库的标签。";
-                    return false;
-                }
-
-                var erpParam = new Dictionary<string, string>() {
-                        { "Board_No", panelNo },  // first item.
-                        { "AllBarCode", string.Join(",", data.ToArray()) } // second item.
-                    };
-                var re = erpapi.Post(clsSetting.PanelFinish, erpParam);
-
-                // show result.
-                if (re["ERPState"] == "OK") {
-                    if (re["State"] == "Fail") {
-                        msg = string.Format("!{0}板号{1}完成失败。{2}", (handwork ? "手工" : "自动"),
-                            JsonConvert.SerializeObject(erpParam), re["ERR"]);
-                    } else {
-                        msg = string.Format("{0}板号{1}完成成功。{2}", (handwork ? "手工" : "自动"),
-                            JsonConvert.SerializeObject(erpParam), re["Data"]);
-                        return true;
-                    }
-                } else {
-                    FrmMain.ERPAlarm(FrmMain.opcClient, FrmMain.opcParam, ERPAlarmNo.COMMUNICATION_ERROR);
-                }
-            }
-            msg = "!板号完成失败，板号为空。";
-            return false;
         }
     }
 }
