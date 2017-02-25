@@ -151,17 +151,24 @@ namespace yidascan {
             return result;
         }
 
+        /// <summary>
+        /// 取当前交地的板号，并将版信息赋给当前布卷
+        /// </summary>
+        /// <param name="lc"></param>
+        /// <param name="dateShiftNo"></param>
+        /// <returns>返回板信息</returns>
         public static PanelInfo GetPanelNo(LableCode lc, string dateShiftNo) {
             var pf = LableCode.GetTolactionCurrPanelNo(lc.ToLocation, dateShiftNo);
-            if (pf == null) {
-                var panelNo = PanelGen.NewPanelNo();
-                lc.PanelNo = panelNo;
-                lc.FloorIndex = 0;
-                lc.Floor = 1;
-                lc.Coordinates = "";
-            } else {
-                lc.SetupPanelInfo(pf);
-            }
+            //if (pf == null) {
+            //    var panelNo = PanelGen.NewPanelNo();
+            //    lc.PanelNo = panelNo;
+            //    lc.FloorIndex = 0;
+            //    lc.Floor = 1;
+            //    lc.Coordinates = "";
+            //} else {
+            //    lc.SetupPanelInfo(pf);
+            //}
+            lc.SetupPanelInfo(pf);
             return pf;
         }
 

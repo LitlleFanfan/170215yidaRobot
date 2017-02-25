@@ -252,6 +252,7 @@ namespace yidascan.DataAccess {
 
         /// <summary>
         /// 把PanelInfo的板号和层，赋予当前标签。
+        /// 如果pinfo为null, 则产生新的板号。
         /// </summary>
         /// <param name="pinfo"></param>
         public void SetupPanelInfo(PanelInfo pinfo) {
