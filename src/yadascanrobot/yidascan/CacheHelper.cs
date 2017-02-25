@@ -40,6 +40,8 @@ namespace yidascan {
     }
 
     public class CacheHelper {
+        public object LOCK_CACHE_AREA = new object();
+
         public CachePos[] cacheposes { get; set; }
 
         public CacheHelper(CachePos[] _cacheposes) {
@@ -223,5 +225,25 @@ namespace yidascan {
 
             return result;
         }
+
+        /// <summary>
+        /// 重新计算缓存区布卷坐标。
+        /// 其他队列的布卷坐标不动。
+        /// 原板的最高层设为当前层。
+        /// </summary>
+        /// <param name="tolocation">交地</param>
+        /// <param name="panelno">板号</param>
+        public void ReCalculateCoordinate(string panelno, string tolocation) {
+            // 设新的板号，层数设为1
+            var que = from x in cacheposes
+                      where x.labelcode.ToLocation == tolocation
+                      select x;
+            foreach (var item in que) {
+                item.labelcode.PanelNo = panelno;
+                item.labelcode.Floor = 1;
+                LableCode.Update(item.labelcode);
+            }
+        }
+
     }
 }
