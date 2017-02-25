@@ -22,6 +22,8 @@ namespace yidascan {
                 var rv = client.ReadString(slot);
 
                 loghandler?.Invoke($"{value}, {rv}");
+
+                Thread.Sleep(100);
             }
         }
     }
