@@ -15,7 +15,7 @@ namespace yidascan.DataAccess {
         public Queue<LableCode> CatchBQ = new Queue<LableCode>();
         public Queue<RollPosition> RobotRollAQ = new Queue<RollPosition>();
         public Queue<RollPosition> RobotRollBQ = new Queue<RollPosition>();
-        public LableCode[] CacheSide = new LableCode[20];
+        public CachePos[] CacheSide = null;
 
         public static Action<string, string> onlog;
 
@@ -34,7 +34,7 @@ namespace yidascan.DataAccess {
             }
             if (code != null) {
                 var roll = AddRobotRollQ(code.LCode, "B");
-                FrmMain.logOpt.Write($"A {Newtonsoft.Json.JsonConvert.SerializeObject(roll)}", LogType.ROLL_QUEUE);
+                FrmMain.logOpt.Write($"B {Newtonsoft.Json.JsonConvert.SerializeObject(roll)}", LogType.ROLL_QUEUE);
                 if (roll != null) {
                     lock (RobotRollBQ) {
                         RobotRollBQ.Enqueue(roll);
@@ -73,7 +73,7 @@ namespace yidascan.DataAccess {
             }
             if (code != null) {
                 var roll = AddRobotRollQ(code.LCode, "A");
-                FrmMain.logOpt.Write($"!A {Newtonsoft.Json.JsonConvert.SerializeObject(roll)}", LogType.ROLL_QUEUE);
+                FrmMain.logOpt.Write($"A {Newtonsoft.Json.JsonConvert.SerializeObject(roll)}", LogType.ROLL_QUEUE);
                 if (roll != null) {
                     lock (RobotRollAQ) {
                         RobotRollAQ.Enqueue(roll);
