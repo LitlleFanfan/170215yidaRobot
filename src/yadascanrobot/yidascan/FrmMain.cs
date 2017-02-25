@@ -586,52 +586,56 @@ namespace yidascan {
             }
         }
 
+        private object LOCK_QUEUE_VIEW = new object();
+
         private void BindQueue(LableCode code, LableCode lc, LableCode outCacheLable, CacheResult cr) {
-            try {
-                switch (cr.state) {
-                    case CacheState.Go:
-                        taskQ.LableUpQ.Enqueue(code);
+            lock (LOCK_QUEUE_VIEW) {
+                try {
+                    switch (cr.state) {
+                        case CacheState.Go:
+                            taskQ.LableUpQ.Enqueue(code);
 
-                        QueuesView.Move(lsvCacheBefor, lsvLableUp);
-                        break;
-                    case CacheState.Cache:
-                        QueuesView.Remove(lsvCacheBefor);
-                        CachePosViewSave(lc, cr);
-                        break;
-                    case CacheState.GetThenCache:
-                        taskQ.LableUpQ.Enqueue(outCacheLable);
+                            QueuesView.Move(lsvCacheBefor, lsvLableUp);
+                            break;
+                        case CacheState.Cache:
+                            QueuesView.Remove(lsvCacheBefor);
+                            CachePosViewSave(lc, cr);
+                            break;
+                        case CacheState.GetThenCache:
+                            taskQ.LableUpQ.Enqueue(outCacheLable);
 
-                        QueuesView.Remove(lsvCacheBefor);
-                        CachePosViewGet(cr);
-                        CachePosViewSave(lc, cr);
-                        break;
-                    case CacheState.CacheAndGet:
-                        taskQ.LableUpQ.Enqueue(outCacheLable);
+                            QueuesView.Remove(lsvCacheBefor);
+                            CachePosViewGet(cr);
+                            CachePosViewSave(lc, cr);
+                            break;
+                        case CacheState.CacheAndGet:
+                            taskQ.LableUpQ.Enqueue(outCacheLable);
 
-                        QueuesView.Remove(lsvCacheBefor);
-                        CachePosViewSave(lc, cr);
-                        CachePosViewGet(cr);
-                        break;
-                    case CacheState.GoThenGet:
-                        taskQ.LableUpQ.Enqueue(code);
-                        taskQ.LableUpQ.Enqueue(outCacheLable);
+                            QueuesView.Remove(lsvCacheBefor);
+                            CachePosViewSave(lc, cr);
+                            CachePosViewGet(cr);
+                            break;
+                        case CacheState.GoThenGet:
+                            taskQ.LableUpQ.Enqueue(code);
+                            taskQ.LableUpQ.Enqueue(outCacheLable);
 
-                        QueuesView.Move(lsvCacheBefor, lsvLableUp);
-                        CachePosViewGet(cr);
-                        break;
-                    case CacheState.GetThenGo:
-                        taskQ.LableUpQ.Enqueue(outCacheLable);
-                        taskQ.LableUpQ.Enqueue(code);
+                            QueuesView.Move(lsvCacheBefor, lsvLableUp);
+                            CachePosViewGet(cr);
+                            break;
+                        case CacheState.GetThenGo:
+                            taskQ.LableUpQ.Enqueue(outCacheLable);
+                            taskQ.LableUpQ.Enqueue(code);
 
-                        CachePosViewGet(cr);
-                        QueuesView.Move(lsvCacheBefor, lsvLableUp);
-                        break;
-                    default:
-                        break;
+                            CachePosViewGet(cr);
+                            QueuesView.Move(lsvCacheBefor, lsvLableUp);
+                            break;
+                        default:
+                            break;
+                    }
+                } catch (Exception ex) {
+                    logOpt.Write($"!{ex}", LogType.BUFFER);
                 }
-            } catch (Exception ex) {
-                logOpt.Write($"!{ex}", LogType.BUFFER);
-            }
+            } // end of lock.
         }
 
         private void CachePosViewSave(LableCode lc, CacheResult cr) {
