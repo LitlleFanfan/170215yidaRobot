@@ -123,18 +123,20 @@ namespace yidascan {
         }
 
         private void showCacheq(CachePos[] cache) {
-            for (var i = 0; i < cache.Length; i++) {
-                if (cache[i].labelcode == null) { continue; }
-                var side = i + 1;
-                var str = $"{cache[i].labelcode.LCode} {cache[i].labelcode.ToLocation} {cache[i].labelcode.Diameter.ToString().PadRight(4, ' ')} {side}";
-                if (side <= 5) {
-                    lsvCacheQ1.Items[i].Text = str;
-                } else if (side >= 6 && side <= 10) {
-                    lsvCacheQ2.Items[i - 5].Text = str;
-                } else if (side >= 11 && side <= 15) {
-                    lsvCacheQ3.Items[i - 10].Text = str;
-                } else if (side >= 16 && side <= 20) {
-                    lsvCacheQ4.Items[i - 15].Text = str;
+            if (cache != null) {
+                for (var i = 0; i < cache.Length; i++) {
+                    if (cache[i].labelcode == null) { continue; }
+                    var side = i + 1;
+                    var str = $"{cache[i].labelcode.LCode} {cache[i].labelcode.ToLocation} {cache[i].labelcode.Diameter.ToString().PadRight(4, ' ')} {side}";
+                    if (side <= 5) {
+                        lsvCacheQ1.Items[i].Text = str;
+                    } else if (side >= 6 && side <= 10) {
+                        lsvCacheQ2.Items[i - 5].Text = str;
+                    } else if (side >= 11 && side <= 15) {
+                        lsvCacheQ3.Items[i - 10].Text = str;
+                    } else if (side >= 16 && side <= 20) {
+                        lsvCacheQ4.Items[i - 15].Text = str;
+                    }
                 }
             }
         }
