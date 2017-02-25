@@ -22,7 +22,7 @@ namespace yidascan {
         private LableCodeBll lcb = new LableCodeBll();
         public static TaskQueues taskQ;
         bool isrun = false;
-        CacheHelper cacheher = new CacheHelper();
+        CacheHelper cacheher;
         #region opc
         public static OPCParam opcParam = new OPCParam();
 
@@ -122,19 +122,21 @@ namespace yidascan {
             }
         }
 
-        private void showCacheq(IList<LableCode> cache) {
-            for (var i = 0; i < cache.Count; i++) {
-                if (cache[i] == null) { continue; }
-                var side = i + 1;
-                var str = $"{cache[i].LCode} {cache[i].ToLocation} {cache[i].Diameter.ToString().PadRight(4, ' ')} {side}";
-                if (side <= 5) {
-                    lsvCacheQ1.Items[i].Text = str;
-                } else if (side >= 6 && side <= 10) {
-                    lsvCacheQ2.Items[i - 5].Text = str;
-                } else if (side >= 11 && side <= 15) {
-                    lsvCacheQ3.Items[i - 10].Text = str;
-                } else if (side >= 16 && side <= 20) {
-                    lsvCacheQ4.Items[i - 15].Text = str;
+        private void showCacheq(CachePos[] cache) {
+            if (cache != null) {
+                for (var i = 0; i < cache.Length; i++) {
+                    if (cache[i].labelcode == null) { continue; }
+                    var side = i + 1;
+                    var str = $"{cache[i].labelcode.LCode} {cache[i].labelcode.ToLocation} {cache[i].labelcode.Diameter.ToString().PadRight(4, ' ')} {side}";
+                    if (side <= 5) {
+                        lsvCacheQ1.Items[i].Text = str;
+                    } else if (side >= 6 && side <= 10) {
+                        lsvCacheQ2.Items[i - 5].Text = str;
+                    } else if (side >= 11 && side <= 15) {
+                        lsvCacheQ3.Items[i - 10].Text = str;
+                    } else if (side >= 16 && side <= 20) {
+                        lsvCacheQ4.Items[i - 15].Text = str;
+                    }
                 }
             }
         }
@@ -155,6 +157,8 @@ namespace yidascan {
                 QueuesView.f = this;
 
                 taskQ = loadconf() ?? new TaskQueues();
+                cacheher = new CacheHelper(taskQ.CacheSide);
+
                 ShowTaskQ();
 
                 StartOpc();
@@ -435,8 +439,9 @@ namespace yidascan {
                                     logOpt.Write($"{code.LCode}称重API状态：{getWeight} 写OPC状态：{opcClient.Write(opcParam.ScanParam.GetWeigh, getWeight)}");
 
                                     #region 临时称重信号问题排除
+                                    logOpt.Write($"0ms当前OPC称重信号状态：{ opcClient.ReadInt(opcParam.ScanParam.GetWeigh)}");
                                     Thread.Sleep(20);
-                                    logOpt.Write($"当前OPC称重信号状态：{ opcClient.ReadInt(opcParam.ScanParam.GetWeigh)}");
+                                    logOpt.Write($"20ms当前OPC称重信号状态：{ opcClient.ReadInt(opcParam.ScanParam.GetWeigh)}");
                                     #endregion
 
                                     QueuesView.Remove(lsvWeigh);
@@ -519,6 +524,7 @@ namespace yidascan {
                     lock (RobotOpcClient) {
                         try {
                             if (PlcHelper.ReadCacheSignal(RobotOpcClient)) {
+                                if (taskQ.CacheQ.Count == 0) { continue; }
                                 var code = taskQ.CacheQ.Peek();
 
                                 if (code != null) {
@@ -568,7 +574,9 @@ namespace yidascan {
                                                     cr.state = CacheState.CacheAndGet;   // action 6
                                                 }
                                             }
-                                            taskQ.CacheQ.Dequeue();
+                                            lock (taskQ.CacheQ) {
+                                                taskQ.CacheQ.Dequeue();
+                                            }
 
                                             logOpt.Write($"**写plc动作: {JsonConvert.SerializeObject(cr)}", LogType.BUFFER);
                                             PlcHelper.WriteCacheJob(RobotOpcClient, cr.state, cr.savepos, cr.getpos);
@@ -592,7 +600,7 @@ namespace yidascan {
             var qa = q.ToArray();
             for (int i = 0; i < qa.Length; i++) {
                 var code = qa[i] != null ? qa[i].LCode : "";
-                logOpt.Write($"{ i+1 }: { code }");
+                logOpt.Write($"{ i + 1 }: { code }");
             }
         }
 
@@ -661,7 +669,6 @@ namespace yidascan {
                     lsvCacheQ4.Items[cr.savepos - 1 - 15].Text = str;
                 }
             }));
-            taskQ.CacheSide[cr.savepos - 1] = lc;
         }
         private void CachePosViewGet(CacheResult cr) {
             this.Invoke((Action)(() => {
@@ -680,7 +687,6 @@ namespace yidascan {
                     lsvCacheQ4.Items[cr.getpos - 1 - 15].Text = str;
                 }
             }));
-            taskQ.CacheSide[cr.getpos - 1] = null;
         }
 
         private string createShiftNo() {
@@ -757,22 +763,23 @@ namespace yidascan {
 
                             if (r) {
                                 var code = taskQ.GetLableUpQ(); if (code != null) {
-                                    logOpt.Write(string.Format("收到标签朝上来料信号。号码: {0}", code.LCode), LogType.BUFFER);
+                                    logOpt.Write(string.Format("收到标签朝上来料信号。号码: {0}", code.LCode), LogType.ROLL_QUEUE);
 
                                     // ???未完成
 
                                     RobotOpcClient.Write(PlcSlot.LABEL_UP_SIGNAL, false);
 
                                     #region 临时称重信号问题排除
+                                    logOpt.Write($"0ms当前OPC标签朝上来料信号状态：{ RobotOpcClient.ReadBool(PlcSlot.LABEL_UP_SIGNAL)}", LogType.ROLL_QUEUE);
                                     Thread.Sleep(20);
-                                    logOpt.Write($"当前OPC标签朝上来料信号状态：{ RobotOpcClient.ReadBool(PlcSlot.LABEL_UP_SIGNAL)}");
+                                    logOpt.Write($"20ms当前OPC标签朝上来料信号状态：{ RobotOpcClient.ReadBool(PlcSlot.LABEL_UP_SIGNAL)}", LogType.ROLL_QUEUE);
                                     #endregion
 
                                     QueuesView.Move(lsvLableUp, int.Parse(code.ParseLocationNo()) < 6 ? lsvCatch1 : lsvCatch2);
                                 }
                             }
                         } catch (Exception ex) {
-                            logOpt.Write(string.Format("!{0}", ex), LogType.BUFFER);
+                            logOpt.Write($"!{ex}", LogType.ROLL_QUEUE);
                         }
                     }
                     Thread.Sleep(OPCClient.DELAY * 200);

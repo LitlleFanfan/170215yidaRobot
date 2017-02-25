@@ -44,11 +44,15 @@ namespace yidascan {
 
         public CachePos[] cacheposes { get; set; }
 
-        public CacheHelper() {
-            var len = 20;
-            cacheposes = new CachePos[len];
-            for (int i = 0; i < len; i++) {
-                cacheposes[i] = new CachePos(i + 1, null);
+        public CacheHelper(CachePos[] _cacheposes) {
+            if (_cacheposes == null) {
+                int len = 20;
+                cacheposes = new CachePos[len];
+                for (int i = 0; i < len; i++) {
+                    cacheposes[i] = new CachePos(i + 1, null);
+                }
+            } else {
+                cacheposes = _cacheposes;
             }
         }
 
