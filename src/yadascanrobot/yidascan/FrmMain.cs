@@ -302,7 +302,7 @@ namespace yidascan {
                         logOpt.Write("!机器人网络故障。", LogType.NORMAL);
                     }
                 });
-            }catch(Exception ex) {
+            } catch (Exception ex) {
                 logOpt.Write($"机器人启动异常。{ex}", LogType.NORMAL);
             }
         }
@@ -424,10 +424,10 @@ namespace yidascan {
                                     getWeight = NotifyWeigh(code.LCode, false) ? SUCCESS : FAIL;
                                     logOpt.Write($"{code.LCode}称重API状态：{getWeight} 写OPC状态：{opcClient.Write(opcParam.ScanParam.GetWeigh, getWeight)}");
 
-#region 临时称重信号问题排除
+                                    #region 临时称重信号问题排除
                                     Thread.Sleep(20);
                                     logOpt.Write($"当前OPC称重信号状态：{ opcClient.ReadInt(opcParam.ScanParam.GetWeigh)}");
-#endregion
+                                    #endregion
 
                                     QueuesView.Remove(lsvWeigh);
                                     if (code.ToLocation.Substring(0, 1) == "B") {
@@ -509,7 +509,7 @@ namespace yidascan {
                     lock (RobotOpcClient) {
                         try {
                             if (PlcHelper.ReadCacheSignal(RobotOpcClient)) {
-                                var code = taskQ.GetCacheQ();
+                                var code = taskQ.CacheQ.Peek();
 
                                 if (code != null) {
                                     var lc = LableCode.QueryByLCode(code.LCode);
@@ -546,19 +546,21 @@ namespace yidascan {
 
                                             var cr = cacheher.WhenRollArrived(cState, lc, outCacheLable);
 
-                                            logOpt.Write(JsonConvert.SerializeObject(cr), LogType.BUFFER);
+                                            logOpt.Write($"1 {JsonConvert.SerializeObject(cr)}", LogType.BUFFER);
 
-                                            BindQueue(code, lc, outCacheLable, cState, cr);
+                                            BindQueue(code, lc, outCacheLable, cr);
+                                            taskQ.CacheQ.Dequeue();
 
-                                            if (cState == CacheState.CacheAndGet || cState == CacheState.GetThenCache) {
+                                            if (cr.state == CacheState.CacheAndGet || cr.state== CacheState.GetThenCache) {
                                                 if ((cr.savepos < 11 && cr.getpos < 11) || (cr.savepos > 10 && cr.getpos > 10)) {
-                                                    cState = CacheState.GetThenCache;
+                                                    cr.state = CacheState.GetThenCache;
                                                 } else {
-                                                    cState = CacheState.CacheAndGet;
+                                                    cr.state = CacheState.CacheAndGet;
                                                 }
                                             }
+                                            logOpt.Write($"2 {JsonConvert.SerializeObject(cr)}", LogType.BUFFER);
 
-                                            PlcHelper.WriteCacheJob(RobotOpcClient, cState, cr.savepos, cr.getpos);
+                                            PlcHelper.WriteCacheJob(RobotOpcClient, cr.state, cr.savepos, cr.getpos);
                                         } else {
                                             logOpt.Write(string.Format("!{0}标签重复。", code.LCode), LogType.BUFFER);
                                         }
@@ -575,8 +577,8 @@ namespace yidascan {
             });
         }
 
-        private void BindQueue(LableCode code, LableCode lc, LableCode outCacheLable, CacheState cState, CacheResult cr) {
-            switch (cState) {
+        private void BindQueue(LableCode code, LableCode lc, LableCode outCacheLable, CacheResult cr) {
+            switch (cr.state) {
                 case CacheState.Go:
                     taskQ.LableUpQ.Enqueue(code);
 
