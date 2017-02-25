@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 
 using Newtonsoft.Json;
-using yidascan.DataAccess;
 
 namespace yidascan {
     /// <summary>
@@ -36,7 +31,7 @@ namespace yidascan {
             try {
                 var s = File.ReadAllText(path);
                 return JsonConvert.DeserializeObject<T>(s);
-            } catch (Exception ex) {
+            } catch (Exception) {
                 return default(T);
             }
         }

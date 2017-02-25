@@ -8,6 +8,9 @@ using ProduceComm;
 
 namespace yidascan.DataAccess {
     public class TaskQueues {
+        /// <summary>
+        /// 用于访问锁定。
+        /// </summary>
         public Queue<LableCode> WeighQ = new Queue<LableCode>();
         public Queue<LableCode> CacheQ = new Queue<LableCode>();
         public Queue<LableCode> LableUpQ = new Queue<LableCode>();
@@ -86,8 +89,8 @@ namespace yidascan.DataAccess {
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="label"></param>
         /// <param name="side"></param>
+        /// <param name="lcode">todo: describe lcode parameter on AddRobotRollQ</param>
         /// <returns></returns>
         private RollPosition AddRobotRollQ(string lcode, string side) {
             LableCode label = LableCode.QueryByLCode(lcode);
@@ -193,6 +196,5 @@ namespace yidascan.DataAccess {
             }
             return code;
         }
-
     }
 }
