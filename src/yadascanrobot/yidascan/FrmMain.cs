@@ -547,17 +547,17 @@ namespace yidascan {
                                             logOpt.Write(msg, LogType.BUFFER);
 
                                             var cr = cacheher.WhenRollArrived(cState, lc, outCacheLable);
-                                            
-                                            if (cr.state == CacheState.CacheAndGet || cr.state== CacheState.GetThenCache) {
-                                                if (CacheHelper.isInSameCacheChannel(cr.getpos, cr.savepos)) { 
+
+                                            BindQueue(code, lc, outCacheLable, cr);
+
+                                            if (cr.state == CacheState.CacheAndGet || cr.state == CacheState.GetThenCache) {
+                                                if (CacheHelper.isInSameCacheChannel(cr.getpos, cr.savepos)) {
                                                     // 在同一侧
                                                     cr.state = CacheState.GetThenCache;  // action 3.
                                                 } else {
                                                     cr.state = CacheState.CacheAndGet;   // action 6
                                                 }
                                             }
-
-                                            BindQueue(code, lc, outCacheLable, cr);
                                             taskQ.CacheQ.Dequeue();
 
                                             logOpt.Write($"**写plc动作: {JsonConvert.SerializeObject(cr)}", LogType.BUFFER);
@@ -587,40 +587,50 @@ namespace yidascan {
         }
 
         private void BindQueue(LableCode code, LableCode lc, LableCode outCacheLable, CacheResult cr) {
-            switch (cr.state) {
-                case CacheState.Go:
-                    taskQ.LableUpQ.Enqueue(code);
+            try {
+                switch (cr.state) {
+                    case CacheState.Go:
+                        taskQ.LableUpQ.Enqueue(code);
 
-                    QueuesView.Move(lsvCacheBefor, lsvLableUp);
-                    break;
-                case CacheState.Cache:
-                    QueuesView.Remove(lsvCacheBefor);
-                    CachePosViewSave(lc, cr);
-                    break;
-                case CacheState.GetThenCache:
-                case CacheState.CacheAndGet:
-                    taskQ.LableUpQ.Enqueue(outCacheLable);
+                        QueuesView.Move(lsvCacheBefor, lsvLableUp);
+                        break;
+                    case CacheState.Cache:
+                        QueuesView.Remove(lsvCacheBefor);
+                        CachePosViewSave(lc, cr);
+                        break;
+                    case CacheState.GetThenCache:
+                        taskQ.LableUpQ.Enqueue(outCacheLable);
 
-                    QueuesView.Remove(lsvCacheBefor);
-                    CachePosViewSave(lc, cr);
-                    CachePosViewGet(cr);
-                    break;
-                case CacheState.GoThenGet:
-                    taskQ.LableUpQ.Enqueue(code);
-                    taskQ.LableUpQ.Enqueue(outCacheLable);
+                        QueuesView.Remove(lsvCacheBefor);
+                        CachePosViewGet(cr);
+                        CachePosViewSave(lc, cr);
+                        break;
+                    case CacheState.CacheAndGet:
+                        taskQ.LableUpQ.Enqueue(outCacheLable);
 
-                    QueuesView.Move(lsvCacheBefor, lsvLableUp);
-                    CachePosViewGet(cr);
-                    break;
-                case CacheState.GetThenGo:
-                    taskQ.LableUpQ.Enqueue(outCacheLable);
-                    taskQ.LableUpQ.Enqueue(code);
+                        QueuesView.Remove(lsvCacheBefor);
+                        CachePosViewSave(lc, cr);
+                        CachePosViewGet(cr);
+                        break;
+                    case CacheState.GoThenGet:
+                        taskQ.LableUpQ.Enqueue(code);
+                        taskQ.LableUpQ.Enqueue(outCacheLable);
 
-                    CachePosViewGet(cr);
-                    QueuesView.Move(lsvCacheBefor, lsvLableUp);
-                    break;
-                default:
-                    break;
+                        QueuesView.Move(lsvCacheBefor, lsvLableUp);
+                        CachePosViewGet(cr);
+                        break;
+                    case CacheState.GetThenGo:
+                        taskQ.LableUpQ.Enqueue(outCacheLable);
+                        taskQ.LableUpQ.Enqueue(code);
+
+                        CachePosViewGet(cr);
+                        QueuesView.Move(lsvCacheBefor, lsvLableUp);
+                        break;
+                    default:
+                        break;
+                }
+            } catch (Exception ex) {
+                logOpt.Write($"!{ex}", LogType.BUFFER);
             }
         }
 
@@ -1069,16 +1079,16 @@ namespace yidascan {
             }
 #endif
 
-            lock (taskQ.WeighQ) {
-                taskQ.WeighQ.Enqueue(lc);
-            }
-            QueuesView.Add(lsvWeigh, string.Format("{0} {1}", lc.LCode, lc.ToLocation));
-
             try {
                 if (LableCode.Add(lc)) {
                     ViewAddLable(lc);
                     counter += 1;
                     RefreshCounter();
+
+                    lock (taskQ.WeighQ) {
+                        taskQ.WeighQ.Enqueue(lc);
+                    }
+                    QueuesView.Add(lsvWeigh, string.Format("{0} {1}", lc.LCode, lc.ToLocation));
                 } else {
                     logOpt.Write($"!扫描号码{lc.LCode}存数据库失败。");
                     ShowWarning($"扫描号码{lc.LCode}存数据库失败。", true);

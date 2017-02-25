@@ -18,9 +18,9 @@ namespace yidascan {
 
         public static void Move(ListView lsv1, ListView lsv2) {
             f.Invoke((EventHandler)(delegate {
-                ListViewItem lsvItem = lsv1.Items[lsv1.Items.Count - 1];
-                lsv1.Items.Remove(lsvItem);
-                lsv2.Items.Insert(0, lsvItem);
+                    ListViewItem lsvItem = lsv1.Items[lsv1.Items.Count - 1];
+                    lsv1.Items.Remove(lsvItem);
+                    lsv2.Items.Insert(0, lsvItem);
             }));
         }
 
