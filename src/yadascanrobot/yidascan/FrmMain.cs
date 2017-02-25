@@ -577,6 +577,15 @@ namespace yidascan {
             });
         }
 
+        private static void logCacheQ(Queue<LableCode> q) {
+            logOpt.Write("--- 显示号码队列 ---");
+            var qa = q.ToArray();
+            for (int i = 0; i < qa.Length; i++) {
+                var code = qa[i] != null ? qa[i].LCode : "";
+                logOpt.Write($"{ i+1 }: { code }");
+            }
+        }
+
         private void BindQueue(LableCode code, LableCode lc, LableCode outCacheLable, CacheResult cr) {
             switch (cr.state) {
                 case CacheState.Go:
