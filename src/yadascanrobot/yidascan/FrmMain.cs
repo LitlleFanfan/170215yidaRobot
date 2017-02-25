@@ -549,11 +549,11 @@ namespace yidascan {
                                             var cr = cacheher.WhenRollArrived(cState, lc, outCacheLable);
                                             
                                             if (cr.state == CacheState.CacheAndGet || cr.state== CacheState.GetThenCache) {
-                                                if ((cr.savepos < 11 && cr.getpos < 11) || (cr.savepos > 10 && cr.getpos > 10)) {
+                                                if (CacheHelper.isInSameCacheChannel(cr.getpos, cr.savepos)) { 
                                                     // 在同一侧
-                                                    cr.state = CacheState.GetThenCache;
+                                                    cr.state = CacheState.GetThenCache;  // action 3.
                                                 } else {
-                                                    cr.state = CacheState.CacheAndGet;
+                                                    cr.state = CacheState.CacheAndGet;   // action 6
                                                 }
                                             }
 

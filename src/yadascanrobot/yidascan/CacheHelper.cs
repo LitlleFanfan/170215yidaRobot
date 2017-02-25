@@ -167,10 +167,10 @@ namespace yidascan {
         /// <param name="pos1">缓存位1</param>
         /// <param name="pos2">缓存位2</param>
         /// <returns></returns>
-        private bool isInSameCacheChannel(int pos1, int pos2) {
+        public static bool isInSameCacheChannel(int pos1, int pos2) {
             var ch1 = pos1 <= 10 && pos2 <= 10;
             var ch2 = pos1 >= 11 && pos2 >= 11;
-            return ch1 && ch2;
+            return ch1 || ch2;
         }
 
         /// <summary>
