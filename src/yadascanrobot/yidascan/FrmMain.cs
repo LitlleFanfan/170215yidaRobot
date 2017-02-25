@@ -307,6 +307,9 @@ namespace yidascan {
             }
         }
 
+        /// <summary>
+        /// B区人工完成信号任务。
+        /// </summary>
         private void BAreaUserFinalLayerTask() {
             foreach (KeyValuePair<string, string> kv in opcParam.BAreaUserFinalLayer) {
                 Task.Factory.StartNew(() => {
@@ -315,8 +318,15 @@ namespace yidascan {
                             var signal = opcClient.ReadString(kv.Value);
 
                             if (signal == "1") {
-                                LableCode.SetMaxFloor(kv.Key);
-                                logOpt.Write(string.Format("{0} 收到人工完成信号。", kv.Key), LogType.NORMAL, LogViewType.OnlyFile);
+                                // kv.Key是交地。
+                                var tolocation = kv.Key;
+                                LableCode.SetMaxFloor(tolocation);
+                                logOpt.Write($"{kv.Key}收到人工完成信号。", LogType.NORMAL, LogViewType.OnlyFile);
+                                
+                                // 创建新的板信息。
+                                var newPanel = PanelGen.NewPanelNo();                                
+                                cacheher.ReCalculateCoordinate(newPanel, tolocation);
+
                                 opcClient.Write(kv.Value, "0");
                             }
                         }

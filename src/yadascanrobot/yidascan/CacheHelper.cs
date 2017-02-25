@@ -238,6 +238,7 @@ namespace yidascan {
                 item.labelcode.PanelNo = panelno;
                 item.labelcode.Floor = 1;
                 LableCode.Update(item.labelcode);
+                LableCode.SetPanelNo(item.labelcode.LCode);
             }
         }
 

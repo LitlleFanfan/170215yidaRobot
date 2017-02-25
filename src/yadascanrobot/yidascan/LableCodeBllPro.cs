@@ -148,15 +148,7 @@ namespace yidascan.labelcodepro {
 
         public static PanelInfo GetPanelNo(LableCode lc, string dateShiftNo) {
             var pf = LableCode.GetTolactionCurrPanelNo(lc.ToLocation, dateShiftNo);
-            if (pf == null) {
-                var panelNo = PanelGen.NewPanelNo();
-                lc.PanelNo = panelNo;
-                lc.FloorIndex = 0;
-                lc.Floor = 1;
-                lc.Coordinates = "";
-            } else {
-                lc.SetupPanelInfo(pf);
-            }
+            lc.SetupPanelInfo(pf);
             return pf;
         }
 
