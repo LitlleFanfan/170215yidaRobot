@@ -33,7 +33,8 @@ namespace yidascan.DataAccess {
                 }
             }
             if (code != null) {
-                var roll = AddRobotRollQ(code, "B");
+                var roll = AddRobotRollQ(code.LCode, "B");
+                FrmMain.logOpt.Write($"A {Newtonsoft.Json.JsonConvert.SerializeObject(roll)}", LogType.ROLL_QUEUE);
                 if (roll != null) {
                     lock (RobotRollBQ) {
                         RobotRollBQ.Enqueue(roll);
@@ -71,7 +72,8 @@ namespace yidascan.DataAccess {
                 }
             }
             if (code != null) {
-                var roll = AddRobotRollQ(code, "A");
+                var roll = AddRobotRollQ(code.LCode, "A");
+                FrmMain.logOpt.Write($"!A {Newtonsoft.Json.JsonConvert.SerializeObject(roll)}", LogType.ROLL_QUEUE);
                 if (roll != null) {
                     lock (RobotRollAQ) {
                         RobotRollAQ.Enqueue(roll);
@@ -87,7 +89,8 @@ namespace yidascan.DataAccess {
         /// <param name="label"></param>
         /// <param name="side"></param>
         /// <returns></returns>
-        private RollPosition AddRobotRollQ(LableCode label, string side) {
+        private RollPosition AddRobotRollQ(string lcode, string side) {
+            LableCode label = LableCode.QueryByLCode(lcode);
             if (label == null) {
                 FrmMain.logOpt.Write($"!{side} {label.LCode}找不到", LogType.ROLL_QUEUE);
                 return null;

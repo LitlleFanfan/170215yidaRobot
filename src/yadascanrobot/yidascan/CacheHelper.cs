@@ -148,7 +148,7 @@ namespace yidascan {
                 cacheposes[id-1].labelcode = null;
                 return id;
             } else {
-                throw new Exception($"取缓存位异常: getcode: {getcode.LCode}");
+                throw new Exception($"取缓存位异常: getcode: {getcode.LCode} count: {pp.Count()}");
             }
         }
 
