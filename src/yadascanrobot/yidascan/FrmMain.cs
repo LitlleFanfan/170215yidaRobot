@@ -547,7 +547,9 @@ namespace yidascan {
                                             logOpt.Write(msg, LogType.BUFFER);
 
                                             var cr = cacheher.WhenRollArrived(cState, lc, outCacheLable);
-                                            
+
+                                            BindQueue(code, lc, outCacheLable, cr);
+
                                             if (cr.state == CacheState.CacheAndGet || cr.state== CacheState.GetThenCache) {
                                                 if (CacheHelper.isInSameCacheChannel(cr.getpos, cr.savepos)) { 
                                                     // 在同一侧
@@ -556,8 +558,6 @@ namespace yidascan {
                                                     cr.state = CacheState.CacheAndGet;   // action 6
                                                 }
                                             }
-
-                                            BindQueue(code, lc, outCacheLable, cr);
                                             taskQ.CacheQ.Dequeue();
 
                                             logOpt.Write($"**写plc动作: {JsonConvert.SerializeObject(cr)}", LogType.BUFFER);
@@ -589,6 +589,12 @@ namespace yidascan {
                     CachePosViewSave(lc, cr);
                     break;
                 case CacheState.GetThenCache:
+                    taskQ.LableUpQ.Enqueue(outCacheLable);
+
+                    QueuesView.Remove(lsvCacheBefor);
+                    CachePosViewGet(cr);
+                    CachePosViewSave(lc, cr);
+                    break;
                 case CacheState.CacheAndGet:
                     taskQ.LableUpQ.Enqueue(outCacheLable);
 
