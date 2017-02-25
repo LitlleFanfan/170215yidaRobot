@@ -11,17 +11,19 @@ using yidascan.DataAccess;
 namespace yidascan {
     public static class TempTest {
         public static void testWeigthConfirmSignel(IOpcClient client, string slot, Action<string> loghandler) {
-            var count = 1000;
+            var count = 500;
+            var diffcount = 0;
 
             while (count-- > 0) {
                 var rand = new Random();
-                var value = (rand.Next() % 2 == 1) ? 1 : 0;
+                var value = count % 2;
 
                 client.Write(slot, value);
                 Thread.Sleep(20);
-                var rv = client.ReadString(slot);
+                var rv = client.ReadInt(slot);
 
-                loghandler?.Invoke($"{value}, {rv}");
+                diffcount += value == rv ? 0 : 1;
+                loghandler?.Invoke($"{value}, {rv}  diff count: {diffcount}  count: {count}");
 
                 Thread.Sleep(100);
             }

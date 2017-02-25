@@ -347,6 +347,7 @@ namespace yidascan {
                 btnSet.Enabled = !isRun;
                 btnRun.Enabled = !isRun;
                 btnQuit.Enabled = !isRun;
+                btnClearAllRunningData.Enabled = !isRun;
 
                 dtpDate.Enabled = !isRun;
                 cmbShiftNo.Enabled = !isRun;
