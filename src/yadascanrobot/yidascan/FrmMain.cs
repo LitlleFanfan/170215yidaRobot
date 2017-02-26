@@ -12,6 +12,7 @@ using System.Threading;
 using System.IO;
 using System.Diagnostics;
 using System.Drawing;
+using System.Linq;
 
 using commonhelper;
 using ListBoxHelper.ext;
@@ -19,7 +20,7 @@ using ListBoxHelper.ext;
 namespace yidascan {
     public partial class FrmMain : Form {
         NormalScan nscan1;
-        
+
         public static TaskQueues taskQ;
         bool isrun = false;
         CacheHelper cacheher;
@@ -326,9 +327,9 @@ namespace yidascan {
                                 var tolocation = kv.Key;
                                 LableCode.SetMaxFloor(tolocation);
                                 logOpt.Write($"{kv.Key}收到人工完成信号。", LogType.NORMAL, LogViewType.OnlyFile);
-                                
+
                                 // 创建新的板信息。
-                                var newPanel = PanelGen.NewPanelNo();                                
+                                var newPanel = PanelGen.NewPanelNo();
                                 cacheher.ReCalculateCoordinate(newPanel, tolocation);
 
                                 opcClient.Write(kv.Value, "0");
@@ -565,6 +566,10 @@ namespace yidascan {
 
                                             var cr = cacheher.WhenRollArrived(cState, lc, outCacheLable);
 
+                                            lock (taskQ.CacheQ) {
+                                                taskQ.CacheQ.Dequeue();
+                                            }
+
                                             BindQueue(code, lc, outCacheLable, cr);
 
                                             if (cr.state == CacheState.CacheAndGet || cr.state == CacheState.GetThenCache) {
@@ -574,9 +579,6 @@ namespace yidascan {
                                                 } else {
                                                     cr.state = CacheState.CacheAndGet;   // action 6
                                                 }
-                                            }
-                                            lock (taskQ.CacheQ) {
-                                                taskQ.CacheQ.Dequeue();
                                             }
 
                                             logOpt.Write($"**写plc动作: {JsonConvert.SerializeObject(cr)}", LogType.BUFFER);
@@ -614,39 +616,54 @@ namespace yidascan {
                         case CacheState.Go:
                             taskQ.LableUpQ.Enqueue(code);
 
-                            QueuesView.Move(lsvCacheBefor, lsvLableUp);
+                            // QueuesView.Move(lsvCacheBefor, lsvLableUp);
+                            showLabelQue(taskQ.CacheQ, lsvCacheBefor);
+                            showLabelQue(taskQ.LableUpQ, lsvLableUp);
                             break;
                         case CacheState.Cache:
-                            QueuesView.Remove(lsvCacheBefor);
-                            CachePosViewSave(lc, cr);
+                            // QueuesView.Remove(lsvCacheBefor);
+                            // CachePosViewSave(lc, cr);
+                            showLabelQue(taskQ.CacheQ, lsvCacheBefor);
+                            showCachePosQue(taskQ.CacheSide);
                             break;
                         case CacheState.GetThenCache:
                             taskQ.LableUpQ.Enqueue(outCacheLable);
 
-                            QueuesView.Remove(lsvCacheBefor);
-                            CachePosViewGet(cr);
-                            CachePosViewSave(lc, cr);
+                            //QueuesView.Remove(lsvCacheBefor);
+                            //CachePosViewGet(cr);
+                            //CachePosViewSave(lc, cr);
+                            showLabelQue(taskQ.LableUpQ, lsvLableUp);
+                            showLabelQue(taskQ.CacheQ, lsvCacheBefor);
+                            showCachePosQue(taskQ.CacheSide);
                             break;
                         case CacheState.CacheAndGet:
                             taskQ.LableUpQ.Enqueue(outCacheLable);
 
-                            QueuesView.Remove(lsvCacheBefor);
-                            CachePosViewSave(lc, cr);
-                            CachePosViewGet(cr);
+                            //QueuesView.Remove(lsvCacheBefor);
+                            //CachePosViewSave(lc, cr);
+                            //CachePosViewGet(cr);
+                            showLabelQue(taskQ.CacheQ, lsvCacheBefor);
+                            showCachePosQue(taskQ.CacheSide);
                             break;
                         case CacheState.GoThenGet:
                             taskQ.LableUpQ.Enqueue(code);
                             taskQ.LableUpQ.Enqueue(outCacheLable);
 
-                            QueuesView.Move(lsvCacheBefor, lsvLableUp);
-                            CachePosViewGet(cr);
+                            //QueuesView.Move(lsvCacheBefor, lsvLableUp);
+                            //CachePosViewGet(cr);
+                            showLabelQue(taskQ.CacheQ, lsvCacheBefor);
+                            showLabelQue(taskQ.LableUpQ, lsvLableUp);
+                            showCachePosQue(taskQ.CacheSide);
                             break;
                         case CacheState.GetThenGo:
                             taskQ.LableUpQ.Enqueue(outCacheLable);
                             taskQ.LableUpQ.Enqueue(code);
 
-                            CachePosViewGet(cr);
-                            QueuesView.Move(lsvCacheBefor, lsvLableUp);
+                            //CachePosViewGet(cr);
+                            //QueuesView.Move(lsvCacheBefor, lsvLableUp);
+                            showLabelQue(taskQ.CacheQ, lsvCacheBefor);
+                            showLabelQue(taskQ.CacheQ, lsvCacheBefor);
+                            showCachePosQue(taskQ.CacheSide);
                             break;
                         default:
                             break;
@@ -1472,6 +1489,40 @@ namespace yidascan {
                 showQ(lsvWeigh, taskQ.WeighQ);
                 showCacheq(taskQ.CacheSide);
             }
+        }
+
+        private static void showListInView(IList<string> lst, ListView view) {
+            var l = new List<ListViewItem>();
+            foreach (var item in lst) {
+                l.Add(new ListViewItem(item));
+            }
+
+            view.Items.Clear();
+            view.Items.AddRange(l.ToArray());
+        }
+
+        private void showCachePosQue(CachePos[] que) {
+            List<string> lst;
+            lock (que) {
+                lst = que.Select(x => x.brief()).ToList();
+            }
+            var lst1 = lst.Take(5).ToList();
+            var lst2 = lst.Skip(5).Take(5).ToList();
+            var lst3 = lst.Skip(10).Take(5).ToList();
+            var lst4 = lst.Skip(15).Take(5).ToList();
+
+            showListInView(lst1, lsvCacheQ1);
+            showListInView(lst2, lsvCacheQ2);
+            showListInView(lst3, lsvCacheQ3);
+            showListInView(lst4, lsvCacheQ4);
+        }
+
+        private void showLabelQue(Queue<LableCode> que, ListView view) {
+            List<string> lst = null;
+            lock (que) {
+                lst = que.Select(x => x.brief()).ToList();
+            }
+            showListInView(lst, view);
         }
     }
 }

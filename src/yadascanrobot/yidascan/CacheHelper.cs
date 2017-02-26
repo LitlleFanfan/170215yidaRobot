@@ -24,6 +24,10 @@ namespace yidascan {
         public void Reset() {
             labelcode = null;
         }
+
+        public string brief() {
+            return $"{labelcode.LCode} {labelcode.ToLocation} {labelcode.Diameter} {id}";
+        }
     }
 
     [Serializable]

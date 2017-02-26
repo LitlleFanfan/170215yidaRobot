@@ -657,5 +657,13 @@ order by floorindex desc;";
 
             return r;
         }
+
+        /// <summary>
+        /// 用于界面队列显示
+        /// </summary>
+        /// <returns></returns>
+        public string brief() {
+            return $"{lCode} {toLocation}";
+        }
     }
 }
