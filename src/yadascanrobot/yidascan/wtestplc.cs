@@ -24,6 +24,11 @@ namespace yidascan {
             
             if (client.Open(opc_server_ip)) {
                 PlcHelper.subscribe(client);
+
+                client.AddSubscription("MicroWin.S7-1200.NewItem16");
+                client.AddSubscription("MicroWin.S7-1200.NewItem18");
+                client.AddSubscription("MicroWin.S7-1200.NewItem19");
+                client.AddSubscription("MicroWin.S7-1200.NewItem20");
             } else {
                 MessageBox.Show("访问OPC server失败。");
             }
@@ -83,6 +88,30 @@ namespace yidascan {
 
         private void btnSetPlcIP_Click(object sender, EventArgs e) {
             opc_server_ip = txPlcIP.Text;
+        }
+
+        private void button1_Click(object sender, EventArgs e) {
+            TempTest.testWeigthConfirmSignel(client, "MicroWin.S7-1200.NewItem18", (x) => {
+                WriteLog(x);
+            });
+        }
+
+        private void button2_Click(object sender, EventArgs e) {
+            TempTest.testWeigthConfirmSignel(client, "MicroWin.S7-1200.NewItem16", (x) => {
+                WriteLog(x);
+            });
+        }
+
+        private void button7_Click(object sender, EventArgs e) {
+            TempTest.testWeigthConfirmSignel(client, "MicroWin.S7-1200.NewItem19", (x) => {
+                WriteLog(x);
+            });
+        }
+
+        private void button8_Click(object sender, EventArgs e) {
+            TempTest.testWeigthConfirmSignel(client, "MicroWin.S7-1200.NewItem20", (x) => {
+                WriteLog(x);
+            });
         }
     }
 }
