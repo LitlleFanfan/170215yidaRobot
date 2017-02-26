@@ -19,7 +19,7 @@ using ListBoxHelper.ext;
 namespace yidascan {
     public partial class FrmMain : Form {
         NormalScan nscan1;
-        private LableCodeBll lcb = new LableCodeBll();
+        
         public static TaskQueues taskQ;
         bool isrun = false;
         CacheHelper cacheher;
@@ -542,7 +542,7 @@ namespace yidascan {
                                             LableCode outCacheLable = null;
                                             var msg = "";
 
-                                            var cState = lcb.AreaBCalculate(callErpApi,
+                                            var cState = LableCodeBll.AreaBCalculate(callErpApi,
                                                 lc,
                                                 string.Format("{0}{1}",
                                                         dtpDate.Value.ToString(clsSetting.LABEL_CODE_DATE_FORMAT),
@@ -1128,7 +1128,7 @@ namespace yidascan {
             LableCode.SetPanelNo(lCode);
 
             string msg;
-            var re = lcb.NotifyPanelEnd(callErpApi, lc.PanelNo, out msg);
+            var re = LableCodeBll.NotifyPanelEnd(callErpApi, lc.PanelNo, out msg);
             logOpt.Write(string.Format("{0} {1}", lc.ToLocation, msg), LogType.NORMAL);
 
             return re;

@@ -8,7 +8,8 @@ using yidascan.DataAccess;
 namespace yidascan {
 
     public class LableCodeBll {
-        public LableCode CalculateCache(PanelInfo pinfo, LableCode lc, List<LableCode> lcs) {
+        #region PRIVATE_FUNCTIONS
+        private static LableCode CalculateCache(PanelInfo pinfo, LableCode lc, List<LableCode> lcs) {
             LableCode lc2 = null;
             int cachecount = (pinfo.OddStatus ? 0 : 1) + (pinfo.EvenStatus ? 0 : 1);
             var tmp = from s in lcs where s.FloorIndex == 0 orderby s.Diameter ascending select s;
@@ -36,11 +37,11 @@ namespace yidascan {
             return lc2;
         }
 
-        private bool IsRollInSameSide(LableCode lc, int flindex) {
+        private static bool IsRollInSameSide(LableCode lc, int flindex) {
             return lc.FloorIndex > 0 && lc.FloorIndex % 2 == flindex % 2;
         }
 
-        public void CalculatePosition(List<LableCode> lcs, LableCode lc) {
+        public static void CalculatePosition(List<LableCode> lcs, LableCode lc) {
             lc.FloorIndex = CalculateFloorIndex(lcs);
 
             decimal z = lc.Floor == 1 ? -35 : LableCode.GetFloorMaxDiameter(lc.PanelNo, lc.Floor) - 10;
@@ -58,7 +59,7 @@ namespace yidascan {
             lc.Crz = r;
         }
 
-        private decimal CalculateXory(List<LableCode> lcs, LableCode lc) {
+        private static decimal CalculateXory(List<LableCode> lcs, LableCode lc) {
             decimal xory;
             if (lc.FloorIndex <= 2) {
                 xory = lc.FloorIndex % 2 == 1 ? 0 : -clsSetting.RollSep;
@@ -72,7 +73,7 @@ namespace yidascan {
             return xory;
         }
 
-        private decimal CalculateXory(List<LableCode> lcs) {
+        private static decimal CalculateXory(List<LableCode> lcs) {
             int index = CalculateFloorIndex(lcs);
             decimal xory;
             if (index <= 2) {
@@ -87,7 +88,7 @@ namespace yidascan {
             return xory;
         }
 
-        private int CalculateFloorIndex(List<LableCode> lcs) {
+        private static int CalculateFloorIndex(List<LableCode> lcs) {
             var oddcount = lcs.Count(x => { return x.isOddSide(); });
             var evencount = lcs.Count(x => { return x.isEvenSide(); });
 
@@ -96,7 +97,7 @@ namespace yidascan {
             return oddcount > evencount ? 2 * evencount + 2 : 2 * oddcount + 1;
         }
 
-        public void CalculatePosition(List<LableCode> lcs, LableCode lc, LableCode lc2) {
+        private static void CalculatePosition(List<LableCode> lcs, LableCode lc, LableCode lc2) {
             lc.Floor = lc2.Floor;
 
             //if (lc.Diameter > lc2.Diameter) {
@@ -125,7 +126,7 @@ namespace yidascan {
         /// <param name="lcs">当前层所有标签</param>
         /// <param name="lc">当前标签</param>
         /// <returns></returns>
-        public LableCode IsPanelFull(List<LableCode> lcs, LableCode lc) {
+        private static LableCode IsPanelFull(List<LableCode> lcs, LableCode lc) {
             LableCode result = null;
             decimal MAX_LEN = clsSetting.SplintLength / 2;
             if (lc.Floor > 1) {
@@ -151,6 +152,9 @@ namespace yidascan {
             return result;
         }
 
+        #endregion
+
+        #region PUBLIC_FUNCTIONS
         /// <summary>
         /// 取当前交地的板号，并将版信息赋给当前布卷
         /// </summary>
@@ -172,7 +176,7 @@ namespace yidascan {
             return pf;
         }
 
-        public CacheState AreaBCalculate(IErpApi erpapi, LableCode lc, string dateShiftNo, out LableCode outCacheLable, out string msg) {
+        public static CacheState AreaBCalculate(IErpApi erpapi, LableCode lc, string dateShiftNo, out LableCode outCacheLable, out string msg) {
             var cState = CacheState.Error;
             outCacheLable = null;
             msg = string.Empty;
@@ -237,8 +241,9 @@ namespace yidascan {
             return cState;
         }
 
+        #endregion
         [Obsolete("应当使用ErpHelper.NotifyPanelEnd")]
-        public bool NotifyPanelEnd(IErpApi erpapi, string panelNo, out string msg, bool handwork = false) {
+        public static bool NotifyPanelEnd(IErpApi erpapi, string panelNo, out string msg, bool handwork = false) {
             if (!string.IsNullOrEmpty(panelNo)) {
                 // 这个从数据库取似更合理。                
                 var data = LableCode.QueryLabelcodeByPanelNo(panelNo);
@@ -271,5 +276,6 @@ namespace yidascan {
             msg = "!板号完成失败，板号为空。";
             return false;
         }
+
     }
 }
