@@ -297,10 +297,16 @@ namespace yidascan {
                                 LableCode.SetMaxFloor(tolocation);
                                 logOpt.Write($"{kv.Key}收到人工完成信号。", LogType.NORMAL, LogViewType.OnlyFile);
 
+                                // 修改当前板号的属性。
+                                var shiftno = createShiftNo();
+
                                 // 创建新的板信息。
                                 var newPanel = PanelGen.NewPanelNo();
+
+                                // 重新计算缓存区的布卷的坐标。
                                 cacheher.ReCalculateCoordinate(newPanel, tolocation);
 
+                                // plc复位信号。
                                 opcClient.Write(kv.Value, "0");
                             }
                         }
@@ -371,7 +377,12 @@ namespace yidascan {
 
             WeighTask();
             ACAreaFinishTask();
+#if !DEBUG
             BeforCacheTask();
+#endif
+#if DEBUG
+            BeforCacheTask_new();
+#endif 
             LableUpTask();
 
             StartRobotJobATask();
@@ -409,11 +420,11 @@ namespace yidascan {
                                     getWeight = NotifyWeigh(code.LCode, false) ? SUCCESS : FAIL;
                                     logOpt.Write($"{code.LCode}称重API状态：{getWeight} 写OPC状态：{opcClient.Write(opcParam.ScanParam.GetWeigh, getWeight)}");
 
-                                    #region 临时称重信号问题排除
+#region 临时称重信号问题排除
                                     logOpt.Write($"0ms当前OPC称重信号状态：{ opcClient.ReadInt(opcParam.ScanParam.GetWeigh)}");
                                     Thread.Sleep(20);
                                     logOpt.Write($"20ms当前OPC称重信号状态：{ opcClient.ReadInt(opcParam.ScanParam.GetWeigh)}");
-                                    #endregion
+#endregion
 
                                     showLabelQue(taskQ.WeighQ, lsvWeigh);
                                     if (code.ToLocation.Substring(0, 1) == "B") {
@@ -637,7 +648,7 @@ namespace yidascan {
         }
 
         private void BeforCacheTask_new() {
-            logOpt.Write("缓存任务启动。", LogType.NORMAL);
+            logOpt.Write("!测试版缓存任务启动。", LogType.NORMAL);
 
             Task.Factory.StartNew(() => {
                 while (isrun) {
@@ -668,10 +679,6 @@ namespace yidascan {
                                     logOpt.Write(calResultt.message, LogType.BUFFER);
                                 }
 
-                                // 显示缓存计算信息
-                                // var msg = ShowCacheOperationInfo(calResultt.CodeToCache, calResultt.CodeFromCache, calResultt.state);
-                                // logOpt.Write(msg, LogType.BUFFER);
-
                                 // 确定缓存操作动作
                                 var cacheJobState = cacheher.WhenRollArrived(calResultt.state, calResultt.CodeToCache, calResultt.CodeFromCache);
                                 logOpt.Write(JsonConvert.SerializeObject(cacheJobState), LogType.BUFFER);
@@ -680,7 +687,8 @@ namespace yidascan {
                                 PlcHelper.WriteCacheJob(opcClient, cacheJobState.state, cacheJobState.savepos, cacheJobState.getpos);
 
                                 // 更新界面显示
-                                QueuesView.Move(lsvCacheBefor, lsvLableUp);
+                                showLabelQue(taskQ.CacheQ, lsvCacheBefor);
+                                showLabelQue(taskQ.LableUpQ, lsvLableUp);
                             }
                         } catch (Exception ex) {
                             logOpt.Write($"!{ex.ToString()}", LogType.BUFFER);
@@ -710,11 +718,11 @@ namespace yidascan {
 
                                     RobotOpcClient.Write(PlcSlot.LABEL_UP_SIGNAL, false);
 
-                                    #region 临时称重信号问题排除
+#region 临时称重信号问题排除
                                     logOpt.Write($"0ms当前OPC标签朝上来料信号状态：{ RobotOpcClient.ReadBool(PlcSlot.LABEL_UP_SIGNAL)}", LogType.ROLL_QUEUE);
                                     Thread.Sleep(20);
                                     logOpt.Write($"20ms当前OPC标签朝上来料信号状态：{ RobotOpcClient.ReadBool(PlcSlot.LABEL_UP_SIGNAL)}", LogType.ROLL_QUEUE);
-                                    #endregion
+#endregion
 
                                     showLabelQue(taskQ.LableUpQ, lsvLableUp);
                                     showCachePosQue(taskQ.CacheSide);
