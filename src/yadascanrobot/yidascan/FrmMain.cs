@@ -1452,7 +1452,7 @@ namespace yidascan {
         private void showLabelQue(Queue<LableCode> que, ListView view) {
             List<string> lst;
             lock (que) {
-                lst = que.Select(x => x.brief()).ToList();
+                lst = que.Select(x => x.brief()).Reverse().ToList();
             }
             showListInView(lst, view);
         }
@@ -1460,7 +1460,7 @@ namespace yidascan {
         public static void showRobotQue(Queue<RollPosition> que, ListView view) {
             List<string> lst;
             lock (que) {
-                lst = que.Select(x => x.brief()).ToList();
+                lst = que.Select(x => x.brief()).Reverse().ToList();
             }
             showListInView(lst, view);
         }
