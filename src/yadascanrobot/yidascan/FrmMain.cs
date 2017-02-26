@@ -111,52 +111,19 @@ namespace yidascan {
             Text = $"{clsSetting.PRODUCT_NAME} V{Application.ProductVersion.ToString()}";
         }
 
-        private void showQ(ListView view, Queue<LableCode> labels) {
-            foreach (var item in labels) {
-                QueuesView.Add(view, $"{item.LCode} {item.ToLocation}");
-            }
-        }
-
-        private void showQ1(ListView view, Queue<RollPosition> rolls) {
-            foreach (var item in rolls) {
-                QueuesView.Add(view, $"{item.LabelCode} {item.ToLocation}");
-            }
-        }
-
-        private void showCacheq(CachePos[] cache) {
-            if (cache != null) {
-                for (var i = 0; i < cache.Length; i++) {
-                    if (cache[i].labelcode == null) { continue; }
-                    var side = i + 1;
-                    var str = $"{cache[i].labelcode.LCode} {cache[i].labelcode.ToLocation} {cache[i].labelcode.Diameter.ToString().PadRight(4, ' ')} {side}";
-                    if (side <= 5) {
-                        lsvCacheQ1.Items[i].Text = str;
-                    } else if (side >= 6 && side <= 10) {
-                        lsvCacheQ2.Items[i - 5].Text = str;
-                    } else if (side >= 11 && side <= 15) {
-                        lsvCacheQ3.Items[i - 10].Text = str;
-                    } else if (side >= 16 && side <= 20) {
-                        lsvCacheQ4.Items[i - 15].Text = str;
-                    }
-                }
-            }
-        }
-
         private void ShowTaskQ() {
-            showQ(lsvCacheBefor, taskQ.CacheQ);
-            showQ(lsvCatch1, taskQ.CatchAQ);
-            showQ(lsvCatch2, taskQ.CatchBQ);
-            showQ(lsvLableUp, taskQ.LableUpQ);
-            showQ1(lsvRobotA, taskQ.RobotRollAQ);
-            showQ1(lsvRobotB, taskQ.RobotRollBQ);
-            showQ(lsvWeigh, taskQ.WeighQ);
-            showCacheq(taskQ.CacheSide);
+            showLabelQue(taskQ.WeighQ, lsvWeigh);
+            showLabelQue(taskQ.CacheQ, lsvCacheBefor);
+            showLabelQue(taskQ.LableUpQ, lsvLableUp);
+            showLabelQue(taskQ.CatchAQ, lsvCatch1);
+            showLabelQue(taskQ.CatchBQ, lsvCatch2);
+            showRobotQue(taskQ.RobotRollAQ, lsvRobotA);
+            showRobotQue(taskQ.RobotRollBQ, lsvRobotB);
+            showCachePosQue(taskQ.CacheSide);
         }
 
         private void FrmMain_Load(object sender, EventArgs e) {
             try {
-                QueuesView.f = this;
-
                 taskQ = loadconf() ?? new TaskQueues();
                 cacheher = new CacheHelper(taskQ.CacheSide);
 
@@ -225,7 +192,8 @@ namespace yidascan {
                             if (code != null) {
                                 RobotOpcClient.Write(PlcSlot.ITEM_CATCH_A, false);
 
-                                QueuesView.Move(lsvCatch1, lsvRobotA);
+                                showLabelQue(taskQ.CatchAQ, lsvCatch1);
+                                showRobotQue(taskQ.RobotRollAQ, lsvRobotA);
                             }
                         }
                     }
@@ -250,7 +218,8 @@ namespace yidascan {
                             if (code != null) {
                                 RobotOpcClient.Write(PlcSlot.ITEM_CATCH_B, false);
 
-                                QueuesView.Move(lsvCatch2, lsvRobotB);
+                                showLabelQue(taskQ.CatchBQ, lsvCatch2);
+                                showRobotQue(taskQ.RobotRollBQ, lsvRobotB);
                             }
                         }
                     }
@@ -446,9 +415,9 @@ namespace yidascan {
                                     logOpt.Write($"20ms当前OPC称重信号状态：{ opcClient.ReadInt(opcParam.ScanParam.GetWeigh)}");
                                     #endregion
 
-                                    QueuesView.Remove(lsvWeigh);
+                                    showLabelQue(taskQ.WeighQ, lsvWeigh);
                                     if (code.ToLocation.Substring(0, 1) == "B") {
-                                        QueuesView.Add(lsvCacheBefor, string.Format("{0} {1}", code.LCode, code.ToLocation));//加到缓存列表中显示
+                                        showLabelQue(taskQ.CacheQ, lsvCacheBefor);//加到缓存列表中显示
                                     }
                                 }
                             }
@@ -616,22 +585,16 @@ namespace yidascan {
                         case CacheState.Go:
                             taskQ.LableUpQ.Enqueue(code);
 
-                            // QueuesView.Move(lsvCacheBefor, lsvLableUp);
                             showLabelQue(taskQ.CacheQ, lsvCacheBefor);
                             showLabelQue(taskQ.LableUpQ, lsvLableUp);
                             break;
                         case CacheState.Cache:
-                            // QueuesView.Remove(lsvCacheBefor);
-                            // CachePosViewSave(lc, cr);
                             showLabelQue(taskQ.CacheQ, lsvCacheBefor);
                             showCachePosQue(taskQ.CacheSide);
                             break;
                         case CacheState.GetThenCache:
                             taskQ.LableUpQ.Enqueue(outCacheLable);
 
-                            //QueuesView.Remove(lsvCacheBefor);
-                            //CachePosViewGet(cr);
-                            //CachePosViewSave(lc, cr);
                             showLabelQue(taskQ.LableUpQ, lsvLableUp);
                             showLabelQue(taskQ.CacheQ, lsvCacheBefor);
                             showCachePosQue(taskQ.CacheSide);
@@ -639,9 +602,6 @@ namespace yidascan {
                         case CacheState.CacheAndGet:
                             taskQ.LableUpQ.Enqueue(outCacheLable);
 
-                            //QueuesView.Remove(lsvCacheBefor);
-                            //CachePosViewSave(lc, cr);
-                            //CachePosViewGet(cr);
                             showLabelQue(taskQ.CacheQ, lsvCacheBefor);
                             showCachePosQue(taskQ.CacheSide);
                             break;
@@ -649,8 +609,6 @@ namespace yidascan {
                             taskQ.LableUpQ.Enqueue(code);
                             taskQ.LableUpQ.Enqueue(outCacheLable);
 
-                            //QueuesView.Move(lsvCacheBefor, lsvLableUp);
-                            //CachePosViewGet(cr);
                             showLabelQue(taskQ.CacheQ, lsvCacheBefor);
                             showLabelQue(taskQ.LableUpQ, lsvLableUp);
                             showCachePosQue(taskQ.CacheSide);
@@ -659,8 +617,6 @@ namespace yidascan {
                             taskQ.LableUpQ.Enqueue(outCacheLable);
                             taskQ.LableUpQ.Enqueue(code);
 
-                            //CachePosViewGet(cr);
-                            //QueuesView.Move(lsvCacheBefor, lsvLableUp);
                             showLabelQue(taskQ.CacheQ, lsvCacheBefor);
                             showLabelQue(taskQ.CacheQ, lsvCacheBefor);
                             showCachePosQue(taskQ.CacheSide);
@@ -672,39 +628,6 @@ namespace yidascan {
                     logOpt.Write($"!{ex}", LogType.BUFFER);
                 }
             } // end of lock.
-        }
-
-        private void CachePosViewSave(LableCode lc, CacheResult cr) {
-            this.Invoke((Action)(() => {
-                var str = $"{lc.LCode} {lc.ToLocation} {lc.Diameter.ToString().PadRight(4, ' ')} {cr.savepos}";
-                if (cr.savepos <= 5) {
-                    lsvCacheQ1.Items[cr.savepos - 1].Text = str;
-                } else if (cr.savepos >= 6 && cr.savepos <= 10) {
-                    lsvCacheQ2.Items[cr.savepos - 1 - 5].Text = str;
-                } else if (cr.savepos >= 11 && cr.savepos <= 15) {
-                    lsvCacheQ3.Items[cr.savepos - 1 - 10].Text = str;
-                } else if (cr.savepos >= 16 && cr.savepos <= 20) {
-                    lsvCacheQ4.Items[cr.savepos - 1 - 15].Text = str;
-                }
-            }));
-        }
-        private void CachePosViewGet(CacheResult cr) {
-            this.Invoke((Action)(() => {
-                var str = $"                      {cr.getpos}";
-                if (cr.getpos <= 5) {
-                    QueuesView.Add(lsvLableUp, lsvCacheQ1.Items[cr.getpos - 1].Text.Substring(0, 16));
-                    lsvCacheQ1.Items[cr.getpos - 1].Text = str;
-                } else if (cr.getpos >= 6 && cr.getpos <= 10) {
-                    QueuesView.Add(lsvLableUp, lsvCacheQ2.Items[cr.getpos - 1 - 5].Text.Substring(0, 16));
-                    lsvCacheQ2.Items[cr.getpos - 1 - 5].Text = str;
-                } else if (cr.getpos >= 11 && cr.getpos <= 15) {
-                    QueuesView.Add(lsvLableUp, lsvCacheQ3.Items[cr.getpos - 1 - 10].Text.Substring(0, 16));
-                    lsvCacheQ3.Items[cr.getpos - 1 - 10].Text = str;
-                } else if (cr.getpos >= 16 && cr.getpos <= 20) {
-                    QueuesView.Add(lsvLableUp, lsvCacheQ4.Items[cr.getpos - 1 - 15].Text.Substring(0, 16));
-                    lsvCacheQ4.Items[cr.getpos - 1 - 15].Text = str;
-                }
-            }));
         }
 
         private string createShiftNo() {
@@ -793,7 +716,13 @@ namespace yidascan {
                                     logOpt.Write($"20ms当前OPC标签朝上来料信号状态：{ RobotOpcClient.ReadBool(PlcSlot.LABEL_UP_SIGNAL)}", LogType.ROLL_QUEUE);
                                     #endregion
 
-                                    QueuesView.Move(lsvLableUp, int.Parse(code.ParseLocationNo()) < 6 ? lsvCatch1 : lsvCatch2);
+                                    showLabelQue(taskQ.LableUpQ, lsvLableUp);
+                                    showCachePosQue(taskQ.CacheSide);
+                                    if (int.Parse(code.ParseLocationNo()) < 6) {
+                                        showLabelQue(taskQ.CatchAQ, lsvCatch1);
+                                    } else {
+                                        showLabelQue(taskQ.CatchBQ, lsvCatch2);
+                                    }
                                 }
                             }
                         } catch (Exception ex) {
@@ -1127,7 +1056,7 @@ namespace yidascan {
                     lock (taskQ.WeighQ) {
                         taskQ.WeighQ.Enqueue(lc);
                     }
-                    QueuesView.Add(lsvWeigh, string.Format("{0} {1}", lc.LCode, lc.ToLocation));
+                    showLabelQue(taskQ.WeighQ, lsvWeigh);
                 } else {
                     logOpt.Write($"!扫描号码{lc.LCode}存数据库失败。");
                     ShowWarning($"扫描号码{lc.LCode}存数据库失败。", true);
@@ -1479,15 +1408,7 @@ namespace yidascan {
             if (taskQ != null) {
                 taskQ.clearAll();
                 clearAllTaskViews();
-
-                showQ(lsvCacheBefor, taskQ.CacheQ);
-                showQ(lsvCatch1, taskQ.CatchAQ);
-                showQ(lsvCatch2, taskQ.CatchBQ);
-                showQ(lsvLableUp, taskQ.LableUpQ);
-                showQ1(lsvRobotA, taskQ.RobotRollAQ);
-                showQ1(lsvRobotB, taskQ.RobotRollBQ);
-                showQ(lsvWeigh, taskQ.WeighQ);
-                showCacheq(taskQ.CacheSide);
+                ShowTaskQ();
             }
         }
 
@@ -1497,11 +1418,14 @@ namespace yidascan {
                 l.Add(new ListViewItem(item));
             }
 
-            view.Items.Clear();
-            view.Items.AddRange(l.ToArray());
+            view.Invoke((EventHandler)(delegate {
+                view.Items.Clear();
+                view.Items.AddRange(l.ToArray());
+            }));
         }
 
         private void showCachePosQue(CachePos[] que) {
+            if (que == null) { return; }
             List<string> lst;
             lock (que) {
                 lst = que.Select(x => x.brief()).ToList();
@@ -1518,7 +1442,15 @@ namespace yidascan {
         }
 
         private void showLabelQue(Queue<LableCode> que, ListView view) {
-            List<string> lst = null;
+            List<string> lst;
+            lock (que) {
+                lst = que.Select(x => x.brief()).ToList();
+            }
+            showListInView(lst, view);
+        }
+
+        public static void showRobotQue(Queue<RollPosition> que, ListView view) {
+            List<string> lst;
             lock (que) {
                 lst = que.Select(x => x.brief()).ToList();
             }
