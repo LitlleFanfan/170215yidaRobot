@@ -114,6 +114,10 @@ namespace yidascan {
         // A侧或B侧
         public string Side { get; set; }
         public PanelState PnlState { get; set; }
+
+        public string brief() {
+            return $"{LabelCode} {ToLocation}";
+        }
     }
 
     public class RobotHelper : IDisposable {
@@ -323,7 +327,7 @@ namespace yidascan {
                     if (roll != null) {
                         if (JobTask(ref isrun, roll)) {
                             FrmMain.taskQ.RobotRollAQ.Dequeue();
-                            QueuesView.Remove(la);
+                            FrmMain.showRobotQue(FrmMain.taskQ.RobotRollAQ, la);
                             Thread.Sleep(OPCClient.DELAY);
                         }
                     }
@@ -333,7 +337,7 @@ namespace yidascan {
                     if (roll != null) {
                         if (JobTask(ref isrun, roll)) {
                             FrmMain.taskQ.RobotRollBQ.Dequeue();
-                            QueuesView.Remove(lb);
+                            FrmMain.showRobotQue(FrmMain.taskQ.RobotRollBQ, lb);
                         }
                     }
                 }

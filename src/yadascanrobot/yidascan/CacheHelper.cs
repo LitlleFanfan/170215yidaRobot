@@ -26,7 +26,11 @@ namespace yidascan {
         }
 
         public string brief() {
-            return $"{labelcode.LCode} {labelcode.ToLocation} {labelcode.Diameter} {id}";
+            if (labelcode == null) {
+                return $"{id.ToString().PadLeft(2,' ')}";
+            } else {
+                return $"{id.ToString().PadLeft(2, ' ')} {labelcode.LCode} {labelcode.ToLocation} {labelcode.Diameter}";
+            }
         }
     }
 
@@ -49,15 +53,7 @@ namespace yidascan {
         public CachePos[] cacheposes { get; set; }
 
         public CacheHelper(CachePos[] _cacheposes) {
-            if (_cacheposes == null) {
-                int len = 20;
-                cacheposes = new CachePos[len];
-                for (int i = 0; i < len; i++) {
-                    cacheposes[i] = new CachePos(i + 1, null);
-                }
-            } else {
-                cacheposes = _cacheposes;
-            }
+            cacheposes = _cacheposes;
         }
 
         /// <summary>
@@ -155,7 +151,7 @@ namespace yidascan {
                      select p;
             if (pp.Count() == 1) {
                 var id = pp.First().id;
-                cacheposes[id-1].labelcode = null;
+                cacheposes[id - 1].labelcode = null;
                 return id;
             } else {
                 throw new Exception($"取缓存位异常: getcode: {getcode.LCode} count: {pp.Count()}");

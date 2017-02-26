@@ -22,7 +22,13 @@ namespace yidascan.DataAccess {
 
         public static Action<string, string> onlog;
 
-        public TaskQueues() { }
+        public TaskQueues() {
+            int len = 20;
+            CacheSide = new CachePos[len];
+            for (int i = 0; i < len; i++) {
+                CacheSide[i] = new CachePos(i + 1, null);
+            }
+        }
 
         /// <summary>
         /// CatchBQ -> RobotRollQ_B
