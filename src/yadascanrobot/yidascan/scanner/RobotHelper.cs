@@ -17,7 +17,7 @@ namespace yidascan {
     }
     public class RollPosition {
         public RollPosition() { }
-        public RollPosition(string label, string side, string locationNo, PanelState pnlState, decimal x, decimal y, decimal z, decimal rz) {
+        public RollPosition(string label, string side, string locationNo, decimal diameter_, PanelState pnlState, decimal x, decimal y, decimal z, decimal rz) {
             this.LabelCode = label;
 
             X = x;
@@ -27,6 +27,7 @@ namespace yidascan {
             ChangeAngle = x > 0 || y < 0;
 
             ToLocation = locationNo;
+            diameter = diameter_;
             Index = CalculateBaseIndex(locationNo, x, y);
 
             LocationNo = int.Parse(locationNo.Substring(1, 2));
@@ -111,6 +112,7 @@ namespace yidascan {
         public decimal Base2;
 
         public string ToLocation { get; set; }
+        public decimal diameter { get; set; }
         // A侧或B侧
         public string Side { get; set; }
         public PanelState PnlState { get; set; }

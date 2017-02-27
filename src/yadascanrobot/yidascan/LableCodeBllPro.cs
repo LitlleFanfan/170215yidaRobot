@@ -98,7 +98,7 @@ namespace yidascan {
             // 板上宽度
             var installedWidth = Math.Abs(CalculateXory(lcs));
 
-            FrmMain.logOpt.Write($"*** cached count: {cachedRolls.Count()}, max width: {MAX_WIDTH}, installed width: {installedWidth}","buffer");
+            // FrmMain.logOpt.Write($"***loc: {lc.ToLocation}, cached count: {cachedRolls.Count()}, max width: {MAX_WIDTH}, installed width: {installedWidth}","buffer");
 
             return findSmallerFromCachedRolls(cachedRolls, lc, installedWidth, MAX_WIDTH);
         }
@@ -109,7 +109,7 @@ namespace yidascan {
                 : 0;
 
             if (lenOfUpperFloor > 0) {
-                return lenOfUpperFloor;
+                return Math.Min(lenOfUpperFloor, clsSetting.SplintLength / 2);
             } else {
                 // 默认最大宽度
                 return (clsSetting.SplintLength / 2);
@@ -161,10 +161,11 @@ namespace yidascan {
 
         private static bool NoMoreBiggerRoolsInCacheQ(LableCode lc, Queue<LableCode> cacheq) {
             // 同一个板上直径比当前大的。
-            var q = cacheq.Count((x) => {
-                return x.PanelNo == lc.PanelNo && x.Diameter - lc.Diameter > clsSetting.CacheIgnoredDiff;
-            });
-            return q > 0;
+            //var q = cacheq.Count((x) => {
+            //    return x.PanelNo == lc.PanelNo && x.Diameter - lc.Diameter > clsSetting.CacheIgnoredDiff;
+            //});
+            //return q <= 0;
+            return true;
         }
 
         /// <summary>
@@ -177,7 +178,7 @@ namespace yidascan {
         private static decimal expectedWidth(decimal installedWidth, LableCode l1, LableCode l2) {
             // 预期宽度
             var expected = installedWidth + l1.Diameter + clsSetting.RollSep + l2.Diameter + clsSetting.EdgeSpace;
-            FrmMain.logOpt.Write($"*** expected width: {expected}");
+            // FrmMain.logOpt.Write($"*** loc: {l1.ToLocation}, expected width: {expected}");
             return expected;
         }
 
@@ -189,12 +190,17 @@ namespace yidascan {
         /// <param name="installedWidth"></param>
         /// <param name="maxedWidth"></param>
         /// <returns></returns>
-        private static LableCode findSmallerFromCachedRolls(List<LableCode> cachedRolls, LableCode current, decimal installedWidth, decimal maxedWidth) {            
-            var p = from x in cachedRolls
-                    where (x.Diameter < current.Diameter) && (expectedWidth(installedWidth, current, x) > maxedWidth)
-                    orderby x.Diameter ascending
-                    select x;
-            return p.FirstOrDefault();
+        private static LableCode findSmallerFromCachedRolls(List<LableCode> cachedRolls, LableCode current, decimal installedWidth, decimal maxedWidth) {
+            LableCode rt = null;
+            foreach (var item in cachedRolls) {
+                if (expectedWidth(installedWidth, current, item) < maxedWidth) {
+                    continue;
+                }
+                if (rt == null ||  item.Diameter < rt.Diameter) {
+                    rt = item;
+                }
+            }
+            return rt;
         }
         #endregion
 
@@ -225,7 +231,7 @@ namespace yidascan {
                 if (layerLabels != null && layerLabels.Count > 0) {
                     // 最近一层没满。
                     lc2 = IsPanelFull(layerLabels, lc);
-
+                    
                     if (lc2 != null) //不为NULL，表示满
                     {
                         //计算位置坐标, 赋予层号

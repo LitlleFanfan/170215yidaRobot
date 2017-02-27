@@ -140,7 +140,7 @@ namespace yidascan.DataAccess {
             if (RollPosition.robotRSidePanel.Contains(label.ToLocation)) {
                 rz = rz + 180;
             }
-            var roll = new RollPosition(label.LCode, side, label.ToLocation, state, x, y, z, rz);
+            var roll = new RollPosition(label.LCode, side, label.ToLocation, label.Diameter, state, x, y, z, rz);
             onlog?.Invoke($"{side} {label.LCode} {label.ToLocation}", LogType.ROLL_QUEUE);
             return roll;
         }
