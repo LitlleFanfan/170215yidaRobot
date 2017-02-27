@@ -79,5 +79,26 @@ namespace yidascan {
                 return false;
             }
         }
+
+        // 取交地失败的话，应当告知plc。
+        private static string GetLocation(IErpApi erpapi, string code) {
+            var re = "";
+            Dictionary<string, string> str;
+            try {
+                str = erpapi.Post(clsSetting.GetLocation, new Dictionary<string, string>()
+                { { "Bar_Code", code } });
+                var res = JsonConvert.DeserializeObject<DataTable>(str["Data"].ToString());
+                if (str["ERPState"] == "OK") {
+                    if (res.Rows.Count > 0 && res.Rows[0]["LOCATION"].ToString() != "Fail") {
+                        re = res.Rows[0]["LOCATION"].ToString();
+                    }
+                }
+            } catch (Exception ex) {
+                onlog?.Invoke("!" + ex.Message);
+                return string.Empty;
+            }
+
+            return re;
+        }
     }
 }

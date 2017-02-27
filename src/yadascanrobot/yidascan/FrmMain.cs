@@ -297,10 +297,16 @@ namespace yidascan {
                                 LableCode.SetMaxFloor(tolocation);
                                 logOpt.Write($"{kv.Key}收到人工完成信号。", LogType.NORMAL, LogViewType.OnlyFile);
 
+                                // 修改当前板号的属性。
+                                var shiftno = createShiftNo();
+
                                 // 创建新的板信息。
                                 var newPanel = PanelGen.NewPanelNo();
+
+                                // 重新计算缓存区的布卷的坐标。
                                 cacheher.ReCalculateCoordinate(newPanel, tolocation);
 
+                                // plc复位信号。
                                 opcClient.Write(kv.Value, "0");
                             }
                         }
@@ -371,7 +377,12 @@ namespace yidascan {
 
             WeighTask();
             ACAreaFinishTask();
+#if !DEBUG
             BeforCacheTask();
+#endif
+#if DEBUG
+            BeforCacheTask_new();
+#endif 
             LableUpTask();
 
             StartRobotJobATask();
@@ -409,11 +420,11 @@ namespace yidascan {
                                     getWeight = NotifyWeigh(code.LCode, false) ? SUCCESS : FAIL;
                                     logOpt.Write($"{code.LCode}称重API状态：{getWeight} 写OPC状态：{opcClient.Write(opcParam.ScanParam.GetWeigh, getWeight)}");
 
-                                    #region 临时称重信号问题排除
+#region 临时称重信号问题排除
                                     logOpt.Write($"0ms当前OPC称重信号状态：{ opcClient.ReadInt(opcParam.ScanParam.GetWeigh)}");
                                     Thread.Sleep(20);
                                     logOpt.Write($"20ms当前OPC称重信号状态：{ opcClient.ReadInt(opcParam.ScanParam.GetWeigh)}");
-                                    #endregion
+#endregion
 
                                     showLabelQue(taskQ.WeighQ, lsvWeigh);
                                     if (code.ToLocation.Substring(0, 1) == "B") {
@@ -636,59 +647,56 @@ namespace yidascan {
             return $"{d1}{d2}";
         }
 
-        //private void BeforCacheTask_new() {
-        //    logOpt.Write("缓存任务启动。", LogType.NORMAL);
+        private void BeforCacheTask_new() {
+            logOpt.Write("!测试版缓存任务启动。", LogType.NORMAL);
 
-        //    Task.Factory.StartNew(() => {
-        //        while (isrun) {
-        //            Thread.Sleep(OPCClient.DELAY * 200);
+            Task.Factory.StartNew(() => {
+                while (isrun) {
+                    Thread.Sleep(OPCClient.DELAY * 200);
 
-        //            lock (opcClient) {
-        //                try {
-        //                    if (PlcHelper.ReadCacheSignal(opcClient)) {
-        //                        var lc = taskQ.GetCacheQ();
+                    lock (opcClient) {
+                        try {
+                            if (PlcHelper.ReadCacheSignal(opcClient)) {
+                                var lc = taskQ.GetCacheQ();
 
-        //                        if (lc == null) {
-        //                            logOpt.Write($"!缓存队列没有标签", LogType.BUFFER);
-        //                            continue;
-        //                        }
+                                if (lc == null) {
+                                    logOpt.Write($"!缓存队列没有标签", LogType.BUFFER);
+                                    continue;
+                                }
 
-        //                        // 检查重复计算。???
-        //                        if (string.IsNullOrEmpty(lc.PanelNo)) {
-        //                            logOpt.Write($"!{lc.LCode} 标签重复。", LogType.BUFFER);
-        //                            continue;
-        //                        }
+                                // 检查重复计算。???
+                                if (string.IsNullOrEmpty(lc.PanelNo)) {
+                                    logOpt.Write($"!{lc.LCode} 标签重复。", LogType.BUFFER);
+                                    continue;
+                                }
 
-        //                        // 计算位置, lc和cache队列里比较。
-        //                        var calResultt = lcb.AreaBCalculatePro(callErpApi,
-        //                            lc,
-        //                            createShiftNo(), taskQ.CacheQ); //计算位置
+                                // 计算位置, lc和cache队列里比较。
+                                var calResultt = LableCodeBllPro.AreaBCalculate(callErpApi,
+                                    lc,
+                                    createShiftNo(), taskQ.CacheQ); //计算位置
 
-        //                        if (calResultt.message != "") {
-        //                            logOpt.Write(calResultt.message, LogType.BUFFER);
-        //                        }
+                                if (calResultt.message != "") {
+                                    logOpt.Write(calResultt.message, LogType.BUFFER);
+                                }
 
-        //                        // 显示缓存计算信息
-        //                        var msg = lcb.ShowCacheOperationInfo(calResultt.CodeToCache, calResultt.CodeFromCache, calResultt.state);
-        //                        logOpt.Write(msg, LogType.BUFFER);
+                                // 确定缓存操作动作
+                                var cacheJobState = cacheher.WhenRollArrived(calResultt.state, calResultt.CodeToCache, calResultt.CodeFromCache);
+                                logOpt.Write(JsonConvert.SerializeObject(cacheJobState), LogType.BUFFER);
 
-        //                        // 确定缓存操作动作
-        //                        var cacheJobState = cacheher.WhenRollArrived(calResultt.state, calResultt.CodeToCache, calResultt.CodeFromCache);
-        //                        logOpt.Write(JsonConvert.SerializeObject(cacheJobState), LogType.BUFFER);
+                                // 发出机械手缓存动作指令
+                                PlcHelper.WriteCacheJob(opcClient, cacheJobState.state, cacheJobState.savepos, cacheJobState.getpos);
 
-        //                        // 发出机械手缓存动作指令
-        //                        PlcHelper.WriteCacheJob(opcClient, cacheJobState.state, cacheJobState.savepos, cacheJobState.getpos);
-
-        //                        // 更新界面显示
-        //                        QueuesView.Move(lsvCacheBefor, lsvLableUp);
-        //                    }
-        //                } catch (Exception ex) {
-        //                    logOpt.Write($"!{ex.ToString()}", LogType.BUFFER);
-        //                }
-        //            }
-        //        }
-        //    });
-        //}
+                                // 更新界面显示
+                                showLabelQue(taskQ.CacheQ, lsvCacheBefor);
+                                showLabelQue(taskQ.LableUpQ, lsvLableUp);
+                            }
+                        } catch (Exception ex) {
+                            logOpt.Write($"!{ex.ToString()}", LogType.BUFFER);
+                        }
+                    }
+                }
+            });
+        }
 
         /// <summary>
         /// 2期代码。
@@ -710,11 +718,11 @@ namespace yidascan {
 
                                     RobotOpcClient.Write(PlcSlot.LABEL_UP_SIGNAL, false);
 
-                                    #region 临时称重信号问题排除
+#region 临时称重信号问题排除
                                     logOpt.Write($"0ms当前OPC标签朝上来料信号状态：{ RobotOpcClient.ReadBool(PlcSlot.LABEL_UP_SIGNAL)}", LogType.ROLL_QUEUE);
                                     Thread.Sleep(20);
                                     logOpt.Write($"20ms当前OPC标签朝上来料信号状态：{ RobotOpcClient.ReadBool(PlcSlot.LABEL_UP_SIGNAL)}", LogType.ROLL_QUEUE);
-                                    #endregion
+#endregion
 
                                     showLabelQue(taskQ.LableUpQ, lsvLableUp);
                                     showCachePosQue(taskQ.CacheSide);
@@ -1444,7 +1452,7 @@ namespace yidascan {
         private void showLabelQue(Queue<LableCode> que, ListView view) {
             List<string> lst;
             lock (que) {
-                lst = que.Select(x => x.brief()).ToList();
+                lst = que.Select(x => x.brief()).Reverse().ToList();
             }
             showListInView(lst, view);
         }
@@ -1452,7 +1460,7 @@ namespace yidascan {
         public static void showRobotQue(Queue<RollPosition> que, ListView view) {
             List<string> lst;
             lock (que) {
-                lst = que.Select(x => x.brief()).ToList();
+                lst = que.Select(x => x.brief()).Reverse().ToList();
             }
             showListInView(lst, view);
         }
