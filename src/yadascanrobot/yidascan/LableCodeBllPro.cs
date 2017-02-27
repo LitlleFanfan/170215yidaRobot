@@ -97,6 +97,9 @@ namespace yidascan {
             var MAX_WIDTH = FindMaxHalfWidth(lc);
             // 板上宽度
             var installedWidth = Math.Abs(CalculateXory(lcs));
+
+            FrmMain.logOpt.Write($"*** cached count: {cachedRolls.Count()}, max width: {MAX_WIDTH}, installed width: {installedWidth}","buffer");
+
             return findSmallerFromCachedRolls(cachedRolls, lc, installedWidth, MAX_WIDTH);
         }
 
@@ -173,7 +176,9 @@ namespace yidascan {
         /// <returns></returns>
         private static decimal expectedWidth(decimal installedWidth, LableCode l1, LableCode l2) {
             // 预期宽度
-            return installedWidth + l1.Diameter + clsSetting.RollSep + l2.Diameter + clsSetting.EdgeSpace;
+            var expected = installedWidth + l1.Diameter + clsSetting.RollSep + l2.Diameter + clsSetting.EdgeSpace;
+            FrmMain.logOpt.Write($"*** expected width: {expected}");
+            return expected;
         }
 
         /// <summary>
@@ -184,7 +189,7 @@ namespace yidascan {
         /// <param name="installedWidth"></param>
         /// <param name="maxedWidth"></param>
         /// <returns></returns>
-        private static LableCode findSmallerFromCachedRolls(List<LableCode> cachedRolls, LableCode current, decimal installedWidth, decimal maxedWidth) {
+        private static LableCode findSmallerFromCachedRolls(List<LableCode> cachedRolls, LableCode current, decimal installedWidth, decimal maxedWidth) {            
             var p = from x in cachedRolls
                     where (x.Diameter < current.Diameter) && (expectedWidth(installedWidth, current, x) > maxedWidth)
                     orderby x.Diameter ascending
