@@ -27,7 +27,7 @@ namespace yidascan {
 
         public string brief() {
             if (labelcode == null) {
-                return $"{id.ToString().PadLeft(2,' ')}";
+                return $"{id.ToString().PadLeft(2, ' ')}";
             } else {
                 return $"{id.ToString().PadLeft(2, ' ')} {labelcode.LCode} {labelcode.ToLocation} {labelcode.Diameter}";
             }
@@ -62,6 +62,16 @@ namespace yidascan {
         public void Reset() {
             foreach (var p in cacheposes) {
                 p.Reset();
+            }
+        }
+
+        public LableCode getOutLabel(CacheResult cr) {
+            if (cr.state == CacheState.GetThenCache
+                || cr.state == CacheState.GetThenGo
+                || cr.state == CacheState.GoThenGet) {
+                return cacheposes[cr.getpos].labelcode;
+            } else {
+                return null;
             }
         }
 

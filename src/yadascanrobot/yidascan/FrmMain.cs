@@ -550,7 +550,7 @@ namespace yidascan {
                                                 taskQ.CacheQ.Dequeue();
                                             }
 
-                                            BindQueue(code, lc, outCacheLable, cr);
+                                            BindQueue(code, outCacheLable, cr);
 
                                             if (cr.state == CacheState.CacheAndGet || cr.state == CacheState.GetThenCache) {
                                                 if (CacheHelper.isInSameCacheChannel(cr.getpos, cr.savepos)) {
@@ -589,7 +589,7 @@ namespace yidascan {
 
         private object LOCK_QUEUE_VIEW = new object();
 
-        private void BindQueue(LableCode code, LableCode lc, LableCode outCacheLable, CacheResult cr) {
+        private void BindQueue(LableCode code, LableCode outCacheLable, CacheResult cr) {
             lock (LOCK_QUEUE_VIEW) {
                 try {
                     switch (cr.state) {
@@ -657,7 +657,8 @@ namespace yidascan {
                     lock (opcClient) {
                         try {
                             if (PlcHelper.ReadCacheSignal(opcClient)) {
-                                var lc = taskQ.GetCacheQ();
+                                // var lc = taskQ.GetCacheQ();
+                                var lc = taskQ.CacheQ.Peek();
 
                                 if (lc == null) {
                                     logOpt.Write($"!缓存队列没有标签", LogType.BUFFER);
@@ -683,12 +684,25 @@ namespace yidascan {
                                 var cacheJobState = cacheher.WhenRollArrived(calResultt.state, calResultt.CodeToCache, calResultt.CodeFromCache);
                                 logOpt.Write(JsonConvert.SerializeObject(cacheJobState), LogType.BUFFER);
 
-                                // 发出机械手缓存动作指令
-                                PlcHelper.WriteCacheJob(opcClient, cacheJobState.state, cacheJobState.savepos, cacheJobState.getpos);
+                                lock (taskQ.CacheQ) {
+                                    taskQ.CacheQ.Dequeue();
+                                }
 
                                 // 更新界面显示
-                                showLabelQue(taskQ.CacheQ, lsvCacheBefor);
-                                showLabelQue(taskQ.LableUpQ, lsvLableUp);
+                                var outlable = cacheher.getOutLabel(cacheJobState);
+                                BindQueue(lc, outlable, cacheJobState);
+
+                                if (cacheJobState.state == CacheState.CacheAndGet || cacheJobState.state == CacheState.GetThenCache) {
+                                    if (CacheHelper.isInSameCacheChannel(cacheJobState.getpos, cacheJobState.savepos)) {
+                                        // 在同一侧
+                                        cacheJobState.state = CacheState.GetThenCache;  // action 3.
+                                    } else {
+                                        cacheJobState.state = CacheState.CacheAndGet;   // action 6
+                                    }
+                                }
+
+                                // 发出机械手缓存动作指令
+                                PlcHelper.WriteCacheJob(opcClient, cacheJobState.state, cacheJobState.savepos, cacheJobState.getpos);
                             }
                         } catch (Exception ex) {
                             logOpt.Write($"!{ex.ToString()}", LogType.BUFFER);
