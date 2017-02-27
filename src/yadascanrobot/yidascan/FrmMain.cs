@@ -420,11 +420,11 @@ namespace yidascan {
                                     getWeight = NotifyWeigh(code.LCode, false) ? SUCCESS : FAIL;
                                     logOpt.Write($"{code.LCode}称重API状态：{getWeight} 写OPC状态：{opcClient.Write(opcParam.ScanParam.GetWeigh, getWeight)}");
 
-#region 临时称重信号问题排除
+                                    #region 临时称重信号问题排除
                                     logOpt.Write($"0ms当前OPC称重信号状态：{ opcClient.ReadInt(opcParam.ScanParam.GetWeigh)}");
                                     Thread.Sleep(20);
                                     logOpt.Write($"20ms当前OPC称重信号状态：{ opcClient.ReadInt(opcParam.ScanParam.GetWeigh)}");
-#endregion
+                                    #endregion
 
                                     showLabelQue(taskQ.WeighQ, lsvWeigh);
                                     if (code.ToLocation.Substring(0, 1) == "B") {
@@ -659,6 +659,7 @@ namespace yidascan {
                             if (PlcHelper.ReadCacheSignal(opcClient)) {
                                 // var lc = taskQ.GetCacheQ();
                                 var lc = taskQ.CacheQ.Peek();
+                                lc = LableCode.QueryByLCode(lc.LCode);
 
                                 if (lc == null) {
                                     logOpt.Write($"!缓存队列没有标签", LogType.BUFFER);
@@ -732,11 +733,11 @@ namespace yidascan {
 
                                     RobotOpcClient.Write(PlcSlot.LABEL_UP_SIGNAL, false);
 
-#region 临时称重信号问题排除
+                                    #region 临时称重信号问题排除
                                     logOpt.Write($"0ms当前OPC标签朝上来料信号状态：{ RobotOpcClient.ReadBool(PlcSlot.LABEL_UP_SIGNAL)}", LogType.ROLL_QUEUE);
                                     Thread.Sleep(20);
                                     logOpt.Write($"20ms当前OPC标签朝上来料信号状态：{ RobotOpcClient.ReadBool(PlcSlot.LABEL_UP_SIGNAL)}", LogType.ROLL_QUEUE);
-#endregion
+                                    #endregion
 
                                     showLabelQue(taskQ.LableUpQ, lsvLableUp);
                                     showCachePosQue(taskQ.CacheSide);
