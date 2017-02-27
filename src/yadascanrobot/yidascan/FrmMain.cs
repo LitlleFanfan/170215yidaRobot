@@ -665,7 +665,7 @@ namespace yidascan {
                                 }
 
                                 // 检查重复计算。???
-                                if (string.IsNullOrEmpty(lc.PanelNo)) {
+                                if (!string.IsNullOrEmpty(lc.PanelNo)) {
                                     logOpt.Write($"!{lc.LCode} 标签重复。", LogType.BUFFER);
                                     continue;
                                 }
@@ -1330,11 +1330,6 @@ namespace yidascan {
             using (var w = new WRollBrowser()) {
                 w.ShowDialog();
             }
-        }
-
-        private bool doit() {
-            MessageBox.Show("doit");
-            return false;
         }
 
         private void btnTestPlc_Click(object sender, EventArgs e) {
