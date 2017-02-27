@@ -65,7 +65,7 @@ namespace yidascan.DataAccess {
             RobotRollAQ.Clear();
             RobotRollBQ.Clear();
             for (int i = 0; i < CacheSide.Count(); i++) {
-                CacheSide[i] = null;
+                CacheSide[i].labelcode = null;
             }
         }
 
