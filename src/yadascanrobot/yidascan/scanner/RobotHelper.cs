@@ -36,9 +36,9 @@ namespace yidascan {
             Side = side;
             PnlState = pnlState;
 
-            int tmp = int.Parse(locationNo.Substring(1, 2));
-            RobotParam origin = RobotParam.GetOrigin(tmp);
-            RobotParam point = RobotParam.GetPoint(tmp, Index);
+            var tmp = int.Parse(locationNo.Substring(1, 2));
+            var origin = RobotParam.GetOrigin(tmp);
+            var point = RobotParam.GetPoint(tmp, Index);
 
             Base1 = origin.Base;
             Base2 = point.Base;
@@ -48,7 +48,7 @@ namespace yidascan {
             Target = new PostionVar(X, Y, Z, origin.Rx, origin.Ry, origin.Rz + rz);
         }
 
-        private decimal GetXOffSet(decimal originBase, decimal targetBase) {
+        private static decimal GetXOffSet(decimal originBase, decimal targetBase) {
             return ((targetBase - originBase) * 2 * -1);
         }
 
@@ -62,9 +62,9 @@ namespace yidascan {
         }
 
 
-        public static List<string> robotRSidePanel = new List<string>() { "B03", "B04", "B05", "B06", "B07", "B08" };
-        private int CalculateBaseIndex(string tolocation, decimal x, decimal y) {
-            int baseindex = 0;
+        public static List<string> robotRSidePanel = new List<string> { "B03", "B04", "B05", "B06", "B07", "B08" };
+        private static int CalculateBaseIndex(string tolocation, decimal x, decimal y) {
+            var baseindex = 0;
             if (x != 0) {
                 baseindex = 2;
                 if (x > 0) {
@@ -122,7 +122,7 @@ namespace yidascan {
         }
     }
 
-    public class RobotHelper : IDisposable {
+    public class RobotHelper : IRobotJob, IDisposable {
         private string JOB_NAME = "";
 
         RobotControl.RobotControl rCtrl;
@@ -250,18 +250,7 @@ namespace yidascan {
             // 新写法, 需要测试。2017-02-20
             return Helper.retry(() => {
                 return rCtrl.StartJob(jobName);
-            }, 10, 80);
-
-            // 原来的写法
-            //const int DELAY = 30;
-            //while (times > 0) {
-            //    if (rCtrl.StartJob(jobName)) {
-            //        return true;
-            //    }
-            //    times--;
-            //    Thread.Sleep(DELAY);
-            //}
-            //return false;
+            }, times, 80);
         }
 
         public bool IsBusy() {
@@ -441,6 +430,7 @@ namespace yidascan {
             rCtrl.ServoPower(false);
             Thread.Sleep(1000);
             rCtrl.Close();
+            GC.SuppressFinalize(this);
         }
     }
 }

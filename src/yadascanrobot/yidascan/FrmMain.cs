@@ -41,7 +41,7 @@ namespace yidascan {
 
         DataTable dtopc;
 
-        RobotHelper robot;
+        IRobotJob robot;
         private bool robotRun = false;
 
         public static LogOpreate logOpt;
@@ -257,11 +257,20 @@ namespace yidascan {
             return state;
         }
 
+        private static IRobotJob GetRobot(string ip, string jobname) {
+#if DEBUG
+            return new FakeRobotJob(ip, jobname);
+#else
+            robot = new RobotHelper(ip, jobname);
+#endif
+        }
+
         private void StartRobotTask() {
             try {
                 logOpt.Write("机器人正在启动...", LogType.NORMAL);
                 Task.Factory.StartNew(() => {
-                    robot = new RobotHelper(clsSetting.RobotIP, clsSetting.JobName);
+                    // robot = new RobotHelper(clsSetting.RobotIP, clsSetting.JobName);
+                    robot = GetRobot(clsSetting.RobotIP, clsSetting.JobName);
                     robot.setup(logOpt.Write, RobotOpcClient, opcParam);
 
                     if (robot.IsConnected()) {
