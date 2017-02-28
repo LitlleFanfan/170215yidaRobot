@@ -666,7 +666,8 @@ namespace yidascan {
                     lock (opcClient) {
                         try {
                             if (PlcHelper.ReadCacheSignal(opcClient)) {
-                                // var lc = taskQ.GetCacheQ();
+                                if (taskQ.CacheQ.Count == 0) continue;
+
                                 var lc = taskQ.CacheQ.Peek();
                                 lc = LableCode.QueryByLCode(lc.LCode);
 
@@ -682,25 +683,25 @@ namespace yidascan {
                                 }
 
                                 // 计算位置, lc和cache队列里比较。
-                                var calResultt = LableCodeBllPro.AreaBCalculate(callErpApi,
+                                var calResult = LableCodeBllPro.AreaBCalculate(callErpApi,
                                     lc,
                                     createShiftNo(), taskQ.CacheQ); //计算位置
 
-                                if (calResultt.message != "") {
-                                    logOpt.Write(calResultt.message, LogType.BUFFER);
+                                if (calResult.message != "") {
+                                    logOpt.Write(calResult.message, LogType.BUFFER);
                                 }
 
                                 // 确定缓存操作动作
-                                var cacheJobState = cacheher.WhenRollArrived(calResultt.state, calResultt.CodeToCache, calResultt.CodeFromCache);
-                                logOpt.Write(JsonConvert.SerializeObject(cacheJobState), LogType.BUFFER);
+                                var cacheJobState = cacheher.WhenRollArrived(calResult.state, calResult.CodeToCache, calResult.CodeFromCache);
+                                logOpt.Write($"{calResult.CodeToCache.ToLocation} {JsonConvert.SerializeObject(cacheJobState)} 来料标签：{calResult.CodeToCache.LCode} {calResult.CodeToCache.Diameter} 取出标签：{calResult.CodeFromCache?.LCode} {calResult.CodeFromCache?.Diameter}", LogType.BUFFER);
+
 
                                 lock (taskQ.CacheQ) {
                                     taskQ.CacheQ.Dequeue();
                                 }
 
                                 // 更新界面显示
-                                var outlable = cacheher.getOutLabel(cacheJobState);
-                                BindQueue(lc, outlable, cacheJobState);
+                                BindQueue(lc, calResult.CodeFromCache, cacheJobState);
 
                                 if (cacheJobState.state == CacheState.CacheAndGet || cacheJobState.state == CacheState.GetThenCache) {
                                     if (CacheHelper.isInSameCacheChannel(cacheJobState.getpos, cacheJobState.savepos)) {
@@ -720,6 +721,10 @@ namespace yidascan {
                     }
                 }
             });
+        }
+
+        public string brief(LableCode lc, CalResult cr) {
+            return $"缓存状态：{cr.state}, from cache: {cr.CodeFromCache?.LCode}, to cache: {cr.CodeToCache?.LCode}";
         }
 
         /// <summary>
