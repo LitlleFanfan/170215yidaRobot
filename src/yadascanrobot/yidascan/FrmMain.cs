@@ -722,6 +722,10 @@ namespace yidascan {
             });
         }
 
+        public string brief(LableCode lc, CalResult cr) {
+            return $"缓存状态：{cr.state}, from cache: {cr.CodeFromCache?.LCode}, to cache: {cr.CodeToCache?.LCode}";
+        }
+
         /// <summary>
         /// 2期代码。
         /// </summary>
