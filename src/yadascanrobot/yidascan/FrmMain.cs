@@ -278,7 +278,15 @@ namespace yidascan {
 
                         SetRobotTip(true);
                         logOpt.Write("开始机器人线程。", LogType.NORMAL);
+
                         robot.JobLoop(ref robotRun, lsvRobotA, lsvRobotB);
+
+                        // refactory
+                        //robot.JobLoopPro(ref robotRun, () => {
+                        //    showRobotQue(taskQ.RobotRollAQ, lsvRobotA);
+                        //    showRobotQue(taskQ.RobotRollBQ, lsvRobotB);
+                        //});
+
                         logOpt.Write("机器人启动正常。", LogType.NORMAL);
                     } else {
                         SetRobotTip(false, "机器人网络故障");

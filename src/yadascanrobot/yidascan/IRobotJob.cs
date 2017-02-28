@@ -12,6 +12,8 @@ namespace yidascan {
         void setup(Action<string, string, LogViewType> loghandler, IOpcClient client, OPCParam param);
         bool IsConnected();
         void JobLoop(ref bool isrunning, ListView viewA, ListView viewB);
+        void JobLoopPro(ref bool isrunning, TaskQueues ques, Action onupdate);
+        bool JobTask(ref bool isrun, RollPosition roll);
         void Dispose();
     }
 }

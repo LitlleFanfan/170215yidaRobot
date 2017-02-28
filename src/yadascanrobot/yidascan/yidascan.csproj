@@ -107,6 +107,7 @@
     <Compile Include="DataAccess\SqliteAccess.cs" />
     <Compile Include="DataAccess\TaskQueues.cs" />
     <Compile Include="ErpHelper.cs" />
+    <Compile Include="fakerobotjob.cs" />
     <Compile Include="FakeWebApi.cs" />
     <Compile Include="FakeOpcClient.cs" />
     <Compile Include="FrmMain.cs">
@@ -124,6 +125,7 @@
     <Compile Include="Helper.cs" />
     <Compile Include="IErp.cs" />
     <Compile Include="IOpcClient.cs" />
+    <Compile Include="IRobotJob.cs" />
     <Compile Include="LableCodeBll.cs" />
     <Compile Include="LableCodeBllPro.cs" />
     <Compile Include="ListBoxHelper.cs" />

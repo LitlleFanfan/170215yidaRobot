@@ -34,32 +34,36 @@ namespace yidascan {
             return true;
         }
 
-        public void JobLoop(ref bool isrunning, ListView viewA, ListView viewB) {
+        public void JobLoop(ref bool isrunning, ListView viewA, ListView viewB) { }
+
+        public void JobLoopPro(ref bool isrunning, TaskQueues taskq, Action onupdate) {
             loghandler.Invoke($"enter loop. isrunning: {isrunning}", LogType.ROBOT_STACK, LogViewType.OnlyForm);
+
             while (isrunning) {
                 loghandler.Invoke("move queue.", LogType.ROBOT_STACK, LogViewType.OnlyForm);
 
-                if (FrmMain.taskQ.RobotRollAQ.Count > 0) {
-                    var roll = FrmMain.taskQ.RobotRollAQ.Peek();
-                    if (roll != null) {
-                        FrmMain.taskQ.RobotRollAQ.Dequeue();
-                        FrmMain.showRobotQue(FrmMain.taskQ.RobotRollAQ, viewA);
-                        Thread.Sleep(100);
+                var ques = new List<Queue<RollPosition>> { taskq.RobotRollAQ, taskq.RobotRollBQ };
+
+                foreach (var qu in ques) {
+                    if (qu.Count() > 0) {
+                        var item = qu.Peek();
+                        if (item != null && JobTask(ref isrunning, item)) {
+                            qu.Dequeue();
+                        }
                     }
                 }
-                if (FrmMain.taskQ.RobotRollBQ.Count > 0) {
-                    var roll = FrmMain.taskQ.RobotRollBQ.Peek();
-                    if (roll != null) {
-                        FrmMain.taskQ.RobotRollBQ.Dequeue();
-                        FrmMain.showRobotQue(FrmMain.taskQ.RobotRollBQ, viewB);
-                    }
-                }
+                onupdate();
+
                 Thread.Sleep(500);
             }
         }
 
+        public bool JobTask(ref bool isrun, RollPosition roll) {
+            return true;
+        }
+
         public void Dispose() {
-            GC.SuppressFinalize(this);            
+            GC.SuppressFinalize(this);
         }
     }
 }

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Linq;
 using Newtonsoft.Json;
 using yidascan.DataAccess;
 using System.Windows.Forms;
@@ -311,6 +312,29 @@ namespace yidascan {
             }
         }
 
+        public void JobLoopPro(ref bool isrunning, TaskQueues taskq, Action onupdate) {
+            _log.Invoke($"enter loop. isrunning: {isrunning}", LogType.ROBOT_STACK, LogViewType.OnlyForm);
+
+            while (isrunning) {
+                _log.Invoke("move queue.", LogType.ROBOT_STACK, LogViewType.OnlyForm);
+
+                var ques = new List<Queue<RollPosition>> { taskq.RobotRollAQ, taskq.RobotRollBQ };
+
+                foreach (var qu in ques) {
+                    if (qu.Count() > 0) {
+                        var item = qu.Peek();
+                        if (item != null && JobTask(ref isrunning, item)) {
+                            qu.Dequeue();
+                        }
+                    }
+                }
+                onupdate();
+
+                Thread.Sleep(500);
+            }
+        }
+
+        [Obsolete("use JobLoopPro instead.")]
         public void JobLoop(ref bool isrun,ListView la,ListView lb) {
             while (isrun) {
                 if (FrmMain.taskQ.RobotRollAQ.Count > 0) {
