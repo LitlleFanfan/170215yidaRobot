@@ -663,7 +663,7 @@ order by floorindex desc;";
         /// </summary>
         /// <returns></returns>
         public string brief() {
-            return $"{lCode} {toLocation}";
+            return $"{lCode} {toLocation} {diameter}";
         }
     }
 }

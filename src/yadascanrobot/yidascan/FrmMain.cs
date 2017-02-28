@@ -763,6 +763,7 @@ namespace yidascan {
                             }
                         } catch (Exception ex) {
                             logOpt.Write($"!{ex}", LogType.ROLL_QUEUE);
+                            logOpt.Write($"labeluptask");
                         }
                     }
                     Thread.Sleep(OPCClient.DELAY * 200);
