@@ -69,7 +69,7 @@ namespace yidascan {
             if (cr.state == CacheState.GetThenCache
                 || cr.state == CacheState.GetThenGo
                 || cr.state == CacheState.GoThenGet) {
-                return cacheposes[cr.getpos].labelcode;
+                return cacheposes[cr.getpos - 1].labelcode;
             } else {
                 return null;
             }
