@@ -35,6 +35,7 @@ namespace yidascan {
         }
 
         public void JobLoop(ref bool isrunning, ListView viewA, ListView viewB) {
+            loghandler.Invoke($"enter loop. isrunning: {isrunning}", LogType.ROBOT_STACK, LogViewType.OnlyForm);
             while (isrunning) {
                 loghandler.Invoke("move queue.", LogType.ROBOT_STACK, LogViewType.OnlyForm);
 
