@@ -9,6 +9,9 @@ using System.Windows.Forms;
 using yidascan.DataAccess;
 
 namespace yidascan {
+    /// <summary>
+    /// 仅用于测试。
+    /// </summary>
     class FakeRobotJob : IRobotJob, IDisposable {
         Action<string, string, LogViewType> loghandler;
         IOpcClient client;
@@ -23,7 +26,7 @@ namespace yidascan {
         public void setup(Action<string, string, LogViewType> loghandler, IOpcClient client, OPCParam param) {
             this.loghandler = loghandler;
             this.client = client;
-            loghandler?.Invoke("!fake robot setup.", "fake robot", LogViewType.OnlyForm);
+            loghandler?.Invoke("!fake robot setup.", LogType.ROBOT_STACK, LogViewType.OnlyForm);
             loghandler?.Invoke($"!ip: {ip}, job name: {jobName}", "fake robot", LogViewType.OnlyFile);
         }
 
@@ -32,7 +35,10 @@ namespace yidascan {
         }
 
         public void JobLoop(ref bool isrunning, ListView viewA, ListView viewB) {
+            loghandler.Invoke($"enter loop. isrunning: {isrunning}", LogType.ROBOT_STACK, LogViewType.OnlyForm);
             while (isrunning) {
+                loghandler.Invoke("move queue.", LogType.ROBOT_STACK, LogViewType.OnlyForm);
+
                 if (FrmMain.taskQ.RobotRollAQ.Count > 0) {
                     var roll = FrmMain.taskQ.RobotRollAQ.Peek();
                     if (roll != null) {
@@ -48,7 +54,7 @@ namespace yidascan {
                         FrmMain.showRobotQue(FrmMain.taskQ.RobotRollBQ, viewB);
                     }
                 }
-                Thread.Sleep(RobotHelper.DELAY);
+                Thread.Sleep(500);
             }
         }
 
