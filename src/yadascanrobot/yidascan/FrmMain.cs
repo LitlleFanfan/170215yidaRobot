@@ -587,59 +587,67 @@ namespace yidascan {
             }
         }
 
-        private object LOCK_QUEUE_VIEW = new object();
+        //  private object LOCK_QUEUE_VIEW = new object();
 
         private void BindQueue(LableCode code, LableCode outCacheLable, CacheResult cr) {
-            lock (LOCK_QUEUE_VIEW) {
-                try {
-                    switch (cr.state) {
-                        case CacheState.Go:
+            try {
+                switch (cr.state) {
+                    case CacheState.Go:
+                        lock (taskQ.LableUpQ) {
                             taskQ.LableUpQ.Enqueue(code);
+                        }
 
-                            showLabelQue(taskQ.CacheQ, lsvCacheBefor);
-                            showLabelQue(taskQ.LableUpQ, lsvLableUp);
-                            break;
-                        case CacheState.Cache:
-                            showLabelQue(taskQ.CacheQ, lsvCacheBefor);
-                            showCachePosQue(taskQ.CacheSide);
-                            break;
-                        case CacheState.GetThenCache:
+                        showLabelQue(taskQ.CacheQ, lsvCacheBefor);
+                        showLabelQue(taskQ.LableUpQ, lsvLableUp);
+                        break;
+                    case CacheState.Cache:
+                        showLabelQue(taskQ.CacheQ, lsvCacheBefor);
+                        showCachePosQue(taskQ.CacheSide);
+                        break;
+                    case CacheState.GetThenCache:
+                        lock (taskQ.LableUpQ) {
                             taskQ.LableUpQ.Enqueue(outCacheLable);
+                        }
 
-                            showLabelQue(taskQ.LableUpQ, lsvLableUp);
-                            showLabelQue(taskQ.CacheQ, lsvCacheBefor);
-                            showCachePosQue(taskQ.CacheSide);
-                            break;
-                        case CacheState.CacheAndGet:
+                        showLabelQue(taskQ.LableUpQ, lsvLableUp);
+                        showLabelQue(taskQ.CacheQ, lsvCacheBefor);
+                        showCachePosQue(taskQ.CacheSide);
+                        break;
+                    case CacheState.CacheAndGet:
+                        lock (taskQ.LableUpQ) {
                             taskQ.LableUpQ.Enqueue(outCacheLable);
+                        }
 
-                            showLabelQue(taskQ.CacheQ, lsvCacheBefor);
-                            showCachePosQue(taskQ.CacheSide);
-                            break;
-                        case CacheState.GoThenGet:
+                        showLabelQue(taskQ.CacheQ, lsvCacheBefor);
+                        showCachePosQue(taskQ.CacheSide);
+                        break;
+                    case CacheState.GoThenGet:
+                        lock (taskQ.LableUpQ) {
                             taskQ.LableUpQ.Enqueue(code);
                             taskQ.LableUpQ.Enqueue(outCacheLable);
+                        }
 
-                            showLabelQue(taskQ.CacheQ, lsvCacheBefor);
-                            showLabelQue(taskQ.LableUpQ, lsvLableUp);
-                            showCachePosQue(taskQ.CacheSide);
-                            break;
-                        case CacheState.GetThenGo:
+                        showLabelQue(taskQ.CacheQ, lsvCacheBefor);
+                        showLabelQue(taskQ.LableUpQ, lsvLableUp);
+                        showCachePosQue(taskQ.CacheSide);
+                        break;
+                    case CacheState.GetThenGo:
+                        lock (taskQ.LableUpQ) {
                             taskQ.LableUpQ.Enqueue(outCacheLable);
                             taskQ.LableUpQ.Enqueue(code);
+                        }
 
-                            showLabelQue(taskQ.CacheQ, lsvCacheBefor);
-                            showLabelQue(taskQ.CacheQ, lsvCacheBefor);
-                            showCachePosQue(taskQ.CacheSide);
-                            break;
-                        default:
-                            break;
-                    }
-                } catch (Exception ex) {
-                    logOpt.Write($"!{ex}", LogType.BUFFER);
-                    logOpt.Write($"!code: {code.LCode}, outlable: {outCacheLable}, state: {nameof(cr.state)}, {cr.state}");
+                        showLabelQue(taskQ.CacheQ, lsvCacheBefor);
+                        showLabelQue(taskQ.CacheQ, lsvCacheBefor);
+                        showCachePosQue(taskQ.CacheSide);
+                        break;
+                    default:
+                        break;
                 }
-            } // end of lock.
+            } catch (Exception ex) {
+                logOpt.Write($"!{ex}", LogType.BUFFER);
+                logOpt.Write($"!code: {code.LCode}, outlable: {outCacheLable}, state: {nameof(cr.state)}, {cr.state}");
+            }
         }
 
         private string createShiftNo() {
