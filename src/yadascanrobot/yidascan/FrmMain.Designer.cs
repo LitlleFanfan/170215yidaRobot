@@ -84,8 +84,6 @@
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
             this.btnDelete = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem6 = new System.Windows.Forms.ToolStripSeparator();
-            this.btnClearAllRunningData = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.btnHelp = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
             this.btnBrowsePanels = new System.Windows.Forms.ToolStripMenuItem();
@@ -177,6 +175,7 @@
             this.panel8 = new System.Windows.Forms.Panel();
             this.panel7 = new System.Windows.Forms.Panel();
             this.panel11 = new System.Windows.Forms.Panel();
+            this.btnNewRun = new System.Windows.Forms.ToolStripButton();
             this.toolStrip1.SuspendLayout();
             this.grbHandwork.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -217,6 +216,7 @@
             this.toolStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.btnRun,
+            this.btnNewRun,
             this.btnStop,
             this.btnReset,
             this.btnSet,
@@ -225,7 +225,7 @@
             this.btnQuit});
             this.toolStrip1.Location = new System.Drawing.Point(3, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(902, 67);
+            this.toolStrip1.Size = new System.Drawing.Size(1095, 67);
             this.toolStrip1.TabIndex = 48;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -240,7 +240,7 @@
             this.btnRun.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnRun.Name = "btnRun";
             this.btnRun.Size = new System.Drawing.Size(160, 64);
-            this.btnRun.Text = "启动(&R)";
+            this.btnRun.Text = "任务继续(&R)";
             this.btnRun.Click += new System.EventHandler(this.btnRun_Click);
             // 
             // btnStop
@@ -310,8 +310,6 @@
             this.toolStripMenuItem2,
             this.btnDelete,
             this.toolStripMenuItem6,
-            this.btnClearAllRunningData,
-            this.toolStripMenuItem1,
             this.btnHelp,
             this.toolStripMenuItem4,
             this.btnBrowsePanels,
@@ -327,81 +325,69 @@
             // btnStartRobot
             // 
             this.btnStartRobot.Name = "btnStartRobot";
-            this.btnStartRobot.Size = new System.Drawing.Size(236, 30);
+            this.btnStartRobot.Size = new System.Drawing.Size(217, 30);
             this.btnStartRobot.Text = "启动机器人任务";
             this.btnStartRobot.Click += new System.EventHandler(this.btnStartRobot_Click);
             // 
             // btnStopRobot
             // 
             this.btnStopRobot.Name = "btnStopRobot";
-            this.btnStopRobot.Size = new System.Drawing.Size(236, 30);
+            this.btnStopRobot.Size = new System.Drawing.Size(217, 30);
             this.btnStopRobot.Text = "停止机器人任务";
             this.btnStopRobot.Click += new System.EventHandler(this.btnStopRobot_Click);
             // 
             // toolStripMenuItem3
             // 
             this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-            this.toolStripMenuItem3.Size = new System.Drawing.Size(233, 6);
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(214, 6);
             // 
             // btnWeighReset
             // 
             this.btnWeighReset.Name = "btnWeighReset";
-            this.btnWeighReset.Size = new System.Drawing.Size(236, 30);
+            this.btnWeighReset.Size = new System.Drawing.Size(217, 30);
             this.btnWeighReset.Text = "称重复位";
             this.btnWeighReset.Click += new System.EventHandler(this.btnWeighReset_Click);
             // 
             // toolStripMenuItem2
             // 
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(233, 6);
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(214, 6);
             // 
             // btnDelete
             // 
             this.btnDelete.Name = "btnDelete";
-            this.btnDelete.Size = new System.Drawing.Size(236, 30);
+            this.btnDelete.Size = new System.Drawing.Size(217, 30);
             this.btnDelete.Text = "删除标签(&D)";
             this.btnDelete.Click += new System.EventHandler(this.toolStripButton1_Click);
             // 
             // toolStripMenuItem6
             // 
             this.toolStripMenuItem6.Name = "toolStripMenuItem6";
-            this.toolStripMenuItem6.Size = new System.Drawing.Size(233, 6);
-            // 
-            // btnClearAllRunningData
-            // 
-            this.btnClearAllRunningData.Name = "btnClearAllRunningData";
-            this.btnClearAllRunningData.Size = new System.Drawing.Size(236, 30);
-            this.btnClearAllRunningData.Text = "清除运行队列数据";
-            this.btnClearAllRunningData.Click += new System.EventHandler(this.btnClearAllRunningData_Click);
-            // 
-            // toolStripMenuItem1
-            // 
-            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(233, 6);
+            this.toolStripMenuItem6.Size = new System.Drawing.Size(214, 6);
             // 
             // btnHelp
             // 
             this.btnHelp.Name = "btnHelp";
-            this.btnHelp.Size = new System.Drawing.Size(236, 30);
+            this.btnHelp.Size = new System.Drawing.Size(217, 30);
             this.btnHelp.Text = "帮助(&H)";
             this.btnHelp.Click += new System.EventHandler(this.btnHelp_Click);
             // 
             // toolStripMenuItem4
             // 
             this.toolStripMenuItem4.Name = "toolStripMenuItem4";
-            this.toolStripMenuItem4.Size = new System.Drawing.Size(233, 6);
+            this.toolStripMenuItem4.Size = new System.Drawing.Size(214, 6);
             // 
             // btnBrowsePanels
             // 
             this.btnBrowsePanels.Name = "btnBrowsePanels";
-            this.btnBrowsePanels.Size = new System.Drawing.Size(236, 30);
+            this.btnBrowsePanels.Size = new System.Drawing.Size(217, 30);
             this.btnBrowsePanels.Text = "板状态浏览";
             this.btnBrowsePanels.Click += new System.EventHandler(this.btnBrowsePanels_Click);
             // 
             // btnTestPlc
             // 
             this.btnTestPlc.Name = "btnTestPlc";
-            this.btnTestPlc.Size = new System.Drawing.Size(236, 30);
+            this.btnTestPlc.Size = new System.Drawing.Size(217, 30);
             this.btnTestPlc.Text = "测试";
             this.btnTestPlc.Click += new System.EventHandler(this.btnTestPlc_Click);
             // 
@@ -416,7 +402,7 @@
             this.toolStripMenuItem5,
             this.btnStartAllSignals});
             this.btnSignalGen.Name = "btnSignalGen";
-            this.btnSignalGen.Size = new System.Drawing.Size(236, 30);
+            this.btnSignalGen.Size = new System.Drawing.Size(217, 30);
             this.btnSignalGen.Text = "模拟信号发生";
             // 
             // btnSignalWeigh
@@ -488,7 +474,7 @@
             this.grbHandwork.Margin = new System.Windows.Forms.Padding(5);
             this.grbHandwork.Name = "grbHandwork";
             this.grbHandwork.Padding = new System.Windows.Forms.Padding(5);
-            this.grbHandwork.Size = new System.Drawing.Size(291, 131);
+            this.grbHandwork.Size = new System.Drawing.Size(484, 131);
             this.grbHandwork.TabIndex = 51;
             this.grbHandwork.TabStop = false;
             this.grbHandwork.Text = "手动操作";
@@ -504,7 +490,7 @@
             this.panel1.Location = new System.Drawing.Point(16, 28);
             this.panel1.Margin = new System.Windows.Forms.Padding(4);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(266, 95);
+            this.panel1.Size = new System.Drawing.Size(459, 95);
             this.panel1.TabIndex = 8;
             // 
             // txtLableCode1
@@ -518,7 +504,7 @@
             this.txtLableCode1.Margin = new System.Windows.Forms.Padding(4);
             this.txtLableCode1.Multiline = true;
             this.txtLableCode1.Name = "txtLableCode1";
-            this.txtLableCode1.Size = new System.Drawing.Size(69, 62);
+            this.txtLableCode1.Size = new System.Drawing.Size(262, 62);
             this.txtLableCode1.TabIndex = 1;
             this.txtLableCode1.Text = "请将光标放置到这里扫描";
             this.txtLableCode1.Enter += new System.EventHandler(this.txtLableCode1_Enter);
@@ -546,7 +532,7 @@
             this.lsvLog.Location = new System.Drawing.Point(0, 0);
             this.lsvLog.Margin = new System.Windows.Forms.Padding(0);
             this.lsvLog.Name = "lsvLog";
-            this.lsvLog.Size = new System.Drawing.Size(629, 196);
+            this.lsvLog.Size = new System.Drawing.Size(767, 196);
             this.lsvLog.TabIndex = 2;
             // 
             // lsvRobotStackLog
@@ -575,7 +561,7 @@
             this.statusStrip1.Location = new System.Drawing.Point(3, 582);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Padding = new System.Windows.Forms.Padding(1, 0, 18, 0);
-            this.statusStrip1.Size = new System.Drawing.Size(902, 26);
+            this.statusStrip1.Size = new System.Drawing.Size(1095, 26);
             this.statusStrip1.TabIndex = 53;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -620,7 +606,7 @@
             // 
             this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
             this.toolStripStatusLabel2.Padding = new System.Windows.Forms.Padding(10, 0, 10, 0);
-            this.toolStripStatusLabel2.Size = new System.Drawing.Size(477, 21);
+            this.toolStripStatusLabel2.Size = new System.Drawing.Size(670, 21);
             this.toolStripStatusLabel2.Spring = true;
             // 
             // lblTimer
@@ -753,7 +739,7 @@
             this.pictureBox1.Location = new System.Drawing.Point(1133, 0);
             this.pictureBox1.Margin = new System.Windows.Forms.Padding(5);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(1770, 67);
+            this.pictureBox1.Size = new System.Drawing.Size(1963, 67);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox1.TabIndex = 50;
             this.pictureBox1.TabStop = false;
@@ -769,7 +755,7 @@
             this.tbcLogs.Margin = new System.Windows.Forms.Padding(0);
             this.tbcLogs.Name = "tbcLogs";
             this.tbcLogs.SelectedIndex = 0;
-            this.tbcLogs.Size = new System.Drawing.Size(637, 229);
+            this.tbcLogs.Size = new System.Drawing.Size(775, 229);
             this.tbcLogs.TabIndex = 55;
             // 
             // tbpScanLog
@@ -778,7 +764,7 @@
             this.tbpScanLog.Location = new System.Drawing.Point(4, 29);
             this.tbpScanLog.Margin = new System.Windows.Forms.Padding(0);
             this.tbpScanLog.Name = "tbpScanLog";
-            this.tbpScanLog.Size = new System.Drawing.Size(629, 196);
+            this.tbpScanLog.Size = new System.Drawing.Size(767, 196);
             this.tbpScanLog.TabIndex = 0;
             this.tbpScanLog.Text = "采集日志";
             this.tbpScanLog.UseVisualStyleBackColor = true;
@@ -1039,7 +1025,7 @@
             this.columnHeader1});
             this.lsvLableCode.Location = new System.Drawing.Point(0, 32);
             this.lsvLableCode.Name = "lsvLableCode";
-            this.lsvLableCode.Size = new System.Drawing.Size(261, 197);
+            this.lsvLableCode.Size = new System.Drawing.Size(316, 197);
             this.lsvLableCode.TabIndex = 4;
             this.lsvLableCode.UseCompatibleStateImageBehavior = false;
             this.lsvLableCode.View = System.Windows.Forms.View.Details;
@@ -1151,7 +1137,7 @@
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.Controls.Add(this.tableLayoutPanel1);
-            this.splitContainer2.Size = new System.Drawing.Size(902, 376);
+            this.splitContainer2.Size = new System.Drawing.Size(1095, 376);
             this.splitContainer2.SplitterDistance = 229;
             this.splitContainer2.TabIndex = 59;
             // 
@@ -1169,8 +1155,8 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.tbcLogs);
-            this.splitContainer1.Size = new System.Drawing.Size(902, 229);
-            this.splitContainer1.SplitterDistance = 261;
+            this.splitContainer1.Size = new System.Drawing.Size(1095, 229);
+            this.splitContainer1.SplitterDistance = 316;
             this.splitContainer1.TabIndex = 59;
             // 
             // label1
@@ -1181,7 +1167,7 @@
             this.label1.Location = new System.Drawing.Point(0, 0);
             this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(261, 32);
+            this.label1.Size = new System.Drawing.Size(316, 32);
             this.label1.TabIndex = 58;
             this.label1.Text = "数据";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -1203,7 +1189,7 @@
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(902, 143);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(1095, 143);
             this.tableLayoutPanel1.TabIndex = 56;
             // 
             // panel2
@@ -1319,7 +1305,7 @@
             this.panel6.Controls.Add(this.label3);
             this.panel6.Controls.Add(this.lsvLableUp);
             this.panel6.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel6.Location = new System.Drawing.Point(2, 0);
+            this.panel6.Location = new System.Drawing.Point(195, 0);
             this.panel6.Margin = new System.Windows.Forms.Padding(0);
             this.panel6.Name = "panel6";
             this.panel6.Size = new System.Drawing.Size(300, 143);
@@ -1335,7 +1321,7 @@
             this.tableLayoutPanel4.Controls.Add(this.panel7, 0, 0);
             this.tableLayoutPanel4.Controls.Add(this.panel11, 1, 1);
             this.tableLayoutPanel4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel4.Location = new System.Drawing.Point(302, 0);
+            this.tableLayoutPanel4.Location = new System.Drawing.Point(495, 0);
             this.tableLayoutPanel4.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayoutPanel4.Name = "tableLayoutPanel4";
             this.tableLayoutPanel4.RowCount = 2;
@@ -1398,11 +1384,25 @@
             this.panel11.Size = new System.Drawing.Size(300, 72);
             this.panel11.TabIndex = 3;
             // 
+            // btnNewRun
+            // 
+            this.btnNewRun.AutoSize = false;
+            this.btnNewRun.BackColor = System.Drawing.Color.GreenYellow;
+            this.btnNewRun.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.btnNewRun.Font = new System.Drawing.Font("微软雅黑", 14F);
+            this.btnNewRun.ForeColor = System.Drawing.Color.Honeydew;
+            this.btnNewRun.Image = ((System.Drawing.Image)(resources.GetObject("btnNewRun.Image")));
+            this.btnNewRun.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnNewRun.Name = "btnNewRun";
+            this.btnNewRun.Size = new System.Drawing.Size(160, 64);
+            this.btnNewRun.Text = "新任务(&R)";
+            this.btnNewRun.Click += new System.EventHandler(this.btnNewRun_Click);
+            // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 19F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(908, 608);
+            this.ClientSize = new System.Drawing.Size(1101, 608);
             this.Controls.Add(this.splitContainer2);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.grbHandwork);
@@ -1500,7 +1500,6 @@
         private System.Windows.Forms.Label lbRobotState;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
         private System.Windows.Forms.ToolStripMenuItem btnDelete;
-        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem btnHelp;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem3;
         private System.Windows.Forms.ToolStripMenuItem btnWeighReset;
@@ -1553,7 +1552,6 @@
         private System.Windows.Forms.ListView lsvWeigh;
         private System.Windows.Forms.ColumnHeader columnHeader8;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem6;
-        private System.Windows.Forms.ToolStripMenuItem btnClearAllRunningData;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Panel panel2;
@@ -1570,6 +1568,7 @@
         private System.Windows.Forms.Panel panel7;
         private System.Windows.Forms.Panel panel11;
         private System.Windows.Forms.ListBox lsvBufferLog;
+        private System.Windows.Forms.ToolStripButton btnNewRun;
     }
 }
 

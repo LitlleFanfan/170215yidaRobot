@@ -354,6 +354,11 @@ namespace yidascan.DataAccess {
             return DataAccess.CreateDataAccess.sa.NonQuery(sql, sp);
         }
 
+        public static bool SetAllPanelsFinished() {
+            var sql = "update Panel set Status=5 where Status!=5";
+            return DataAccess.CreateDataAccess.sa.NonQuery(sql, new SqlParameter[] { });
+        }
+
         public static decimal GetWidth(string panelNo, int floorIndex) {
             var sql = "select sum(Diameter) from LableCode where PanelNo=@PanelNo and FloorIndex%2=@FloorIndex%2 and FloorIndex<>0";
             var sp = new SqlParameter[]{
@@ -560,7 +565,7 @@ order by floorindex desc;";
 
             var sp = new SqlParameter[]{
                 new SqlParameter("@PanelNo",panelNo),
-                new SqlParameter("@Floor",currFloor-1)};
+                new SqlParameter("@Floor",currFloor-1)};//此处应该传进来当前层的上一层层号，建议修改
             var dt = DataAccess.CreateDataAccess.sa.Query(sql, sp);
             if (dt == null || dt.Rows.Count < 1) {
                 return 0;

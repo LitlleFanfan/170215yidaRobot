@@ -261,7 +261,7 @@ namespace yidascan {
 #if DEBUG
             return new FakeRobotJob(ip, jobname);
 #else
-            robot = new RobotHelper(ip, jobname);
+            return new RobotHelper(ip, jobname);
 #endif
         }
 
@@ -332,7 +332,7 @@ namespace yidascan {
                 btnSet.Enabled = !isRun;
                 btnRun.Enabled = !isRun;
                 btnQuit.Enabled = !isRun;
-                btnClearAllRunningData.Enabled = !isRun;
+                btnNewRun.Enabled = !isRun;
 
                 dtpDate.Enabled = !isRun;
                 cmbShiftNo.Enabled = !isRun;
@@ -1445,15 +1445,7 @@ namespace yidascan {
                 view.Items.Clear();
             }
         }
-
-        private void btnClearAllRunningData_Click(object sender, EventArgs e) {
-            if (taskQ != null) {
-                taskQ.clearAll();
-                clearAllTaskViews();
-                ShowTaskQ();
-            }
-        }
-
+        
         private static void showListInView(IList<string> lst, ListView view) {
             var l = new List<ListViewItem>();
             foreach (var item in lst) {
@@ -1497,6 +1489,22 @@ namespace yidascan {
                 lst = que.Select(x => x.brief()).Reverse().ToList();
             }
             showListInView(lst, view);
+        }
+
+        private void ClearAllRunningData() {
+            if (taskQ != null) {
+                taskQ.clearAll();
+                clearAllTaskViews();
+                ShowTaskQ();
+            }
+        }
+
+        private void btnNewRun_Click(object sender, EventArgs e) {
+            logOpt.Write("启动新任务。");
+            LableCode.SetAllPanelsFinished();
+            ClearAllRunningData();
+            logOpt.Write("所有板设置为完成状态；清除所有队列。");//AC区无法设置完成。
+            btnRun_Click(sender, e);
         }
     }
 }
