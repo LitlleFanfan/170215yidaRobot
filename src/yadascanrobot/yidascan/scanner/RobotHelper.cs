@@ -118,7 +118,7 @@ namespace yidascan {
         public PanelState PnlState { get; set; }
 
         public string brief() {
-            return $"{LabelCode} {ToLocation}";
+            return $"{LabelCode} {ToLocation} {diameter}";
         }
     }
 
