@@ -86,6 +86,9 @@ namespace yidascan {
         }
     }
 
+    /// <summary>
+    /// 仅用于测试
+    /// </summary>
    class FakeOpcClient: IOpcClient {
         OPCParam param;
         private Random rand = new Random();
