@@ -637,6 +637,7 @@ namespace yidascan {
                     }
                 } catch (Exception ex) {
                     logOpt.Write($"!{ex}", LogType.BUFFER);
+                    logOpt.Write($"!code: {code.LCode}, outlable: {outCacheLable}, state: {nameof(cr.state)}, {cr.state}");
                 }
             } // end of lock.
         }
