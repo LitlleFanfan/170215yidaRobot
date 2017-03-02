@@ -760,16 +760,9 @@ namespace yidascan {
                                 var code = taskQ.GetLableUpQ(); if (code != null) {
                                     logOpt.Write(string.Format("收到标签朝上来料信号。号码: {0}", code.LCode), LogType.ROLL_QUEUE);
 
-                                    // 写plc直径和分道号。
+                                    // 写plc直径和分道号。1~5号板走1道， 其他走2道。
+                                    PlcHelper.WriteLabelUpData(RobotOpcClient, code.Diameter, int.Parse(code.ParseLocationNo()) < 6 ? RollCatchChannel.channel_1 : RollCatchChannel.channel_2);
                           
-                                    RobotOpcClient.Write(PlcSlot.LABEL_UP_CATCH_DIAMETER, code.Diameter);
-
-                                    // 1~5号板走1道， 其他走2道。
-                                    var channelno = int.Parse(code.ParseLocationNo()) < 6 ? 1 : 2;
-                                    RobotOpcClient.Write(PlcSlot.LABEL_UP_CATCH_CHANNEL, channelno);
-                                    
-                                    RobotOpcClient.Write(PlcSlot.LABEL_UP_SIGNAL, false);
-
                                     #region 临时称重信号问题排除
                                     logOpt.Write($"0ms当前OPC标签朝上来料信号状态：{ RobotOpcClient.ReadBool(PlcSlot.LABEL_UP_SIGNAL)}", LogType.ROLL_QUEUE);
                                     Thread.Sleep(20);

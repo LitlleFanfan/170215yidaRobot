@@ -58,7 +58,7 @@ namespace yidascan {
         /// <param name="client"></param>
         /// <param name="diameter">直径</param>
         /// <param name="channel">去向, 1 or 2.</param>
-        public static void WriteLabelUpData(IOpcClient client, int diameter, RollCatchChannel channel) {
+        public static void WriteLabelUpData(IOpcClient client, decimal diameter, RollCatchChannel channel) {
             // diameter单位是毫米。
             client.Write(PlcSlot.LABEL_UP_CATCH_DIAMETER, diameter);
             client.Write(PlcSlot.LABEL_UP_CATCH_CHANNEL, channel);
