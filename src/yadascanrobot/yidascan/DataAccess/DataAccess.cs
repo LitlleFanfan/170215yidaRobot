@@ -220,7 +220,8 @@ namespace yidascan.DataAccess {
         private const string CONNECTION_S = clsSetting.ConStr; // @"server=AIOVQOPOOHCLF4X\SQL2008R2;database=tt2;uid=sa;pwd=sasa;Integrated Security=True";
 #endif
 #if DEBUG
-        private const string CONNECTION_S = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=yada_stacking;Integrated Security=True;Persist Security Info=False;Pooling=False;MultipleActiveResultSets=False;Encrypt=False;TrustServerCertificate=True";
+        // private const string CONNECTION_S = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=yada_stacking;Integrated Security=True;Persist Security Info=False;Pooling=False;MultipleActiveResultSets=False;Encrypt=False;TrustServerCertificate=True";
+        private const string CONNECTION_S = @"server=.;database=yada_stacking;uid=sa;pwd=sasa;Integrated Security=True";
 #endif
         //public DataAccess() {
         //    con = new SqlConnection(Com);

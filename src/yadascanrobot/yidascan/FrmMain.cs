@@ -358,7 +358,7 @@ namespace yidascan {
             const string CAMERA_1 = "1#相机";
             if (OpenPort(ref nscan1, CAMERA_1, FrmSet.pcfgScan1)) {
                 nscan1.logger = Logger;
-                nscan1.OnDataArrived = nscan1_OnDataArrived;
+                nscan1.OnDataArrived = nscan_OnDataArrived;
                 // 启动相机读取线程。
                 nscan1._StartJob();
                 lblScanner.BackColor = Color.LightGreen;
@@ -788,13 +788,9 @@ namespace yidascan {
             });
         }
 
-        void nscan1_OnDataArrived(string type, string code) {
-            nscan_OnDataArrived(type, code, 1);
-        }
-
-        void nscan2_OnDataArrived(string type, string code) {
-            nscan_OnDataArrived(type, code, 2);
-        }
+        //void nscan1_OnDataArrived(string type, string code) {
+        //    nscan_OnDataArrived(type, code, 1);
+        //}
 
         void nscan_OnDataArrived(string type, string code, int scanNo) {
             if (code == "ERROR" || code.Length < 12) { return; }

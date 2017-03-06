@@ -23,7 +23,7 @@ namespace ProduceComm.Scanner {
         public event ErrEventHandler OnError;
 
         public Action<string> logger;
-        public Action<string, string> OnDataArrived;
+        public Action<string, string, int> OnDataArrived;
 
         public NormalScan(string devicename, ICommunication _icom) {
             this.name = devicename;
@@ -66,7 +66,7 @@ namespace ProduceComm.Scanner {
                 while (!this.stoped) {
                     var s = tryReadLine();
                     if (!string.IsNullOrEmpty(s)) {
-                        OnDataArrived("", s);
+                        OnDataArrived("", s, 1);
                     }
                     Thread.Sleep(1000);
                 }
