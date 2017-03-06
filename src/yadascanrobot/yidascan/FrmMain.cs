@@ -274,7 +274,7 @@ namespace yidascan {
                     robot.setup(logOpt.Write, RobotOpcClient, opcParam);
 
                     if (robot.IsConnected()) {
-                        lblRobot.BackColor = Color.LightGreen;
+                        this.Invoke((Action)(() => { lblRobot.BackColor = Color.LightGreen; }));
 
                         SetRobotTip(true);
                         logOpt.Write("开始机器人线程。", LogType.NORMAL);
@@ -762,7 +762,7 @@ namespace yidascan {
 
                                     // 写plc直径和分道号。1~5号板走1道， 其他走2道。
                                     PlcHelper.WriteLabelUpData(RobotOpcClient, code.Diameter, int.Parse(code.ParseLocationNo()) < 6 ? RollCatchChannel.channel_1 : RollCatchChannel.channel_2);
-                          
+
                                     #region 临时称重信号问题排除
                                     logOpt.Write($"0ms当前OPC标签朝上来料信号状态：{ RobotOpcClient.ReadBool(PlcSlot.LABEL_UP_SIGNAL)}", LogType.ROLL_QUEUE);
                                     Thread.Sleep(20);
@@ -922,13 +922,17 @@ namespace yidascan {
 
         private void SetRobotTip(bool run, string msg = "") {
             if (run) {
-                lbRobotState.ForeColor = Color.Green;
-                lbRobotState.Text = string.IsNullOrEmpty(msg) ? "机器人已启动" : msg;
-                lblRobot.BackColor = Color.LightGreen;
+                this.Invoke((Action)(() => {
+                    lbRobotState.ForeColor = Color.Green;
+                    lbRobotState.Text = string.IsNullOrEmpty(msg) ? "机器人已启动" : msg;
+                    lblRobot.BackColor = Color.LightGreen;
+                }));
             } else {
-                lbRobotState.ForeColor = Color.Red;
-                lbRobotState.Text = string.IsNullOrEmpty(msg) ? "机器人未启动" : msg;
-                lblRobot.BackColor = Color.LightGray;
+                this.Invoke((Action)(() => {
+                    lbRobotState.ForeColor = Color.Red;
+                    lbRobotState.Text = string.IsNullOrEmpty(msg) ? "机器人未启动" : msg;
+                    lblRobot.BackColor = Color.LightGray;
+                }));
             }
         }
 
@@ -1448,7 +1452,7 @@ namespace yidascan {
                 view.Items.Clear();
             }
         }
-        
+
         private static void showListInView(IList<string> lst, ListView view) {
             var l = new List<ListViewItem>();
             foreach (var item in lst) {

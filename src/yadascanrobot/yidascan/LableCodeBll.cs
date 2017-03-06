@@ -224,7 +224,8 @@ namespace yidascan {
                 if (lc2 != null) {
                     if (LableCode.Update(fp, pinfo, lc, lc2))
                         outCacheLable = lc2;
-                    cState = lc.FloorIndex == 0 ? CacheState.GetThenCache : CacheState.GoThenGet;
+                    cState = lc.FloorIndex == 0 ? CacheState.GetThenCache : 
+                        (lc.Diameter < lc2.Diameter ? CacheState.GoThenGet : CacheState.GetThenGo);
                 } else {
                     if (LableCode.Update(fp, pinfo, lc))
                         cState = lc.FloorIndex == 0 ? CacheState.Cache : CacheState.Go;
