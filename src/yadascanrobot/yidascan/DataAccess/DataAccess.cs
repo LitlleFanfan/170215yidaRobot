@@ -21,7 +21,7 @@ namespace yidascan.DataAccess {
         /// </summary>
         NLog.Logger loger = NLog.LogManager.GetLogger("general");
 #if !DEBUG
-        public string Com = clsSetting.ConStr; // @"server=AIOVQOPOOHCLF4X\SQL2008R2;database=tt2;uid=sa;pwd=sasa;Integrated Security=True";
+        public string Com = ProduceComm.clsSetting.ConStr; // @"server=AIOVQOPOOHCLF4X\SQL2008R2;database=tt2;uid=sa;pwd=sasa;Integrated Security=True";
 #endif
 #if DEBUG
         public string Com = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=yada_stacking;Integrated Security=True;Persist Security Info=False;Pooling=False;MultipleActiveResultSets=False;Encrypt=False;TrustServerCertificate=True";
@@ -217,7 +217,7 @@ namespace yidascan.DataAccess {
         /// </summary>
         NLog.Logger loger = NLog.LogManager.GetLogger("general");
 #if !DEBUG
-        private const string CONNECTION_S = clsSetting.ConStr; // @"server=AIOVQOPOOHCLF4X\SQL2008R2;database=tt2;uid=sa;pwd=sasa;Integrated Security=True";
+        private string CONNECTION_S = ProduceComm.clsSetting.ConStr; // @"server=AIOVQOPOOHCLF4X\SQL2008R2;database=tt2;uid=sa;pwd=sasa;Integrated Security=True";
 #endif
 #if DEBUG
         private const string CONNECTION_S = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=yada_stacking;Integrated Security=True;Persist Security Info=False;Pooling=False;MultipleActiveResultSets=False;Encrypt=False;TrustServerCertificate=True";
