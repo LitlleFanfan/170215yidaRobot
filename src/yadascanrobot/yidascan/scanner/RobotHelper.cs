@@ -343,7 +343,6 @@ namespace yidascan {
                         if (JobTask(ref isrun, roll)) {
                             FrmMain.taskQ.RobotRollAQ.Dequeue();
                             FrmMain.showRobotQue(FrmMain.taskQ.RobotRollAQ, la);
-                            Thread.Sleep(OPCClient.DELAY);
                         }
                     }
                 }
