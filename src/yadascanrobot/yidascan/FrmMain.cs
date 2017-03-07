@@ -1249,6 +1249,7 @@ namespace yidascan {
         /// 等待为OPC允许删除信号，然后删除号码，最后信号复位。
         /// </summary>
         /// <param name="fullLabelCode">长度12位的号码</param>
+        [Obsolete("use plchelper.WriteDeletedLabelToOpc instead.")]
         public void WriteDeletedLabelToOpc(string fullLabelCode) {
             //等PLC做了此功能再放出来
             //string signal = OPCRead(opcParam.DeleteLCode.Signal).ToString();

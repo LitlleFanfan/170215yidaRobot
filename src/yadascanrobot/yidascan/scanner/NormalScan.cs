@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO.Ports;
-using System.Net;
-using System.Net.Sockets;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,8 +16,6 @@ namespace ProduceComm.Scanner {
 
         private ICommunication icom;
 
-        public event ErrEventHandler OnError;
-
         public Action<string> logger;
         public Action<string, string, int> OnDataArrived;
 
@@ -32,30 +26,25 @@ namespace ProduceComm.Scanner {
         }
 
         public bool Open() {
-            bool re = false;
+            var re = false;
             try {
                 re = icom.Open();
-            } catch (Exception ex) {
-                OnError(new Exception("创建连接失败！", ex));
+            } catch (Exception) {
                 re = false;
             }
             return re;
         }
 
         public void Close() {
-            try {
-                Thread.Sleep(1);
-                icom.Close();
-            } catch (Exception ex) {
-                OnError(new Exception("关闭连接失败！", ex));
-            }
+            Thread.Sleep(1);
+            icom.Close();
         }
 
         private string tryReadLine() {
             try {
                 var data = icom.Read(1024);
                 return Encoding.Default.GetString(data);
-            } catch (Exception ex) {
+            } catch (Exception) {
                 return string.Empty;
             }
         }

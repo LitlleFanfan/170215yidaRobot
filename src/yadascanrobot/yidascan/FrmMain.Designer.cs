@@ -72,6 +72,7 @@
             "20                                   "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.Window, null);
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.btnRun = new System.Windows.Forms.ToolStripButton();
+            this.btnNewRun = new System.Windows.Forms.ToolStripButton();
             this.btnStop = new System.Windows.Forms.ToolStripButton();
             this.btnReset = new System.Windows.Forms.ToolStripButton();
             this.btnSet = new System.Windows.Forms.ToolStripButton();
@@ -175,7 +176,6 @@
             this.panel8 = new System.Windows.Forms.Panel();
             this.panel7 = new System.Windows.Forms.Panel();
             this.panel11 = new System.Windows.Forms.Panel();
-            this.btnNewRun = new System.Windows.Forms.ToolStripButton();
             this.toolStrip1.SuspendLayout();
             this.grbHandwork.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -225,7 +225,7 @@
             this.btnQuit});
             this.toolStrip1.Location = new System.Drawing.Point(3, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(1095, 67);
+            this.toolStrip1.Size = new System.Drawing.Size(1214, 67);
             this.toolStrip1.TabIndex = 48;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -234,7 +234,7 @@
             this.btnRun.AutoSize = false;
             this.btnRun.BackColor = System.Drawing.Color.LimeGreen;
             this.btnRun.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.btnRun.Font = new System.Drawing.Font("微软雅黑", 14F);
+            this.btnRun.Font = new System.Drawing.Font("Microsoft YaHei", 14F);
             this.btnRun.ForeColor = System.Drawing.Color.Honeydew;
             this.btnRun.Image = ((System.Drawing.Image)(resources.GetObject("btnRun.Image")));
             this.btnRun.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -243,13 +243,27 @@
             this.btnRun.Text = "任务继续(&R)";
             this.btnRun.Click += new System.EventHandler(this.btnRun_Click);
             // 
+            // btnNewRun
+            // 
+            this.btnNewRun.AutoSize = false;
+            this.btnNewRun.BackColor = System.Drawing.Color.GreenYellow;
+            this.btnNewRun.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.btnNewRun.Font = new System.Drawing.Font("Microsoft YaHei", 14F);
+            this.btnNewRun.ForeColor = System.Drawing.Color.Honeydew;
+            this.btnNewRun.Image = ((System.Drawing.Image)(resources.GetObject("btnNewRun.Image")));
+            this.btnNewRun.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnNewRun.Name = "btnNewRun";
+            this.btnNewRun.Size = new System.Drawing.Size(160, 64);
+            this.btnNewRun.Text = "新任务(&R)";
+            this.btnNewRun.Click += new System.EventHandler(this.btnNewRun_Click);
+            // 
             // btnStop
             // 
             this.btnStop.AutoSize = false;
             this.btnStop.BackColor = System.Drawing.Color.Red;
             this.btnStop.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.btnStop.Enabled = false;
-            this.btnStop.Font = new System.Drawing.Font("微软雅黑", 14.25F);
+            this.btnStop.Font = new System.Drawing.Font("Microsoft YaHei", 14.25F);
             this.btnStop.ForeColor = System.Drawing.Color.White;
             this.btnStop.Image = ((System.Drawing.Image)(resources.GetObject("btnStop.Image")));
             this.btnStop.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -263,7 +277,7 @@
             this.btnReset.AutoSize = false;
             this.btnReset.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
             this.btnReset.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.btnReset.Font = new System.Drawing.Font("微软雅黑", 14F);
+            this.btnReset.Font = new System.Drawing.Font("Microsoft YaHei", 14F);
             this.btnReset.Image = ((System.Drawing.Image)(resources.GetObject("btnReset.Image")));
             this.btnReset.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnReset.Name = "btnReset";
@@ -276,7 +290,7 @@
             this.btnSet.AutoSize = false;
             this.btnSet.BackColor = System.Drawing.Color.DeepSkyBlue;
             this.btnSet.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.btnSet.Font = new System.Drawing.Font("微软雅黑", 14F);
+            this.btnSet.Font = new System.Drawing.Font("Microsoft YaHei", 14F);
             this.btnSet.Image = ((System.Drawing.Image)(resources.GetObject("btnSet.Image")));
             this.btnSet.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnSet.Name = "btnSet";
@@ -289,7 +303,7 @@
             this.btnLog.AutoSize = false;
             this.btnLog.BackColor = System.Drawing.Color.CornflowerBlue;
             this.btnLog.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.btnLog.Font = new System.Drawing.Font("微软雅黑", 14F);
+            this.btnLog.Font = new System.Drawing.Font("Microsoft YaHei", 14F);
             this.btnLog.Image = ((System.Drawing.Image)(resources.GetObject("btnLog.Image")));
             this.btnLog.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnLog.Name = "btnLog";
@@ -315,7 +329,7 @@
             this.btnBrowsePanels,
             this.btnTestPlc,
             this.btnSignalGen});
-            this.btnOther.Font = new System.Drawing.Font("微软雅黑", 14F);
+            this.btnOther.Font = new System.Drawing.Font("Microsoft YaHei", 14F);
             this.btnOther.Image = ((System.Drawing.Image)(resources.GetObject("btnOther.Image")));
             this.btnOther.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnOther.Name = "btnOther";
@@ -457,7 +471,7 @@
             this.btnQuit.AutoSize = false;
             this.btnQuit.BackColor = System.Drawing.Color.Orange;
             this.btnQuit.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.btnQuit.Font = new System.Drawing.Font("微软雅黑", 14F);
+            this.btnQuit.Font = new System.Drawing.Font("Microsoft YaHei", 14F);
             this.btnQuit.Image = ((System.Drawing.Image)(resources.GetObject("btnQuit.Image")));
             this.btnQuit.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnQuit.Name = "btnQuit";
@@ -474,7 +488,7 @@
             this.grbHandwork.Margin = new System.Windows.Forms.Padding(5);
             this.grbHandwork.Name = "grbHandwork";
             this.grbHandwork.Padding = new System.Windows.Forms.Padding(5);
-            this.grbHandwork.Size = new System.Drawing.Size(484, 131);
+            this.grbHandwork.Size = new System.Drawing.Size(603, 131);
             this.grbHandwork.TabIndex = 51;
             this.grbHandwork.TabStop = false;
             this.grbHandwork.Text = "手动操作";
@@ -490,7 +504,7 @@
             this.panel1.Location = new System.Drawing.Point(16, 28);
             this.panel1.Margin = new System.Windows.Forms.Padding(4);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(459, 95);
+            this.panel1.Size = new System.Drawing.Size(578, 95);
             this.panel1.TabIndex = 8;
             // 
             // txtLableCode1
@@ -498,13 +512,13 @@
             this.txtLableCode1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtLableCode1.Font = new System.Drawing.Font("宋体", 24F);
+            this.txtLableCode1.Font = new System.Drawing.Font("SimSun", 24F);
             this.txtLableCode1.ForeColor = System.Drawing.Color.DarkRed;
             this.txtLableCode1.Location = new System.Drawing.Point(183, 18);
             this.txtLableCode1.Margin = new System.Windows.Forms.Padding(4);
             this.txtLableCode1.Multiline = true;
             this.txtLableCode1.Name = "txtLableCode1";
-            this.txtLableCode1.Size = new System.Drawing.Size(262, 62);
+            this.txtLableCode1.Size = new System.Drawing.Size(381, 62);
             this.txtLableCode1.TabIndex = 1;
             this.txtLableCode1.Text = "请将光标放置到这里扫描";
             this.txtLableCode1.Enter += new System.EventHandler(this.txtLableCode1_Enter);
@@ -514,7 +528,7 @@
             // label5
             // 
             this.label5.BackColor = System.Drawing.Color.Moccasin;
-            this.label5.Font = new System.Drawing.Font("宋体", 24F);
+            this.label5.Font = new System.Drawing.Font("SimSun", 24F);
             this.label5.Location = new System.Drawing.Point(14, 18);
             this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label5.Name = "label5";
@@ -526,13 +540,13 @@
             // lsvLog
             // 
             this.lsvLog.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lsvLog.Font = new System.Drawing.Font("宋体", 14F);
+            this.lsvLog.Font = new System.Drawing.Font("SimSun", 14F);
             this.lsvLog.FormattingEnabled = true;
             this.lsvLog.ItemHeight = 19;
             this.lsvLog.Location = new System.Drawing.Point(0, 0);
             this.lsvLog.Margin = new System.Windows.Forms.Padding(0);
             this.lsvLog.Name = "lsvLog";
-            this.lsvLog.Size = new System.Drawing.Size(767, 196);
+            this.lsvLog.Size = new System.Drawing.Size(852, 196);
             this.lsvLog.TabIndex = 2;
             // 
             // lsvRobotStackLog
@@ -543,12 +557,12 @@
             this.lsvRobotStackLog.Margin = new System.Windows.Forms.Padding(0);
             this.lsvRobotStackLog.MinimumSize = new System.Drawing.Size(250, 4);
             this.lsvRobotStackLog.Name = "lsvRobotStackLog";
-            this.lsvRobotStackLog.Size = new System.Drawing.Size(629, 203);
+            this.lsvRobotStackLog.Size = new System.Drawing.Size(767, 203);
             this.lsvRobotStackLog.TabIndex = 4;
             // 
             // statusStrip1
             // 
-            this.statusStrip1.Font = new System.Drawing.Font("微软雅黑", 12F);
+            this.statusStrip1.Font = new System.Drawing.Font("Microsoft YaHei", 12F);
             this.statusStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel1,
@@ -561,7 +575,7 @@
             this.statusStrip1.Location = new System.Drawing.Point(3, 582);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Padding = new System.Windows.Forms.Padding(1, 0, 18, 0);
-            this.statusStrip1.Size = new System.Drawing.Size(1095, 26);
+            this.statusStrip1.Size = new System.Drawing.Size(1214, 26);
             this.statusStrip1.TabIndex = 53;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -606,7 +620,7 @@
             // 
             this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
             this.toolStripStatusLabel2.Padding = new System.Windows.Forms.Padding(10, 0, 10, 0);
-            this.toolStripStatusLabel2.Size = new System.Drawing.Size(670, 21);
+            this.toolStripStatusLabel2.Size = new System.Drawing.Size(789, 21);
             this.toolStripStatusLabel2.Spring = true;
             // 
             // lblTimer
@@ -641,7 +655,7 @@
             // lbRobotState
             // 
             this.lbRobotState.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
-            this.lbRobotState.Font = new System.Drawing.Font("黑体", 20F);
+            this.lbRobotState.Font = new System.Drawing.Font("SimHei", 20F);
             this.lbRobotState.Location = new System.Drawing.Point(260, 89);
             this.lbRobotState.Name = "lbRobotState";
             this.lbRobotState.Size = new System.Drawing.Size(333, 37);
@@ -652,7 +666,7 @@
             // chkUseRobot
             // 
             this.chkUseRobot.BackColor = System.Drawing.Color.White;
-            this.chkUseRobot.Font = new System.Drawing.Font("宋体", 20F);
+            this.chkUseRobot.Font = new System.Drawing.Font("SimSun", 20F);
             this.chkUseRobot.Location = new System.Drawing.Point(7, 89);
             this.chkUseRobot.Name = "chkUseRobot";
             this.chkUseRobot.Size = new System.Drawing.Size(253, 37);
@@ -664,7 +678,7 @@
             // 
             this.lbTaskState.BackColor = System.Drawing.Color.Green;
             this.lbTaskState.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.lbTaskState.Font = new System.Drawing.Font("黑体", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbTaskState.Font = new System.Drawing.Font("SimHei", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbTaskState.ForeColor = System.Drawing.Color.White;
             this.lbTaskState.Location = new System.Drawing.Point(260, 26);
             this.lbTaskState.Name = "lbTaskState";
@@ -677,7 +691,7 @@
             // 
             this.lblCount.BackColor = System.Drawing.Color.White;
             this.lblCount.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.lblCount.Font = new System.Drawing.Font("微软雅黑", 35F, System.Drawing.FontStyle.Bold);
+            this.lblCount.Font = new System.Drawing.Font("Microsoft YaHei", 35F, System.Drawing.FontStyle.Bold);
             this.lblCount.ForeColor = System.Drawing.Color.Black;
             this.lblCount.Location = new System.Drawing.Point(3, 26);
             this.lblCount.Name = "lblCount";
@@ -739,7 +753,7 @@
             this.pictureBox1.Location = new System.Drawing.Point(1133, 0);
             this.pictureBox1.Margin = new System.Windows.Forms.Padding(5);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(1963, 67);
+            this.pictureBox1.Size = new System.Drawing.Size(2082, 67);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox1.TabIndex = 50;
             this.pictureBox1.TabStop = false;
@@ -755,7 +769,7 @@
             this.tbcLogs.Margin = new System.Windows.Forms.Padding(0);
             this.tbcLogs.Name = "tbcLogs";
             this.tbcLogs.SelectedIndex = 0;
-            this.tbcLogs.Size = new System.Drawing.Size(775, 229);
+            this.tbcLogs.Size = new System.Drawing.Size(860, 229);
             this.tbcLogs.TabIndex = 55;
             // 
             // tbpScanLog
@@ -764,7 +778,7 @@
             this.tbpScanLog.Location = new System.Drawing.Point(4, 29);
             this.tbpScanLog.Margin = new System.Windows.Forms.Padding(0);
             this.tbpScanLog.Name = "tbpScanLog";
-            this.tbpScanLog.Size = new System.Drawing.Size(767, 196);
+            this.tbpScanLog.Size = new System.Drawing.Size(852, 196);
             this.tbpScanLog.TabIndex = 0;
             this.tbpScanLog.Text = "采集日志";
             this.tbpScanLog.UseVisualStyleBackColor = true;
@@ -775,7 +789,7 @@
             this.tbpCacheLog.Location = new System.Drawing.Point(4, 22);
             this.tbpCacheLog.Margin = new System.Windows.Forms.Padding(0);
             this.tbpCacheLog.Name = "tbpCacheLog";
-            this.tbpCacheLog.Size = new System.Drawing.Size(629, 203);
+            this.tbpCacheLog.Size = new System.Drawing.Size(767, 203);
             this.tbpCacheLog.TabIndex = 1;
             this.tbpCacheLog.Text = "缓存日志";
             this.tbpCacheLog.UseVisualStyleBackColor = true;
@@ -788,7 +802,7 @@
             this.lsvBufferLog.Margin = new System.Windows.Forms.Padding(0);
             this.lsvBufferLog.MinimumSize = new System.Drawing.Size(250, 4);
             this.lsvBufferLog.Name = "lsvBufferLog";
-            this.lsvBufferLog.Size = new System.Drawing.Size(629, 203);
+            this.lsvBufferLog.Size = new System.Drawing.Size(767, 203);
             this.lsvBufferLog.TabIndex = 4;
             // 
             // tbpRobotLog
@@ -797,7 +811,7 @@
             this.tbpRobotLog.Location = new System.Drawing.Point(4, 22);
             this.tbpRobotLog.Margin = new System.Windows.Forms.Padding(0);
             this.tbpRobotLog.Name = "tbpRobotLog";
-            this.tbpRobotLog.Size = new System.Drawing.Size(629, 203);
+            this.tbpRobotLog.Size = new System.Drawing.Size(767, 203);
             this.tbpRobotLog.TabIndex = 2;
             this.tbpRobotLog.Text = "机器人日志";
             this.tbpRobotLog.UseVisualStyleBackColor = true;
@@ -808,7 +822,7 @@
             this.tbpALarmLog.Location = new System.Drawing.Point(4, 22);
             this.tbpALarmLog.Margin = new System.Windows.Forms.Padding(0);
             this.tbpALarmLog.Name = "tbpALarmLog";
-            this.tbpALarmLog.Size = new System.Drawing.Size(629, 203);
+            this.tbpALarmLog.Size = new System.Drawing.Size(767, 203);
             this.tbpALarmLog.TabIndex = 3;
             this.tbpALarmLog.Text = "报警日志";
             this.tbpALarmLog.UseVisualStyleBackColor = true;
@@ -821,7 +835,7 @@
             this.lsvAlarmLog.Margin = new System.Windows.Forms.Padding(0);
             this.lsvAlarmLog.MinimumSize = new System.Drawing.Size(250, 4);
             this.lsvAlarmLog.Name = "lsvAlarmLog";
-            this.lsvAlarmLog.Size = new System.Drawing.Size(629, 203);
+            this.lsvAlarmLog.Size = new System.Drawing.Size(767, 203);
             this.lsvAlarmLog.TabIndex = 5;
             // 
             // label9
@@ -1025,7 +1039,7 @@
             this.columnHeader1});
             this.lsvLableCode.Location = new System.Drawing.Point(0, 32);
             this.lsvLableCode.Name = "lsvLableCode";
-            this.lsvLableCode.Size = new System.Drawing.Size(316, 197);
+            this.lsvLableCode.Size = new System.Drawing.Size(350, 197);
             this.lsvLableCode.TabIndex = 4;
             this.lsvLableCode.UseCompatibleStateImageBehavior = false;
             this.lsvLableCode.View = System.Windows.Forms.View.Details;
@@ -1048,7 +1062,7 @@
             this.lsvCacheQ1.Margin = new System.Windows.Forms.Padding(0, 0, 0, 3);
             this.lsvCacheQ1.Name = "lsvCacheQ1";
             this.lsvCacheQ1.Scrollable = false;
-            this.lsvCacheQ1.Size = new System.Drawing.Size(1, 52);
+            this.lsvCacheQ1.Size = new System.Drawing.Size(7, 52);
             this.lsvCacheQ1.TabIndex = 0;
             this.lsvCacheQ1.UseCompatibleStateImageBehavior = false;
             this.lsvCacheQ1.View = System.Windows.Forms.View.List;
@@ -1066,7 +1080,7 @@
             this.lsvCacheQ2.Margin = new System.Windows.Forms.Padding(0, 3, 0, 0);
             this.lsvCacheQ2.Name = "lsvCacheQ2";
             this.lsvCacheQ2.Scrollable = false;
-            this.lsvCacheQ2.Size = new System.Drawing.Size(1, 53);
+            this.lsvCacheQ2.Size = new System.Drawing.Size(7, 53);
             this.lsvCacheQ2.TabIndex = 1;
             this.lsvCacheQ2.UseCompatibleStateImageBehavior = false;
             this.lsvCacheQ2.View = System.Windows.Forms.View.List;
@@ -1080,11 +1094,11 @@
             listViewItem13,
             listViewItem14,
             listViewItem15});
-            this.lsvCacheQ3.Location = new System.Drawing.Point(0, 0);
+            this.lsvCacheQ3.Location = new System.Drawing.Point(7, 0);
             this.lsvCacheQ3.Margin = new System.Windows.Forms.Padding(0, 0, 0, 3);
             this.lsvCacheQ3.Name = "lsvCacheQ3";
             this.lsvCacheQ3.Scrollable = false;
-            this.lsvCacheQ3.Size = new System.Drawing.Size(1, 52);
+            this.lsvCacheQ3.Size = new System.Drawing.Size(7, 52);
             this.lsvCacheQ3.TabIndex = 1;
             this.lsvCacheQ3.UseCompatibleStateImageBehavior = false;
             this.lsvCacheQ3.View = System.Windows.Forms.View.List;
@@ -1098,11 +1112,11 @@
             listViewItem18,
             listViewItem19,
             listViewItem20});
-            this.lsvCacheQ4.Location = new System.Drawing.Point(0, 58);
+            this.lsvCacheQ4.Location = new System.Drawing.Point(7, 58);
             this.lsvCacheQ4.Margin = new System.Windows.Forms.Padding(0, 3, 0, 0);
             this.lsvCacheQ4.Name = "lsvCacheQ4";
             this.lsvCacheQ4.Scrollable = false;
-            this.lsvCacheQ4.Size = new System.Drawing.Size(1, 53);
+            this.lsvCacheQ4.Size = new System.Drawing.Size(7, 53);
             this.lsvCacheQ4.TabIndex = 1;
             this.lsvCacheQ4.UseCompatibleStateImageBehavior = false;
             this.lsvCacheQ4.View = System.Windows.Forms.View.List;
@@ -1115,7 +1129,7 @@
             this.label8.Location = new System.Drawing.Point(0, 0);
             this.label8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(1, 32);
+            this.label8.Size = new System.Drawing.Size(14, 32);
             this.label8.TabIndex = 4;
             this.label8.Text = "缓存区列表";
             this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -1137,7 +1151,7 @@
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.Controls.Add(this.tableLayoutPanel1);
-            this.splitContainer2.Size = new System.Drawing.Size(1095, 376);
+            this.splitContainer2.Size = new System.Drawing.Size(1214, 376);
             this.splitContainer2.SplitterDistance = 229;
             this.splitContainer2.TabIndex = 59;
             // 
@@ -1155,8 +1169,8 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.tbcLogs);
-            this.splitContainer1.Size = new System.Drawing.Size(1095, 229);
-            this.splitContainer1.SplitterDistance = 316;
+            this.splitContainer1.Size = new System.Drawing.Size(1214, 229);
+            this.splitContainer1.SplitterDistance = 350;
             this.splitContainer1.TabIndex = 59;
             // 
             // label1
@@ -1167,7 +1181,7 @@
             this.label1.Location = new System.Drawing.Point(0, 0);
             this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(316, 32);
+            this.label1.Size = new System.Drawing.Size(350, 32);
             this.label1.TabIndex = 58;
             this.label1.Text = "数据";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -1189,7 +1203,7 @@
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(1095, 143);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(1214, 143);
             this.tableLayoutPanel1.TabIndex = 56;
             // 
             // panel2
@@ -1278,7 +1292,7 @@
             this.panel3.Location = new System.Drawing.Point(300, 0);
             this.panel3.Margin = new System.Windows.Forms.Padding(0);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(1, 143);
+            this.panel3.Size = new System.Drawing.Size(14, 143);
             this.panel3.TabIndex = 1;
             // 
             // tableLayoutPanel2
@@ -1297,7 +1311,7 @@
             this.tableLayoutPanel2.RowCount = 2;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(1, 111);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(14, 111);
             this.tableLayoutPanel2.TabIndex = 5;
             // 
             // panel6
@@ -1305,7 +1319,7 @@
             this.panel6.Controls.Add(this.label3);
             this.panel6.Controls.Add(this.lsvLableUp);
             this.panel6.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel6.Location = new System.Drawing.Point(195, 0);
+            this.panel6.Location = new System.Drawing.Point(314, 0);
             this.panel6.Margin = new System.Windows.Forms.Padding(0);
             this.panel6.Name = "panel6";
             this.panel6.Size = new System.Drawing.Size(300, 143);
@@ -1321,7 +1335,7 @@
             this.tableLayoutPanel4.Controls.Add(this.panel7, 0, 0);
             this.tableLayoutPanel4.Controls.Add(this.panel11, 1, 1);
             this.tableLayoutPanel4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel4.Location = new System.Drawing.Point(495, 0);
+            this.tableLayoutPanel4.Location = new System.Drawing.Point(614, 0);
             this.tableLayoutPanel4.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayoutPanel4.Name = "tableLayoutPanel4";
             this.tableLayoutPanel4.RowCount = 2;
@@ -1384,32 +1398,18 @@
             this.panel11.Size = new System.Drawing.Size(300, 72);
             this.panel11.TabIndex = 3;
             // 
-            // btnNewRun
-            // 
-            this.btnNewRun.AutoSize = false;
-            this.btnNewRun.BackColor = System.Drawing.Color.GreenYellow;
-            this.btnNewRun.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.btnNewRun.Font = new System.Drawing.Font("微软雅黑", 14F);
-            this.btnNewRun.ForeColor = System.Drawing.Color.Honeydew;
-            this.btnNewRun.Image = ((System.Drawing.Image)(resources.GetObject("btnNewRun.Image")));
-            this.btnNewRun.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnNewRun.Name = "btnNewRun";
-            this.btnNewRun.Size = new System.Drawing.Size(160, 64);
-            this.btnNewRun.Text = "新任务(&R)";
-            this.btnNewRun.Click += new System.EventHandler(this.btnNewRun_Click);
-            // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 19F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1101, 608);
+            this.ClientSize = new System.Drawing.Size(1220, 608);
             this.Controls.Add(this.splitContainer2);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.grbHandwork);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.groupBox1);
-            this.Font = new System.Drawing.Font("宋体", 14F);
+            this.Font = new System.Drawing.Font("SimSun", 14F);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
             this.Margin = new System.Windows.Forms.Padding(5);

@@ -119,5 +119,17 @@ namespace yidascan {
         public static void ERPAlarmNo(IOpcClient client, OPCParam param, int errorcode) {
             client.Write(param.None.ERPAlarm, errorcode);
         }
+
+        /// <summary>
+        /// 删除号码以后，告知opc.
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="param"></param>
+        /// <param name="lcode">12位长的号码</param>
+        public static void NotifyLabelCodeDeleted(IOpcClient client, OPCParam param,  string lcode) {
+            client.Write(param.DeleteLCode.LCode1, lcode.Substring(0, 6));
+            client.Write(param.DeleteLCode.LCode2, lcode.Substring(6, 6));
+            client.Write(param.DeleteLCode.Signal, true);
+        }
     }
 }
