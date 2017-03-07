@@ -59,6 +59,10 @@ namespace yidascan {
         }
 
         private static int CalculateFloorIndex(List<LableCode> lcs) {
+            if (lcs == null) {
+                return 1;
+            }
+
             var oddcount = lcs.Count(x => { return x.isOddSide(); });
             var evencount = lcs.Count(x => { return x.isEvenSide(); });
 
