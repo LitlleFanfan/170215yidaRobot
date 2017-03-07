@@ -124,8 +124,8 @@ namespace yidascan {
         /// <param name="lcs"></param>
         /// <param name="cacheq">缓存队列</param>
         /// <returns>返回的是需要从缓存位取出的布卷。如果不需要取出，返回null。</returns>
-        private static LableCode CalculateCache(PanelInfo pinfo, LableCode lc, List<LableCode> lcs, Queue<LableCode> cacheq) {
-            LableCode lc2 = null;
+        private static CalResult CalculateCache(PanelInfo pinfo, LableCode lc, List<LableCode> lcs) {
+            CalResult cr = new CalResult(CacheState.Go, lc, null);
             var cachecount = (pinfo.OddStatus ? 0 : 1) + (pinfo.EvenStatus ? 0 : 1);
             var cachedRools = from s in lcs
                               where s.FloorIndex == 0
@@ -133,6 +133,7 @@ namespace yidascan {
                               select s;
             switch (cachedRools.Count()) {
                 case 0://当前层已没有了缓存。//当前布卷直接缓存起来。
+                    cr.state = CacheState.Cache;
                     break;
                 case 1://当前层只有一卷缓存。
                 case 2://当前层有两卷缓存。
@@ -140,32 +141,31 @@ namespace yidascan {
                     {
                         var lcObjs = new List<LableCode>();
                         foreach (LableCode l in cachedRools) {
-                            // 缓存的比当前的直径大
+                            // 缓存的比当前的直径小
                             var cachedBiggerThanCurrent = (l.Diameter + clsSetting.CacheIgnoredDiff < lc.Diameter);
-                            if (cachedBiggerThanCurrent && NoMoreBiggerRoolsInCacheQ(lc, cacheq)) {
+                            if (cachedBiggerThanCurrent) {
                                 lcObjs.Add(l);
                             }
                         }
                         if (lcObjs.Count > 0) {
-                            lc2 = lcObjs[0];
-                            lc.GetOutLCode = lc2.LCode;//换掉的标签
-                            CalculatePosition(lcs, lc2);//当前布卷直接缓存起来。缓存的两卷中小的拿出来并计算位置。
-                        } else {
-                            CalculatePosition(lcs, lc);//当前布卷不需要缓存，计算位置。
+                            cr.CodeFromCache = (from s in lcObjs orderby s.Diameter ascending select s).First();
+                            lc.GetOutLCode = cr.CodeFromCache.LCode;//换掉的标签---//当前布卷直接缓存起来。缓存的两卷中小的拿出来并计算位置。//当前布卷不需要缓存，计算位置。
+                            cr.state = CacheState.GetThenCache;
                         }
+                    } else {
+                        cr.state = CacheState.Cache;
                     }
                     break;
             }
-            return lc2;
+            return cr;
         }
 
-        private static bool NoMoreBiggerRoolsInCacheQ(LableCode lc, Queue<LableCode> cacheq) {
+        private static bool NoMoreBiggerRoolsInCacheQ(LableCode lc, IEnumerable<LableCode> cacheq) {
             // 同一个板上直径比当前大的。
-            //var q = cacheq.Count((x) => {
-            //    return x.PanelNo == lc.PanelNo && x.Diameter - lc.Diameter > clsSetting.CacheIgnoredDiff;
-            //});
-            //return q <= 0;
-            return true;
+            var q = cacheq.Count((x) => {
+                return lc.Diameter > x.Diameter + clsSetting.CacheIgnoredDiff;
+            });
+            return q <= 0;
         }
 
         /// <summary>
@@ -196,7 +196,7 @@ namespace yidascan {
                 if (expectedWidth(installedWidth, current, item) < maxedWidth) {
                     continue;
                 }
-                if (rt == null ||  item.Diameter < rt.Diameter) {
+                if (rt == null || item.Diameter < rt.Diameter) {
                     rt = item;
                 }
             }
@@ -211,69 +211,93 @@ namespace yidascan {
             return pf;
         }
 
-        public static CalResult AreaBCalculate(IErpApi erpapi, LableCode lc, string dateShiftNo, Queue<LableCode> cacheq) {
-            var rt = new CalResult(CacheState.Error, lc, null);
+        public static CalResult AreaBCalculate(IErpApi erpapi, LableCode lc, string dateShiftNo, IEnumerable<LableCode> cacheq) {
+            var rt = new CalResult(CacheState.Cache, lc, null);
 
-            var pinfo = GetPanelNo(lc, dateShiftNo);
+            var pinfo = GetPanelNo(rt.CodeCome, dateShiftNo);
 
             if (pinfo == null) {
                 // 产生新板号赋予当前标签。
                 //板第一卷
-                LableCode.Update(lc);
+                LableCode.Update(rt.CodeCome);
                 rt.state = CacheState.Cache;
             } else {
                 var fp = FloorPerformance.None;
 
                 // 取当前交地、当前板、当前层所有标签。
-                var layerLabels = LableCode.GetLableCodesOfRecentFloor(lc.ToLocation, pinfo);
+                var layerLabels = LableCode.GetLableCodesOfRecentFloor(rt.CodeCome.ToLocation, pinfo);
 
-                LableCode lc2 = null;
                 if (layerLabels != null && layerLabels.Count > 0) {
                     // 最近一层没满。
-                    lc2 = IsPanelFull(layerLabels, lc);
-                    
-                    if (lc2 != null) //不为NULL，表示满
-                    {
-                        //计算位置坐标, 赋予层号
-                        CalculatePosition(layerLabels, lc, lc2);
+                    rt.CodeFromCache = IsPanelFull(layerLabels, rt.CodeCome);
 
-                        if (lc.FloorIndex % 2 == 0) {
-                            pinfo.EvenStatus = true;
-                            fp = FloorPerformance.EvenFinish;
+                    if (rt.CodeFromCache != null) //不为NULL，表示满
+                    {
+                        if (rt.CodeCome.Diameter > rt.CodeFromCache.Diameter) {
+                            rt.state = CacheState.GetThenGo;
                         } else {
-                            pinfo.OddStatus = true;
-                            fp = FloorPerformance.OddFinish;
+                            rt.state = CacheState.GoThenGet;
                         }
                     } else {
                         //计算缓存，lc2不为NULL需要缓存
-                        lc2 = CalculateCache(pinfo, lc, layerLabels, cacheq);
+                        CalResult cr = CalculateCache(pinfo, rt.CodeCome, layerLabels);
+                        rt.CodeFromCache = cr.CodeFromCache;
+                        rt.state = cr.state;
                     }
                 }
 
-                if (pinfo.EvenStatus && pinfo.OddStatus)
-                    fp = FloorPerformance.BothFinish;
+                switch (rt.state) {
+                    case CacheState.Go:
+                        CalculatePosition(layerLabels, rt.CodeCome);
+                        break;
+                    case CacheState.GetThenCache:
+                    case CacheState.CacheAndGet:
+                        CalculatePosition(layerLabels, rt.CodeFromCache);
+                        break;
+                    case CacheState.GoThenGet:
+                        //计算位置坐标, 赋予层号
+                        CalculatePosition(layerLabels, rt.CodeCome, rt.CodeFromCache);
 
-                if (lc2 != null) {
-                    if (LableCode.Update(fp, pinfo, lc, lc2)) {
-                        rt.CodeFromCache = lc2;
-                    }
-                    rt.state = lc.FloorIndex == 0
-                        ? CacheState.GetThenCache
-                        : CacheState.GoThenGet;
+                        fp = SetFullFlag(rt, pinfo);
+                        break;
+                    case CacheState.GetThenGo:
+                        CalculatePosition(layerLabels, rt.CodeFromCache, rt.CodeCome);
+
+                        fp = SetFullFlag(rt, pinfo);
+                        break;
+                    case CacheState.Cache:
+                    default:
+                        break;
+                }
+                
+                var savestate = false;
+                if (rt.CodeFromCache != null) {
+                    savestate = LableCode.Update(fp, pinfo, rt.CodeCome, rt.CodeFromCache);
                 } else {
-                    if (LableCode.Update(fp, pinfo, lc))
-                        rt.state = lc.FloorIndex == 0
-                            ? CacheState.Cache
-                            : CacheState.Go;
+                    savestate = LableCode.Update(fp, pinfo, rt.CodeCome);
                 }
 
-                var msg = "";
-                if (fp == FloorPerformance.BothFinish && lc.Floor == pinfo.MaxFloor) {
-                    var re = ErpHelper.NotifyPanelEnd(erpapi, lc.PanelNo, out msg);
+                var msg = $"存数据库:{savestate}";
+                if (fp == FloorPerformance.BothFinish && rt.CodeCome.Floor == pinfo.MaxFloor) {
+                    var re = ErpHelper.NotifyPanelEnd(erpapi, rt.CodeCome.PanelNo, out msg);
                     rt.message = msg;
                 }
             }
             return rt;
+        }
+
+        private static FloorPerformance SetFullFlag(CalResult rt, PanelInfo pinfo) {
+            FloorPerformance fp;
+            if (rt.CodeCome.FloorIndex % 2 == 0) {
+                pinfo.EvenStatus = true;
+                fp = FloorPerformance.EvenFinish;
+            } else {
+                pinfo.OddStatus = true;
+                fp = FloorPerformance.OddFinish;
+            }
+            if (pinfo.EvenStatus && pinfo.OddStatus)
+                fp = FloorPerformance.BothFinish;
+            return fp;
         }
         #endregion
     }
@@ -286,7 +310,7 @@ namespace yidascan {
         /// <summary>
         /// 缓存区来料标签
         /// </summary>
-        public LableCode CodeToCache { get; set; }
+        public LableCode CodeCome { get; set; }
 
         /// <summary>
         /// 将要从缓存区取出的标签
@@ -300,7 +324,7 @@ namespace yidascan {
 
         public CalResult(CacheState state_, LableCode codeToCache_, LableCode codeFromCache_) {
             state = state_;
-            CodeToCache = codeToCache_;
+            CodeCome = codeToCache_;
             CodeFromCache = codeFromCache_;
             message = "";
         }

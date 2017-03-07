@@ -547,18 +547,7 @@ namespace yidascan {
                                                         dtpDate.Value.ToString(clsSetting.LABEL_CODE_DATE_FORMAT),
                                                         cmbShiftNo.SelectedIndex.ToString()),
                                                 out outCacheLable, out msg); //计算位置
-
-                                            // new method.
-                                            //var rt = lcb.AreaBCalculatePro(callErpApi,
-                                            //    lc,
-                                            //    string.Format("{0}{1}",
-                                            //            dtpDate.Value.ToString(clsSetting.LABEL_CODE_DATE_FORMAT),
-                                            //            cmbShiftNo.SelectedIndex.ToString()),
-                                            //    taskQ.CacheQ); //计算位置
-                                            //msg = rt.message;
-                                            // var cState = rt.state;
-                                            // end of new method.
-
+                                            
                                             logOpt.Write(msg, LogType.BUFFER);
 
                                             var cr = cacheher.WhenRollArrived(cState, lc, outCacheLable);
@@ -702,15 +691,15 @@ namespace yidascan {
                                 // 计算位置, lc和cache队列里比较。
                                 var calResult = LableCodeBllPro.AreaBCalculate(callErpApi,
                                     lc,
-                                    createShiftNo(), taskQ.CacheQ); //计算位置
+                                    createShiftNo(), taskQ.getBeforCacheLables(lc.ToLocation)); //计算位置
 
                                 if (calResult.message != "") {
                                     logOpt.Write(calResult.message, LogType.BUFFER);
                                 }
 
                                 // 确定缓存操作动作
-                                var cacheJobState = cacheher.WhenRollArrived(calResult.state, calResult.CodeToCache, calResult.CodeFromCache);
-                                logOpt.Write($"{calResult.CodeToCache.ToLocation} {JsonConvert.SerializeObject(cacheJobState)} 来料标签：{calResult.CodeToCache.LCode} {calResult.CodeToCache.Diameter} 取出标签：{calResult.CodeFromCache?.LCode} {calResult.CodeFromCache?.Diameter}", LogType.BUFFER);
+                                var cacheJobState = cacheher.WhenRollArrived(calResult.state, calResult.CodeCome, calResult.CodeFromCache);
+                                logOpt.Write($"{calResult.CodeCome.ToLocation} {JsonConvert.SerializeObject(cacheJobState)} 来料标签：{calResult.CodeCome.LCode} {calResult.CodeCome.Diameter} 取出标签：{calResult.CodeFromCache?.LCode} {calResult.CodeFromCache?.Diameter}", LogType.BUFFER);
 
 
                                 lock (taskQ.CacheQ) {
@@ -741,7 +730,7 @@ namespace yidascan {
         }
 
         public string brief(LableCode lc, CalResult cr) {
-            return $"缓存状态：{cr.state}, from cache: {cr.CodeFromCache?.LCode}, to cache: {cr.CodeToCache?.LCode}";
+            return $"缓存状态：{cr.state}, from cache: {cr.CodeFromCache?.LCode}, to cache: {cr.CodeCome?.LCode}";
         }
 
         /// <summary>
