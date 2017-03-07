@@ -250,6 +250,7 @@ namespace yidascan {
                     }
                 }
 
+                var msg = $"";
                 switch (rt.state) {
                     case CacheState.Go:
                         CalculatePosition(layerLabels, rt.CodeCome);
@@ -274,6 +275,7 @@ namespace yidascan {
                         if (go) {
                             rt.state = CacheState.Go;
                             CalculatePosition(layerLabels, rt.CodeCome);
+                            msg = $"cache change go {rt.CodeCome.LCode}";
                         }
                         break;
                     default:
@@ -286,12 +288,11 @@ namespace yidascan {
                 } else {
                     savestate = LableCode.Update(fp, pinfo, rt.CodeCome);
                 }
-
-                var msg = $"存数据库:{savestate}";
+                msg = $"{msg} 存数据库:{savestate}";
                 if (fp == FloorPerformance.BothFinish && rt.CodeCome.Floor == pinfo.MaxFloor) {
-                    var re = ErpHelper.NotifyPanelEnd(erpapi, rt.CodeCome.PanelNo, out msg);
-                    rt.message = msg;
+                    var re = ErpHelper.NotifyPanelEnd(erpapi, pinfo.PanelNo, out msg);
                 }
+                rt.message = msg;
             }
             return rt;
         }
