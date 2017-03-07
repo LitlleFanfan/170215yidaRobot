@@ -204,7 +204,11 @@ namespace yidascan {
 
                     if (lc2 != null)//不为NULL，表示满
                     {
-                        CalculatePosition(lcs, lc, lc2);//计算位置坐标
+                        if (lc.Diameter + clsSetting.CacheIgnoredDiff < lc2.Diameter) {
+                            CalculatePosition(lcs, lc, lc2);//计算位置坐标
+                        } else {
+                            CalculatePosition(lcs, lc2, lc);//计算位置坐标
+                        }
 
                         if (lc.FloorIndex % 2 == 0) {
                             pinfo.EvenStatus = true;
@@ -224,8 +228,8 @@ namespace yidascan {
                 if (lc2 != null) {
                     if (LableCode.Update(fp, pinfo, lc, lc2))
                         outCacheLable = lc2;
-                    cState = lc.FloorIndex == 0 ? CacheState.GetThenCache : 
-                        (lc.Diameter < lc2.Diameter ? CacheState.GoThenGet : CacheState.GetThenGo);
+                    cState = lc.FloorIndex == 0 ? CacheState.GetThenCache :
+                        (lc.Diameter + clsSetting.CacheIgnoredDiff < lc2.Diameter ? CacheState.GoThenGet : CacheState.GetThenGo);
                 } else {
                     if (LableCode.Update(fp, pinfo, lc))
                         cState = lc.FloorIndex == 0 ? CacheState.Cache : CacheState.Go;

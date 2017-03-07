@@ -691,7 +691,7 @@ namespace yidascan {
                                 // 计算位置, lc和cache队列里比较。
                                 var calResult = LableCodeBllPro.AreaBCalculate(callErpApi,
                                     lc,
-                                    createShiftNo(), taskQ.getBeforCacheLables(lc.ToLocation)); //计算位置
+                                    createShiftNo(), taskQ.GetBeforCacheLables(lc)); //计算位置
 
                                 if (calResult.message != "") {
                                     logOpt.Write(calResult.message, LogType.BUFFER);

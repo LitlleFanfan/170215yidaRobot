@@ -20,9 +20,9 @@ namespace yidascan.DataAccess {
         public Queue<RollPosition> RobotRollBQ = new Queue<RollPosition>();
         public CachePos[] CacheSide = null;
 
-        public IEnumerable<LableCode> getBeforCacheLables(string toLocation) {
-            var lcs = from s in CacheQ where s.ToLocation == toLocation select s;
-            return lcs;
+        public IEnumerable<LableCode> GetBeforCacheLables(LableCode lc) {
+            var lcs = from s in CacheQ where s.ToLocation == lc.ToLocation && s.LCode!=lc.LCode select s;
+            return lcs.ToList();
         }
 
         public static Action<string, string> onlog;

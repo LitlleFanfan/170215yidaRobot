@@ -148,7 +148,7 @@ namespace yidascan {
                             }
                         }
                         if (lcObjs.Count > 0) {
-                            cr.CodeFromCache = (from s in lcObjs orderby s.Diameter ascending select s).First();
+                            cr.CodeFromCache = lcObjs[0];//前面数据源已经排过序
                             lc.GetOutLCode = cr.CodeFromCache.LCode;//换掉的标签---//当前布卷直接缓存起来。缓存的两卷中小的拿出来并计算位置。//当前布卷不需要缓存，计算位置。
                             cr.state = CacheState.GetThenCache;
                         }
@@ -266,10 +266,16 @@ namespace yidascan {
                         fp = SetFullFlag(rt, pinfo);
                         break;
                     case CacheState.Cache:
+                        bool go = CanIgo(cacheq, rt, layerLabels);
+                        if (go) {
+                            rt.state = CacheState.Go;
+                            CalculatePosition(layerLabels, rt.CodeCome);
+                        }
+                        break;
                     default:
                         break;
                 }
-                
+
                 var savestate = false;
                 if (rt.CodeFromCache != null) {
                     savestate = LableCode.Update(fp, pinfo, rt.CodeCome, rt.CodeFromCache);
@@ -284,6 +290,35 @@ namespace yidascan {
                 }
             }
             return rt;
+        }
+
+        private static bool CanIgo(IEnumerable<LableCode> cacheq, CalResult rt, List<LableCode> layerLabels) {
+            var go = false;
+            var biggers = (from s in cacheq.Take(3) where s.Diameter > rt.CodeCome.Diameter + clsSetting.CacheIgnoredDiff select s).Count();
+            var cachelcs = 0;
+            if (layerLabels != null) {
+                cachelcs = (from s in layerLabels
+                            where s.FloorIndex == 0
+                            orderby s.Diameter ascending
+                            select s).Count();
+            }
+
+            switch (cachelcs) {
+                case 0:
+                    if (biggers < 2) {
+                        go = true;
+                    }
+                    break;
+                case 1:
+                    if (biggers > 0) {
+                        go = true;
+                    }
+                    break;
+                case 2:
+                    break;
+            }
+
+            return go;
         }
 
         private static FloorPerformance SetFullFlag(CalResult rt, PanelInfo pinfo) {

@@ -134,11 +134,11 @@
             // 
             this.tabPage1.Controls.Add(this.groupBox5);
             this.tabPage1.Controls.Add(this.groupBox1);
-            this.tabPage1.Location = new System.Drawing.Point(4, 34);
+            this.tabPage1.Location = new System.Drawing.Point(4, 26);
             this.tabPage1.Margin = new System.Windows.Forms.Padding(4);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(4);
-            this.tabPage1.Size = new System.Drawing.Size(588, 346);
+            this.tabPage1.Size = new System.Drawing.Size(588, 354);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "采集器";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -180,7 +180,7 @@
             0,
             0});
             this.txtIPPort2.Name = "txtIPPort2";
-            this.txtIPPort2.Size = new System.Drawing.Size(192, 35);
+            this.txtIPPort2.Size = new System.Drawing.Size(192, 26);
             this.txtIPPort2.TabIndex = 7;
             // 
             // txtIPAddr2
@@ -188,7 +188,7 @@
             this.txtIPAddr2.Location = new System.Drawing.Point(80, 13);
             this.txtIPAddr2.Margin = new System.Windows.Forms.Padding(4);
             this.txtIPAddr2.Name = "txtIPAddr2";
-            this.txtIPAddr2.Size = new System.Drawing.Size(190, 35);
+            this.txtIPAddr2.Size = new System.Drawing.Size(190, 26);
             this.txtIPAddr2.TabIndex = 6;
             // 
             // label29
@@ -257,7 +257,7 @@
             this.cmbBaudRate2.Location = new System.Drawing.Point(80, 54);
             this.cmbBaudRate2.Margin = new System.Windows.Forms.Padding(4);
             this.cmbBaudRate2.Name = "cmbBaudRate2";
-            this.cmbBaudRate2.Size = new System.Drawing.Size(190, 32);
+            this.cmbBaudRate2.Size = new System.Drawing.Size(190, 24);
             this.cmbBaudRate2.TabIndex = 3;
             // 
             // cmbCom2
@@ -265,7 +265,7 @@
             this.cmbCom2.Location = new System.Drawing.Point(80, 14);
             this.cmbCom2.Margin = new System.Windows.Forms.Padding(4);
             this.cmbCom2.Name = "cmbCom2";
-            this.cmbCom2.Size = new System.Drawing.Size(190, 32);
+            this.cmbCom2.Size = new System.Drawing.Size(190, 24);
             this.cmbCom2.TabIndex = 2;
             // 
             // label31
@@ -325,7 +325,7 @@
             0,
             0});
             this.txtIPPort.Name = "txtIPPort";
-            this.txtIPPort.Size = new System.Drawing.Size(192, 35);
+            this.txtIPPort.Size = new System.Drawing.Size(192, 26);
             this.txtIPPort.TabIndex = 7;
             // 
             // txtIPAddr
@@ -333,7 +333,7 @@
             this.txtIPAddr.Location = new System.Drawing.Point(80, 13);
             this.txtIPAddr.Margin = new System.Windows.Forms.Padding(4);
             this.txtIPAddr.Name = "txtIPAddr";
-            this.txtIPAddr.Size = new System.Drawing.Size(190, 35);
+            this.txtIPAddr.Size = new System.Drawing.Size(190, 26);
             this.txtIPAddr.TabIndex = 6;
             // 
             // lblIP
@@ -402,7 +402,7 @@
             this.cmbBaudRate.Location = new System.Drawing.Point(80, 54);
             this.cmbBaudRate.Margin = new System.Windows.Forms.Padding(4);
             this.cmbBaudRate.Name = "cmbBaudRate";
-            this.cmbBaudRate.Size = new System.Drawing.Size(190, 32);
+            this.cmbBaudRate.Size = new System.Drawing.Size(190, 24);
             this.cmbBaudRate.TabIndex = 3;
             // 
             // cmbCom
@@ -410,7 +410,7 @@
             this.cmbCom.Location = new System.Drawing.Point(80, 14);
             this.cmbCom.Margin = new System.Windows.Forms.Padding(4);
             this.cmbCom.Name = "cmbCom";
-            this.cmbCom.Size = new System.Drawing.Size(190, 32);
+            this.cmbCom.Size = new System.Drawing.Size(190, 24);
             this.cmbCom.TabIndex = 2;
             // 
             // label1
@@ -454,10 +454,10 @@
             this.tabPage4.Controls.Add(this.label24);
             this.tabPage4.Controls.Add(this.label26);
             this.tabPage4.Controls.Add(this.label23);
-            this.tabPage4.Location = new System.Drawing.Point(4, 34);
+            this.tabPage4.Location = new System.Drawing.Point(4, 26);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(588, 346);
+            this.tabPage4.Size = new System.Drawing.Size(588, 354);
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "托板";
             this.tabPage4.UseVisualStyleBackColor = true;
@@ -467,7 +467,7 @@
             this.nudCacheIgnoredDiff.Location = new System.Drawing.Point(379, 140);
             this.nudCacheIgnoredDiff.Margin = new System.Windows.Forms.Padding(4);
             this.nudCacheIgnoredDiff.Name = "nudCacheIgnoredDiff";
-            this.nudCacheIgnoredDiff.Size = new System.Drawing.Size(139, 35);
+            this.nudCacheIgnoredDiff.Size = new System.Drawing.Size(139, 26);
             this.nudCacheIgnoredDiff.TabIndex = 25;
             this.nudCacheIgnoredDiff.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.nudCacheIgnoredDiff.Value = new decimal(new int[] {
@@ -491,7 +491,7 @@
             0,
             0});
             this.nudEdgeObligate.Name = "nudEdgeObligate";
-            this.nudEdgeObligate.Size = new System.Drawing.Size(139, 35);
+            this.nudEdgeObligate.Size = new System.Drawing.Size(139, 26);
             this.nudEdgeObligate.TabIndex = 25;
             this.nudEdgeObligate.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.nudEdgeObligate.Value = new decimal(new int[] {
@@ -516,7 +516,7 @@
             this.chbOddTurn.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.chbOddTurn.Location = new System.Drawing.Point(14, 101);
             this.chbOddTurn.Name = "chbOddTurn";
-            this.chbOddTurn.Size = new System.Drawing.Size(168, 28);
+            this.chbOddTurn.Size = new System.Drawing.Size(115, 20);
             this.chbOddTurn.TabIndex = 30;
             this.chbOddTurn.Text = "偶数层旋转:";
             this.chbOddTurn.UseVisualStyleBackColor = true;
@@ -546,7 +546,7 @@
             0,
             0});
             this.nudSplintLength.Name = "nudSplintLength";
-            this.nudSplintLength.Size = new System.Drawing.Size(139, 35);
+            this.nudSplintLength.Size = new System.Drawing.Size(139, 26);
             this.nudSplintLength.TabIndex = 21;
             this.nudSplintLength.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.nudSplintLength.Value = new decimal(new int[] {
@@ -580,7 +580,7 @@
             0,
             0});
             this.nudSplintWidth.Name = "nudSplintWidth";
-            this.nudSplintWidth.Size = new System.Drawing.Size(139, 35);
+            this.nudSplintWidth.Size = new System.Drawing.Size(139, 26);
             this.nudSplintWidth.TabIndex = 24;
             this.nudSplintWidth.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.nudSplintWidth.Value = new decimal(new int[] {
@@ -634,12 +634,12 @@
             this.nudObligateLen.Location = new System.Drawing.Point(379, 57);
             this.nudObligateLen.Margin = new System.Windows.Forms.Padding(4);
             this.nudObligateLen.Minimum = new decimal(new int[] {
-            50,
+            20,
             0,
             0,
             0});
             this.nudObligateLen.Name = "nudObligateLen";
-            this.nudObligateLen.Size = new System.Drawing.Size(139, 35);
+            this.nudObligateLen.Size = new System.Drawing.Size(139, 26);
             this.nudObligateLen.TabIndex = 25;
             this.nudObligateLen.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.nudObligateLen.Value = new decimal(new int[] {
@@ -683,7 +683,7 @@
             0,
             0});
             this.nudSplintHeight.Name = "nudSplintHeight";
-            this.nudSplintHeight.Size = new System.Drawing.Size(139, 35);
+            this.nudSplintHeight.Size = new System.Drawing.Size(139, 26);
             this.nudSplintHeight.TabIndex = 27;
             this.nudSplintHeight.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.nudSplintHeight.Value = new decimal(new int[] {
@@ -730,10 +730,10 @@
             this.tabPage2.Controls.Add(this.label6);
             this.tabPage2.Controls.Add(this.txtRobotIP);
             this.tabPage2.Controls.Add(this.label4);
-            this.tabPage2.Location = new System.Drawing.Point(4, 34);
+            this.tabPage2.Location = new System.Drawing.Point(4, 26);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(588, 346);
+            this.tabPage2.Size = new System.Drawing.Size(588, 354);
             this.tabPage2.TabIndex = 4;
             this.tabPage2.Text = "机器人设置";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -743,7 +743,7 @@
             this.txtJobName.Location = new System.Drawing.Point(145, 141);
             this.txtJobName.Margin = new System.Windows.Forms.Padding(4);
             this.txtJobName.Name = "txtJobName";
-            this.txtJobName.Size = new System.Drawing.Size(425, 35);
+            this.txtJobName.Size = new System.Drawing.Size(425, 26);
             this.txtJobName.TabIndex = 19;
             this.txtJobName.Text = "MAIN";
             // 
@@ -763,7 +763,7 @@
             this.textBox2.Margin = new System.Windows.Forms.Padding(4);
             this.textBox2.Name = "textBox2";
             this.textBox2.ReadOnly = true;
-            this.textBox2.Size = new System.Drawing.Size(425, 35);
+            this.textBox2.Size = new System.Drawing.Size(425, 26);
             this.textBox2.TabIndex = 16;
             this.textBox2.Text = "11000";
             // 
@@ -782,7 +782,7 @@
             this.txtRobotIP.Location = new System.Drawing.Point(145, 34);
             this.txtRobotIP.Margin = new System.Windows.Forms.Padding(4);
             this.txtRobotIP.Name = "txtRobotIP";
-            this.txtRobotIP.Size = new System.Drawing.Size(425, 35);
+            this.txtRobotIP.Size = new System.Drawing.Size(425, 26);
             this.txtRobotIP.TabIndex = 14;
             this.txtRobotIP.Text = "192.168.0.30";
             // 
@@ -806,9 +806,9 @@
             this.tabPage3.Controls.Add(this.label9);
             this.tabPage3.Controls.Add(this.txtGetLocation);
             this.tabPage3.Controls.Add(this.label8);
-            this.tabPage3.Location = new System.Drawing.Point(4, 34);
+            this.tabPage3.Location = new System.Drawing.Point(4, 26);
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(588, 346);
+            this.tabPage3.Size = new System.Drawing.Size(588, 354);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "其他";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -820,7 +820,7 @@
             this.txtOPCIP.Location = new System.Drawing.Point(121, 170);
             this.txtOPCIP.Margin = new System.Windows.Forms.Padding(4);
             this.txtOPCIP.Name = "txtOPCIP";
-            this.txtOPCIP.Size = new System.Drawing.Size(451, 35);
+            this.txtOPCIP.Size = new System.Drawing.Size(451, 26);
             this.txtOPCIP.TabIndex = 12;
             // 
             // label3
@@ -840,7 +840,7 @@
             this.txtPanelFinish.Location = new System.Drawing.Point(121, 120);
             this.txtPanelFinish.Margin = new System.Windows.Forms.Padding(4);
             this.txtPanelFinish.Name = "txtPanelFinish";
-            this.txtPanelFinish.Size = new System.Drawing.Size(451, 35);
+            this.txtPanelFinish.Size = new System.Drawing.Size(451, 26);
             this.txtPanelFinish.TabIndex = 12;
             // 
             // label10
@@ -860,7 +860,7 @@
             this.txtToWeight.Location = new System.Drawing.Point(121, 71);
             this.txtToWeight.Margin = new System.Windows.Forms.Padding(4);
             this.txtToWeight.Name = "txtToWeight";
-            this.txtToWeight.Size = new System.Drawing.Size(451, 35);
+            this.txtToWeight.Size = new System.Drawing.Size(451, 26);
             this.txtToWeight.TabIndex = 10;
             // 
             // label9
@@ -880,7 +880,7 @@
             this.txtGetLocation.Location = new System.Drawing.Point(121, 22);
             this.txtGetLocation.Margin = new System.Windows.Forms.Padding(4);
             this.txtGetLocation.Name = "txtGetLocation";
-            this.txtGetLocation.Size = new System.Drawing.Size(451, 35);
+            this.txtGetLocation.Size = new System.Drawing.Size(451, 26);
             this.txtGetLocation.TabIndex = 8;
             // 
             // label8
@@ -917,7 +917,7 @@
             // 
             // FrmSet
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 24F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(596, 451);
             this.Controls.Add(this.btnCancel);
