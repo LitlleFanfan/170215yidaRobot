@@ -5,7 +5,7 @@ using System.Data;
 using System.Linq;
 using commonhelper;
 using yidascan.DataAccess;
-using yidascan.DataAccess;
+using yidascan;
 using ProduceComm.OPC;
 using ProduceComm;
 namespace yidascan {
@@ -17,34 +17,32 @@ namespace yidascan {
         public FrmMain mainwin = null;
 
         private void button1_Click(object sender, EventArgs e) {
-            DeleteLabelByHand(txtLabelCode);
+            var code = getInputCode();
+
+            //提示用户确认。
+            var question = string.Format("您确定要删除标签[{0}]吗？", code);
+            if (!CommonHelper.Confirm(question)) {
+                return;
+            }            
+
+            DeleteLabelByHand(code);
+            lbxLog.Items.Insert(0, $"{code}已经删除。");
+
+            mainwin.ShowTaskQ();
         }
 
         /// <summary>
         /// 手工删除标签号码。
         /// </summary>
-        /// <param name="txtDelLCode">号码</param>
-        private void DeleteLabelByHand(TextBox txtDelLCode) {
-            if (txtDelLCode.Text.Trim().Length < 12) {
-                MessageBox.Show("删除号码长度不正确");
-                return;
-            }
-
-            var code = txtDelLCode.Text.Trim().Substring(0, 12);
-
-            //提示用户确认。
-            var question = string.Format("您确定要删除标签[{0}]吗？", code);
-            if (!CommonHelper.Confirm(question)) { return; }
-
+        /// <param name="code">标签号码</param>
+        private void DeleteLabelByHand(string code) {
             // 删除号码。
-            if (LableCode.Delete(code) || deleteFromTaskq(FrmMain.taskQ, code)) { 
+            if (LableCode.Delete(code) || deleteFromTaskq(FrmMain.taskQ, code)) {
                 notifyOpc(code);
                 FrmMain.logOpt.Write(string.Format("删除标签{0}成功", code), LogType.NORMAL);
             } else {
                 FrmMain.logOpt.Write(string.Format("删除标签{0}失败", code), LogType.NORMAL);
             }
-
-            txtDelLCode.Text = string.Empty;
         }
 
         private void btnCancel_Click(object sender, EventArgs e) {
@@ -52,16 +50,22 @@ namespace yidascan {
         }
 
         private static void notifyOpc(string lcode) {
-            var client = new OPCClient();
+            var param = new OPCParam();
+            param.Init();
+
+            IOpcClient client;
+
+#if DEBUG
+            client = new FakeOpcClient(param);
+#else
+            client = new OPCClient();
+#endif            
             client.Open(clsSetting.OPCServerIP);
 
             var dtopc = OPCParam.Query();
             dtopc.Columns.Remove("Class");
             dtopc.Columns.Add(new DataColumn("Value"));
             client.AddSubscription(dtopc);
-
-            var param = new OPCParam();
-            param.Init();
 
             PlcHelper.NotifyLabelCodeDeleted(client, param, lcode);
         }
@@ -113,6 +117,60 @@ namespace yidascan {
             var g = deleteFromque(ques.RobotRollAQ, code);
             var h = deleteFromque(ques.RobotRollBQ, code);
             return a || b || c || d || e || f || g || h;
+        }
+
+        private void checkInDb(string code) {
+            var lc = LableCode.QueryByLCode(code);
+            if (lc != null) {
+                lbxLog.Items.Insert(0, $"数据库: {lc.LCode} {lc.ToLocation} 板号: {lc.PanelNo}");
+            } else {
+                lbxLog.Items.Insert(0, $"{code}数据库中没有此号码。");
+            }
+        }
+
+        private void checkInqueues(string code, TaskQueues ques) {
+            var qlabels = new List<Queue<LableCode>> {
+                    ques.CacheQ, ques.LableUpQ, ques.WeighQ, ques.CatchAQ,
+                    ques.CatchBQ, ques.CatchBQ};
+            var qrolls = new List<Queue<RollPosition>> { ques.RobotRollAQ, ques.RobotRollBQ };
+
+            var rt = new List<LableCode>();
+            foreach (var item in qlabels) {
+                var tmp = item.Where(x => x.LCode == code).ToArray();
+                rt.AddRange(tmp);
+            }
+
+            var rr = new List<RollPosition>();
+            foreach (var item in qrolls) {
+                var tmp = item.Where(x => x.LabelCode == code);
+                rr.AddRange(tmp);
+            }
+
+            if (rt.Count == 0 && rr.Count == 0) {
+                lbxLog.Items.Insert(0, $"线上和机器人队列没有此号码: {code}。");
+            }
+
+            foreach (var item in rt) {
+                lbxLog.Items.Insert(0, $"线上: {item.LCode} {item.ToLocation} {item.PanelNo}");
+            }
+
+            foreach (var item in rr) {
+                lbxLog.Items.Insert(0, $"机器人号码队列: {item.LabelCode} {item.ToLocation}");
+            }
+        }
+
+        private string getInputCode() {
+            var s = txtLabelCode.Text.Trim();
+            if (s.Length > 12) {
+                s = s.Substring(0, 12);
+            }
+            return s;
+        }
+
+        private void btnCheck_Click(object sender, EventArgs e) {
+            var code = getInputCode();
+            checkInDb(code);
+            checkInqueues(code, FrmMain.taskQ);
         }
     }
 }

@@ -111,7 +111,7 @@ namespace yidascan {
             Text = $"{clsSetting.PRODUCT_NAME} V{Application.ProductVersion.ToString()}";
         }
 
-        private void ShowTaskQ() {
+        public void ShowTaskQ() {
             showLabelQue(taskQ.WeighQ, lsvWeigh);
             showLabelQue(taskQ.CacheQ, lsvCacheBefor);
             showLabelQue(taskQ.LableUpQ, lsvLableUp);
