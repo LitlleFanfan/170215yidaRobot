@@ -437,12 +437,6 @@ namespace yidascan {
                                     getWeight = NotifyWeigh(code.LCode, false) ? SUCCESS : FAIL;
                                     logOpt.Write($"{code.LCode}称重API状态：{getWeight} 写OPC状态：{opcClient.Write(opcParam.ScanParam.GetWeigh, getWeight)}");
 
-                                    #region 临时称重信号问题排除
-                                    logOpt.Write($"0ms当前OPC称重信号状态：{ opcClient.ReadInt(opcParam.ScanParam.GetWeigh)}");
-                                    Thread.Sleep(20);
-                                    logOpt.Write($"20ms当前OPC称重信号状态：{ opcClient.ReadInt(opcParam.ScanParam.GetWeigh)}");
-                                    #endregion
-
                                     showLabelQue(taskQ.WeighQ, lsvWeigh);
                                     if (code.ToLocation.Substring(0, 1) == "B") {
                                         showLabelQue(taskQ.CacheQ, lsvCacheBefor);//加到缓存列表中显示
@@ -471,10 +465,7 @@ namespace yidascan {
                                 if (signal) {
                                     var fullLable = ReadCompleteLable(opcClient, kv.Value);
 
-                                    logOpt.Write(string.Format("{0} 收到完成信号。标签:{1}", kv.Value.Signal, fullLable), LogType.NORMAL);
-
-                                    logOpt.Write(string.Format("执行状态:{0}",
-                                        AreaAAndCFinish(fullLable)), LogType.NORMAL);
+                                    logOpt.Write($"{kv.Value.Signal} 收到完成信号。标签:{fullLable} 执行状态:{AreaAAndCFinish(fullLable)}", LogType.NORMAL);
                                 }
                             } catch (Exception ex) {
                                 logOpt.Write("!" + ex.Message);
@@ -547,7 +538,7 @@ namespace yidascan {
                                                         dtpDate.Value.ToString(clsSetting.LABEL_CODE_DATE_FORMAT),
                                                         cmbShiftNo.SelectedIndex.ToString()),
                                                 out outCacheLable, out msg); //计算位置
-                                            
+
                                             logOpt.Write(msg, LogType.BUFFER);
 
                                             var cr = cacheher.WhenRollArrived(cState, lc, outCacheLable);
@@ -692,14 +683,13 @@ namespace yidascan {
                                 var calResult = LableCodeBllPro.AreaBCalculate(callErpApi,
                                     lc,
                                     createShiftNo(), taskQ.GetBeforCacheLables(lc)); //计算位置
-
-                                if (calResult.message != "") {
-                                    logOpt.Write(calResult.message, LogType.BUFFER);
-                                }
-
+                                
                                 // 确定缓存操作动作
                                 var cacheJobState = cacheher.WhenRollArrived(calResult.state, calResult.CodeCome, calResult.CodeFromCache);
-                                logOpt.Write($"{calResult.CodeCome.ToLocation} {JsonConvert.SerializeObject(cacheJobState)} 来料标签：{calResult.CodeCome.LCode} {calResult.CodeCome.Diameter} 取出标签：{calResult.CodeFromCache?.LCode} {calResult.CodeFromCache?.Diameter}", LogType.BUFFER);
+                                logOpt.Write($"{calResult.CodeCome.ToLocation} {JsonConvert.SerializeObject(cacheJobState)}" +
+                                    $" 来料标签：{calResult.CodeCome.LCode} {calResult.CodeCome.Diameter} " +
+                                    $"取出标签：{calResult.CodeFromCache?.LCode} {calResult.CodeFromCache?.Diameter}  " +
+                                    $"{calResult.message}", LogType.BUFFER);
 
 
                                 lock (taskQ.CacheQ) {
@@ -751,13 +741,7 @@ namespace yidascan {
 
                                     // 写plc直径和分道号。1~5号板走1道， 其他走2道。
                                     PlcHelper.WriteLabelUpData(RobotOpcClient, code.Diameter, int.Parse(code.ParseLocationNo()) < 6 ? RollCatchChannel.channel_1 : RollCatchChannel.channel_2);
-
-                                    #region 临时称重信号问题排除
-                                    logOpt.Write($"0ms当前OPC标签朝上来料信号状态：{ RobotOpcClient.ReadBool(PlcSlot.LABEL_UP_SIGNAL)}", LogType.ROLL_QUEUE);
-                                    Thread.Sleep(20);
-                                    logOpt.Write($"20ms当前OPC标签朝上来料信号状态：{ RobotOpcClient.ReadBool(PlcSlot.LABEL_UP_SIGNAL)}", LogType.ROLL_QUEUE);
-                                    #endregion
-
+                                    
                                     showLabelQue(taskQ.LableUpQ, lsvLableUp);
                                     showCachePosQue(taskQ.CacheSide);
                                     if (int.Parse(code.ParseLocationNo()) < 6) {
@@ -776,11 +760,7 @@ namespace yidascan {
                 }
             });
         }
-
-        //void nscan1_OnDataArrived(string type, string code) {
-        //    nscan_OnDataArrived(type, code, 1);
-        //}
-
+        
         void nscan_OnDataArrived(string type, string code, int scanNo) {
             if (code == "ERROR" || code.Length < 12) { return; }
 
@@ -1030,7 +1010,6 @@ namespace yidascan {
             var t = TimeCount.TimeIt(() => {
                 tolocation = GetLocation(code, handwork);
             });
-            logOpt.Write($"取交地耗时:　{t}ms");
 
             if (string.IsNullOrEmpty(tolocation)) {
                 ScannerOpcClient.Write(opcParam.ScanParam.PushAside, 1);
@@ -1041,7 +1020,6 @@ namespace yidascan {
             var clothsize = new ClothRollSize();
 
             logOpt.Write("等待SizeState信号。");
-
             t = TimeCount.TimeIt(() => {
                 while (isrun) {
                     var f = ScannerOpcClient.ReadBool(opcParam.ScanParam.SizeState);
@@ -1050,7 +1028,6 @@ namespace yidascan {
                     Thread.Sleep(OPCClient.DELAY);
                 }
             });
-            logOpt.Write($"等尺寸信号耗时:{t}ms", LogType.NORMAL);
 
             t = TimeCount.TimeIt(() => {
                 clothsize.getFromOPC(ScannerOpcClient, opcParam);
@@ -1058,7 +1035,6 @@ namespace yidascan {
             });
 
             lc.SetSize(clothsize.diameter, clothsize.length);
-            logOpt.Write($"{lc.Size_s()}, 耗时: {t}ms");
 
             while (isrun) {
                 // 等待可写信号为false。
@@ -1078,7 +1054,6 @@ namespace yidascan {
                 // write camera no. and set state true.
                 ScannerOpcClient.Write(opcParam.ScanParam.ScanState, true);
             });
-            logOpt.Write($"写OPC耗时: {t}ms", LogType.NORMAL);
 
 #if !DEBUG
             Thread.Sleep(40);

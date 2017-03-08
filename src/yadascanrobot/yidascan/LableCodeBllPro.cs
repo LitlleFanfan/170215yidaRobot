@@ -41,7 +41,7 @@ namespace yidascan {
                                 orderby s.FloorIndex descending select s).First();
                 xory = (Math.Abs(lastRoll.Cx + lastRoll.Cy) + lastRoll.Diameter + clsSetting.RollSep)
                     * (lc.FloorIndex % 2 == 1 ? 1 : -1);
-                FrmMain.logOpt.Write($"lastroll:{lastRoll.LCode} x:{lastRoll.Cx} y:{lastRoll.Cy}  currroll:{lc.LCode} xory:{xory}", LogType.BUFFER);
+                //FrmMain.logOpt.Write($"lastroll:{lastRoll.LCode} x:{lastRoll.Cx} y:{lastRoll.Cy}  currroll:{lc.LCode} xory:{xory}", LogType.BUFFER);
             }
 
             return xory;
@@ -307,7 +307,7 @@ namespace yidascan {
                             fp = SetFullFlag(rt, pinfo);
                         }
 
-                        msg = $"cache change go {rt.CodeCome.LCode}";
+                        msg = $"cache change go";
                     }
                     break;
                 default:
@@ -325,7 +325,7 @@ namespace yidascan {
             } else {
                 savestate = LableCode.Update(fp, pinfo, rt.CodeCome);
             }
-            msg = $"{msg} 存数据库:{savestate}";
+
             if (fp == FloorPerformance.BothFinish && rt.CodeCome.Floor == pinfo.MaxFloor) {
                 var re = ErpHelper.NotifyPanelEnd(erpapi, pinfo.PanelNo, out msg);
             }
