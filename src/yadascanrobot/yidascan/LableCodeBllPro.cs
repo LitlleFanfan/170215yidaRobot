@@ -244,8 +244,7 @@ namespace yidascan {
 
         public static CalResult AreaBCalculate(IErpApi erpapi, LableCode lc, string dateShiftNo, IEnumerable<LableCode> cacheq) {
             var rt = new CalResult(CacheState.Cache, lc, null);
-            var pi = GetPanelNo(rt.CodeCome, dateShiftNo);
-            var pinfo = pi == null ? new PanelInfo() : pi;
+            var pinfo = GetPanelNo(rt.CodeCome, dateShiftNo);
             var fp = FloorPerformance.None;
             var layerLabels = new List<LableCode>();
 
@@ -296,7 +295,7 @@ namespace yidascan {
                     fp = SetFullFlag(rt, pinfo);
                     break;
                 case CacheState.Cache:
-                    var cancachesum = (pinfo.OddStatus ? 0 : 1) + (pinfo.EvenStatus ? 0 : 1);
+                    var cancachesum = pinfo == null ? 2 : (pinfo.OddStatus ? 0 : 1) + (pinfo.EvenStatus ? 0 : 1);
                     var cachelcs = (from s in layerLabels
                                     where s.FloorIndex == 0
                                     orderby s.Diameter ascending
@@ -307,7 +306,7 @@ namespace yidascan {
                         rt.state = CacheState.Go;
                         CalculatePosition(layerLabels, rt.CodeCome);
 
-                        if (IsPanelFull(rt.CodeCome)) {
+                        if (pinfo != null && IsPanelFull(rt.CodeCome)) {
                             fp = SetFullFlag(rt, pinfo);
                         }
 
@@ -320,7 +319,7 @@ namespace yidascan {
 
             var savestate = false;
 
-            if (pi == null) {
+            if (pinfo == null) {
                 // 产生新板号赋予当前标签。
                 //板第一卷
                 savestate = LableCode.Update(rt.CodeCome);
