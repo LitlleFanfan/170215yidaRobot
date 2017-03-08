@@ -24,7 +24,7 @@ namespace yidascan {
         /// <param name="handwork"></param>
         /// <returns></returns>
         public static bool NotifyPanelEnd(IErpApi erpapi, string panelNo, out string msg, bool handwork = false) {
-            if (!string.IsNullOrEmpty(panelNo)) {
+            if (string.IsNullOrEmpty(panelNo)) {
                 msg = "!板号完成失败，板号为空。";
                 return false;
             }
