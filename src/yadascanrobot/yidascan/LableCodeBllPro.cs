@@ -245,8 +245,12 @@ namespace yidascan {
         public static CalResult AreaBCalculate(IErpApi erpapi, LableCode lc, string dateShiftNo, IEnumerable<LableCode> cacheq) {
             var rt = new CalResult(CacheState.Cache, lc, null);
             var pinfo = GetPanelNo(rt.CodeCome, dateShiftNo);
+
             var fp = FloorPerformance.None;
             var layerLabels = new List<LableCode>();
+
+            // 0309, 尝试解决在缓存位，同一交地出现多个不同板号的情况.
+            if (pinfo == null) { LableCode.Update(fp, new PanelInfo(rt.CodeCome.PanelNo), rt.CodeCome, null); } //test
 
             if (pinfo != null) {
                 // 取当前交地、当前板、当前层所有标签。

@@ -8,7 +8,16 @@ using System.Threading.Tasks;
 namespace yidascan.DataAccess {
     public class PanelInfo {
         public PanelInfo() {
-            PanelNo = PanelGen.NewPanelNo();
+            PanelNo = null;
+            MaxFloor = ProduceComm.clsSetting.MaxFloor;
+            CurrFloor = 1;
+            EvenStatus = false;
+            OddStatus = false;
+            Status = 0;
+        }
+
+        public PanelInfo(string pno) {
+            PanelNo = pno;
             MaxFloor = ProduceComm.clsSetting.MaxFloor;
             CurrFloor = 1;
             EvenStatus = false;
