@@ -16,7 +16,7 @@ namespace yidascan {
         static System.Windows.Forms.Timer timerLabelUp;
         static System.Windows.Forms.Timer timerItemCatchA;
         static System.Windows.Forms.Timer timerItemCatchB;
-        
+
         public static int WEIGTH_SIGNAL = 0;
         public static bool CACHE_SIGNAL = false;
         public static bool LABELUP_SIGNAL = false;
@@ -89,16 +89,49 @@ namespace yidascan {
     /// <summary>
     /// 仅用于测试
     /// </summary>
-   class FakeOpcClient: IOpcClient {
+    class FakeOpcClient : IOpcClient {
         OPCParam param;
         private Random rand = new Random();
+        
+        #region hand_panel_complete
+        // 板完成信号
+        private static string SIGNAL_PANEL_HAND_COMPLETE_B01 = "0";
 
+        public static void setPanelLayerCompleteSignal(string tolocation) {
+            if (tolocation == "B01") {
+                SIGNAL_PANEL_HAND_COMPLETE_B01 = "1";
+            }
+        }
+
+        public static void resetPanelLayerCompleteSignal(string tolocation) {
+            if (tolocation == "B01") {
+                SIGNAL_PANEL_HAND_COMPLETE_B01 = "0";
+            }
+        }
+
+        public static string getPanelLayerCompleteSignalValue(string tolocation) {
+            if (tolocation == "B01") {
+                return SIGNAL_PANEL_HAND_COMPLETE_B01;
+            } else {
+                return "0";
+            }
+        }
+        #endregion
         public FakeOpcClient(OPCParam param_) {
             param = param_;
         }
 
         public string ReadString(string slot) {
             Thread.Sleep(100);
+
+            #region SEND_HAND_COMPLETE_SIGNAL
+            // 板完成信号
+            var SLOT_B01 = "MicroWin.S7-1200.NewItem29";
+            if (slot == SLOT_B01) {
+                return SIGNAL_PANEL_HAND_COMPLETE_B01;
+            }
+            #endregion
+
             return "";
         }
         public int ReadInt(string slot) {
@@ -113,7 +146,7 @@ namespace yidascan {
 
         private static int getIntSignal(ref int signal) {
             var b = signal;
-            if (b==1) { signal = 0; }
+            if (b == 1) { signal = 0; }
             return b;
         }
 
@@ -126,12 +159,12 @@ namespace yidascan {
         public bool ReadBool(string slot) {
             Thread.Sleep(100);
 
-            foreach(var p in param.ACAreaPanelFinish) {
+            foreach (var p in param.ACAreaPanelFinish) {
                 if (p.Value.Signal == slot) {
                     return false;
                 }
             }
-            if(slot== param.ScanParam.ScanState) {
+            if (slot == param.ScanParam.ScanState) {
                 return false;
             }
 
@@ -144,7 +177,7 @@ namespace yidascan {
             if (slot == PlcSlot.LABEL_UP_SIGNAL) {
                 return getSignal(ref SignalGen.LABELUP_SIGNAL);
             }
-            
+
             // 抓料处A
             if (slot == PlcSlot.ITEM_CATCH_A) {
                 return getSignal(ref SignalGen.ITEMCATCH_A_SIGNAL);
@@ -153,7 +186,7 @@ namespace yidascan {
             // 抓料处B
             if (slot == PlcSlot.ITEM_CATCH_B) {
                 return getSignal(ref SignalGen.ITEMCATCH_B_SIGNAL);
-            }                
+            }
 
             return true;
         }

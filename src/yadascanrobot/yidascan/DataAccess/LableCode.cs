@@ -559,6 +559,7 @@ order by floorindex desc;";
             return (decimal)dt.Rows[0][0];
         }
 
+        [Obsolete("use GetSecondShortestLength instead.")]
         public static decimal GetFloorHalfAvgLength(string panelNo, int currFloor) {
             var sql = "select  avg(Length)/2 " +
                 "from LableCode where PanelNo = @PanelNo and Floor=@Floor";
@@ -571,6 +572,29 @@ order by floorindex desc;";
                 return 0;
             }
             return (decimal)dt.Rows[0][0];
+        }
+
+        /// <summary>
+        /// 取一层中，倒数第二个较短布卷的长度.
+        /// </summary>
+        /// <param name="panelNo"></param>
+        /// <param name="currFloor"></param>
+        /// <returns></returns>
+        public static decimal GetSecondShortestLengthHalf(string panelNo) {
+            var sql = "select top 2 diameter" +
+                "from LableCode where PanelNo = @PanelNo";
+
+            var sp = new SqlParameter[]{
+                new SqlParameter("@PanelNo",panelNo)
+            };
+
+            var dt = DataAccess.CreateDataAccess.sa.Query(sql, sp);
+
+            if (dt == null || dt.Rows.Count < 2) {
+                return 0;
+            }
+
+            return (decimal)dt.Rows[1][0] / 2;
         }
 
         public static int GetPanelMaxFloor(string panelNo) {

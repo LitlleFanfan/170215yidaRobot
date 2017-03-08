@@ -54,10 +54,15 @@
             this.label3 = new System.Windows.Forms.Label();
             this.btnSetPlcIP = new System.Windows.Forms.Button();
             this.tabPage6 = new System.Windows.Forms.TabPage();
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button7 = new System.Windows.Forms.Button();
             this.button8 = new System.Windows.Forms.Button();
+            this.button7 = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
+            this.tabPage7 = new System.Windows.Forms.TabPage();
+            this.btnPanelHandComplete = new System.Windows.Forms.Button();
+            this.label2 = new System.Windows.Forms.Label();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.btnResetPanelHandComplete = new System.Windows.Forms.Button();
             this.tabPage3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ntxtPos)).BeginInit();
             this.tabPage2.SuspendLayout();
@@ -69,6 +74,7 @@
             this.tabPage4.SuspendLayout();
             this.tabPage5.SuspendLayout();
             this.tabPage6.SuspendLayout();
+            this.tabPage7.SuspendLayout();
             this.SuspendLayout();
             // 
             // listBox1
@@ -77,7 +83,7 @@
             this.listBox1.FormattingEnabled = true;
             this.listBox1.ItemHeight = 19;
             this.listBox1.Location = new System.Drawing.Point(0, 391);
-            this.listBox1.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.listBox1.Margin = new System.Windows.Forms.Padding(5);
             this.listBox1.Name = "listBox1";
             this.listBox1.Size = new System.Drawing.Size(1144, 254);
             this.listBox1.TabIndex = 2;
@@ -88,11 +94,11 @@
             this.tabPage3.Controls.Add(this.label5);
             this.tabPage3.Controls.Add(this.button6);
             this.tabPage3.Controls.Add(this.button5);
-            this.tabPage3.Location = new System.Drawing.Point(4, 26);
-            this.tabPage3.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.tabPage3.Location = new System.Drawing.Point(4, 29);
+            this.tabPage3.Margin = new System.Windows.Forms.Padding(5);
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Padding = new System.Windows.Forms.Padding(5, 5, 5, 5);
-            this.tabPage3.Size = new System.Drawing.Size(1136, 361);
+            this.tabPage3.Padding = new System.Windows.Forms.Padding(5);
+            this.tabPage3.Size = new System.Drawing.Size(1136, 358);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "抓料处";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -100,7 +106,7 @@
             // ntxtPos
             // 
             this.ntxtPos.Location = new System.Drawing.Point(204, 49);
-            this.ntxtPos.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.ntxtPos.Margin = new System.Windows.Forms.Padding(5);
             this.ntxtPos.Maximum = new decimal(new int[] {
             2,
             0,
@@ -133,7 +139,7 @@
             // button6
             // 
             this.button6.Location = new System.Drawing.Point(90, 182);
-            this.button6.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.button6.Margin = new System.Windows.Forms.Padding(5);
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(381, 37);
             this.button6.TabIndex = 1;
@@ -144,7 +150,7 @@
             // button5
             // 
             this.button5.Location = new System.Drawing.Point(90, 115);
-            this.button5.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.button5.Margin = new System.Windows.Forms.Padding(5);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(381, 37);
             this.button5.TabIndex = 0;
@@ -161,11 +167,11 @@
             this.tabPage2.Controls.Add(this.txDiameter);
             this.tabPage2.Controls.Add(this.button4);
             this.tabPage2.Controls.Add(this.button3);
-            this.tabPage2.Location = new System.Drawing.Point(4, 26);
-            this.tabPage2.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.tabPage2.Location = new System.Drawing.Point(4, 29);
+            this.tabPage2.Margin = new System.Windows.Forms.Padding(5);
             this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(5, 5, 5, 5);
-            this.tabPage2.Size = new System.Drawing.Size(1136, 361);
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(5);
+            this.tabPage2.Size = new System.Drawing.Size(1136, 358);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "标签采集（标签朝上）";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -183,7 +189,7 @@
             // ntxtChannel
             // 
             this.ntxtChannel.Location = new System.Drawing.Point(446, 128);
-            this.ntxtChannel.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.ntxtChannel.Margin = new System.Windows.Forms.Padding(5);
             this.ntxtChannel.Maximum = new decimal(new int[] {
             2,
             0,
@@ -226,7 +232,7 @@
             // txDiameter
             // 
             this.txDiameter.Location = new System.Drawing.Point(149, 128);
-            this.txDiameter.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.txDiameter.Margin = new System.Windows.Forms.Padding(5);
             this.txDiameter.Name = "txDiameter";
             this.txDiameter.Size = new System.Drawing.Size(130, 29);
             this.txDiameter.TabIndex = 4;
@@ -235,7 +241,7 @@
             // button4
             // 
             this.button4.Location = new System.Drawing.Point(55, 185);
-            this.button4.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.button4.Margin = new System.Windows.Forms.Padding(5);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(300, 37);
             this.button4.TabIndex = 3;
@@ -246,7 +252,7 @@
             // button3
             // 
             this.button3.Location = new System.Drawing.Point(50, 37);
-            this.button3.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.button3.Margin = new System.Windows.Forms.Padding(5);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(270, 37);
             this.button3.TabIndex = 0;
@@ -264,11 +270,11 @@
             this.tabPage1.Controls.Add(this.label1);
             this.tabPage1.Controls.Add(this.btnWriteSignal);
             this.tabPage1.Controls.Add(this.btnReadCacheSignal);
-            this.tabPage1.Location = new System.Drawing.Point(4, 26);
-            this.tabPage1.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.tabPage1.Location = new System.Drawing.Point(4, 29);
+            this.tabPage1.Margin = new System.Windows.Forms.Padding(5);
             this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(5, 5, 5, 5);
-            this.tabPage1.Size = new System.Drawing.Size(1136, 361);
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(5);
+            this.tabPage1.Size = new System.Drawing.Size(1136, 358);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "缓存来料";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -276,7 +282,7 @@
             // ntxtCachePosGet
             // 
             this.ntxtCachePosGet.Location = new System.Drawing.Point(849, 110);
-            this.ntxtCachePosGet.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.ntxtCachePosGet.Margin = new System.Windows.Forms.Padding(5);
             this.ntxtCachePosGet.Name = "ntxtCachePosGet";
             this.ntxtCachePosGet.Size = new System.Drawing.Size(166, 29);
             this.ntxtCachePosGet.TabIndex = 14;
@@ -284,7 +290,7 @@
             // ntxtCachePosSave
             // 
             this.ntxtCachePosSave.Location = new System.Drawing.Point(544, 110);
-            this.ntxtCachePosSave.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.ntxtCachePosSave.Margin = new System.Windows.Forms.Padding(5);
             this.ntxtCachePosSave.Name = "ntxtCachePosSave";
             this.ntxtCachePosSave.Size = new System.Drawing.Size(166, 29);
             this.ntxtCachePosSave.TabIndex = 13;
@@ -313,7 +319,7 @@
             // 
             this.cbxJob.FormattingEnabled = true;
             this.cbxJob.Location = new System.Drawing.Point(176, 122);
-            this.cbxJob.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.cbxJob.Margin = new System.Windows.Forms.Padding(5);
             this.cbxJob.Name = "cbxJob";
             this.cbxJob.Size = new System.Drawing.Size(199, 27);
             this.cbxJob.TabIndex = 9;
@@ -331,7 +337,7 @@
             // btnWriteSignal
             // 
             this.btnWriteSignal.Location = new System.Drawing.Point(44, 196);
-            this.btnWriteSignal.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.btnWriteSignal.Margin = new System.Windows.Forms.Padding(5);
             this.btnWriteSignal.Name = "btnWriteSignal";
             this.btnWriteSignal.Size = new System.Drawing.Size(270, 37);
             this.btnWriteSignal.TabIndex = 7;
@@ -342,7 +348,7 @@
             // btnReadCacheSignal
             // 
             this.btnReadCacheSignal.Location = new System.Drawing.Point(50, 28);
-            this.btnReadCacheSignal.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.btnReadCacheSignal.Margin = new System.Windows.Forms.Padding(5);
             this.btnReadCacheSignal.Name = "btnReadCacheSignal";
             this.btnReadCacheSignal.Size = new System.Drawing.Size(264, 37);
             this.btnReadCacheSignal.TabIndex = 6;
@@ -358,9 +364,10 @@
             this.tabControl1.Controls.Add(this.tabPage4);
             this.tabControl1.Controls.Add(this.tabPage5);
             this.tabControl1.Controls.Add(this.tabPage6);
+            this.tabControl1.Controls.Add(this.tabPage7);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Top;
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
-            this.tabControl1.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.tabControl1.Margin = new System.Windows.Forms.Padding(5);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(1144, 391);
@@ -369,11 +376,11 @@
             // tabPage4
             // 
             this.tabPage4.Controls.Add(this.btnPushAside);
-            this.tabPage4.Location = new System.Drawing.Point(4, 26);
-            this.tabPage4.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.tabPage4.Location = new System.Drawing.Point(4, 29);
+            this.tabPage4.Margin = new System.Windows.Forms.Padding(5);
             this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Padding = new System.Windows.Forms.Padding(5, 5, 5, 5);
-            this.tabPage4.Size = new System.Drawing.Size(1136, 361);
+            this.tabPage4.Padding = new System.Windows.Forms.Padding(5);
+            this.tabPage4.Size = new System.Drawing.Size(1136, 358);
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "勾料信号";
             this.tabPage4.UseVisualStyleBackColor = true;
@@ -381,7 +388,7 @@
             // btnPushAside
             // 
             this.btnPushAside.Location = new System.Drawing.Point(46, 56);
-            this.btnPushAside.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.btnPushAside.Margin = new System.Windows.Forms.Padding(5);
             this.btnPushAside.Name = "btnPushAside";
             this.btnPushAside.Size = new System.Drawing.Size(250, 37);
             this.btnPushAside.TabIndex = 0;
@@ -394,11 +401,11 @@
             this.tabPage5.Controls.Add(this.txPlcIP);
             this.tabPage5.Controls.Add(this.label3);
             this.tabPage5.Controls.Add(this.btnSetPlcIP);
-            this.tabPage5.Location = new System.Drawing.Point(4, 26);
-            this.tabPage5.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.tabPage5.Location = new System.Drawing.Point(4, 29);
+            this.tabPage5.Margin = new System.Windows.Forms.Padding(5);
             this.tabPage5.Name = "tabPage5";
-            this.tabPage5.Padding = new System.Windows.Forms.Padding(5, 5, 5, 5);
-            this.tabPage5.Size = new System.Drawing.Size(1136, 361);
+            this.tabPage5.Padding = new System.Windows.Forms.Padding(5);
+            this.tabPage5.Size = new System.Drawing.Size(1136, 358);
             this.tabPage5.TabIndex = 4;
             this.tabPage5.Text = "plc ip设置";
             this.tabPage5.UseVisualStyleBackColor = true;
@@ -406,7 +413,7 @@
             // txPlcIP
             // 
             this.txPlcIP.Location = new System.Drawing.Point(166, 52);
-            this.txPlcIP.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.txPlcIP.Margin = new System.Windows.Forms.Padding(5);
             this.txPlcIP.Name = "txPlcIP";
             this.txPlcIP.Size = new System.Drawing.Size(299, 29);
             this.txPlcIP.TabIndex = 2;
@@ -425,7 +432,7 @@
             // btnSetPlcIP
             // 
             this.btnSetPlcIP.Location = new System.Drawing.Point(46, 137);
-            this.btnSetPlcIP.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.btnSetPlcIP.Margin = new System.Windows.Forms.Padding(5);
             this.btnSetPlcIP.Name = "btnSetPlcIP";
             this.btnSetPlcIP.Size = new System.Drawing.Size(216, 37);
             this.btnSetPlcIP.TabIndex = 0;
@@ -440,45 +447,12 @@
             this.tabPage6.Controls.Add(this.button2);
             this.tabPage6.Controls.Add(this.button1);
             this.tabPage6.Location = new System.Drawing.Point(4, 29);
-            this.tabPage6.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.tabPage6.Margin = new System.Windows.Forms.Padding(5);
             this.tabPage6.Name = "tabPage6";
             this.tabPage6.Size = new System.Drawing.Size(1136, 358);
             this.tabPage6.TabIndex = 5;
             this.tabPage6.Text = "称重信号";
             this.tabPage6.UseVisualStyleBackColor = true;
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(180, 132);
-            this.button1.Margin = new System.Windows.Forms.Padding(5);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(125, 37);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "1200-18";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
-            // button2
-            // 
-            this.button2.Location = new System.Drawing.Point(46, 32);
-            this.button2.Margin = new System.Windows.Forms.Padding(5);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(125, 37);
-            this.button2.TabIndex = 1;
-            this.button2.Text = "1200-16";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
-            // 
-            // button7
-            // 
-            this.button7.Location = new System.Drawing.Point(352, 132);
-            this.button7.Margin = new System.Windows.Forms.Padding(5);
-            this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(125, 37);
-            this.button7.TabIndex = 2;
-            this.button7.Text = "1200-19";
-            this.button7.UseVisualStyleBackColor = true;
-            this.button7.Click += new System.EventHandler(this.button7_Click);
             // 
             // button8
             // 
@@ -491,6 +465,92 @@
             this.button8.UseVisualStyleBackColor = true;
             this.button8.Click += new System.EventHandler(this.button8_Click);
             // 
+            // button7
+            // 
+            this.button7.Location = new System.Drawing.Point(352, 132);
+            this.button7.Margin = new System.Windows.Forms.Padding(5);
+            this.button7.Name = "button7";
+            this.button7.Size = new System.Drawing.Size(125, 37);
+            this.button7.TabIndex = 2;
+            this.button7.Text = "1200-19";
+            this.button7.UseVisualStyleBackColor = true;
+            this.button7.Click += new System.EventHandler(this.button7_Click);
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(46, 32);
+            this.button2.Margin = new System.Windows.Forms.Padding(5);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(125, 37);
+            this.button2.TabIndex = 1;
+            this.button2.Text = "1200-16";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(180, 132);
+            this.button1.Margin = new System.Windows.Forms.Padding(5);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(125, 37);
+            this.button1.TabIndex = 0;
+            this.button1.Text = "1200-18";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // tabPage7
+            // 
+            this.tabPage7.Controls.Add(this.btnResetPanelHandComplete);
+            this.tabPage7.Controls.Add(this.btnPanelHandComplete);
+            this.tabPage7.Controls.Add(this.label2);
+            this.tabPage7.Controls.Add(this.comboBox1);
+            this.tabPage7.Location = new System.Drawing.Point(4, 29);
+            this.tabPage7.Name = "tabPage7";
+            this.tabPage7.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage7.Size = new System.Drawing.Size(1136, 358);
+            this.tabPage7.TabIndex = 6;
+            this.tabPage7.Text = "板完成信号";
+            this.tabPage7.UseVisualStyleBackColor = true;
+            // 
+            // btnPanelHandComplete
+            // 
+            this.btnPanelHandComplete.Location = new System.Drawing.Point(137, 133);
+            this.btnPanelHandComplete.Name = "btnPanelHandComplete";
+            this.btnPanelHandComplete.Size = new System.Drawing.Size(194, 30);
+            this.btnPanelHandComplete.TabIndex = 2;
+            this.btnPanelHandComplete.Text = "发出完成信号";
+            this.btnPanelHandComplete.UseVisualStyleBackColor = true;
+            this.btnPanelHandComplete.Click += new System.EventHandler(this.btnPanelHandComplete_Click);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(51, 66);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(47, 19);
+            this.label2.TabIndex = 1;
+            this.label2.Text = "板号";
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Items.AddRange(new object[] {
+            "B01"});
+            this.comboBox1.Location = new System.Drawing.Point(137, 63);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(217, 27);
+            this.comboBox1.TabIndex = 0;
+            // 
+            // btnResetPanelHandComplete
+            // 
+            this.btnResetPanelHandComplete.Location = new System.Drawing.Point(396, 133);
+            this.btnResetPanelHandComplete.Name = "btnResetPanelHandComplete";
+            this.btnResetPanelHandComplete.Size = new System.Drawing.Size(194, 30);
+            this.btnResetPanelHandComplete.TabIndex = 3;
+            this.btnResetPanelHandComplete.Text = "复位完成信号";
+            this.btnResetPanelHandComplete.UseVisualStyleBackColor = true;
+            this.btnResetPanelHandComplete.Click += new System.EventHandler(this.btnResetPanelHandComplete_Click);
+            // 
             // wtestplc
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 19F);
@@ -498,8 +558,8 @@
             this.ClientSize = new System.Drawing.Size(1144, 645);
             this.Controls.Add(this.listBox1);
             this.Controls.Add(this.tabControl1);
-            this.Font = new System.Drawing.Font("宋体", 14F);
-            this.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.Font = new System.Drawing.Font("SimSun", 14F);
+            this.Margin = new System.Windows.Forms.Padding(5);
             this.Name = "wtestplc";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "测试plc信号";
@@ -519,6 +579,8 @@
             this.tabPage5.ResumeLayout(false);
             this.tabPage5.PerformLayout();
             this.tabPage6.ResumeLayout(false);
+            this.tabPage7.ResumeLayout(false);
+            this.tabPage7.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -559,5 +621,10 @@
         private System.Windows.Forms.Button button8;
         private System.Windows.Forms.Button button7;
         private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.TabPage tabPage7;
+        private System.Windows.Forms.Button btnPanelHandComplete;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.Button btnResetPanelHandComplete;
     }
 }

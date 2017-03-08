@@ -88,6 +88,7 @@ namespace yidascan {
 
         private void btnSetPlcIP_Click(object sender, EventArgs e) {
             opc_server_ip = txPlcIP.Text;
+            initOpcClient();
         }
 
         private void button1_Click(object sender, EventArgs e) {
@@ -112,6 +113,16 @@ namespace yidascan {
             TempTest.testWeigthConfirmSignel(client, "MicroWin.S7-1200.NewItem20", (x) => {
                 WriteLog(x);
             });
+        }
+
+        private void btnPanelHandComplete_Click(object sender, EventArgs e) {
+            FakeOpcClient.setPanelLayerCompleteSignal("B01");
+            WriteLog("B01完成信号设置为1");
+        }
+
+        private void btnResetPanelHandComplete_Click(object sender, EventArgs e) {
+            FakeOpcClient.resetPanelLayerCompleteSignal("B01");
+            WriteLog("B01完成信号设置为0");
         }
     }
 }
