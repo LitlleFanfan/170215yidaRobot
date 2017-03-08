@@ -7,6 +7,14 @@ using System.Threading.Tasks;
 
 namespace yidascan.DataAccess {
     public class PanelInfo {
+        public PanelInfo() {
+            PanelNo = PanelGen.NewPanelNo();
+            MaxFloor = ProduceComm.clsSetting.MaxFloor;
+            CurrFloor = 1;
+            EvenStatus = false;
+            OddStatus = false;
+            Status = 0;
+        }
         public string Remark { get;set; }
         public DateTime UpdateDate { get; set; }
         public DateTime CreateDate { get; set; }

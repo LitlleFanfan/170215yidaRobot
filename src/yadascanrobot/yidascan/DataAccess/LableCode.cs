@@ -493,7 +493,7 @@ order by floorindex desc;";
                 new SqlParameter("@Floor",pinfo.CurrFloor)};
             var dt = DataAccess.CreateDataAccess.sa.Query(sql, sp);
             if (dt == null || dt.Rows.Count < 1) {
-                return null;
+                return new List<LableCode>();
             }
             return Helper.DataTableToObjList<LableCode>(dt);
         }
