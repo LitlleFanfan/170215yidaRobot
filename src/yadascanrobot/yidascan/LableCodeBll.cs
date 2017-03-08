@@ -131,7 +131,8 @@ namespace yidascan {
             decimal MAX_LEN = clsSetting.SplintLength / 2;
             if (lc.Floor > 1) {
                 FrmMain.logOpt.Write($"板号{ lc.PanelNo}层号{ lc.Floor}", LogType.BUFFER, LogViewType.OnlyFile);
-                MAX_LEN = LableCode.GetFloorHalfAvgLength(lc.PanelNo, lc.Floor);
+                // MAX_LEN = LableCode.GetFloorHalfAvgLength(lc.PanelNo, lc.Floor);                
+                MAX_LEN = LableCode.GetSecondShortestLengthHalf(lc.PanelNo);
                 MAX_LEN = MAX_LEN == 0 ? (clsSetting.SplintLength / 2) : MAX_LEN;
                 FrmMain.logOpt.Write(string.Format("板号{0}层号{1}层的平均长度{2}", lc.PanelNo, lc.Floor - 1, MAX_LEN), LogType.BUFFER, LogViewType.OnlyFile);
             }
