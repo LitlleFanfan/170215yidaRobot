@@ -7,8 +7,11 @@ using yidascan.DataAccess;
 namespace yidascan {
     class LableCodeBllPro {
         #region PRIVATE_FUNCTIONS
-        private static bool IsRollInSameSide(LableCode lc, int flindex) {
-            return lc.FloorIndex > 0 && lc.FloorIndex % 2 == flindex % 2;
+        private static bool IsRollInSameSide(LableCode lc, LableCode currlc) {
+            return lc.FloorIndex > 0 && lc.FloorIndex % 2 == currlc.FloorIndex % 2 && lc.LCode != currlc.LCode;
+        }
+        private static bool IsRollInSameSide(LableCode lc, int findex) {
+            return lc.FloorIndex > 0 && lc.FloorIndex % 2 == findex % 2;
         }
 
         private static void CalculatePosition(List<LableCode> lcs, LableCode lc) {
@@ -34,10 +37,11 @@ namespace yidascan {
             if (lc.FloorIndex <= 2) {
                 xory = lc.FloorIndex % 2 == 1 ? 0 : -clsSetting.RollSep;
             } else {
-                var lastRoll = (from s in lcs where IsRollInSameSide(s, lc.FloorIndex)
+                var lastRoll = (from s in lcs where IsRollInSameSide(s, lc)
                                 orderby s.FloorIndex descending select s).First();
                 xory = (Math.Abs(lastRoll.Cx + lastRoll.Cy) + lastRoll.Diameter + clsSetting.RollSep)
                     * (lc.FloorIndex % 2 == 1 ? 1 : -1);
+                FrmMain.logOpt.Write($"lastroll:{lastRoll.LCode} x:{lastRoll.Cx} y:{lastRoll.Cy}  currroll:{lc.LCode} xory:{xory}", LogType.BUFFER);
             }
 
             return xory;
@@ -113,7 +117,7 @@ namespace yidascan {
         /// <returns></returns>
         private static bool IsPanelFull(LableCode lc) {
             var MAX_WIDTH = FindMaxHalfWidth(lc);
-            return expectedWidth( lc) > MAX_WIDTH;
+            return expectedWidth(lc) > MAX_WIDTH;
         }
 
         private static decimal FindMaxHalfWidth(LableCode lc) {
@@ -191,7 +195,6 @@ namespace yidascan {
         private static decimal expectedWidth(decimal installedWidth, LableCode l1, LableCode l2) {
             // 预期宽度
             var expected = installedWidth + l1.Diameter + clsSetting.RollSep + l2.Diameter + clsSetting.EdgeSpace;
-            // FrmMain.logOpt.Write($"*** loc: {l1.ToLocation}, expected width: {expected}");
             return expected;
         }
 
@@ -300,7 +303,7 @@ namespace yidascan {
                         rt.state = CacheState.Go;
                         CalculatePosition(layerLabels, rt.CodeCome);
 
-                       if(IsPanelFull(rt.CodeCome)) {
+                        if (IsPanelFull(rt.CodeCome)) {
                             fp = SetFullFlag(rt, pinfo);
                         }
 
@@ -358,8 +361,8 @@ namespace yidascan {
             }
             return go;
         }
-        
-        private static int GetBiggerCount(IEnumerable<LableCode> cacheq, CalResult rt,int takeCount) {
+
+        private static int GetBiggerCount(IEnumerable<LableCode> cacheq, CalResult rt, int takeCount) {
             return (from s in cacheq.Take(takeCount) where s.Diameter > rt.CodeCome.Diameter + clsSetting.CacheIgnoredDiff select s).Count();
         }
 
