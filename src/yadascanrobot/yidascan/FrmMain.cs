@@ -27,16 +27,9 @@ namespace yidascan {
         #region opc
         public static OPCParam opcParam = new OPCParam();
 
-#if !DEBUG
-        public static IOpcClient opcClient = GetOpcClient(true);
-        public static IOpcClient ScannerOpcClient = GetOpcClient(true);
-        public static IOpcClient RobotOpcClient = GetOpcClient(true);
-#endif
-#if DEBUG
-        public static IOpcClient opcClient = GetOpcClient(false);
-        public static IOpcClient ScannerOpcClient = GetOpcClient(false);
-        public static IOpcClient RobotOpcClient = GetOpcClient(false);
-#endif
+        public static IOpcClient opcClient = GetOpcClient();
+        public static IOpcClient ScannerOpcClient = GetOpcClient();
+        public static IOpcClient RobotOpcClient = GetOpcClient();
         #endregion
 
         DataTable dtopc;
@@ -234,6 +227,7 @@ namespace yidascan {
         /// </summary>
         /// <param name="tolocation"></param>
         /// <returns></returns>
+        [Obsolete("use plchelper.IsPanelAvailable instead.")]
         public static bool PanelAvailable(string tolocation) {
             try {
                 lock (opcClient) {
@@ -379,12 +373,7 @@ namespace yidascan {
             // 产生一个IErpApi实例，如果参数是false，则生成模拟的接口。
             // 如果参数是true，则调用真正的web api接口。
 
-#if !DEBUG
-            initErpApi(true);
-#endif
-#if DEBUG
-            initErpApi(false);
-#endif
+            initErpApi();
 
             PanelGen.Init(dtpDate.Value);
 
@@ -424,17 +413,21 @@ namespace yidascan {
             const int SUCCESS = 0;
             const int FAIL = 2;
 
+            var client = GetOpcClient();
+
+            setupOpcClient(client, "称重");
+
             Task.Factory.StartNew(() => {
                 while (isrun) {
                     try {
-                        lock (opcClient) {
-                            var getWeight = opcClient.ReadInt(opcParam.ScanParam.GetWeigh);
-                            if (getWeight == TO_WEIGH) {
+                        lock (client) {
+                            var signal = client.ReadInt(opcParam.ScanParam.GetWeigh);
+                            if (signal == TO_WEIGH) {
                                 var code = taskQ.GetWeighQ();
 
                                 if (code != null) {
-                                    getWeight = NotifyWeigh(code.LCode, false) ? SUCCESS : FAIL;
-                                    logOpt.Write($"{code.LCode}称重API状态：{getWeight} 写OPC状态：{opcClient.Write(opcParam.ScanParam.GetWeigh, getWeight)}");
+                                    signal = NotifyWeigh(code.LCode, false) ? SUCCESS : FAIL;
+                                    logOpt.Write($"{code.LCode}称重API状态：{signal} 写OPC状态：{client.Write(opcParam.ScanParam.GetWeigh, signal)}");
 
                                     showLabelQue(taskQ.WeighQ, lsvWeigh);
                                     if (code.ToLocation.Substring(0, 1) == "B") {
@@ -444,7 +437,7 @@ namespace yidascan {
                             }
                         }
                     } catch (Exception ex) {
-                        logOpt.Write("!" + ex.ToString(), LogType.NORMAL);
+                        logOpt.Write($"!weigh task: {ex.ToString()}", LogType.NORMAL);
                     }
 
                     Thread.Sleep(OPCClient.DELAY * 200);
@@ -1328,44 +1321,54 @@ namespace yidascan {
             }
         }
 
-        private void initErpApi(bool isRealWebApi) {
-            if (isRealWebApi) {
-                callErpApi = new CallWebApi();
-            } else {
-                callErpApi = new FakeWebApi();
-            }
+        private void initErpApi() {
+#if DEBUG
+            callErpApi = new FakeWebApi();
+#else
+            callErpApi = new CallWebApi();
+#endif      
         }
 
-        private static IOpcClient GetOpcClient(bool isRealOpc) {
-            if (isRealOpc) {
-                return new OPCClient();
-            } else {
-                // logOpt.ViewInfo("!模拟opc client.", LogViewType.OnlyForm);
-                return new FakeOpcClient(opcParam);
-            }
+        private static IOpcClient GetOpcClient() {
+#if DEBUG
+            return new FakeOpcClient(opcParam);
+#else
+            return new OPCClient();
+#endif      
         }
 
         private void btnSignalWeigh_Click(object sender, EventArgs e) {
+#if DEBUG
             SignalGen.startTimerWeigh();
+#endif
         }
 
         private void btnSignalCache_Click(object sender, EventArgs e) {
+#if DEBUG
             SignalGen.startTimerCache();
+#endif
         }
 
         private void btnSignalLabelUp_Click(object sender, EventArgs e) {
+#if DEBUG
             SignalGen.startTimerLabelUp();
+#endif
         }
 
         private void btnSignalItemCatchA_Click(object sender, EventArgs e) {
+#if DEBUG
             SignalGen.startTimerItemCatchA();
+#endif
         }
 
         private void btnSignalItemCatchB_Click(object sender, EventArgs e) {
+#if DEBUG
             SignalGen.startTimerItemCatchB();
+#endif
         }
 
         private void btnStartAllSignals_Click(object sender, EventArgs e) {
+#if DEBUG
             SignalGen.startTimerWeigh();
             Thread.Sleep(100);
             SignalGen.startTimerCache();
@@ -1375,6 +1378,7 @@ namespace yidascan {
             SignalGen.startTimerItemCatchA();
             Thread.Sleep(100);
             SignalGen.startTimerItemCatchB();
+#endif
         }
 
         private void clearAllTaskViews() {

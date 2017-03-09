@@ -131,5 +131,18 @@ namespace yidascan {
             client.Write(param.DeleteLCode.LCode2, lcode.Substring(6, 6));
             client.Write(param.DeleteLCode.Signal, true);
         }
+
+        /// <summary>
+        /// 从plc读有板信号
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="param"></param>
+        /// <param name="tolocation">交地</param>
+        /// <returns></returns>
+        public static bool IsPanelAvailable(IOpcClient client, OPCParam param, string tolocation) {
+            const string PANEL_OK = "2";
+            var s = client.ReadString(param.BAreaPanelState[tolocation]);
+            return s == PANEL_OK;
+        }
     }
 }
