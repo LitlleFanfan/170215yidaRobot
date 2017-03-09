@@ -11,6 +11,7 @@ using ProduceComm;
 using Newtonsoft.Json;
 
 namespace yidascan {
+#if DEBUG
     public class FakeWebApi : IErpApi {
         public bool CheckValidationResult(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors errors) {
             //直接确认，否则打不开    
@@ -43,4 +44,5 @@ namespace yidascan {
             return "";
         }
     }
+#endif
 }

@@ -9,6 +9,8 @@ using System.Windows.Forms;
 using yidascan.DataAccess;
 
 namespace yidascan {
+#if DEBUG
+
     /// <summary>
     /// 仅用于测试。
     /// </summary>
@@ -66,4 +68,5 @@ namespace yidascan {
             GC.SuppressFinalize(this);
         }
     }
+#endif
 }

@@ -7,6 +7,8 @@ using System.Threading;
 using yidascan.DataAccess;
 
 namespace yidascan {
+
+#if DEBUG
     /// <summary>
     /// 模拟信号发生。
     /// </summary>
@@ -223,4 +225,5 @@ namespace yidascan {
             return;
         }
     }
+#endif
 }
