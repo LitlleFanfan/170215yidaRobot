@@ -364,7 +364,6 @@ namespace yidascan {
                 lblScanner.BackColor = Color.LightGreen;
                 logOpt.Write(nscan1.name + "ok.");
             } else {
-                lblScanner2.BackColor = System.Drawing.Color.Gray;
                 ShowWarning("启动相机失败。");
                 logOpt.Write($"!{nscan1.name}启动失败！", LogType.NORMAL);
             }
@@ -395,7 +394,7 @@ namespace yidascan {
             WeighTask();
             ACAreaFinishTask();
 #if !DEBUG
-            BeforCacheTask();
+            BeforCacheTask_new();
 #endif
 #if DEBUG
             BeforCacheTask_new();
@@ -654,7 +653,7 @@ namespace yidascan {
         }
 
         private void BeforCacheTask_new() {
-            logOpt.Write("!测试版缓存任务启动。", LogType.NORMAL);
+            logOpt.Write("!新版缓存计算任务启动。", LogType.NORMAL);
 
             Task.Factory.StartNew(() => {
                 while (isrun) {
@@ -662,7 +661,7 @@ namespace yidascan {
 
                     lock (opcClient) {
                         try {
-                            if (PlcHelper.ReadCacheSignal(opcClient)) {
+                            if (PlcHelper.ReadCacheSignal(RobotOpcClient)) {
                                 if (taskQ.CacheQ.Count == 0) continue;
 
                                 var lc = taskQ.CacheQ.Peek();
@@ -683,7 +682,7 @@ namespace yidascan {
                                 var calResult = LableCodeBllPro.AreaBCalculate(callErpApi,
                                     lc,
                                     createShiftNo(), taskQ.GetBeforCacheLables(lc)); //计算位置
-                                
+
                                 // 确定缓存操作动作
                                 var cacheJobState = cacheher.WhenRollArrived(calResult.state, calResult.CodeCome, calResult.CodeFromCache);
                                 logOpt.Write($"{calResult.CodeCome.ToLocation} {JsonConvert.SerializeObject(cacheJobState)}" +
@@ -709,7 +708,7 @@ namespace yidascan {
                                 }
 
                                 // 发出机械手缓存动作指令
-                                PlcHelper.WriteCacheJob(opcClient, cacheJobState.state, cacheJobState.savepos, cacheJobState.getpos);
+                                PlcHelper.WriteCacheJob(RobotOpcClient, cacheJobState.state, cacheJobState.savepos, cacheJobState.getpos);
                             }
                         } catch (Exception ex) {
                             logOpt.Write($"!{ex.ToString()}", LogType.BUFFER);
@@ -741,7 +740,7 @@ namespace yidascan {
 
                                     // 写plc直径和分道号。1~5号板走1道， 其他走2道。
                                     PlcHelper.WriteLabelUpData(RobotOpcClient, code.Diameter, int.Parse(code.ParseLocationNo()) < 6 ? RollCatchChannel.channel_1 : RollCatchChannel.channel_2);
-                                    
+
                                     showLabelQue(taskQ.LableUpQ, lsvLableUp);
                                     showCachePosQue(taskQ.CacheSide);
                                     if (int.Parse(code.ParseLocationNo()) < 6) {
@@ -760,7 +759,7 @@ namespace yidascan {
                 }
             });
         }
-        
+
         void nscan_OnDataArrived(string type, string code, int scanNo) {
             if (code == "ERROR" || code.Length < 12) { return; }
 
@@ -869,19 +868,6 @@ namespace yidascan {
                     break;
                 default:
                     lblScanner.Text = string.Format("Scanner1:Unknown");
-                    break;
-            }
-            switch (FrmSet.pcfgScan2.CommunicationType) {
-                case "Network":
-                    lblScanner2.Text = string.Format("Scanner2:{0}/{1}",
-                        FrmSet.pcfgScan2.IPAddr, FrmSet.pcfgScan2.IPPort);
-                    break;
-                case "SerialPort":
-                    lblScanner2.Text = string.Format("Scanner2:{0}/{1}",
-                        FrmSet.pcfgScan2.ComPort, FrmSet.pcfgScan2.BaudRate);
-                    break;
-                default:
-                    lblScanner2.Text = string.Format("Scanner2:Unknown");
                     break;
             }
 
@@ -1019,12 +1005,12 @@ namespace yidascan {
             var lc = new LableCode(code, tolocation, handwork);
             var clothsize = new ClothRollSize();
 
-            logOpt.Write("等待SizeState信号。");
             t = TimeCount.TimeIt(() => {
                 while (isrun) {
                     var f = ScannerOpcClient.ReadBool(opcParam.ScanParam.SizeState);
                     if (f) { break; }
 
+                    logOpt.Write("等待SizeState信号。");
                     Thread.Sleep(OPCClient.DELAY);
                 }
             });
@@ -1230,15 +1216,7 @@ namespace yidascan {
         }
 
         private void btnReset_Click(object sender, EventArgs e) {
-            lock (opcClient) {
-                opcClient.Write(opcParam.ScanParam.SizeState, false);
-                opcClient.Write(opcParam.ScanParam.ScanLable1, "");
-                opcClient.Write(opcParam.ScanParam.ScanLable2, "");
-                opcClient.Write(opcParam.ScanParam.ToLocationArea, clsSetting.AreaNo["A07".Substring(0, 1)]);
-                opcClient.Write(opcParam.ScanParam.ToLocationNo, "A07".Substring(1, 2));
-                logOpt.Write("传送复位。", LogType.NORMAL);
-                opcClient.Write(opcParam.ScanParam.ScanState, true);
-            }
+
         }
 
         private void timer_message_Tick(object sender, EventArgs e) {
@@ -1328,6 +1306,7 @@ namespace yidascan {
         }
 
         private void btnStopRobot_Click(object sender, EventArgs e) {
+            if (!CommonHelper.Confirm("确定停止机器人任务吗?")) { return; }
             StopAllRobotTasks();
             RefreshRobotMenuState();
         }
