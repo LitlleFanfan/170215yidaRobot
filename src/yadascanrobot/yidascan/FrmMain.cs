@@ -52,6 +52,10 @@ namespace yidascan {
 
         public FrmMain() {
             InitializeComponent();
+
+#if !debug
+            btnTestPlc.Visible = false;
+#endif
             logOpt = new ProduceComm.LogOpreate();
 
             try {
@@ -387,7 +391,7 @@ namespace yidascan {
 #endif
 #if DEBUG
             BeforCacheTask_new();
-#endif 
+#endif
             LableUpTask();
 
             StartRobotJobATask();
@@ -1332,7 +1336,7 @@ namespace yidascan {
             callErpApi = new FakeWebApi();
 #else
             callErpApi = new CallWebApi();
-#endif      
+#endif
         }
 
         private static IOpcClient GetOpcClient() {
@@ -1340,7 +1344,7 @@ namespace yidascan {
             return new FakeOpcClient(opcParam);
 #else
             return new OPCClient();
-#endif      
+#endif
         }
 
         private void btnSignalWeigh_Click(object sender, EventArgs e) {
