@@ -169,10 +169,11 @@ namespace yidascan.DataAccess {
 
         public LableCode() { }
 
-        public LableCode(string code, string tolocation, bool scanByMan) {
+        public LableCode(string code, string tolocation, decimal length, bool scanByMan) {
             LCode = code;
             ToLocation = tolocation;
-            Remark = (scanByMan ? "handwork" : "automatic");
+            Length = length;
+            Remark = Remark + (scanByMan ? "handwork" : "automatic");
             Coordinates = "";
         }
 
@@ -200,7 +201,7 @@ namespace yidascan.DataAccess {
 
         public void SetSize(decimal dia, decimal len) {
             Diameter = dia;
-            Length = len;
+            Remark = Remark + len;
         }
 
         public string Size_s() {

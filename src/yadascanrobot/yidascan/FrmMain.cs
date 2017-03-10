@@ -987,15 +987,15 @@ namespace yidascan {
             var tolocation = string.Empty;
 
             var t = TimeCount.TimeIt(() => {
-                tolocation = GetLocation(code, handwork);
+                tolocation = GetLocationAndLength(code, handwork);
             });
+            string[] str = tolocation.Split('|');
 
-            if (string.IsNullOrEmpty(tolocation)) {
+            if (string.IsNullOrEmpty(tolocation) || string.IsNullOrEmpty(str[0])) {
                 ScannerOpcClient.Write(opcParam.ScanParam.PushAside, 1);
                 return;
             }
-
-            var lc = new LableCode(code, tolocation, handwork);
+            var lc = new LableCode(code, str[0], decimal.Parse(str[1]), handwork);
             var clothsize = new ClothRollSize();
 
             t = TimeCount.TimeIt(() => {
@@ -1106,7 +1106,13 @@ namespace yidascan {
             }));
         }
 
-        private string GetLocation(string code, bool handwork) {
+        /// <summary>
+        ///  [交地]|[长度]
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="handwork"></param>
+        /// <returns>[交地]|[长度]</returns>
+        private string GetLocationAndLength(string code, bool handwork) {
             var re = string.Empty;
             var dt = LableCode.QueryByLCode(code);
             if (dt != null) {
