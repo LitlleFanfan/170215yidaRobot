@@ -673,37 +673,42 @@ namespace yidascan {
                                     continue;
                                 }
 
-                                // 计算位置, lc和cache队列里比较。
-                                var calResult = LableCodeBllPro.AreaBCalculate(callErpApi,
+                                var t = TimeCount.TimeIt(() => {
+                                    // 计算位置, lc和cache队列里比较。
+                                    var calResult = LableCodeBllPro.AreaBCalculate(callErpApi,
                                     lc,
                                     createShiftNo(), taskQ.GetBeforCacheLables(lc)); //计算位置
 
-                                // 确定缓存操作动作
-                                var cacheJobState = cacheher.WhenRollArrived(calResult.state, calResult.CodeCome, calResult.CodeFromCache);
-                                logOpt.Write($"{calResult.CodeCome.ToLocation} {JsonConvert.SerializeObject(cacheJobState)}" +
-                                    $" 来料标签：{calResult.CodeCome.LCode} {calResult.CodeCome.Diameter} " +
-                                    $"取出标签：{calResult.CodeFromCache?.LCode} {calResult.CodeFromCache?.Diameter}  " +
-                                    $"{calResult.message}", LogType.BUFFER);
+                                    // 确定缓存操作动作
+                                    var cacheJobState = cacheher.WhenRollArrived(calResult.state, calResult.CodeCome, calResult.CodeFromCache);
+                                    logOpt.Write($"{calResult.CodeCome.ToLocation} {JsonConvert.SerializeObject(cacheJobState)}" +
+                                        $" 来料标签：{calResult.CodeCome.LCode} {calResult.CodeCome.Diameter} " +
+                                        $"取出标签：{calResult.CodeFromCache?.LCode} {calResult.CodeFromCache?.Diameter}  " +
+                                        $"{calResult.message}", LogType.BUFFER);
 
-
-                                lock (taskQ.CacheQ) {
-                                    taskQ.CacheQ.Dequeue();
-                                }
-
-                                // 更新界面显示
-                                BindQueue(lc, calResult.CodeFromCache, cacheJobState);
-
-                                if (cacheJobState.state == CacheState.CacheAndGet || cacheJobState.state == CacheState.GetThenCache) {
-                                    if (CacheHelper.isInSameCacheChannel(cacheJobState.getpos, cacheJobState.savepos)) {
-                                        // 在同一侧
-                                        cacheJobState.state = CacheState.GetThenCache;  // action 3.
-                                    } else {
-                                        cacheJobState.state = CacheState.CacheAndGet;   // action 6
+                                    lock (taskQ.CacheQ) {
+                                        taskQ.CacheQ.Dequeue();
                                     }
-                                }
 
-                                // 发出机械手缓存动作指令
-                                PlcHelper.WriteCacheJob(RobotOpcClient, cacheJobState.state, cacheJobState.savepos, cacheJobState.getpos);
+                                    // 更新界面显示
+                                    BindQueue(lc, calResult.CodeFromCache, cacheJobState);
+
+                                    if (cacheJobState.state == CacheState.CacheAndGet || cacheJobState.state == CacheState.GetThenCache) {
+                                        if (CacheHelper.isInSameCacheChannel(cacheJobState.getpos, cacheJobState.savepos)) {
+                                            // 在同一侧
+                                            cacheJobState.state = CacheState.GetThenCache;  // action 3.
+                                        } else {
+                                            cacheJobState.state = CacheState.CacheAndGet;   // action 6
+                                        }
+                                    }
+
+                                    var ts = TimeCount.TimeIt(() => {
+                                        // 发出机械手缓存动作指令
+                                        PlcHelper.WriteCacheJob(RobotOpcClient, cacheJobState.state, cacheJobState.savepos, cacheJobState.getpos);
+                                    });
+                                    logOpt.Write($"计算缓存写OPC耗时:　{ts}ms", LogType.BUFFER);
+                                });
+                                logOpt.Write($"计算缓存总耗时:　{t}ms", LogType.BUFFER);
                             }
                         } catch (Exception ex) {
                             logOpt.Write($"!{ex.ToString()}", LogType.BUFFER);
