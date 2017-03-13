@@ -217,7 +217,7 @@ namespace yidascan {
         }
 
         private bool WritePositionPro(RollPosition rollPos) {
-            const int DELAY = 100;
+            const int DELAY = 10;
             var a = rCtrl.SetVariables(RobotControl.VariableType.B, 10, 1, rollPos.ChangeAngle ? "1" : "0");
             Thread.Sleep(DELAY);
             var b = rCtrl.SetVariables(RobotControl.VariableType.B, 0, 1, rollPos.BaseIndex.ToString());
