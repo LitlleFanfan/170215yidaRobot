@@ -21,7 +21,7 @@ namespace yidascan {
 
         public void initOpcClient() {
             client = new OPCClient();
-            
+
             if (client.Open(opc_server_ip)) {
                 PlcHelper.subscribe(client);
 
@@ -48,7 +48,7 @@ namespace yidascan {
         private void btnWriteSignal_Click(object sender, EventArgs e) {
             if (cbxJob.Text == "") {
                 throw new Exception("没有选动作。");
-                }
+            }
             var job = Int32.Parse(cbxJob.Text);
             var possave = (int)ntxtCachePosSave.Value;
             var posget = (int)ntxtCachePosGet.Value;
@@ -116,13 +116,17 @@ namespace yidascan {
         }
 
         private void btnPanelHandComplete_Click(object sender, EventArgs e) {
+#if DEBUG
             FakeOpcClient.setPanelLayerCompleteSignal("B01");
             WriteLog("B01完成信号设置为1");
+#endif
         }
 
         private void btnResetPanelHandComplete_Click(object sender, EventArgs e) {
+#if DEBUG
             FakeOpcClient.resetPanelLayerCompleteSignal("B01");
             WriteLog("B01完成信号设置为0");
+#endif
         }
     }
 }

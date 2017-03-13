@@ -52,6 +52,10 @@ namespace yidascan {
 
         public FrmMain() {
             InitializeComponent();
+
+#if !debug
+            btnTestPlc.Visible = false;
+#endif
             logOpt = new ProduceComm.LogOpreate();
 
             try {
@@ -305,7 +309,7 @@ namespace yidascan {
                             if (signal == "1") {
                                 // kv.Key是交地。
                                 var tolocation = kv.Key;
-                                LableCode.SetMaxFloor(tolocation);
+                                LableCode.SetMaxFloorAndFull(tolocation);
                                 logOpt.Write($"{kv.Key}收到人工完成信号。", LogType.NORMAL, LogViewType.OnlyFile);
 
                                 // 修改当前板号的属性。
@@ -387,7 +391,7 @@ namespace yidascan {
 #endif
 #if DEBUG
             BeforCacheTask_new();
-#endif 
+#endif
             LableUpTask();
 
             StartRobotJobATask();
@@ -987,15 +991,15 @@ namespace yidascan {
             var tolocation = string.Empty;
 
             var t = TimeCount.TimeIt(() => {
-                tolocation = GetLocation(code, handwork);
+                tolocation = GetLocationAndLength(code, handwork);
             });
+            string[] str = tolocation.Split('|');
 
-            if (string.IsNullOrEmpty(tolocation)) {
+            if (string.IsNullOrEmpty(tolocation) || string.IsNullOrEmpty(str[0])) {
                 ScannerOpcClient.Write(opcParam.ScanParam.PushAside, 1);
                 return;
             }
-
-            var lc = new LableCode(code, tolocation, handwork);
+            var lc = new LableCode(code, str[0], decimal.Parse(str[1]), handwork);
             var clothsize = new ClothRollSize();
 
             t = TimeCount.TimeIt(() => {
@@ -1106,7 +1110,13 @@ namespace yidascan {
             }));
         }
 
-        private string GetLocation(string code, bool handwork) {
+        /// <summary>
+        ///  [交地]|[长度]
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="handwork"></param>
+        /// <returns>[交地]|[长度]</returns>
+        private string GetLocationAndLength(string code, bool handwork) {
             var re = string.Empty;
             var dt = LableCode.QueryByLCode(code);
             if (dt != null) {
@@ -1326,7 +1336,7 @@ namespace yidascan {
             callErpApi = new FakeWebApi();
 #else
             callErpApi = new CallWebApi();
-#endif      
+#endif
         }
 
         private static IOpcClient GetOpcClient() {
@@ -1334,7 +1344,7 @@ namespace yidascan {
             return new FakeOpcClient(opcParam);
 #else
             return new OPCClient();
-#endif      
+#endif
         }
 
         private void btnSignalWeigh_Click(object sender, EventArgs e) {

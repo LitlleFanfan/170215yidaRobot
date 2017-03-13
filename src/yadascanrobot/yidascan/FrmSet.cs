@@ -62,6 +62,8 @@ namespace yidascan {
             clsSetting.OddTurn = chbOddTurn.Checked;
             clsSetting.EdgeSpace = nudEdgeObligate.Value;
             clsSetting.CacheIgnoredDiff = nudCacheIgnoredDiff.Value;
+            clsSetting.InitHeigh = nudInitHeigh.Value;
+            clsSetting.MaxFloor = (int)nudMaxFloor.Value;
 
             clsSetting.RobotIP = txtRobotIP.Text;
             clsSetting.JobName = txtJobName.Text;
@@ -140,10 +142,12 @@ namespace yidascan {
             nudSplintLength.Value = clsSetting.SplintLength;
             nudSplintWidth.Value = clsSetting.SplintWidth;
             nudSplintHeight.Value = clsSetting.SplintHeight;
-            
+
             chbOddTurn.Checked = clsSetting.OddTurn;
             nudEdgeObligate.Value = clsSetting.EdgeSpace;
             nudCacheIgnoredDiff.Value = clsSetting.CacheIgnoredDiff;
+            nudInitHeigh.Value = clsSetting.InitHeigh;
+            nudMaxFloor.Value = clsSetting.MaxFloor;
 
             txtRobotIP.Text = clsSetting.RobotIP;
             txtJobName.Text = clsSetting.JobName;

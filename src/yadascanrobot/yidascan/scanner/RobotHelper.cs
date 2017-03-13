@@ -335,7 +335,7 @@ namespace yidascan {
         }
 
         [Obsolete("use JobLoopPro instead.")]
-        public void JobLoop(ref bool isrun,ListView la,ListView lb) {
+        public void JobLoop(ref bool isrun, ListView la, ListView lb) {
             while (isrun) {
                 if (FrmMain.taskQ.RobotRollAQ.Count > 0) {
                     var roll = FrmMain.taskQ.RobotRollAQ.Peek();
@@ -359,25 +359,27 @@ namespace yidascan {
             }
         }
 
-        public bool JobTask(ref bool isrun, RollPosition roll) { 
+        public bool JobTask(ref bool isrun, RollPosition roll) {
             // 等待板可放料
-            FrmMain.logOpt.Write("PushInQueue等可放料信号", LogType.ROBOT_STACK);
             while (isrun) {
                 if (FrmMain.PanelAvailable(roll.ToLocation)) {
-                    FrmMain.logOpt.Write("PushInQueue收到可放料信号", LogType.ROBOT_STACK);
+                    FrmMain.logOpt.Write($"{roll.ToLocation} PushInQueue收到可放料信号", LogType.ROBOT_STACK);
                     break;
                 }
                 Thread.Sleep(OPCClient.DELAY * 200);
+                FrmMain.logOpt.Write($"! {roll.ToLocation} PushInQueue等可放料信号", LogType.ROBOT_STACK);
             }
 
             // 机器人正忙，等待。
             if (IsBusy()) {
                 Thread.Sleep(OPCClient.DELAY * 100);
+                FrmMain.logOpt.Write($"!机器人正忙", LogType.ROBOT_STACK);
                 return false;
             }
 
             // WritePosition(roll);
             if (!TryWritePositionPro(roll)) {
+                FrmMain.logOpt.Write($"!给机器人写位置失败", LogType.ROBOT_STACK);
                 return false;
             }
 

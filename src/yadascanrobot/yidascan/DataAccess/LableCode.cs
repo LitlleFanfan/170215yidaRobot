@@ -169,10 +169,11 @@ namespace yidascan.DataAccess {
 
         public LableCode() { }
 
-        public LableCode(string code, string tolocation, bool scanByMan) {
+        public LableCode(string code, string tolocation, decimal length, bool scanByMan) {
             LCode = code;
             ToLocation = tolocation;
-            Remark = (scanByMan ? "handwork" : "automatic");
+            Length = length;
+            Remark = Remark + (scanByMan ? "handwork" : "automatic");
             Coordinates = "";
         }
 
@@ -200,7 +201,7 @@ namespace yidascan.DataAccess {
 
         public void SetSize(decimal dia, decimal len) {
             Diameter = dia;
-            Length = len;
+            Remark = Remark + len;
         }
 
         public string Size_s() {
@@ -347,8 +348,8 @@ namespace yidascan.DataAccess {
             return Helper.DataTableToObjList<PanelInfo>(dt)[0];
         }
 
-        public static bool SetMaxFloor(string tolocation) {
-            var sql = "update panel set maxfloor=currfloor where status!= 5 and tolocation = @tolocation";
+        public static bool SetMaxFloorAndFull(string tolocation) {
+            var sql = "update panel set maxfloor=currfloor,status= 5 where status!= 5 and tolocation = @tolocation";
             var sp = new SqlParameter[]{
                 new SqlParameter("@tolocation",tolocation)};
             return DataAccess.CreateDataAccess.sa.NonQuery(sql, sp);
@@ -396,6 +397,22 @@ namespace yidascan.DataAccess {
                     new SqlParameter("@Status",obj.ToLocation.Substring(0,1)=="B"? LableState.Null:LableState.PanelFill),
                     new SqlParameter("@MaxFloor",clsSetting.MaxFloor),
                     new SqlParameter("@Remark",obj.toLocation)}));
+            return DataAccess.CreateDataAccess.sa.NonQueryTran(cps);
+        }
+
+        public static bool Update(string panelNo, string tolocation, List<string> lcodes) {
+            var cps = new List<CommandParameter>() {
+                new CommandParameter($"update LableCode set PanelNo=@PanelNo,Floor=1 where LCode in('{string.Join("','",lcodes.ToArray())}')",
+                new SqlParameter[]{
+                    new SqlParameter("@PanelNo",panelNo)}),
+                new CommandParameter("INSERT INTO Panel (PanelNo,ToLocation,Status,CurrFloor,MaxFloor,Remark)" +
+                    "VALUES(@PanelNo,@ToLocation,@Status,1,@MaxFloor,@Remark)",
+                new SqlParameter[]{
+                    new SqlParameter("@PanelNo",panelNo),
+                    new SqlParameter("@ToLocation",tolocation),
+                    new SqlParameter("@Status",tolocation.Substring(0,1)=="B"? LableState.Null:LableState.PanelFill),
+                    new SqlParameter("@MaxFloor",clsSetting.MaxFloor),
+                    new SqlParameter("@Remark","")}) };
             return DataAccess.CreateDataAccess.sa.NonQueryTran(cps);
         }
 
