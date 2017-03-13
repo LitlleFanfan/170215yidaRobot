@@ -16,13 +16,48 @@ namespace yidascan {
         HalfFull,
         Full
     }
+
+    class RobotPosOffset {
+        public decimal offsetx { get; set; }
+        public decimal offsety { get; set; }
+
+        public RobotPosOffset(decimal ofx, decimal ofy) {
+            offsetx = ofx;
+            offsety = ofy;
+        }
+    }
+
     public class RollPosition {
         public RollPosition() { }
-        public RollPosition(string label, string side, string locationNo, decimal diameter_, PanelState pnlState, decimal x, decimal y, decimal z, decimal rz) {
+
+        private static RobotPosOffset AdjustPosByRollLength(decimal x, decimal boardlen, decimal rolllen) {
+            // 数据不合理，不做处理。
+            if (rolllen > boardlen) {
+                return new RobotPosOffset(0, 0);
+            }
+
+            // 确定偏移。
+            var offset = (boardlen - rolllen) / 2; 
+            
+            if (x == 0) {
+                return new RobotPosOffset(offset, 0);
+            } else {
+                return new RobotPosOffset(0, offset);
+            }
+        }
+
+        public RollPosition(string label, string side, string locationNo, decimal rolllen, decimal diameter_, PanelState pnlState, decimal x, decimal y, decimal z, decimal rz) {
             this.LabelCode = label;
 
-            X = x;
-            Y = y;
+            // 布卷按长度调整板上位置， 以确定坐标偏移。
+            var adj = AdjustPosByRollLength(x, clsSetting.SplintWidth, rolllen);
+
+            //X = x;
+            //Y = y;
+
+            X = x + adj.offsetx;
+            Y = y + adj.offsety;
+
             Z = z;
             Rz = rz;
             ChangeAngle = x > 0 || y < 0;
