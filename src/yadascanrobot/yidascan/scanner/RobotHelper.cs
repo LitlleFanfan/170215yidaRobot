@@ -28,6 +28,8 @@ namespace yidascan {
     }
 
     public class RollPosition {
+        public const decimal Z_START = 0;
+
         public RollPosition() { }
 
         private static RobotPosOffset AdjustPosByRollLength(decimal x, decimal boardlen, decimal rolllen) {

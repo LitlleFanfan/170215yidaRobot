@@ -29,68 +29,18 @@ namespace yidascan.DataAccess {
     }
 
     public class LableCode {
-        int sequenceNo;
-
-        public int SequenceNo {
-            get { return sequenceNo; }
-            set { sequenceNo = value; }
-        }
-
-        string lCode;
-
-        public string LCode {
-            get { return lCode; }
-            set { lCode = value; }
-        }
-
-        string toLocation;
-
-        public string ToLocation {
-            get { return toLocation; }
-            set { toLocation = value; }
-        }
-
-        string panelNo;
-
-        public string PanelNo {
-            get { return panelNo; }
-            set { panelNo = value; }
-        }
-
-        int status;
-
-        public int Status {
-            get { return status; }
-            set { status = value; }
-        }
-
-        DateTime createDate;
-
-        public DateTime CreateDate {
-            get { return createDate; }
-            set { createDate = value; }
-        }
-
-        DateTime updateDate;
-
-        public DateTime UpdateDate {
-            get { return updateDate; }
-            set { updateDate = value; }
-        }
-
-        string remark;
-
-        public string Remark {
-            get { return remark; }
-            set { remark = value; }
-        }
-
-        string coordinates;
-        public string Coordinates {
-            set { coordinates = value; }
-        }
+        public int SequenceNo { get; set; }        
+        public string LCode { get; set; }
+        public string ToLocation { get; set; }
+        public string PanelNo { get; set; }
+        public int Status { get; set; }
+        public DateTime CreateDate { get; set; }
+        public DateTime UpdateDate { get; set; }
+        public string Remark { get; set; }
+        public string Coordinates { get; set; }
+        
         public bool CoordinatesIsEmpty() {
-            return string.IsNullOrEmpty(coordinates);
+            return string.IsNullOrEmpty(Coordinates);
         }
 
         decimal cx;
@@ -269,9 +219,9 @@ namespace yidascan.DataAccess {
                 cps.Add(new CommandParameter(@"update LableCode set FloorIndex=@FloorIndex,Coordinates=@Coordinates,
                     Cx=@Cx,Cy=@Cy,Cz=@Cz,Crz=@Crz,UpdateDate=@UpdateDate where LCode=@LCode",
                     new SqlParameter[]{
-                        new SqlParameter("@LCode",c2.lCode),
+                        new SqlParameter("@LCode",c2.LCode),
                         new SqlParameter("@FloorIndex",c2.floorIndex),
-                        new SqlParameter("@Coordinates",c2.coordinates),
+                        new SqlParameter("@Coordinates",c2.Coordinates),
                         new SqlParameter("@Cx",c2.cx),
                         new SqlParameter("@Cy",c2.cy),
                         new SqlParameter("@Cz",c2.cz),
@@ -321,20 +271,20 @@ namespace yidascan.DataAccess {
                                 "insert into LableCode(LCode,ToLocation,PanelNo,Floor,FloorIndex,Diameter,Length,Coordinates,Cx,Cy,Cz,Crz,GetOutLCode,Remark) " +
                             "values(@LCode,@ToLocation,@PanelNo,@Floor,@FloorIndex,@Diameter,@Length,@Coordinates,@Cx,@Cy,@Cz,@Crz,@GetOutLCode,@Remark)",
                                 new SqlParameter[]{
-                        new SqlParameter("@LCode",c.lCode),
-                        new SqlParameter("@ToLocation",c.toLocation),
-                        c.panelNo==null?new SqlParameter("@PanelNo",DBNull.Value):new SqlParameter("@PanelNo",c.panelNo),
+                        new SqlParameter("@LCode",c.LCode),
+                        new SqlParameter("@ToLocation",c.ToLocation),
+                        c.PanelNo==null?new SqlParameter("@PanelNo",DBNull.Value):new SqlParameter("@PanelNo",c.PanelNo),
                         new SqlParameter("@Floor",c.floor),
                         new SqlParameter("@FloorIndex",c.floorIndex),
                         new SqlParameter("@Diameter",c.diameter),
                         new SqlParameter("@Length",c.length),
-                        new SqlParameter("@Coordinates",c.coordinates),
+                        new SqlParameter("@Coordinates",c.Coordinates),
                         new SqlParameter("@Cx",c.cx),
                         new SqlParameter("@Cy",c.cy),
                         new SqlParameter("@Cz",c.cz),
                         new SqlParameter("@Crz",c.crz),
                         c.getOutLCode==null?new SqlParameter("@GetOutLCode",DBNull.Value):new SqlParameter("@GetOutLCode",c.getOutLCode),
-                        c.remark==null?new SqlParameter("@Remark",DBNull.Value):new SqlParameter("@Remark",c.remark)}) };
+                        c.Remark==null?new SqlParameter("@Remark",DBNull.Value):new SqlParameter("@Remark",c.Remark)}) };
         }
 
         public static PanelInfo GetPanel(string panelNo) {
@@ -393,11 +343,11 @@ namespace yidascan.DataAccess {
             cps.Add(new CommandParameter("INSERT INTO Panel (PanelNo,ToLocation,Status,CurrFloor,MaxFloor,Remark)" +
                     "VALUES(@PanelNo,@ToLocation,@Status,1,@MaxFloor,@Remark)",
                 new SqlParameter[]{
-                    new SqlParameter("@PanelNo",obj.panelNo),
-                    new SqlParameter("@ToLocation",obj.toLocation),
+                    new SqlParameter("@PanelNo",obj.PanelNo),
+                    new SqlParameter("@ToLocation",obj.ToLocation),
                     new SqlParameter("@Status",obj.ToLocation.Substring(0,1)=="B"? LableState.Null:LableState.PanelFill),
                     new SqlParameter("@MaxFloor",clsSetting.MaxFloor),
-                    new SqlParameter("@Remark",obj.toLocation)}));
+                    new SqlParameter("@Remark",obj.ToLocation)}));
             return DataAccess.CreateDataAccess.sa.NonQueryTran(cps);
         }
 
@@ -424,20 +374,20 @@ namespace yidascan.DataAccess {
                   ,Cx=@Cx,Cy=@Cy,Cz=@Cz,Crz=@Crz,[GetOutLCode] = @GetOutLCode,[UpdateDate] = @UpdateDate,
                   [Remark] = @Remark WHERE SequenceNo =@SequenceNo and [LCode] = @LCode and [ToLocation] = @ToLocation",
                 new SqlParameter[]{
-                    new SqlParameter("@PanelNo",obj.panelNo),
+                    new SqlParameter("@PanelNo",obj.PanelNo),
                     new SqlParameter("@Floor",obj.floor),
                     new SqlParameter("@FloorIndex",obj.floorIndex),
-                    obj.coordinates==null?new SqlParameter("@Coordinates",DBNull.Value):new SqlParameter("@Coordinates",obj.coordinates),
+                    obj.Coordinates==null?new SqlParameter("@Coordinates",DBNull.Value):new SqlParameter("@Coordinates",obj.Coordinates),
                         new SqlParameter("@Cx",obj.cx),
                         new SqlParameter("@Cy",obj.cy),
                         new SqlParameter("@Cz",obj.cz),
                         new SqlParameter("@Crz",obj.crz),
                     obj.getOutLCode==null?new SqlParameter("@GetOutLCode",DBNull.Value):new SqlParameter("@GetOutLCode",obj.getOutLCode),
                     new SqlParameter("@UpdateDate",DateTime.Now),
-                    new SqlParameter("@Remark",obj.remark),
-                    new SqlParameter("@SequenceNo",obj.sequenceNo),
-                    new SqlParameter("@LCode",obj.lCode),
-                    new SqlParameter("@ToLocation",obj.toLocation)})};
+                    new SqlParameter("@Remark",obj.Remark),
+                    new SqlParameter("@SequenceNo",obj.SequenceNo),
+                    new SqlParameter("@LCode",obj.LCode),
+                    new SqlParameter("@ToLocation",obj.ToLocation)})};
         }
 
         public static bool DeleteAllFinished() {
@@ -709,7 +659,7 @@ order by floorindex desc;";
         /// </summary>
         /// <returns></returns>
         public string brief() {
-            return $"{lCode} {toLocation} {diameter}";
+            return $"{LCode} {ToLocation} {diameter}";
         }
     }
 }
