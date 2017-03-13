@@ -401,13 +401,13 @@ namespace yidascan {
                     FrmMain.logOpt.Write($"{roll.ToLocation} PushInQueue收到可放料信号", LogType.ROBOT_STACK);
                     break;
                 }
-                Thread.Sleep(OPCClient.DELAY * 200);
+                Thread.Sleep(OPCClient.DELAY * 100);
                 FrmMain.logOpt.Write($"! {roll.ToLocation} PushInQueue等可放料信号", LogType.ROBOT_STACK);
             }
 
             // 机器人正忙，等待。
             if (IsBusy()) {
-                Thread.Sleep(OPCClient.DELAY * 100);
+                //Thread.Sleep(OPCClient.DELAY * 100);
                 FrmMain.logOpt.Write($"!机器人正忙", LogType.ROBOT_STACK);
                 return false;
             }
@@ -435,7 +435,7 @@ namespace yidascan {
                     LableCode.SetOnPanelState(roll.LabelCode);
                     break;
                 }
-                Thread.Sleep(RobotHelper.DELAY * 200);
+                Thread.Sleep(RobotHelper.DELAY * 100);
             }
 
             // 告知OPC

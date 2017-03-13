@@ -21,7 +21,7 @@ namespace yidascan.DataAccess {
         public CachePos[] CacheSide = null;
 
         public IEnumerable<LableCode> GetBeforCacheLables(LableCode lc) {
-            var lcs = from s in CacheQ where s.ToLocation == lc.ToLocation && s.LCode!=lc.LCode select s;
+            var lcs = from s in CacheQ where s.ToLocation == lc.ToLocation && s.LCode != lc.LCode select s;
             return lcs.ToList();
         }
 
@@ -145,7 +145,7 @@ namespace yidascan.DataAccess {
             if (RollPosition.robotRSidePanel.Contains(label.ToLocation)) {
                 rz = rz + 180;
             }
-            var roll = new RollPosition(label.LCode, side, label.ToLocation, label.Diameter, state, x, y, z, rz);
+            var roll = new RollPosition(label.LCode, side, label.ToLocation, label.Length, label.Diameter, state, x, y, z, rz);
             onlog?.Invoke($"{side} {label.LCode} {label.ToLocation}", LogType.ROLL_QUEUE);
             return roll;
         }

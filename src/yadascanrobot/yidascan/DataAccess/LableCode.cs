@@ -356,7 +356,8 @@ namespace yidascan.DataAccess {
         }
 
         public static bool SetAllPanelsFinished() {
-            var sql = "update Panel set Status=5 where Status!=5";
+            var sql = $"update Panel set Status=5 where Status!=5;"
+                + "update LableCode set Status=5 where Status != 5 and(ToLocation like 'A%' or ToLocation like 'C%'); ";
             return DataAccess.CreateDataAccess.sa.NonQuery(sql, new SqlParameter[] { });
         }
 
