@@ -309,7 +309,7 @@ namespace yidascan {
                             if (signal == "1") {
                                 // kv.Key是交地。
                                 var tolocation = kv.Key;
-                                LableCode.SetMaxFloor(tolocation);
+                                LableCode.SetMaxFloorAndFull(tolocation);
                                 logOpt.Write($"{kv.Key}收到人工完成信号。", LogType.NORMAL, LogViewType.OnlyFile);
 
                                 // 修改当前板号的属性。

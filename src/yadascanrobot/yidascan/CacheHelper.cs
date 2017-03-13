@@ -243,17 +243,15 @@ namespace yidascan {
         /// </summary>
         /// <param name="tolocation">交地</param>
         /// <param name="panelno">板号</param>
-        public void ReCalculateCoordinate(string panelno, string tolocation) {
+        public bool ReCalculateCoordinate(string panelno, string tolocation) {
             // 设新的板号，层数设为1
             var que = from x in cacheposes
                       where x.labelcode.ToLocation == tolocation
-                      select x;
-            foreach (var item in que) {
-                item.labelcode.PanelNo = panelno;
-                item.labelcode.Floor = 1;
-                LableCode.Update(item.labelcode);
-                LableCode.SetPanelNo(item.labelcode.LCode);
-            }
+                      select x.labelcode.LCode;
+
+            if (que.Count() == 0) return true;
+
+            return LableCode.Update(panelno, tolocation, que.ToList());
         }
 
     }

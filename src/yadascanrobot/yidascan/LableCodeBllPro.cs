@@ -17,7 +17,7 @@ namespace yidascan {
         private static void CalculatePosition(List<LableCode> lcs, LableCode lc) {
             lc.FloorIndex = CalculateFloorIndex(lcs);
 
-            var z = lc.Floor == 1 ? -35 : LableCode.GetFloorMaxDiameter(lc.PanelNo, lc.Floor) - 10;
+            var z = lc.Floor == 1 ? clsSetting.InitHeigh : LableCode.GetFloorMaxDiameter(lc.PanelNo, lc.Floor) - (lc.Floor * 5);
             var r = clsSetting.OddTurn ?
                 (lc.Floor % 2 == 1 ? 0 : 90) : //奇数层横放
                 (lc.Floor % 2 == 1 ? 90 : 0); //偶数层横放

@@ -24,7 +24,7 @@ namespace ProduceComm {
     public class LogOpreate {
         public yidascan.MessageCenter msgCenter = new yidascan.MessageCenter();
 
-        public void Write(string msg, string group = "normal", LogViewType type = LogViewType.Both) {           
+        public void Write(string msg, string group = "normal", LogViewType type = LogViewType.Both) {
             switch (type) {
                 case LogViewType.Both:
                     msgCenter.Push(msg, group);
@@ -253,7 +253,31 @@ namespace ProduceComm {
             }
         }
 
-        public const int MaxFloor = 7;
+        /// <summary>
+        /// 第一层放布高度
+        /// </summary>
+        public static decimal InitHeigh {
+            get {
+                string tmp = clsSetting.GetCfgValue("InitHeigh");
+                return decimal.Parse(string.IsNullOrEmpty(tmp) ? "-35" : tmp);
+            }
+            set {
+                clsSetting.SetCfgValue("InitHeigh", value.ToString());
+            }
+        }
+
+        /// <summary>
+        /// 最大层数
+        /// </summary>
+        public static int MaxFloor {
+            get {
+                string tmp = clsSetting.GetCfgValue("MaxFloor");
+                return int.Parse(string.IsNullOrEmpty(tmp) ? "7" : tmp);
+            }
+            set {
+                clsSetting.SetCfgValue("MaxFloor", value.ToString());
+            }
+        }
 
         /// <summary>
         /// OPC服务IP
