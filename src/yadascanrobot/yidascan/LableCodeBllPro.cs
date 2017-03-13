@@ -416,9 +416,4 @@ namespace yidascan {
             message = "";
         }
     }
-
-    public class SideFull {
-        bool IsFull;
-        LableCode FromCache;
-    }
 }
