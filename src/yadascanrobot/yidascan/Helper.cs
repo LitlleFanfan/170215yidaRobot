@@ -30,7 +30,7 @@ namespace ProduceComm {
         /// <param name="b2"></param>
         /// <returns></returns>
         public static byte[] Merge(this byte[] b1, byte[] b2) {
-            byte[] re = new byte[b1.Length + b2.Length];
+            var re = new byte[b1.Length + b2.Length];
             b1.CopyTo(re, 0);
             b2.CopyTo(re, b1.Length);
             return re;
@@ -60,20 +60,14 @@ namespace ProduceComm {
         public static byte[] Sub(this byte[] b1, int index, int length) {
             if (b1.Length < index + length + 1)
                 return null;
-            byte[] re = new byte[length];
+            var re = new byte[length];
             for (int i = 0; i < length; i++) {
                 re[i] = b1[i + index];
             }
             return re;
         }
 
-        /// <summary>
-        /// DataTable数据转成Entity
-        /// </summary>
-        /// <typeparam name="T">Entity</typeparam>
-        /// <param name="ds">数据集</param>
-        /// <param name="tbName">表名</param>
-        /// <returns></returns>
+        [Obsolete("use DataTableExtensions instead.")]
         public static List<T> DataTableToObjList<T>(DataTable dt) where T : new() {
             List<T> list = new List<T>();
             PropertyInfo[] propinfos = null;
@@ -131,6 +125,65 @@ namespace ProduceComm {
                 Thread.Sleep(delay);
             }
             return false;
+        }
+    }
+
+    /// <summary>
+    /// var items = dt.ToList<Item>();
+    /// 
+    /// //or
+    /// var mappings = new Dictionary<string, string>();
+    /// 
+    /// //keys are the properties.
+    /// 
+    /// mappings.Add("ItemId", "item_id");
+    /// mappings.Add("ItemName ", "item_name");
+    /// mappings.Add("Price ", "price);
+    /// 
+    /// var items = dt.ToList<Item>(mappings);
+    /// </summary>
+    public static class DataTableExtensions {
+        public static IList<T> ToList<T>(this DataTable table) where T : new() {
+            IList<PropertyInfo> properties = typeof(T).GetProperties().ToList();
+            IList<T> result = new List<T>();
+
+            foreach (var row in table.Rows) {
+                var item = CreateItemFromRow<T>((DataRow)row, properties);
+                result.Add(item);
+            }
+
+            return result;
+        }
+
+        public static IList<T> ToList<T>(this DataTable table, Dictionary<string, string> mappings) where T : new() {
+            IList<PropertyInfo> properties = typeof(T)
+                .GetProperties()
+                .ToList();
+            IList<T> result = new List<T>();
+
+            foreach (var row in table.Rows) {
+                var item = CreateItemFromRow<T>((DataRow)row, properties, mappings);
+                result.Add(item);
+            }
+
+            return result;
+        }
+
+        private static T CreateItemFromRow<T>(DataRow row, IList<PropertyInfo> properties) where T : new() {
+            var item = new T();
+            foreach (var property in properties) {
+                property.SetValue(item, row[property.Name], null);
+            }
+            return item;
+        }
+
+        private static T CreateItemFromRow<T>(DataRow row, IList<PropertyInfo> properties, Dictionary<string, string> mappings) where T : new() {
+            var item = new T();
+            foreach (var property in properties) {
+                if (mappings.ContainsKey(property.Name))
+                    property.SetValue(item, row[mappings[property.Name]], null);
+            }
+            return item;
         }
     }
 }

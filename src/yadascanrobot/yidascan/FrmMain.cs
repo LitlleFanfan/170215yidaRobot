@@ -41,8 +41,6 @@ namespace yidascan {
 
         private DateTime StartTime;
 
-        public static decimal zStart = 0;
-
         // 用于锁定手动和自动扫描标签的处理工程。
         public object LOCK_CAMERA_PROCESS = new object();
 

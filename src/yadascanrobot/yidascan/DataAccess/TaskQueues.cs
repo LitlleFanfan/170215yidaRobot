@@ -124,7 +124,7 @@ namespace yidascan.DataAccess {
 
             var x = label.Cx;
             var y = label.Cy;
-            var z = label.Cz + FrmMain.zStart;
+            var z = label.Cz + RollPosition.Z_START;
             var rz = label.Crz;
 
             if (rz == 0) {
