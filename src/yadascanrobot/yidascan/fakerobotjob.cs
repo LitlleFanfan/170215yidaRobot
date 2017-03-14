@@ -67,6 +67,10 @@ namespace yidascan {
         public void Dispose() {
             GC.SuppressFinalize(this);
         }
+
+        public void NotifyOpcJobFinished(PanelState pState, string tolocation) {
+            throw new NotImplementedException();
+        }
     }
 #endif
 }

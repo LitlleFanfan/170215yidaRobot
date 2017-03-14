@@ -309,17 +309,24 @@ namespace yidascan {
                             if (signal == "1") {
                                 // kv.Key是交地。
                                 var tolocation = kv.Key;
-                                LableCode.SetMaxFloorAndFull(tolocation);
-                                logOpt.Write($"{kv.Key}收到人工完成信号。", LogType.NORMAL, LogViewType.OnlyFile);
 
                                 // 修改当前板号的属性。
                                 var shiftno = createShiftNo();
+
+                                var pf = LableCode.GetTolactionCurrPanelNo(tolocation, shiftno);
+                                LableCode.SetMaxFloorAndFull(tolocation);
+                                logOpt.Write($"{kv.Key}收到人工完成信号。", LogType.NORMAL, LogViewType.OnlyFile);
 
                                 // 创建新的板信息。
                                 var newPanel = PanelGen.NewPanelNo();
 
                                 // 重新计算缓存区的布卷的坐标。
                                 cacheher.ReCalculateCoordinate(newPanel, tolocation);
+
+                                //处理满板信号
+                                robot.NotifyOpcJobFinished(
+                                    LableCode.IsAllRollOnPanel(pf.PanelNo) ? PanelState.Full : PanelState.HalfFull,
+                                    tolocation);
 
                                 // plc复位信号。
                                 opcClient.Write(kv.Value, "0");

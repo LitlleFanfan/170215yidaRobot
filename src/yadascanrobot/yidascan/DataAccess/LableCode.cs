@@ -487,6 +487,14 @@ order by floorindex desc;";
             return false;
         }
 
+        public static bool IsAllRollOnPanel(string panelNo) {
+            var sql = @"select * from LableCode where PanelNo=@PanelNo and Status<3";
+            var sp = new SqlParameter[]{
+                new SqlParameter("@PanelNo",panelNo)};
+            var dt = DataAccess.CreateDataAccess.sa.Query(sql, sp);
+            return !(dt != null && dt.Rows.Count > 0);
+        }
+
         public static bool PanelNoHas(string panelNo) {
             var sql = "select * from LableCode where PanelNo=@PanelNo";
             var dt = DataAccess.CreateDataAccess.sa.Query(sql,

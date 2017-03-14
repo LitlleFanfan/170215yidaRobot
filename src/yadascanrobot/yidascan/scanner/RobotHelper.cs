@@ -314,7 +314,7 @@ namespace yidascan {
             }
         }
 
-        private void NotifyOpcJobFinished(PanelState pState, string tolocation) {
+        public void NotifyOpcJobFinished(PanelState pState, string tolocation) {
             try {
                 switch (pState) {
                     case PanelState.HalfFull:
