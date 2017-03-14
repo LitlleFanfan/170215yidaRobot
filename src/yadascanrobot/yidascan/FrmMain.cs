@@ -161,6 +161,9 @@ namespace yidascan {
             opcParam.Init();
 
             logOpt.Write(JsonConvert.SerializeObject(opcParam), LogType.NORMAL, LogViewType.OnlyFile);
+            logOpt.Write($"板宽：{clsSetting.SplintWidth}间隙：{clsSetting.RollSep}边缘预留：{clsSetting.EdgeSpace}" +
+                $"忽略偏差：{clsSetting.CacheIgnoredDiff}奇数层横放：{clsSetting.OddTurn}第一层放布Z：{clsSetting.InitHeigh}",
+                LogType.NORMAL, LogViewType.OnlyFile);
         }
 
         private void setupOpcClient(IOpcClient c, string name) {
@@ -192,7 +195,7 @@ namespace yidascan {
                             }
                         }
                     }
-                    Thread.Sleep(5000);
+                    Thread.Sleep(1000);
                 }
             });
             logOpt.Write("机器人抓料A布卷队列任务启动。", LogType.NORMAL);
@@ -218,7 +221,7 @@ namespace yidascan {
                             }
                         }
                     }
-                    Thread.Sleep(5000);
+                    Thread.Sleep(1000);
                 }
             });
             logOpt.Write("机器人抓料B布卷队列任务启动。", LogType.NORMAL);
@@ -442,6 +445,8 @@ namespace yidascan {
                                     if (code.ToLocation.Substring(0, 1) == "B") {
                                         showLabelQue(taskQ.CacheQ, lsvCacheBefor);//加到缓存列表中显示
                                     }
+                                } else {
+                                    logOpt.Write($"称重信号无对应数据，写OPC状态：{client.Write(opcParam.ScanParam.GetWeigh, 0)}");
                                 }
                             }
                         }
