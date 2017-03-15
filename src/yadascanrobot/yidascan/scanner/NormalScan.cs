@@ -17,7 +17,7 @@ namespace ProduceComm.Scanner {
         private ICommunication icom;
 
         public Action<string> logger;
-        public Action<string, string, int> OnDataArrived;
+        public Action<IOpcClient, string, string, int> OnDataArrived;
 
         public NormalScan(string devicename, ICommunication _icom) {
             this.name = devicename;
@@ -49,13 +49,14 @@ namespace ProduceComm.Scanner {
             }
         }
 
-        public void _StartJob() {
+        public void _StartJob(IOpcClient client) {
             this.stoped = false;
+
             Task.Factory.StartNew(() => {
                 while (!this.stoped) {
                     var s = tryReadLine();
                     if (!string.IsNullOrEmpty(s)) {
-                        OnDataArrived("", s, 1);
+                        OnDataArrived(client, "", s, 1);
                     }
                     Thread.Sleep(1000);
                 }
