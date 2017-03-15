@@ -51,7 +51,7 @@ namespace yidascan {
         public FrmMain() {
             InitializeComponent();
 
-#if !debug
+#if !DEBUG
             btnTestPlc.Visible = false;
 #endif
             logOpt = new ProduceComm.LogOpreate();
