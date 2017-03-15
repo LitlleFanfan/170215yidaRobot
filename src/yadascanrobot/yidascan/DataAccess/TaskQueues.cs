@@ -28,9 +28,9 @@ namespace yidascan.DataAccess {
         public static Action<string, string> onlog;
 
         public TaskQueues() {
-            int len = 20;
-            CacheSide = new CachePos[len];
-            for (int i = 0; i < len; i++) {
+            const int CACHE_LEN = 20;
+            CacheSide = new CachePos[CACHE_LEN];
+            for (int i = 0; i < CACHE_LEN; i++) {
                 CacheSide[i] = new CachePos(i + 1, null);
             }
         }
@@ -103,10 +103,10 @@ namespace yidascan.DataAccess {
         /// <param name="side"></param>
         /// <param name="lcode">todo: describe lcode parameter on AddRobotRollQ</param>
         /// <returns></returns>
-        private RollPosition AddRobotRollQ(string lcode, string side) {
-            LableCode label = LableCode.QueryByLCode(lcode);
+        private static RollPosition AddRobotRollQ(string lcode, string side) {
+            var label = LableCode.QueryByLCode(lcode);
             if (label == null) {
-                FrmMain.logOpt.Write($"!{side} {label.LCode}找不到", LogType.ROLL_QUEUE);
+                onlog?.Invoke($"!{side} {label.LCode}找不到", LogType.ROLL_QUEUE);
                 return null;
             }
             if (label.Status >= (int)LableState.OnPanel) {

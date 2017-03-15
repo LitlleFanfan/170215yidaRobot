@@ -145,6 +145,7 @@
       <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
     </Compile>
     <Compile Include="scanner\RobotJob.cs" />
+    <Compile Include="SelfTest.cs" />
     <Compile Include="taskqueconf.cs" />
     <Compile Include="TempTest.cs" />
     <Compile Include="Web References\ERPService\Reference.cs">

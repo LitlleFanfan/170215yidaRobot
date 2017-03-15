@@ -30,45 +30,45 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmMain));
-            System.Windows.Forms.ListViewItem listViewItem21 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem(new string[] {
             "1                                     "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.Window, null);
-            System.Windows.Forms.ListViewItem listViewItem22 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem(new string[] {
             "2                                     "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.Window, null);
-            System.Windows.Forms.ListViewItem listViewItem23 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem(new string[] {
             "3                                     "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.Window, null);
-            System.Windows.Forms.ListViewItem listViewItem24 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem4 = new System.Windows.Forms.ListViewItem(new string[] {
             "4                                      "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.Window, null);
-            System.Windows.Forms.ListViewItem listViewItem25 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem5 = new System.Windows.Forms.ListViewItem(new string[] {
             "5                                      "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.Window, null);
-            System.Windows.Forms.ListViewItem listViewItem26 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem6 = new System.Windows.Forms.ListViewItem(new string[] {
             "6                                     "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.Window, null);
-            System.Windows.Forms.ListViewItem listViewItem27 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem7 = new System.Windows.Forms.ListViewItem(new string[] {
             "7                                     "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.Window, null);
-            System.Windows.Forms.ListViewItem listViewItem28 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem8 = new System.Windows.Forms.ListViewItem(new string[] {
             "8                                     "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.Window, null);
-            System.Windows.Forms.ListViewItem listViewItem29 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem9 = new System.Windows.Forms.ListViewItem(new string[] {
             "9                                     "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.Window, null);
-            System.Windows.Forms.ListViewItem listViewItem30 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem10 = new System.Windows.Forms.ListViewItem(new string[] {
             "10                                   "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.Window, null);
-            System.Windows.Forms.ListViewItem listViewItem31 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem11 = new System.Windows.Forms.ListViewItem(new string[] {
             "11                                   "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.Window, null);
-            System.Windows.Forms.ListViewItem listViewItem32 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem12 = new System.Windows.Forms.ListViewItem(new string[] {
             "12                                   "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.Window, null);
-            System.Windows.Forms.ListViewItem listViewItem33 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem13 = new System.Windows.Forms.ListViewItem(new string[] {
             "13                                   "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.Window, null);
-            System.Windows.Forms.ListViewItem listViewItem34 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem14 = new System.Windows.Forms.ListViewItem(new string[] {
             "14                                   "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.Window, null);
-            System.Windows.Forms.ListViewItem listViewItem35 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem15 = new System.Windows.Forms.ListViewItem(new string[] {
             "15                                   "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.Window, null);
-            System.Windows.Forms.ListViewItem listViewItem36 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem16 = new System.Windows.Forms.ListViewItem(new string[] {
             "16                                   "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.Window, null);
-            System.Windows.Forms.ListViewItem listViewItem37 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem17 = new System.Windows.Forms.ListViewItem(new string[] {
             "17                                    "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.Window, null);
-            System.Windows.Forms.ListViewItem listViewItem38 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem18 = new System.Windows.Forms.ListViewItem(new string[] {
             "18                                   "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.Window, null);
-            System.Windows.Forms.ListViewItem listViewItem39 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem19 = new System.Windows.Forms.ListViewItem(new string[] {
             "19                                   "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.Window, null);
-            System.Windows.Forms.ListViewItem listViewItem40 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem20 = new System.Windows.Forms.ListViewItem(new string[] {
             "20                                   "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.Window, null);
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.btnRun = new System.Windows.Forms.ToolStripButton();
@@ -172,6 +172,11 @@
             this.panel8 = new System.Windows.Forms.Panel();
             this.panel7 = new System.Windows.Forms.Panel();
             this.panel11 = new System.Windows.Forms.Panel();
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
+            this.btnLoadTaskq = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnSaveTaskq = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
+            this.btnSelfTest = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1.SuspendLayout();
             this.grbHandwork.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -229,7 +234,7 @@
             this.btnRun.AutoSize = false;
             this.btnRun.BackColor = System.Drawing.Color.LimeGreen;
             this.btnRun.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.btnRun.Font = new System.Drawing.Font("微软雅黑", 14F);
+            this.btnRun.Font = new System.Drawing.Font("Microsoft YaHei", 14F);
             this.btnRun.ForeColor = System.Drawing.Color.Honeydew;
             this.btnRun.Image = ((System.Drawing.Image)(resources.GetObject("btnRun.Image")));
             this.btnRun.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -243,7 +248,7 @@
             this.btnNewRun.AutoSize = false;
             this.btnNewRun.BackColor = System.Drawing.Color.GreenYellow;
             this.btnNewRun.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.btnNewRun.Font = new System.Drawing.Font("微软雅黑", 14F);
+            this.btnNewRun.Font = new System.Drawing.Font("Microsoft YaHei", 14F);
             this.btnNewRun.ForeColor = System.Drawing.Color.Honeydew;
             this.btnNewRun.Image = ((System.Drawing.Image)(resources.GetObject("btnNewRun.Image")));
             this.btnNewRun.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -258,7 +263,7 @@
             this.btnStop.BackColor = System.Drawing.Color.Red;
             this.btnStop.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.btnStop.Enabled = false;
-            this.btnStop.Font = new System.Drawing.Font("微软雅黑", 14.25F);
+            this.btnStop.Font = new System.Drawing.Font("Microsoft YaHei", 14.25F);
             this.btnStop.ForeColor = System.Drawing.Color.White;
             this.btnStop.Image = ((System.Drawing.Image)(resources.GetObject("btnStop.Image")));
             this.btnStop.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -272,7 +277,7 @@
             this.btnWeighReset.AutoSize = false;
             this.btnWeighReset.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
             this.btnWeighReset.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.btnWeighReset.Font = new System.Drawing.Font("微软雅黑", 14F);
+            this.btnWeighReset.Font = new System.Drawing.Font("Microsoft YaHei", 14F);
             this.btnWeighReset.Image = ((System.Drawing.Image)(resources.GetObject("btnWeighReset.Image")));
             this.btnWeighReset.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnWeighReset.Name = "btnWeighReset";
@@ -285,7 +290,7 @@
             this.btnSet.AutoSize = false;
             this.btnSet.BackColor = System.Drawing.Color.DeepSkyBlue;
             this.btnSet.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.btnSet.Font = new System.Drawing.Font("微软雅黑", 14F);
+            this.btnSet.Font = new System.Drawing.Font("Microsoft YaHei", 14F);
             this.btnSet.Image = ((System.Drawing.Image)(resources.GetObject("btnSet.Image")));
             this.btnSet.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnSet.Name = "btnSet";
@@ -298,7 +303,7 @@
             this.btnLog.AutoSize = false;
             this.btnLog.BackColor = System.Drawing.Color.CornflowerBlue;
             this.btnLog.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.btnLog.Font = new System.Drawing.Font("微软雅黑", 14F);
+            this.btnLog.Font = new System.Drawing.Font("Microsoft YaHei", 14F);
             this.btnLog.Image = ((System.Drawing.Image)(resources.GetObject("btnLog.Image")));
             this.btnLog.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnLog.Name = "btnLog";
@@ -321,8 +326,13 @@
             this.toolStripMenuItem4,
             this.btnBrowsePanels,
             this.btnTestPlc,
-            this.btnSignalGen});
-            this.btnOther.Font = new System.Drawing.Font("微软雅黑", 14F);
+            this.btnSignalGen,
+            this.toolStripMenuItem1,
+            this.btnLoadTaskq,
+            this.btnSaveTaskq,
+            this.toolStripMenuItem2,
+            this.btnSelfTest});
+            this.btnOther.Font = new System.Drawing.Font("Microsoft YaHei", 14F);
             this.btnOther.Image = ((System.Drawing.Image)(resources.GetObject("btnOther.Image")));
             this.btnOther.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnOther.Name = "btnOther";
@@ -452,7 +462,7 @@
             this.btnQuit.AutoSize = false;
             this.btnQuit.BackColor = System.Drawing.Color.Orange;
             this.btnQuit.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.btnQuit.Font = new System.Drawing.Font("微软雅黑", 14F);
+            this.btnQuit.Font = new System.Drawing.Font("Microsoft YaHei", 14F);
             this.btnQuit.Image = ((System.Drawing.Image)(resources.GetObject("btnQuit.Image")));
             this.btnQuit.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnQuit.Name = "btnQuit";
@@ -493,7 +503,7 @@
             this.txtLableCode1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtLableCode1.Font = new System.Drawing.Font("宋体", 24F);
+            this.txtLableCode1.Font = new System.Drawing.Font("SimSun", 24F);
             this.txtLableCode1.ForeColor = System.Drawing.Color.DarkRed;
             this.txtLableCode1.Location = new System.Drawing.Point(183, 18);
             this.txtLableCode1.Margin = new System.Windows.Forms.Padding(4);
@@ -509,7 +519,7 @@
             // label5
             // 
             this.label5.BackColor = System.Drawing.Color.Moccasin;
-            this.label5.Font = new System.Drawing.Font("宋体", 24F);
+            this.label5.Font = new System.Drawing.Font("SimSun", 24F);
             this.label5.Location = new System.Drawing.Point(14, 18);
             this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label5.Name = "label5";
@@ -521,7 +531,7 @@
             // lsvLog
             // 
             this.lsvLog.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lsvLog.Font = new System.Drawing.Font("宋体", 14F);
+            this.lsvLog.Font = new System.Drawing.Font("SimSun", 14F);
             this.lsvLog.FormattingEnabled = true;
             this.lsvLog.ItemHeight = 19;
             this.lsvLog.Location = new System.Drawing.Point(0, 0);
@@ -543,7 +553,7 @@
             // 
             // statusStrip1
             // 
-            this.statusStrip1.Font = new System.Drawing.Font("微软雅黑", 12F);
+            this.statusStrip1.Font = new System.Drawing.Font("Microsoft YaHei", 12F);
             this.statusStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel1,
@@ -593,7 +603,7 @@
             // 
             this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
             this.toolStripStatusLabel2.Padding = new System.Windows.Forms.Padding(10, 0, 10, 0);
-            this.toolStripStatusLabel2.Size = new System.Drawing.Size(789, 21);
+            this.toolStripStatusLabel2.Size = new System.Drawing.Size(809, 21);
             this.toolStripStatusLabel2.Spring = true;
             // 
             // lblTimer
@@ -628,7 +638,7 @@
             // lbRobotState
             // 
             this.lbRobotState.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
-            this.lbRobotState.Font = new System.Drawing.Font("黑体", 20F);
+            this.lbRobotState.Font = new System.Drawing.Font("SimHei", 20F);
             this.lbRobotState.Location = new System.Drawing.Point(260, 89);
             this.lbRobotState.Name = "lbRobotState";
             this.lbRobotState.Size = new System.Drawing.Size(333, 37);
@@ -639,7 +649,7 @@
             // chkUseRobot
             // 
             this.chkUseRobot.BackColor = System.Drawing.Color.White;
-            this.chkUseRobot.Font = new System.Drawing.Font("宋体", 20F);
+            this.chkUseRobot.Font = new System.Drawing.Font("SimSun", 20F);
             this.chkUseRobot.Location = new System.Drawing.Point(7, 89);
             this.chkUseRobot.Name = "chkUseRobot";
             this.chkUseRobot.Size = new System.Drawing.Size(253, 37);
@@ -651,7 +661,7 @@
             // 
             this.lbTaskState.BackColor = System.Drawing.Color.Green;
             this.lbTaskState.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.lbTaskState.Font = new System.Drawing.Font("黑体", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbTaskState.Font = new System.Drawing.Font("SimHei", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbTaskState.ForeColor = System.Drawing.Color.White;
             this.lbTaskState.Location = new System.Drawing.Point(260, 26);
             this.lbTaskState.Name = "lbTaskState";
@@ -664,7 +674,7 @@
             // 
             this.lblCount.BackColor = System.Drawing.Color.White;
             this.lblCount.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.lblCount.Font = new System.Drawing.Font("微软雅黑", 35F, System.Drawing.FontStyle.Bold);
+            this.lblCount.Font = new System.Drawing.Font("Microsoft YaHei", 35F, System.Drawing.FontStyle.Bold);
             this.lblCount.ForeColor = System.Drawing.Color.Black;
             this.lblCount.Location = new System.Drawing.Point(3, 26);
             this.lblCount.Name = "lblCount";
@@ -1013,11 +1023,11 @@
             // 
             this.lsvCacheQ1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lsvCacheQ1.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem21,
-            listViewItem22,
-            listViewItem23,
-            listViewItem24,
-            listViewItem25});
+            listViewItem1,
+            listViewItem2,
+            listViewItem3,
+            listViewItem4,
+            listViewItem5});
             this.lsvCacheQ1.Location = new System.Drawing.Point(0, 0);
             this.lsvCacheQ1.Margin = new System.Windows.Forms.Padding(0, 0, 0, 3);
             this.lsvCacheQ1.Name = "lsvCacheQ1";
@@ -1031,11 +1041,11 @@
             // 
             this.lsvCacheQ2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lsvCacheQ2.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem26,
-            listViewItem27,
-            listViewItem28,
-            listViewItem29,
-            listViewItem30});
+            listViewItem6,
+            listViewItem7,
+            listViewItem8,
+            listViewItem9,
+            listViewItem10});
             this.lsvCacheQ2.Location = new System.Drawing.Point(0, 58);
             this.lsvCacheQ2.Margin = new System.Windows.Forms.Padding(0, 3, 0, 0);
             this.lsvCacheQ2.Name = "lsvCacheQ2";
@@ -1049,11 +1059,11 @@
             // 
             this.lsvCacheQ3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lsvCacheQ3.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem31,
-            listViewItem32,
-            listViewItem33,
-            listViewItem34,
-            listViewItem35});
+            listViewItem11,
+            listViewItem12,
+            listViewItem13,
+            listViewItem14,
+            listViewItem15});
             this.lsvCacheQ3.Location = new System.Drawing.Point(7, 0);
             this.lsvCacheQ3.Margin = new System.Windows.Forms.Padding(0, 0, 0, 3);
             this.lsvCacheQ3.Name = "lsvCacheQ3";
@@ -1067,11 +1077,11 @@
             // 
             this.lsvCacheQ4.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lsvCacheQ4.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem36,
-            listViewItem37,
-            listViewItem38,
-            listViewItem39,
-            listViewItem40});
+            listViewItem16,
+            listViewItem17,
+            listViewItem18,
+            listViewItem19,
+            listViewItem20});
             this.lsvCacheQ4.Location = new System.Drawing.Point(7, 58);
             this.lsvCacheQ4.Margin = new System.Windows.Forms.Padding(0, 3, 0, 0);
             this.lsvCacheQ4.Name = "lsvCacheQ4";
@@ -1358,6 +1368,37 @@
             this.panel11.Size = new System.Drawing.Size(300, 72);
             this.panel11.TabIndex = 3;
             // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(214, 6);
+            // 
+            // btnLoadTaskq
+            // 
+            this.btnLoadTaskq.Name = "btnLoadTaskq";
+            this.btnLoadTaskq.Size = new System.Drawing.Size(217, 30);
+            this.btnLoadTaskq.Text = "加载号码数据";
+            this.btnLoadTaskq.Click += new System.EventHandler(this.btnLoadTaskq_Click);
+            // 
+            // btnSaveTaskq
+            // 
+            this.btnSaveTaskq.Name = "btnSaveTaskq";
+            this.btnSaveTaskq.Size = new System.Drawing.Size(217, 30);
+            this.btnSaveTaskq.Text = "保存号码数据";
+            this.btnSaveTaskq.Click += new System.EventHandler(this.btnSaveTaskq_Click);
+            // 
+            // toolStripMenuItem2
+            // 
+            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(214, 6);
+            // 
+            // btnSelfTest
+            // 
+            this.btnSelfTest.Name = "btnSelfTest";
+            this.btnSelfTest.Size = new System.Drawing.Size(217, 30);
+            this.btnSelfTest.Text = "self test";
+            this.btnSelfTest.Click += new System.EventHandler(this.btnSelfTest_Click);
+            // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 19F);
@@ -1368,7 +1409,7 @@
             this.Controls.Add(this.grbHandwork);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.groupBox1);
-            this.Font = new System.Drawing.Font("宋体", 14F);
+            this.Font = new System.Drawing.Font("SimSun", 14F);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
             this.Margin = new System.Windows.Forms.Padding(5);
@@ -1523,6 +1564,11 @@
         private System.Windows.Forms.Panel panel11;
         private System.Windows.Forms.ListBox lsvBufferLog;
         private System.Windows.Forms.ToolStripButton btnNewRun;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem btnLoadTaskq;
+        private System.Windows.Forms.ToolStripMenuItem btnSaveTaskq;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
+        private System.Windows.Forms.ToolStripMenuItem btnSelfTest;
     }
 }
 

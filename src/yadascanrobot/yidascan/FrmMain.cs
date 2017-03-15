@@ -79,9 +79,11 @@ namespace yidascan {
             }
         }
 
-        private static TaskQueues loadconf() {
+        private static TaskQueues loadconf(string fn = null) {
             try {
-                var confpath = Path.Combine(Application.StartupPath, TASKQUE_CONF);
+                var confpath = string.IsNullOrEmpty(fn)
+                    ? Path.Combine(Application.StartupPath, TASKQUE_CONF)
+                    : fn;
                 return TaskQueConf<TaskQueues>.load(confpath);
             } catch (Exception ex) {
                 logOpt.Write($"!加载队列文件异常: {ex}。");
@@ -996,7 +998,7 @@ namespace yidascan {
             var t = TimeCount.TimeIt(() => {
                 tolocation = GetLocationAndLength(code, handwork);
             });
-            string[] str = tolocation.Split('|');
+            var str = tolocation.Split('|');
 
             if (string.IsNullOrEmpty(tolocation) || string.IsNullOrEmpty(str[0])) {
                 ScannerOpcClient.Write(opcParam.ScanParam.PushAside, 1);
@@ -1473,6 +1475,45 @@ namespace yidascan {
             ClearAllRunningData();
             logOpt.Write("所有板设置为完成状态；清除所有队列。");//AC区无法设置完成。
             btnRun_Click(sender, e);
+        }
+
+        private void btnLoadTaskq_Click(object sender, EventArgs e) {
+            using (var dlg = new OpenFileDialog()) {
+                dlg.ShowDialog();
+
+                clearAllTaskViews();
+                taskQ = loadconf() ?? new TaskQueues();
+                cacheher = new CacheHelper(taskQ.CacheSide);
+                ShowTaskQ();
+            }
+        }
+
+        private void btnSaveTaskq_Click(object sender, EventArgs e) {
+            using (var dlg = new SaveFileDialog()) {
+                dlg.ShowDialog();
+
+                var path = string.IsNullOrEmpty(dlg.FileName)
+                    ? Path.Combine(Application.StartupPath, TASKQUE_CONF)
+                    : dlg.FileName;
+
+                TaskQueConf<TaskQueues>.save(path, taskQ);
+            }
+        }
+
+        private void btnSelfTest_Click(object sender, EventArgs e) {
+            logOpt.Write("--- 自检开始 ---");
+            var t = new SelfTest(FrmSet.pcfgScan1, (s) => {
+                logOpt.Write(s);
+                Application.DoEvents();
+            });
+            try {
+                this.Cursor = Cursors.WaitCursor;
+                t.run();
+            } finally {
+                t.close();
+                this.Cursor = Cursors.Default;
+                logOpt.Write("--- 自检结束 ---");
+            }
         }
     }
 }
