@@ -206,16 +206,20 @@ namespace yidascan {
         /// <returns></returns>
         public bool TryWritePositionPro(RollPosition rollPos, int times = 5) {
             const int DELAY = 100;
-            while (times > 0) {
-                if (WritePositionPro(rollPos)) {
-                    log($"机器人写坐标成功, {rollPos.LabelCode}, {rollPos.Pos_s()}。", LogType.ROBOT_STACK);
-                    return true;
+            int counts = 0;
+            bool wstatus = false;
+            var t = TimeCount.TimeIt(() => {
+                while (times > 0) {
+                    counts++;
+                    wstatus = WritePositionPro(rollPos);
+                    if (wstatus) { break; }
+                    times--;
+                    Thread.Sleep(DELAY);
                 }
-                times--;
-                Thread.Sleep(DELAY);
-            }
-            log("!机器人写坐标失败", LogType.ROBOT_STACK);
-            return false;
+            });
+            log($"机器人写坐标{(wstatus ? "成功" : "失败")}耗时{t}毫秒,尝试次数{counts}, {rollPos.LabelCode}, {rollPos.Pos_s()}。",
+                LogType.ROBOT_STACK);
+            return wstatus;
         }
 
         private bool WritePositionPro(RollPosition rollPos) {
@@ -392,31 +396,28 @@ namespace yidascan {
                         }
                     }
                 }
-                Thread.Sleep(RobotHelper.DELAY);
+                Thread.Sleep(RobotHelper.DELAY * 40);
             }
         }
 
         public bool JobTask(ref bool isrun, RollPosition roll) {
             // 等待板可放料
-            while (isrun) {
-                if (FrmMain.PanelAvailable(roll.ToLocation)) {
-                    FrmMain.logOpt.Write($"{roll.ToLocation} PushInQueue收到可放料信号", LogType.ROBOT_STACK);
-                    break;
-                }
-                Thread.Sleep(OPCClient.DELAY * 100);
-                FrmMain.logOpt.Write($"! {roll.ToLocation} PushInQueue等可放料信号", LogType.ROBOT_STACK);
-            }
-
-            // 机器人正忙，等待。
-            if (IsBusy()) {
-                //Thread.Sleep(OPCClient.DELAY * 100);
-                FrmMain.logOpt.Write($"!机器人正忙", LogType.ROBOT_STACK);
+            if (FrmMain.PanelAvailable(roll.ToLocation)) {
+                FrmMain.logOpt.Write($"{roll.ToLocation} PushInQueue收到可放料信号", LogType.ROBOT_STACK);
+            } else {
+                FrmMain.logOpt.Write($"! {roll.ToLocation} PushInQueue未收到可放料信号", LogType.ROBOT_STACK);
                 return false;
             }
 
-            // WritePosition(roll);
+            // 机器人正忙，等待。
+            while (isrun) {
+                if (IsBusy()) {
+                    FrmMain.logOpt.Write($"!机器人正忙", LogType.ROBOT_STACK);
+                    Thread.Sleep(OPCClient.DELAY * 10);
+                } else { break; }
+            }
+
             if (!TryWritePositionPro(roll)) {
-                FrmMain.logOpt.Write($"!给机器人写位置失败", LogType.ROBOT_STACK);
                 return false;
             }
 
@@ -432,20 +433,21 @@ namespace yidascan {
             // 等待布卷上垛信号
             while (isrun) {
                 if (IsRollOnPanel()) {
-                    log("布卷已上垛。", LogType.ROBOT_STACK, LogViewType.Both);
                     // 写数据库。
                     LableCode.SetOnPanelState(roll.LabelCode);
+                    // 告知OPC
+                    NotifyOpcJobFinished(roll.PnlState, roll.ToLocation);
+                    log("布卷已上垛。", LogType.ROBOT_STACK, LogViewType.Both);
                     break;
                 }
-                Thread.Sleep(RobotHelper.DELAY * 100);
+                Thread.Sleep(RobotHelper.DELAY * 20);
             }
 
-            // 告知OPC
-            NotifyOpcJobFinished(roll.PnlState, roll.ToLocation);
+            Thread.Sleep(RobotHelper.DELAY * 500);
 
             // 等待机器人结束码垛。
             while (isrun && IsBusy()) {
-                Thread.Sleep(RobotHelper.DELAY * 100);
+                Thread.Sleep(RobotHelper.DELAY * 20);
             }
             log($"robot job done: {roll.LabelCode}.", LogType.ROBOT_STACK);
             return true;
