@@ -18,7 +18,7 @@ namespace yidascan {
         /// <param name="path">文件名</param>
         /// <param name="obj">要保存的对象</param>
         public static void save(string path, T obj) {
-            var s = JsonConvert.SerializeObject(obj);
+            var s = JsonConvert.SerializeObject(obj, Formatting.Indented);
             File.WriteAllText(path, s);
         }
 
