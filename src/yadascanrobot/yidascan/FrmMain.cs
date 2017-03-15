@@ -1000,8 +1000,8 @@ namespace yidascan {
 #if !DEBUG
             Thread.Sleep(40);
             //PLC已将布卷勾走
-            if (ScannerOpcClient.ReadBool(opcParam.ScanParam.PlcPushAside)) {
-                ScannerOpcClient.Write(opcParam.ScanParam.PlcPushAside, 0);
+            if (client.ReadBool(opcParam.ScanParam.PlcPushAside)) {
+                client.Write(opcParam.ScanParam.PlcPushAside, 0);
                 logOpt.Write($"采集超时，号码{code}被勾走。");
                 return;
             }
@@ -1060,8 +1060,8 @@ namespace yidascan {
 #if !DEBUG
             Thread.Sleep(40);
             //PLC已将布卷勾走
-            if (ScannerOpcClient.ReadBool(opcParam.ScanParam.PlcPushAside)) {
-                ScannerOpcClient.Write(opcParam.ScanParam.PlcPushAside, 0);
+            if (client.ReadBool(opcParam.ScanParam.PlcPushAside)) {
+                client.Write(opcParam.ScanParam.PlcPushAside, 0);
                 logOpt.Write($"采集超时，号码{code}被勾走。");
                 return;
             }
