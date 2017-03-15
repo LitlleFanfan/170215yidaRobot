@@ -163,6 +163,9 @@ namespace yidascan {
             opcParam.Init();
 
             logOpt.Write(JsonConvert.SerializeObject(opcParam), LogType.NORMAL, LogViewType.OnlyFile);
+            logOpt.Write($"板宽：{clsSetting.SplintWidth}间隙：{clsSetting.RollSep}边缘预留：{clsSetting.EdgeSpace}" +
+                $"忽略偏差：{clsSetting.CacheIgnoredDiff}奇数层横放：{clsSetting.OddTurn}第一层放布Z：{clsSetting.InitHeigh}",
+                LogType.NORMAL, LogViewType.OnlyFile);
         }
 
         private void setupOpcClient(IOpcClient c, string name) {
@@ -194,7 +197,7 @@ namespace yidascan {
                             }
                         }
                     }
-                    Thread.Sleep(5000);
+                    Thread.Sleep(1000);
                 }
             });
             logOpt.Write("机器人抓料A布卷队列任务启动。", LogType.NORMAL);
@@ -220,7 +223,7 @@ namespace yidascan {
                             }
                         }
                     }
-                    Thread.Sleep(5000);
+                    Thread.Sleep(1000);
                 }
             });
             logOpt.Write("机器人抓料B布卷队列任务启动。", LogType.NORMAL);
@@ -309,17 +312,24 @@ namespace yidascan {
                             if (signal == "1") {
                                 // kv.Key是交地。
                                 var tolocation = kv.Key;
-                                LableCode.SetMaxFloorAndFull(tolocation);
-                                logOpt.Write($"{kv.Key}收到人工完成信号。", LogType.NORMAL, LogViewType.OnlyFile);
 
                                 // 修改当前板号的属性。
                                 var shiftno = createShiftNo();
+
+                                var pf = LableCode.GetTolactionCurrPanelNo(tolocation, shiftno);
+                                LableCode.SetMaxFloorAndFull(tolocation);
+                                logOpt.Write($"{kv.Key}收到人工完成信号。", LogType.NORMAL, LogViewType.OnlyFile);
 
                                 // 创建新的板信息。
                                 var newPanel = PanelGen.NewPanelNo();
 
                                 // 重新计算缓存区的布卷的坐标。
                                 cacheher.ReCalculateCoordinate(newPanel, tolocation);
+
+                                //处理满板信号
+                                robot.NotifyOpcJobFinished(
+                                    LableCode.IsAllRollOnPanel(pf.PanelNo) ? PanelState.Full : PanelState.HalfFull,
+                                    tolocation);
 
                                 // plc复位信号。
                                 opcClient.Write(kv.Value, "0");
@@ -437,6 +447,8 @@ namespace yidascan {
                                     if (code.ToLocation.Substring(0, 1) == "B") {
                                         showLabelQue(taskQ.CacheQ, lsvCacheBefor);//加到缓存列表中显示
                                     }
+                                } else {
+                                    logOpt.Write($"称重信号无对应数据，写OPC状态：{client.Write(opcParam.ScanParam.GetWeigh, 0)}");
                                 }
                             }
                         }

@@ -38,9 +38,9 @@ namespace yidascan {
                 return new RobotPosOffset(0, 0);
             }
 
-            // 确定偏移。
-            var offset = (boardlen - rolllen) / 2; 
-            
+            // 确定偏移。(150毫米是不居中时，离板边上的距离)
+            var offset = ((boardlen - rolllen) / 2) - 150;
+
             if (x == 0) {
                 return new RobotPosOffset(offset, 0);
             } else {
@@ -316,7 +316,7 @@ namespace yidascan {
             }
         }
 
-        private void NotifyOpcJobFinished(PanelState pState, string tolocation) {
+        public void NotifyOpcJobFinished(PanelState pState, string tolocation) {
             try {
                 switch (pState) {
                     case PanelState.HalfFull:
