@@ -548,7 +548,7 @@
             this.lsvRobotStackLog.Margin = new System.Windows.Forms.Padding(0);
             this.lsvRobotStackLog.MinimumSize = new System.Drawing.Size(250, 4);
             this.lsvRobotStackLog.Name = "lsvRobotStackLog";
-            this.lsvRobotStackLog.Size = new System.Drawing.Size(852, 203);
+            this.lsvRobotStackLog.Size = new System.Drawing.Size(852, 168);
             this.lsvRobotStackLog.TabIndex = 4;
             // 
             // statusStrip1
@@ -759,7 +759,7 @@
             this.tbpCacheLog.Location = new System.Drawing.Point(4, 22);
             this.tbpCacheLog.Margin = new System.Windows.Forms.Padding(0);
             this.tbpCacheLog.Name = "tbpCacheLog";
-            this.tbpCacheLog.Size = new System.Drawing.Size(852, 203);
+            this.tbpCacheLog.Size = new System.Drawing.Size(852, 168);
             this.tbpCacheLog.TabIndex = 1;
             this.tbpCacheLog.Text = "缓存日志";
             this.tbpCacheLog.UseVisualStyleBackColor = true;
@@ -772,7 +772,7 @@
             this.lsvBufferLog.Margin = new System.Windows.Forms.Padding(0);
             this.lsvBufferLog.MinimumSize = new System.Drawing.Size(250, 4);
             this.lsvBufferLog.Name = "lsvBufferLog";
-            this.lsvBufferLog.Size = new System.Drawing.Size(852, 203);
+            this.lsvBufferLog.Size = new System.Drawing.Size(852, 168);
             this.lsvBufferLog.TabIndex = 4;
             // 
             // tbpRobotLog
@@ -781,7 +781,7 @@
             this.tbpRobotLog.Location = new System.Drawing.Point(4, 22);
             this.tbpRobotLog.Margin = new System.Windows.Forms.Padding(0);
             this.tbpRobotLog.Name = "tbpRobotLog";
-            this.tbpRobotLog.Size = new System.Drawing.Size(852, 203);
+            this.tbpRobotLog.Size = new System.Drawing.Size(852, 168);
             this.tbpRobotLog.TabIndex = 2;
             this.tbpRobotLog.Text = "机器人日志";
             this.tbpRobotLog.UseVisualStyleBackColor = true;
@@ -792,7 +792,7 @@
             this.tbpALarmLog.Location = new System.Drawing.Point(4, 22);
             this.tbpALarmLog.Margin = new System.Windows.Forms.Padding(0);
             this.tbpALarmLog.Name = "tbpALarmLog";
-            this.tbpALarmLog.Size = new System.Drawing.Size(852, 203);
+            this.tbpALarmLog.Size = new System.Drawing.Size(852, 168);
             this.tbpALarmLog.TabIndex = 3;
             this.tbpALarmLog.Text = "报警日志";
             this.tbpALarmLog.UseVisualStyleBackColor = true;
@@ -805,7 +805,7 @@
             this.lsvAlarmLog.Margin = new System.Windows.Forms.Padding(0);
             this.lsvAlarmLog.MinimumSize = new System.Drawing.Size(250, 4);
             this.lsvAlarmLog.Name = "lsvAlarmLog";
-            this.lsvAlarmLog.Size = new System.Drawing.Size(852, 203);
+            this.lsvAlarmLog.Size = new System.Drawing.Size(852, 168);
             this.lsvAlarmLog.TabIndex = 5;
             // 
             // label9
@@ -983,6 +983,9 @@
             // 
             // lsvCacheBefor
             // 
+            this.lsvCacheBefor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lsvCacheBefor.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader2});
             this.lsvCacheBefor.Location = new System.Drawing.Point(0, 32);

@@ -246,7 +246,7 @@ namespace yidascan {
         public bool ReCalculateCoordinate(string panelno, string tolocation) {
             // 设新的板号，层数设为1
             var que = from x in cacheposes
-                      where x.labelcode.ToLocation == tolocation
+                      where x.labelcode != null && x.labelcode.ToLocation == tolocation
                       select x.labelcode.LCode;
 
             if (que.Count() == 0) return true;

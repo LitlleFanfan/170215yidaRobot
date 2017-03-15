@@ -20,18 +20,20 @@ namespace yidascan {
         public string opc_server_ip = "127.0.0.1";
 
         public void initOpcClient() {
-            client = new OPCClient();
+            try {
+                client = new OPCClient();
 
-            if (client.Open(opc_server_ip)) {
-                PlcHelper.subscribe(client);
+                if (client.Open(opc_server_ip)) {
+                    PlcHelper.subscribe(client);
 
-                client.AddSubscription("MicroWin.S7-1200.NewItem16");
-                client.AddSubscription("MicroWin.S7-1200.NewItem18");
-                client.AddSubscription("MicroWin.S7-1200.NewItem19");
-                client.AddSubscription("MicroWin.S7-1200.NewItem20");
-            } else {
-                MessageBox.Show("访问OPC server失败。");
-            }
+                    client.AddSubscription("MicroWin.S7-1200.NewItem16");
+                    client.AddSubscription("MicroWin.S7-1200.NewItem18");
+                    client.AddSubscription("MicroWin.S7-1200.NewItem19");
+                    client.AddSubscription("MicroWin.S7-1200.NewItem20");
+                } else {
+                    MessageBox.Show("访问OPC server失败。");
+                }
+            } catch { }
         }
 
         private void WriteLog(string s) {
