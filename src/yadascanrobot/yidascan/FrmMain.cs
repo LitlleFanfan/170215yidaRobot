@@ -272,7 +272,6 @@ namespace yidascan {
             try {
                 logOpt.Write("机器人正在启动...", LogType.NORMAL);
                 Task.Factory.StartNew(() => {
-                    // robot = new RobotHelper(clsSetting.RobotIP, clsSetting.JobName);
                     robot = GetRobot(clsSetting.RobotIP, clsSetting.JobName);
                     robot.setup(logOpt.Write, RobotOpcClient, opcParam);
 
@@ -395,12 +394,7 @@ namespace yidascan {
 
             WeighTask();
             ACAreaFinishTask();
-#if !DEBUG
             BeforCacheTask_new();
-#endif
-#if DEBUG
-            BeforCacheTask_new();
-#endif
             LableUpTask();
 
             StartRobotJobATask();
@@ -447,7 +441,7 @@ namespace yidascan {
                                         showLabelQue(taskQ.CacheQ, lsvCacheBefor);//加到缓存列表中显示
                                     }
                                 } else {
-                                    logOpt.Write($"称重信号无对应数据，写OPC状态：{client.Write(opcParam.ScanParam.GetWeigh, 0)}");
+                                    logOpt.Write($"称重信号无对应数据");
                                 }
                             }
                         }
@@ -889,8 +883,8 @@ namespace yidascan {
 #if !DEBUG
             Thread.Sleep(40);
             //PLC已将布卷勾走
-            if (ScannerOpcClient.ReadBool(opcParam.ScanParam.PlcPushAside)) {
-                ScannerOpcClient.Write(opcParam.ScanParam.PlcPushAside, 0);
+            if (client.ReadBool(opcParam.ScanParam.PlcPushAside)) {
+                client.Write(opcParam.ScanParam.PlcPushAside, 0);
                 logOpt.Write($"采集超时，号码{code}被勾走。");
                 return;
             }
@@ -949,8 +943,8 @@ namespace yidascan {
 #if !DEBUG
             Thread.Sleep(40);
             //PLC已将布卷勾走
-            if (ScannerOpcClient.ReadBool(opcParam.ScanParam.PlcPushAside)) {
-                ScannerOpcClient.Write(opcParam.ScanParam.PlcPushAside, 0);
+            if (client.ReadBool(opcParam.ScanParam.PlcPushAside)) {
+                client.Write(opcParam.ScanParam.PlcPushAside, 0);
                 logOpt.Write($"采集超时，号码{code}被勾走。");
                 return;
             }
