@@ -144,5 +144,18 @@ namespace yidascan {
             var s = client.ReadString(param.BAreaPanelState[tolocation]);
             return s == PANEL_OK;
         }
+
+        /// <summary>
+        /// 读取完整标签号码。
+        /// </summary>
+        /// <param name="slot"></param>
+        /// <param name="client"></param>
+        /// <returns></returns>
+        public static string ReadCompleteLable(IOpcClient client, LCodeSignal slot) {
+            const int MAX_LEN = 6;
+            var lable1 = client.ReadString(slot.LCode1);
+            var lable2 = client.ReadString(slot.LCode2);
+            return lable1.PadLeft(MAX_LEN, '0') + lable2.PadLeft(MAX_LEN, '0');
+        }
     }
 }
