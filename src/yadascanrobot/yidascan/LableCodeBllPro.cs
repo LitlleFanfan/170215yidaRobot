@@ -146,7 +146,7 @@ namespace yidascan {
         /// <param name="cacheq">缓存队列</param>
         /// <returns>返回的是需要从缓存位取出的布卷。如果不需要取出，返回null。</returns>
         private static CalResult CalculateCache(PanelInfo pinfo, LableCode lc, List<LableCode> lcs) {
-            CalResult cr = new CalResult(CacheState.Go, lc, null);
+            var cr = new CalResult(CacheState.Go, lc, null);
             var cachecount = (pinfo.OddStatus ? 0 : 1) + (pinfo.EvenStatus ? 0 : 1);
             var cachedRools = from s in lcs
                               where s.FloorIndex == 0
@@ -269,7 +269,7 @@ namespace yidascan {
                         }
                     } else {
                         //计算缓存，lc2不为NULL需要缓存
-                        CalResult cr = CalculateCache(pinfo, rt.CodeCome, layerLabels);
+                        var cr = CalculateCache(pinfo, rt.CodeCome, layerLabels);
                         rt.CodeFromCache = cr.CodeFromCache;
                         rt.state = cr.state;
                     }
@@ -305,7 +305,7 @@ namespace yidascan {
                                     orderby s.Diameter ascending
                                     select s).Count();
 
-                    bool go = CanIgo(cacheq, rt, cancachesum - cachelcs);
+                    var go = CanIgo(cacheq, rt, cancachesum - cachelcs);
                     if (go) {
                         rt.state = CacheState.Go;
                         CalculatePosition(layerLabels, rt.CodeCome);
