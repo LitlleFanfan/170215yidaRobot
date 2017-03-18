@@ -126,7 +126,6 @@
     <Compile Include="IErp.cs" />
     <Compile Include="IOpcClient.cs" />
     <Compile Include="IRobotJob.cs" />
-    <Compile Include="LableCodeBll.cs" />
     <Compile Include="LableCodeBllPro.cs" />
     <Compile Include="layershape.cs" />
     <Compile Include="ListBoxHelper.cs" />

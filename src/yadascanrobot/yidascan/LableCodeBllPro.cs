@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using Newtonsoft.Json;
 using ProduceComm;
 using yidascan.DataAccess;
 
@@ -41,8 +41,7 @@ namespace yidascan {
                 var lastRoll = (from s in lcs where IsRollInSameSide(s, lc)
                                 orderby s.FloorIndex descending select s).First();
                 xory = (Math.Abs(lastRoll.Cx + lastRoll.Cy) + lastRoll.Diameter + clsSetting.RollSep)
-                    * (lc.FloorIndex % 2 == 1 ? 1 : -1);
-                //FrmMain.logOpt.Write($"lastroll:{lastRoll.LCode} x:{lastRoll.Cx} y:{lastRoll.Cy}  currroll:{lc.LCode} xory:{xory}", LogType.BUFFER);
+                    * (lc.FloorIndex % 2 == 1 ? 1 : -1);                
             }
 
             return xory;
@@ -111,9 +110,6 @@ namespace yidascan {
             var MAX_WIDTH = FindMaxHalfWidth(lc);
             // 板上宽度
             var installedWidth = Math.Abs(CalculateXory(lcs));
-
-            // FrmMain.logOpt.Write($"***loc: {lc.ToLocation}, cached count: {cachedRolls.Count()}, max width: {MAX_WIDTH}, installed width: {installedWidth}","buffer");
-
             return findSmallerFromCachedRolls(cachedRolls, lc, installedWidth, MAX_WIDTH);
         }
 
@@ -125,9 +121,6 @@ namespace yidascan {
             var MAX_WIDTH = FindMaxHalfWidth(lc);
             // 板上宽度
             var installedWidth = Math.Abs(CalculateXory(lcs));
-
-            // FrmMain.logOpt.Write($"***loc: {lc.ToLocation}, cached count: {cachedRolls.Count()}, max width: {MAX_WIDTH}, installed width: {installedWidth}","buffer");
-
             return findSmallerFromCachedRollsPro(cachedRolls, lc, installedWidth, MAX_WIDTH);
         }
 
@@ -270,11 +263,11 @@ namespace yidascan {
                 .OrderBy(x => x.Diameter)
                 .FirstOrDefault();
 
-            if(rt == null) {
+            if (rt == null) {
                 return new PanelFullState(PanelFullState.NO_FULL, null);
             } else {
                 var w = expectedWidthNoEdgeSpace(installedWidth, current, rt);
-                
+
                 if (w >= max) {
                     return new PanelFullState(PanelFullState.EXCEED, rt);
                 } else if (w > max - e && w < max) {
@@ -284,24 +277,79 @@ namespace yidascan {
                 }
             }
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cacheq"></param>
+        /// <param name="rt"></param>
+        /// <param name="cancachecount">可缓存卷数</param>
+        /// <returns></returns>
+        private static bool CanIgo(IEnumerable<LableCode> cacheq, CalResult rt, int cancachecount) {
+            var go = false;
+            var biggers = 0;
+            switch (cancachecount) {
+                case 0:
+                    break;
+                case 1:
+                    biggers = GetBiggerCount(cacheq, rt, 1);
+                    if (biggers >= 1) {
+                        go = true;
+                    }
+                    break;
+                case 2:
+                    biggers = GetBiggerCount(cacheq, rt, 2);
+                    if (biggers >= 2) {
+                        go = true;
+                    }
+                    break;
+            }
+            return go;
+        }
+
+        private static int GetBiggerCount(IEnumerable<LableCode> cacheq, CalResult rt, int takeCount) {
+            return (from s in cacheq.Take(takeCount) where s.Diameter > rt.CodeCome.Diameter + clsSetting.CacheIgnoredDiff select s).Count();
+        }
+
+        private static FloorPerformance SetFullFlag(CalResult rt, PanelInfo pinfo) {
+            FloorPerformance fp;
+            if (rt.CodeCome.FloorIndex % 2 == 0) {
+                pinfo.EvenStatus = true;
+                fp = FloorPerformance.EvenFinish;
+            } else {
+                pinfo.OddStatus = true;
+                fp = FloorPerformance.OddFinish;
+            }
+            if (pinfo.EvenStatus && pinfo.OddStatus)
+                fp = FloorPerformance.BothFinish;
+            return fp;
+        }
         #endregion
 
         #region PUBLIC_FUNCTIONS
+
+        /// <summary>
+        /// 从数据库里取板号，并赋给标签对象。
+        /// 如果取出的空的，就新产生一个板号。
+        /// </summary>
+        /// <param name="lc">标签</param>
+        /// <param name="dateShiftNo">任务码</param>
+        /// <returns></returns>
         public static PanelInfo GetPanelNo(LableCode lc, string dateShiftNo) {
             var pf = LableCode.GetTolactionCurrPanelNo(lc.ToLocation, dateShiftNo);
             lc.SetupPanelInfo(pf);
             return pf;
         }
 
-        public static CalResult AreaBCalculate(IOpcClient client, IErpApi erpapi, LableCode lc, string dateShiftNo, IEnumerable<LableCode> cacheq) {
+        public static CalResult AreaBCalculate(IOpcClient client, IErpApi erpapi, LableCode lc, string dateShiftNo, IEnumerable<LableCode> cacheq, Action<string> onlog) {
             var rt = new CalResult(CacheState.Cache, lc, null);
             var pinfo = GetPanelNo(rt.CodeCome, dateShiftNo);
 
             var fp = FloorPerformance.None;
             var layerLabels = new List<LableCode>();
 
-            // 0309, 尝试解决在缓存位，同一交地出现多个不同板号的情况.
-            if (pinfo == null) { LableCode.Update(fp, new PanelInfo(rt.CodeCome.PanelNo), rt.CodeCome, null); } //test
+            // 解决在缓存位，同一交地出现多个不同板号的情况.
+            if (pinfo == null) { LableCode.Update(fp, new PanelInfo(rt.CodeCome.PanelNo), rt.CodeCome, null); }
 
             if (pinfo != null) {
                 // 取当前交地、当前板、当前层所有标签。
@@ -309,8 +357,6 @@ namespace yidascan {
 
                 if (layerLabels != null && layerLabels.Count > 0) {
                     // 最近一层没满。
-                    // rt.CodeFromCache = IsPanelFull(layerLabels, rt.CodeCome);
-
                     var fullstate = IsPanelFullPro(layerLabels, rt.CodeCome);
                     rt.CodeFromCache = fullstate.fromCache;
 
@@ -320,12 +366,12 @@ namespace yidascan {
                         } else {
                             rt.state = CacheState.GoThenGet;
                         }
-                    } else if (fullstate.state == PanelFullState.NO_FULL) { 
-                        //计算缓存，lc2不为NULL需要缓存
+                    } else if (fullstate.state == PanelFullState.NO_FULL) {
                         var cr = CalculateCache(pinfo, rt.CodeCome, layerLabels);
                         rt.CodeFromCache = cr.CodeFromCache;
                         rt.state = cr.state;
                     } else if (fullstate.state == PanelFullState.EXCEED) {
+                        onlog($"!current: {lc.LCode}, from cache: {rt.CodeFromCache.LCode}, 超出板宽。");
                         if (rt.CodeCome.Diameter > rt.CodeFromCache.Diameter + clsSetting.CacheIgnoredDiff) {
                             rt.state = CacheState.GetThenGo;
                         } else {
@@ -333,25 +379,13 @@ namespace yidascan {
                         }
 
                         // 当前层是最后一层, 要移入下一板???
-                        
- 
+                        // var pno = rt.CodeCome.PanelNo;
+
+
+
                     } else {
                         // can not happen.
                     }
-
-                    //if (rt.CodeFromCache != null) //不为NULL，表示满
-                    //{
-                    //    if (rt.CodeCome.Diameter > rt.CodeFromCache.Diameter + clsSetting.CacheIgnoredDiff) {
-                    //        rt.state = CacheState.GetThenGo;
-                    //    } else {
-                    //        rt.state = CacheState.GoThenGet;
-                    //    }
-                    //} else {
-                    //    //计算缓存，lc2不为NULL需要缓存
-                    //    var cr = CalculateCache(pinfo, rt.CodeCome, layerLabels);
-                    //    rt.CodeFromCache = cr.CodeFromCache;
-                    //    rt.state = cr.state;
-                    //}
                 }
             }
 
@@ -414,10 +448,10 @@ namespace yidascan {
 
             if (fp == FloorPerformance.BothFinish && rt.CodeCome.Floor == pinfo.MaxFloor) {
                 var lables = LableCode.GetLableCodesOfRecentFloor(rt.CodeFromCache.ToLocation, pinfo);
-                if (LayerShape.isBadShape(lables)) { 
+                if (LayerShape.isBadShape(lables)) {
                     PlcHelper.NotifyBadLayerShape(client, lc.ToLocation);
                 }
-                
+
                 ErpHelper.NotifyPanelEnd(erpapi, pinfo.PanelNo, out msg);
 
             }
@@ -425,55 +459,44 @@ namespace yidascan {
             return rt;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="cacheq"></param>
-        /// <param name="rt"></param>
-        /// <param name="cancachecount">可缓存卷数</param>
-        /// <returns></returns>
-        private static bool CanIgo(IEnumerable<LableCode> cacheq, CalResult rt, int cancachecount) {
-            var go = false;
-            var biggers = 0;
-            switch (cancachecount) {
-                case 0:
-                    break;
-                case 1:
-                    biggers = GetBiggerCount(cacheq, rt, 1);
-                    if (biggers >= 1) {
-                        go = true;
+        [Obsolete("应当使用ErpHelper.NotifyPanelEnd")]
+        public static bool NotifyPanelEnd(IErpApi erpapi, string panelNo, out string msg, bool handwork = false) {
+            if (!string.IsNullOrEmpty(panelNo)) {
+                // 这个从数据库取似更合理。                
+                var data = LableCode.QueryLabelcodeByPanelNo(panelNo);
+
+                if (data == null) {
+                    msg = "!板号完成失败，未能查到数据库的标签。";
+                    return false;
+                }
+
+                var erpParam = new Dictionary<string, string>() {
+                        { "Board_No", panelNo },  // first item.
+                        { "AllBarCode", string.Join(",", data.ToArray()) } // second item.
+                    };
+                var re = erpapi.Post(clsSetting.PanelFinish, erpParam);
+
+                // show result.
+                if (re["ERPState"] == "OK") {
+                    if (re["State"] == "Fail") {
+                        msg = string.Format("!{0}板号{1}完成失败。{2}", (handwork ? "手工" : "自动"),
+                            JsonConvert.SerializeObject(erpParam), re["ERR"]);
+                    } else {
+                        msg = string.Format("{0}板号{1}完成成功。{2}", (handwork ? "手工" : "自动"),
+                            JsonConvert.SerializeObject(erpParam), re["Data"]);
+                        return true;
                     }
-                    break;
-                case 2:
-                    biggers = GetBiggerCount(cacheq, rt, 2);
-                    if (biggers >= 2) {
-                        go = true;
-                    }
-                    break;
+                } else {
+                    FrmMain.ERPAlarm(FrmMain.opcClient, FrmMain.opcParam, ERPAlarmNo.COMMUNICATION_ERROR);
+                }
             }
-            return go;
+            msg = "!板号完成失败，板号为空。";
+            return false;
         }
-
-        private static int GetBiggerCount(IEnumerable<LableCode> cacheq, CalResult rt, int takeCount) {
-            return (from s in cacheq.Take(takeCount) where s.Diameter > rt.CodeCome.Diameter + clsSetting.CacheIgnoredDiff select s).Count();
-        }
-
-        private static FloorPerformance SetFullFlag(CalResult rt, PanelInfo pinfo) {
-            FloorPerformance fp;
-            if (rt.CodeCome.FloorIndex % 2 == 0) {
-                pinfo.EvenStatus = true;
-                fp = FloorPerformance.EvenFinish;
-            } else {
-                pinfo.OddStatus = true;
-                fp = FloorPerformance.OddFinish;
-            }
-            if (pinfo.EvenStatus && pinfo.OddStatus)
-                fp = FloorPerformance.BothFinish;
-            return fp;
-        }
-
-        #endregion
     }
+
+    #endregion
+
 
     /// <summary>
     /// 用于传递缓存区号码比对处理的结果。
@@ -520,7 +543,7 @@ namespace yidascan {
         /// <summary>
         /// 超出
         /// </summary>
-        public const int EXCEED = 2; 
+        public const int EXCEED = 2;
 
         public PanelFullState(int state_, LableCode fromCache_) {
             state = state_;

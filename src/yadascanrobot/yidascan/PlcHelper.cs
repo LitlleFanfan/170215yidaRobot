@@ -167,7 +167,6 @@ namespace yidascan {
             const int BAD_SHAPE = 1;
             client.Write(PlcSlot.LOCATION_OF_BAD_SHAPE, tolocation);
             client.Write(PlcSlot.LAYER_SHAPE_BAD, BAD_SHAPE);
-            throw new NotImplementedException();
         }
     }
 }

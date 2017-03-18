@@ -13,6 +13,7 @@ using System.IO;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Data.SqlClient;
 
 using commonhelper;
 using ListBoxHelper.ext;
@@ -139,21 +140,25 @@ namespace yidascan {
                 LableCode.DeleteAllFinished();
 
             } catch (Exception ex) {
-                logOpt.Write($"!初始化失败。\n{ex}", LogType.NORMAL);
+                logOpt.Write($"!初始化失败, {ex.ToString()}。\n{ex}", LogType.NORMAL);
             }
         }
 
-        private void initOpcParam() {
-            dtopc = OPCParam.Query();
-            dtopc.Columns.Remove("Class");
-            dtopc.Columns.Add(new DataColumn("Value"));
+        private void queryOpcParam() {
+            try {
+                dtopc = OPCParam.Query();
+                dtopc.Columns.Remove("Class");
+                dtopc.Columns.Add(new DataColumn("Value"));
+            } catch (NullReferenceException ex) {
+                throw new Exception("从数据库加载opc参数失败，请检查数据库连接");
+            }
         }
 
         /// <summary>
         /// 在主程序启动时运行。
         /// </summary>
         private void StartOpcParam() {
-            initOpcParam();
+            queryOpcParam();
             opcParam.Init();
 
             logOpt.Write(JsonConvert.SerializeObject(opcParam), LogType.NORMAL, LogViewType.OnlyFile);
@@ -420,29 +425,25 @@ namespace yidascan {
             const int SUCCESS = 0;
             const int FAIL = 2;
 
-            var client = GetOpcClient();
-
-            setupOpcClient(client, "称重");
+            var client = CreateOpcClient("称重");
 
             Task.Factory.StartNew(() => {
                 while (isrun) {
                     try {
-                        lock (client) {
-                            var signal = client.ReadInt(opcParam.ScanParam.GetWeigh);
-                            if (signal == TO_WEIGH) {
-                                var code = taskQ.GetWeighQ();
+                        var signal = client.ReadInt(opcParam.ScanParam.GetWeigh);
+                        if (signal == TO_WEIGH) {
+                            var code = taskQ.GetWeighQ();
 
-                                if (code != null) {
-                                    signal = NotifyWeigh(code.LCode, false) ? SUCCESS : FAIL;
-                                    logOpt.Write($"{code.LCode}称重API状态：{signal} 写OPC状态：{client.Write(opcParam.ScanParam.GetWeigh, signal)}");
+                            if (code != null) {
+                                signal = NotifyWeigh(code.LCode, false) ? SUCCESS : FAIL;
+                                logOpt.Write($"{code.LCode}称重API状态：{signal} 写OPC状态：{client.Write(opcParam.ScanParam.GetWeigh, signal)}");
 
-                                    showLabelQue(taskQ.WeighQ, lsvWeigh);
-                                    if (code.ToLocation.Substring(0, 1) == "B") {
-                                        showLabelQue(taskQ.CacheQ, lsvCacheBefor);//加到缓存列表中显示
-                                    }
-                                } else {
-                                    logOpt.Write($"称重信号无对应数据");
+                                showLabelQue(taskQ.WeighQ, lsvWeigh);
+                                if (code.ToLocation.Substring(0, 1) == "B") {
+                                    showLabelQue(taskQ.CacheQ, lsvCacheBefor);//加到缓存列表中显示
                                 }
+                            } else {
+                                logOpt.Write($"称重信号无对应数据");
                             }
                         }
                     } catch (Exception ex) {
@@ -578,11 +579,13 @@ namespace yidascan {
 
                             var t = TimeCount.TimeIt(() => {
                                 // 计算位置, lc和cache队列里比较。
-                                var calResult = LableCodeBllPro.AreaBCalculate(CacheOpcClient, 
+                                var calResult = LableCodeBllPro.AreaBCalculate(CacheOpcClient,
                                     callErpApi,
                                     lc,
-                                    createShiftNo(), 
-                                    taskQ.GetBeforCacheLables(lc)); 
+                                    createShiftNo(),
+                                    taskQ.GetBeforCacheLables(lc),
+                                    x => { logOpt.Write(x, LogType.BUFFER); }
+                                    );
 
                                 // 确定缓存操作动作
                                 var cacheJobState = cacheher.WhenRollArrived(calResult.state, calResult.CodeCome, calResult.CodeFromCache);
@@ -595,9 +598,7 @@ namespace yidascan {
                                     taskQ.CacheQ.Dequeue();
                                 }
 
-                                // 更新界面显示
-                                BindQueue(lc, calResult.CodeFromCache, cacheJobState);
-
+                                // 这个为什么不放在whenRollArrived里面呢?
                                 if (cacheJobState.state == CacheState.CacheAndGet || cacheJobState.state == CacheState.GetThenCache) {
                                     if (CacheHelper.isInSameCacheChannel(cacheJobState.getpos, cacheJobState.savepos)) {
                                         // 在同一侧
@@ -607,10 +608,14 @@ namespace yidascan {
                                     }
                                 }
 
+                                // 更新界面显示
+                                BindQueue(lc, calResult.CodeFromCache, cacheJobState);
+
                                 var ts = TimeCount.TimeIt(() => {
                                     // 发出机械手缓存动作指令
                                     PlcHelper.WriteCacheJob(CacheOpcClient, cacheJobState.state, cacheJobState.savepos, cacheJobState.getpos);
                                 });
+
                                 logOpt.Write($"计算缓存写OPC耗时:　{ts}ms", LogType.BUFFER);
                             });
                             logOpt.Write($"计算缓存总耗时:　{t}ms", LogType.BUFFER);
@@ -900,7 +905,6 @@ namespace yidascan {
             var str = tolocation.Split('|');
 
             if (string.IsNullOrEmpty(tolocation) || string.IsNullOrEmpty(str[0])) {
-                // client.Write(opcParam.ScanParam.PushAside, 1);
                 PlcHelper.PushAside(client, opcParam);
                 return;
             }
@@ -985,12 +989,12 @@ namespace yidascan {
             var lc = LableCode.QueryByLCode(lCode);
             if (lc == null) { return false; }
 
-            LableCodeBll.GetPanelNo(lc, "");
+            LableCodeBllPro.GetPanelNo(lc, "");
             LableCode.Update(lc);
             LableCode.SetPanelNo(lCode);
 
             string msg;
-            var re = LableCodeBll.NotifyPanelEnd(callErpApi, lc.PanelNo, out msg);
+            var re = LableCodeBllPro.NotifyPanelEnd(callErpApi, lc.PanelNo, out msg);
             logOpt.Write(string.Format("{0} {1}", lc.ToLocation, msg), LogType.NORMAL);
 
             return re;
