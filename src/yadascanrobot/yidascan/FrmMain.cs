@@ -578,9 +578,11 @@ namespace yidascan {
 
                             var t = TimeCount.TimeIt(() => {
                                 // 计算位置, lc和cache队列里比较。
-                                var calResult = LableCodeBllPro.AreaBCalculate(callErpApi,
-                                lc,
-                                createShiftNo(), taskQ.GetBeforCacheLables(lc)); //计算位置
+                                var calResult = LableCodeBllPro.AreaBCalculate(CacheOpcClient, 
+                                    callErpApi,
+                                    lc,
+                                    createShiftNo(), 
+                                    taskQ.GetBeforCacheLables(lc)); 
 
                                 // 确定缓存操作动作
                                 var cacheJobState = cacheher.WhenRollArrived(calResult.state, calResult.CodeCome, calResult.CodeFromCache);
@@ -898,9 +900,11 @@ namespace yidascan {
             var str = tolocation.Split('|');
 
             if (string.IsNullOrEmpty(tolocation) || string.IsNullOrEmpty(str[0])) {
-                client.Write(opcParam.ScanParam.PushAside, 1);
+                // client.Write(opcParam.ScanParam.PushAside, 1);
+                PlcHelper.PushAside(client, opcParam);
                 return;
             }
+
             var lc = new LableCode(code, str[0], decimal.Parse(str[1]), handwork);
             var clothsize = new ClothRollSize();
 
@@ -918,6 +922,14 @@ namespace yidascan {
                 clothsize.getFromOPC(client, opcParam);
                 client.Write(opcParam.ScanParam.SizeState, false);
             });
+
+            const int MIN_DIAMETER = 30;
+            if (clothsize.diameter < MIN_DIAMETER) {
+                // 小于30mm的布卷，则勾走。
+                PlcHelper.PushAside(client, opcParam);
+                logOpt.Write($"布卷直径{clothsize.diameter}, 小于{MIN_DIAMETER}mm, 勾走。");
+                return;
+            }
 
             lc.SetSize(clothsize.diameter, clothsize.length);
 

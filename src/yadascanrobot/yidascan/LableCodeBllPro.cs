@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using ProduceComm;
 using yidascan.DataAccess;
 
@@ -47,6 +48,11 @@ namespace yidascan {
             return xory;
         }
 
+        /// <summary>
+        /// 已上板的布卷总宽度,外加多一个边距布卷间距。
+        /// </summary>
+        /// <param name="lcs"></param>
+        /// <returns></returns>
         private static decimal CalculateXory(List<LableCode> lcs) {
             var index = CalculateFloorIndex(lcs);
             decimal xory;
@@ -96,6 +102,7 @@ namespace yidascan {
         /// <param name="lcs">当前层所有标签</param>
         /// <param name="lc">当前标签</param>
         /// <returns></returns>
+        [Obsolete("use isPanelFull instead.")]
         private static LableCode IsPanelFull(List<LableCode> lcs, LableCode lc) {
             // 以下是新的做法。
             // 满则返回莫格缓存中的布卷
@@ -108,6 +115,20 @@ namespace yidascan {
             // FrmMain.logOpt.Write($"***loc: {lc.ToLocation}, cached count: {cachedRolls.Count()}, max width: {MAX_WIDTH}, installed width: {installedWidth}","buffer");
 
             return findSmallerFromCachedRolls(cachedRolls, lc, installedWidth, MAX_WIDTH);
+        }
+
+        private static PanelFullState IsPanelFullPro(List<LableCode> lcs, LableCode lc) {
+            // 以下是新的做法。
+            // 满则返回莫格缓存中的布卷
+            // 不满则返回null
+            var cachedRolls = (from s in lcs where s.FloorIndex == 0 select s).ToList();
+            var MAX_WIDTH = FindMaxHalfWidth(lc);
+            // 板上宽度
+            var installedWidth = Math.Abs(CalculateXory(lcs));
+
+            // FrmMain.logOpt.Write($"***loc: {lc.ToLocation}, cached count: {cachedRolls.Count()}, max width: {MAX_WIDTH}, installed width: {installedWidth}","buffer");
+
+            return findSmallerFromCachedRollsPro(cachedRolls, lc, installedWidth, MAX_WIDTH);
         }
 
         /// <summary>
@@ -202,6 +223,13 @@ namespace yidascan {
             return expected;
         }
 
+        // 
+        private static decimal expectedWidthNoEdgeSpace(decimal installedWidth, LableCode l1, LableCode l2) {
+            // 预期宽度
+            var expected = installedWidth + l1.Diameter + clsSetting.RollSep + l2.Diameter;
+            return expected;
+        }
+
         /// <summary>
         /// 当前布卷和缓存中的一个布卷可能占用的坐标
         /// </summary>
@@ -221,6 +249,7 @@ namespace yidascan {
         /// <param name="installedWidth"></param>
         /// <param name="maxedWidth"></param>
         /// <returns></returns>
+        [Obsolete("use findSmallerFromCachedRollsPro instead.")]
         private static LableCode findSmallerFromCachedRolls(List<LableCode> cachedRolls, LableCode current, decimal installedWidth, decimal maxedWidth) {
             LableCode rt = null;
             foreach (var item in cachedRolls) {
@@ -233,6 +262,28 @@ namespace yidascan {
             }
             return rt;
         }
+
+        private static PanelFullState findSmallerFromCachedRollsPro(List<LableCode> cachedRolls, LableCode current, decimal installedWidth, decimal max) {
+            // 预计宽度超出
+            var e = clsSetting.EdgeSpace;
+            var rt = cachedRolls.Where(x => (expectedWidthNoEdgeSpace(installedWidth, current, x) > max - e))
+                .OrderBy(x => x.Diameter)
+                .FirstOrDefault();
+
+            if(rt == null) {
+                return new PanelFullState(PanelFullState.NO_FULL, null);
+            } else {
+                var w = expectedWidthNoEdgeSpace(installedWidth, current, rt);
+                
+                if (w >= max) {
+                    return new PanelFullState(PanelFullState.EXCEED, rt);
+                } else if (w > max - e && w < max) {
+                    return new PanelFullState(PanelFullState.FULL, rt);
+                } else {
+                    return null;
+                }
+            }
+        }
         #endregion
 
         #region PUBLIC_FUNCTIONS
@@ -242,7 +293,7 @@ namespace yidascan {
             return pf;
         }
 
-        public static CalResult AreaBCalculate(IErpApi erpapi, LableCode lc, string dateShiftNo, IEnumerable<LableCode> cacheq) {
+        public static CalResult AreaBCalculate(IOpcClient client, IErpApi erpapi, LableCode lc, string dateShiftNo, IEnumerable<LableCode> cacheq) {
             var rt = new CalResult(CacheState.Cache, lc, null);
             var pinfo = GetPanelNo(rt.CodeCome, dateShiftNo);
 
@@ -258,21 +309,49 @@ namespace yidascan {
 
                 if (layerLabels != null && layerLabels.Count > 0) {
                     // 最近一层没满。
-                    rt.CodeFromCache = IsPanelFull(layerLabels, rt.CodeCome);
+                    // rt.CodeFromCache = IsPanelFull(layerLabels, rt.CodeCome);
 
-                    if (rt.CodeFromCache != null) //不为NULL，表示满
-                    {
+                    var fullstate = IsPanelFullPro(layerLabels, rt.CodeCome);
+                    rt.CodeFromCache = fullstate.fromCache;
+
+                    if (fullstate.state == PanelFullState.FULL) {
                         if (rt.CodeCome.Diameter > rt.CodeFromCache.Diameter + clsSetting.CacheIgnoredDiff) {
                             rt.state = CacheState.GetThenGo;
                         } else {
                             rt.state = CacheState.GoThenGet;
                         }
-                    } else {
+                    } else if (fullstate.state == PanelFullState.NO_FULL) { 
                         //计算缓存，lc2不为NULL需要缓存
                         var cr = CalculateCache(pinfo, rt.CodeCome, layerLabels);
                         rt.CodeFromCache = cr.CodeFromCache;
                         rt.state = cr.state;
+                    } else if (fullstate.state == PanelFullState.EXCEED) {
+                        if (rt.CodeCome.Diameter > rt.CodeFromCache.Diameter + clsSetting.CacheIgnoredDiff) {
+                            rt.state = CacheState.GetThenGo;
+                        } else {
+                            rt.state = CacheState.GoThenGet;
+                        }
+
+                        // 当前层是最后一层, 要移入下一板???
+                        
+ 
+                    } else {
+                        // can not happen.
                     }
+
+                    //if (rt.CodeFromCache != null) //不为NULL，表示满
+                    //{
+                    //    if (rt.CodeCome.Diameter > rt.CodeFromCache.Diameter + clsSetting.CacheIgnoredDiff) {
+                    //        rt.state = CacheState.GetThenGo;
+                    //    } else {
+                    //        rt.state = CacheState.GoThenGet;
+                    //    }
+                    //} else {
+                    //    //计算缓存，lc2不为NULL需要缓存
+                    //    var cr = CalculateCache(pinfo, rt.CodeCome, layerLabels);
+                    //    rt.CodeFromCache = cr.CodeFromCache;
+                    //    rt.state = cr.state;
+                    //}
                 }
             }
 
@@ -334,7 +413,13 @@ namespace yidascan {
             }
 
             if (fp == FloorPerformance.BothFinish && rt.CodeCome.Floor == pinfo.MaxFloor) {
-                var re = ErpHelper.NotifyPanelEnd(erpapi, pinfo.PanelNo, out msg);
+                var lables = LableCode.GetLableCodesOfRecentFloor(rt.CodeFromCache.ToLocation, pinfo);
+                if (LayerShape.isBadShape(lables)) { 
+                    PlcHelper.NotifyBadLayerShape(client, lc.ToLocation);
+                }
+                
+                ErpHelper.NotifyPanelEnd(erpapi, pinfo.PanelNo, out msg);
+
             }
             rt.message = msg;
             return rt;
@@ -386,6 +471,7 @@ namespace yidascan {
                 fp = FloorPerformance.BothFinish;
             return fp;
         }
+
         #endregion
     }
 
@@ -414,6 +500,31 @@ namespace yidascan {
             CodeCome = codeToCache_;
             CodeFromCache = codeFromCache_;
             message = "";
+        }
+    }
+
+    class PanelFullState {
+        public int state { get; set; }
+        public LableCode fromCache { get; set; }
+
+        /// <summary>
+        /// 未满
+        /// </summary>
+        public const int NO_FULL = 0;
+
+        /// <summary>
+        /// 已满
+        /// </summary>
+        public const int FULL = 1;
+
+        /// <summary>
+        /// 超出
+        /// </summary>
+        public const int EXCEED = 2; 
+
+        public PanelFullState(int state_, LableCode fromCache_) {
+            state = state_;
+            fromCache = fromCache_;
         }
     }
 }
