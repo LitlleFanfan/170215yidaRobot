@@ -43,6 +43,9 @@
         /// <summary>
         /// 抓料处位置2来料信号地址。
         /// </summary>
-        public static string ITEM_CATCH_B = "MicroWin.S7-1200-3.NewItem110";        
+        public static string ITEM_CATCH_B = "MicroWin.S7-1200-3.NewItem110";
+
+        public static string LAYER_SHAPE_BAD = "";
+        public static string LOCATION_OF_BAD_SHAPE = "";
     }
 }

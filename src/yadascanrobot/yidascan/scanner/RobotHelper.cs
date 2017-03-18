@@ -313,14 +313,6 @@ namespace yidascan {
             }
         }
 
-        [Obsolete("这个干什么用的不知道")]
-        private void NotifyOpcSafePlace(string side) {
-            lock (FrmMain.opcClient) {
-                // FrmMain.opcClient.Write(side == "A" ? FrmMain.opcParam.RobotCarryA.Signal : FrmMain.opcParam.RobotCarryB.Signal, false);
-                client.Write(side == "A" ? param.RobotCarryA.Signal : param.RobotCarryB.Signal, false);
-            }
-        }
-
         public void NotifyOpcJobFinished(PanelState pState, string tolocation) {
             try {
                 switch (pState) {

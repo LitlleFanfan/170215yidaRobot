@@ -126,7 +126,7 @@ namespace yidascan {
                 ShowTaskQ();
 
                 StartOpcParam();
-                opcClient = CreateOpcClient("其他");
+                opcClient = CreateOpcClient("");
 
                 ShowTitle();
                 ShowTaskState(false);
@@ -183,7 +183,7 @@ namespace yidascan {
         /// </summary>
         private void StartRobotJobATask() {
             // setup opc client.
-            var RobotOpcClientA = CreateOpcClient("机器人队列A");           
+            var RobotOpcClientA = CreateOpcClient("机器人队列A");
 
             Task.Factory.StartNew(() => {
                 while (isrun) {
@@ -298,37 +298,37 @@ namespace yidascan {
         /// B区人工完成信号任务。
         /// </summary>
         private void BAreaUserFinalLayerTask() {
+            var client = CreateOpcClient("B区手动完成");
+
             foreach (KeyValuePair<string, string> kv in opcParam.BAreaUserFinalLayer) {
                 Task.Factory.StartNew(() => {
                     while (isrun) {
-                        lock (opcClient) {
-                            var signal = opcClient.ReadString(kv.Value);
+                        var signal = client.ReadString(kv.Value);
 
-                            if (signal == "1") {
-                                // kv.Key是交地。
-                                var tolocation = kv.Key;
+                        if (signal == "1") {
+                            // kv.Key是交地。
+                            var tolocation = kv.Key;
 
-                                // 修改当前板号的属性。
-                                var shiftno = createShiftNo();
+                            // 修改当前板号的属性。
+                            var shiftno = createShiftNo();
 
-                                var pf = LableCode.GetTolactionCurrPanelNo(tolocation, shiftno);
-                                LableCode.SetMaxFloorAndFull(tolocation);
-                                logOpt.Write($"{kv.Key}收到人工完成信号。", LogType.NORMAL, LogViewType.OnlyFile);
+                            var pf = LableCode.GetTolactionCurrPanelNo(tolocation, shiftno);
+                            LableCode.SetMaxFloorAndFull(tolocation);
+                            logOpt.Write($"{kv.Key}收到人工完成信号。", LogType.NORMAL, LogViewType.OnlyFile);
 
-                                // 创建新的板信息。
-                                var newPanel = PanelGen.NewPanelNo();
+                            // 创建新的板信息。
+                            var newPanel = PanelGen.NewPanelNo();
 
-                                // 重新计算缓存区的布卷的坐标。
-                                cacheher.ReCalculateCoordinate(newPanel, tolocation);
+                            // 重新计算缓存区的布卷的坐标。
+                            cacheher.ReCalculateCoordinate(newPanel, tolocation);
 
-                                //处理满板信号
-                                robot.NotifyOpcJobFinished(
-                                    LableCode.IsAllRollOnPanel(pf.PanelNo) ? PanelState.Full : PanelState.HalfFull,
-                                    tolocation);
+                            //处理满板信号
+                            robot.NotifyOpcJobFinished(
+                                LableCode.IsAllRollOnPanel(pf.PanelNo) ? PanelState.Full : PanelState.HalfFull,
+                                tolocation);
 
-                                // plc复位信号。
-                                opcClient.Write(kv.Value, "0");
-                            }
+                            // plc复位信号。
+                            client.Write(kv.Value, "0");
                         }
                         Thread.Sleep(OPCClient.DELAY * 200);
                     }
@@ -457,24 +457,23 @@ namespace yidascan {
         }
 
         private void ACAreaFinishTask() {
+            var opcclient = CreateOpcClient("AC区完成");
             foreach (var kv in opcParam.ACAreaPanelFinish) {
                 Task.Factory.StartNew(() => {
                     while (isrun) {
-                        lock (opcClient) {
-                            try {
-                                var signal = opcClient.ReadBool(kv.Value.Signal);
-                                if (signal) {
-                                    var fullLable = ReadCompleteLable(opcClient, kv.Value);
+                        try {
+                            var signal = opcclient.ReadBool(kv.Value.Signal);
+                            if (signal) {
+                                var fullLable = PlcHelper.ReadCompleteLable(opcclient, kv.Value);
 
-                                    logOpt.Write($"{kv.Value.Signal} 收到完成信号。标签:{fullLable} 执行状态:{AreaAAndCFinish(fullLable)}", LogType.NORMAL);
-                                }
-                            } catch (Exception ex) {
-                                logOpt.Write("!" + ex.Message);
+                                logOpt.Write($"{kv.Value.Signal} 收到完成信号。标签:{fullLable} 执行状态:{AreaAAndCFinish(fullLable)}", LogType.NORMAL);
                             }
-
-                            opcClient.Write(kv.Value.Signal, 0);
-
+                        } catch (Exception ex) {
+                            logOpt.Write("!" + ex.Message);
                         }
+
+                        opcclient.Write(kv.Value.Signal, 0);
+
                         Thread.Sleep(OPCClient.DELAY * 2000);
                     }
                 });
@@ -482,111 +481,6 @@ namespace yidascan {
 
             logOpt.Write("AC区完成信号任务启动。", LogType.NORMAL);
         }
-
-        /// <summary>
-        /// 读取完整标签号码。
-        /// </summary>
-        /// <param name="slot"></param>
-        /// <param name="client"></param>
-        /// <returns></returns>
-        private static string ReadCompleteLable(IOpcClient client, LCodeSignal slot) {
-            const int MAX_LEN = 6;
-            var lable1 = client.ReadString(slot.LCode1);
-            var lable2 = client.ReadString(slot.LCode2);
-            return lable1.PadLeft(MAX_LEN, '0') + lable2.PadLeft(MAX_LEN, '0');
-        }
-
-        /// <summary>
-        /// 读PLC的CacheParam.BeforCacheStatus值。
-        /// 如果读到的不是bool值，会弹出异常。
-        /// </summary>
-        /// <param name="client">OPCClient实例</param>
-        /// <param name="param">OPCParam实例</param>
-        /// <returns></returns>
-        private static bool ReadBeforeCacheStatus(IOpcClient client, OPCParam param) {
-            return client.ReadBool(param.CacheParam.BeforCacheStatus);
-        }
-
-        private void BeforCacheTask() {
-            logOpt.Write("缓存任务启动。", LogType.NORMAL);
-
-            var CacheOpcClient = CreateOpcClient("缓存位");
-
-
-            Task.Factory.StartNew(() => {
-                while (isrun) {
-                    try {
-                        if (PlcHelper.ReadCacheSignal(CacheOpcClient)) {
-                            if (taskQ.CacheQ.Count == 0) { continue; }
-                            var code = taskQ.CacheQ.Peek();
-
-                            if (code != null) {
-                                var lc = LableCode.QueryByLCode(code.LCode);
-
-                                if (lc == null) {
-                                    logOpt.Write(string.Format("!{0}标签在数据库中找不到", code.LCode), LogType.BUFFER);
-                                    // ???取不到信息后面的操作无法进行。此时应当停机。
-                                } else {
-                                    // 检查重复计算。
-                                    if (string.IsNullOrEmpty(lc.PanelNo)) {
-                                        // 板号以前没算过。                                            
-
-                                        // 计算位置
-                                        LableCode outCacheLable = null;
-                                        var msg = "";
-
-                                        var cState = LableCodeBll.AreaBCalculate(callErpApi,
-                                            lc,
-                                            string.Format("{0}{1}",
-                                                    dtpDate.Value.ToString(clsSetting.LABEL_CODE_DATE_FORMAT),
-                                                    cmbShiftNo.SelectedIndex.ToString()),
-                                            out outCacheLable, out msg); //计算位置
-
-                                        logOpt.Write(msg, LogType.BUFFER);
-
-                                        var cr = cacheher.WhenRollArrived(cState, lc, outCacheLable);
-
-                                        lock (taskQ.CacheQ) {
-                                            taskQ.CacheQ.Dequeue();
-                                        }
-
-                                        BindQueue(code, outCacheLable, cr);
-
-                                        if (cr.state == CacheState.CacheAndGet || cr.state == CacheState.GetThenCache) {
-                                            if (CacheHelper.isInSameCacheChannel(cr.getpos, cr.savepos)) {
-                                                // 在同一侧
-                                                cr.state = CacheState.GetThenCache;  // action 3.
-                                            } else {
-                                                cr.state = CacheState.CacheAndGet;   // action 6
-                                            }
-                                        }
-
-                                        logOpt.Write($"**写plc动作: {JsonConvert.SerializeObject(cr)}", LogType.BUFFER);
-                                        PlcHelper.WriteCacheJob(CacheOpcClient, cr.state, cr.savepos, cr.getpos);
-                                    } else {
-                                        logOpt.Write(string.Format("!{0}标签重复。", code.LCode), LogType.BUFFER);
-                                    }
-                                }
-                            }
-                        }
-                    } catch (Exception ex) {
-                        logOpt.Write(string.Format("!{0}", ex), LogType.BUFFER);
-                    }
-                    Thread.Sleep(OPCClient.DELAY * 200);
-                }
-            });
-        }
-
-        private static void logCacheQ(Queue<LableCode> q) {
-            logOpt.Write("--- 显示号码队列 ---");
-            var qa = q.ToArray();
-            for (int i = 0; i < qa.Length; i++) {
-                var code = qa[i] != null ? qa[i].LCode : "";
-                logOpt.Write($"{ i + 1 }: { code }");
-            }
-        }
-
-        //  private object LOCK_QUEUE_VIEW = new object();
 
         private void BindQueue(LableCode code, LableCode outCacheLable, CacheResult cr) {
             try {
@@ -684,9 +578,11 @@ namespace yidascan {
 
                             var t = TimeCount.TimeIt(() => {
                                 // 计算位置, lc和cache队列里比较。
-                                var calResult = LableCodeBllPro.AreaBCalculate(callErpApi,
-                                lc,
-                                createShiftNo(), taskQ.GetBeforCacheLables(lc)); //计算位置
+                                var calResult = LableCodeBllPro.AreaBCalculate(CacheOpcClient, 
+                                    callErpApi,
+                                    lc,
+                                    createShiftNo(), 
+                                    taskQ.GetBeforCacheLables(lc)); 
 
                                 // 确定缓存操作动作
                                 var cacheJobState = cacheher.WhenRollArrived(calResult.state, calResult.CodeCome, calResult.CodeFromCache);
@@ -726,10 +622,6 @@ namespace yidascan {
             });
         }
 
-        public string brief(LableCode lc, CalResult cr) {
-            return $"缓存状态：{cr.state}, from cache: {cr.CodeFromCache?.LCode}, to cache: {cr.CodeCome?.LCode}";
-        }
-
         /// <summary>
         /// 2期代码。
         /// </summary>
@@ -737,7 +629,7 @@ namespace yidascan {
             logOpt.Write("标签朝上任务启动。", LogType.NORMAL);
 
             var LabelUpOpcClient = CreateOpcClient("标签朝上");
-            
+
             Task.Factory.StartNew(() => {
                 while (isrun) {
                     try {
@@ -761,7 +653,6 @@ namespace yidascan {
                         }
                     } catch (Exception ex) {
                         logOpt.Write($"!{ex}", LogType.ROLL_QUEUE);
-                        // logOpt.Write($"labeluptask");
                     }
                     Thread.Sleep(OPCClient.DELAY * 200);
                 }
@@ -1009,9 +900,11 @@ namespace yidascan {
             var str = tolocation.Split('|');
 
             if (string.IsNullOrEmpty(tolocation) || string.IsNullOrEmpty(str[0])) {
-                client.Write(opcParam.ScanParam.PushAside, 1);
+                // client.Write(opcParam.ScanParam.PushAside, 1);
+                PlcHelper.PushAside(client, opcParam);
                 return;
             }
+
             var lc = new LableCode(code, str[0], decimal.Parse(str[1]), handwork);
             var clothsize = new ClothRollSize();
 
@@ -1029,6 +922,14 @@ namespace yidascan {
                 clothsize.getFromOPC(client, opcParam);
                 client.Write(opcParam.ScanParam.SizeState, false);
             });
+
+            const int MIN_DIAMETER = 30;
+            if (clothsize.diameter < MIN_DIAMETER) {
+                // 小于30mm的布卷，则勾走。
+                PlcHelper.PushAside(client, opcParam);
+                logOpt.Write($"布卷直径{clothsize.diameter}, 小于{MIN_DIAMETER}mm, 勾走。");
+                return;
+            }
 
             lc.SetSize(clothsize.diameter, clothsize.length);
 
@@ -1211,26 +1112,6 @@ namespace yidascan {
             openDirectory(Application.StartupPath, "log");
         }
 
-        /// <summary>
-        /// 等待为OPC允许删除信号，然后删除号码，最后信号复位。
-        /// </summary>
-        /// <param name="fullLabelCode">长度12位的号码</param>
-        [Obsolete("use plchelper.WriteDeletedLabelToOpc instead.")]
-        public void WriteDeletedLabelToOpc(string fullLabelCode) {
-            //等PLC做了此功能再放出来
-            //string signal = OPCRead(opcParam.DeleteLCode.Signal).ToString();
-
-            //while (isrun && bool.Parse(signal)) {
-            //    signal = OPCRead(opcParam.DeleteLCode.Signal).ToString();
-            //    Thread.Sleep(OPCClient.DELAY);
-            //}
-            lock (opcClient) {
-                opcClient.Write(opcParam.DeleteLCode.LCode1, fullLabelCode.Substring(0, 6));
-                opcClient.Write(opcParam.DeleteLCode.LCode2, fullLabelCode.Substring(6, 6));
-                opcClient.Write(opcParam.DeleteLCode.Signal, true);
-            }
-        }
-
         private void btnReset_Click(object sender, EventArgs e) {
 
         }
@@ -1275,16 +1156,6 @@ namespace yidascan {
         }
 
         /// <summary>
-        /// 发送报警信号到OPC。
-        /// </summary>
-        /// <param name="value">报警信号的值。</param>
-        private void AlarmToOPC(object value) {
-            lock (opcClient) {
-                opcClient.Write(opcParam.None.ERPAlarm, value);
-            }
-        }
-
-        /// <summary>
         /// ERP故障
         /// </summary>
         /// <param name="erpAlarm"></param>
@@ -1296,16 +1167,6 @@ namespace yidascan {
                 opcClient.Write(opcParam.None.ERPAlarm, (int)erpAlarm);
             } catch (Exception ex) {
                 logOpt.Write("!OPC写信号失败: " + ex.ToString());
-            }
-        }
-
-        /// <summary>
-        /// 发送机器人报警信号给OPC。
-        /// </summary>
-        /// <param name="value">报警信号的值。</param>
-        private void RobotAlarmToOpc(object value) {
-            lock (opcClient) {
-                opcClient.Write(opcParam.None.RobotAlarmSlot, value);
             }
         }
 
@@ -1322,9 +1183,10 @@ namespace yidascan {
         }
 
         private void btnStopRobot_Click(object sender, EventArgs e) {
-            if (!CommonHelper.Confirm("确定停止机器人任务吗?")) { return; }
-            StopAllRobotTasks();
-            RefreshRobotMenuState();
+            if (CommonHelper.Confirm("确定停止机器人任务吗?")) {
+                StopAllRobotTasks();
+                RefreshRobotMenuState();
+            }
         }
 
         private void btnWeighReset_Click(object sender, EventArgs e) {
