@@ -1,4 +1,9 @@
-﻿namespace yidascan {
+﻿using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
+using yidascan.DataAccess;
+
+namespace yidascan {
     public static class PlcSlot {
         /// <summary>
         /// 缓存处来料信号地址。
@@ -45,7 +50,30 @@
         /// </summary>
         public static string ITEM_CATCH_B = "MicroWin.S7-1200-3.NewItem110";
 
-        public static string LAYER_SHAPE_BAD = "";
-        public static string LOCATION_OF_BAD_SHAPE = "";
+        /// <summary>
+        /// tolocations for bad shape signal.
+        /// </summary>
+        public static Dictionary<string, string> LAYER_SHAPE_BAD;
+
+        /// <summary>
+        /// load LAYER_SHAPE_BAD from database.
+        /// </summary>
+        public static void loadLayerBadShapeLocation() {
+            if (LAYER_SHAPE_BAD != null) {
+                LAYER_SHAPE_BAD.Clear();
+            } else {
+                LAYER_SHAPE_BAD = new Dictionary<string, string>();
+            }
+
+            var sql = "select tolocation, slot from badshapelocation";
+            var dt = DataAccess.DataAccess.CreateDataAccess.sa.Query(sql);
+            if (dt != null) {
+                foreach (DataRow row in dt.Rows) {
+                    var k = row["tolocation"].ToString().ToUpper();
+                    var v = row["slot"].ToString();
+                    LAYER_SHAPE_BAD.Add(k, v);
+                }
+            } 
+        }
     }
 }
