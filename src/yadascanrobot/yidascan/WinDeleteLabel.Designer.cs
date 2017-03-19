@@ -34,11 +34,12 @@
             // 
             // button1
             // 
-            this.button1.Font = new System.Drawing.Font("SimSun", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.button1.Font = new System.Drawing.Font("宋体", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.button1.ForeColor = System.Drawing.Color.Red;
-            this.button1.Location = new System.Drawing.Point(263, 92);
+            this.button1.Location = new System.Drawing.Point(495, 169);
+            this.button1.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(107, 35);
+            this.button1.Size = new System.Drawing.Size(178, 55);
             this.button1.TabIndex = 0;
             this.button1.Text = "删除";
             this.button1.UseVisualStyleBackColor = true;
@@ -46,10 +47,11 @@
             // 
             // btnCancel
             // 
-            this.btnCancel.Font = new System.Drawing.Font("SimSun", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.btnCancel.Location = new System.Drawing.Point(403, 92);
+            this.btnCancel.Font = new System.Drawing.Font("宋体", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.btnCancel.Location = new System.Drawing.Point(728, 168);
+            this.btnCancel.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(107, 36);
+            this.btnCancel.Size = new System.Drawing.Size(178, 57);
             this.btnCancel.TabIndex = 1;
             this.btnCancel.Text = "取消";
             this.btnCancel.UseVisualStyleBackColor = true;
@@ -58,8 +60,9 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("SimSun", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label1.Location = new System.Drawing.Point(6, 31);
+            this.label1.Font = new System.Drawing.Font("宋体", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label1.Location = new System.Drawing.Point(67, 63);
+            this.label1.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(143, 33);
             this.label1.TabIndex = 2;
@@ -67,10 +70,11 @@
             // 
             // txtLabelCode
             // 
-            this.txtLabelCode.Font = new System.Drawing.Font("SimSun", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.txtLabelCode.Location = new System.Drawing.Point(155, 20);
+            this.txtLabelCode.Font = new System.Drawing.Font("宋体", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.txtLabelCode.Location = new System.Drawing.Point(315, 57);
+            this.txtLabelCode.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.txtLabelCode.Name = "txtLabelCode";
-            this.txtLabelCode.Size = new System.Drawing.Size(367, 44);
+            this.txtLabelCode.Size = new System.Drawing.Size(609, 44);
             this.txtLabelCode.TabIndex = 3;
             // 
             // lbxLog
@@ -78,18 +82,20 @@
             this.lbxLog.Font = new System.Drawing.Font("SimSun", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.lbxLog.FormattingEnabled = true;
             this.lbxLog.ItemHeight = 19;
-            this.lbxLog.Location = new System.Drawing.Point(12, 183);
+            this.lbxLog.Location = new System.Drawing.Point(77, 315);
+            this.lbxLog.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.lbxLog.Name = "lbxLog";
-            this.lbxLog.Size = new System.Drawing.Size(510, 137);
+            this.lbxLog.Size = new System.Drawing.Size(847, 232);
             this.lbxLog.TabIndex = 4;
             // 
             // btnCheck
             // 
-            this.btnCheck.Font = new System.Drawing.Font("SimSun", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.btnCheck.Font = new System.Drawing.Font("宋体", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.btnCheck.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.btnCheck.Location = new System.Drawing.Point(123, 91);
+            this.btnCheck.Location = new System.Drawing.Point(262, 169);
+            this.btnCheck.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.btnCheck.Name = "btnCheck";
-            this.btnCheck.Size = new System.Drawing.Size(107, 35);
+            this.btnCheck.Size = new System.Drawing.Size(178, 55);
             this.btnCheck.TabIndex = 5;
             this.btnCheck.Text = "检查";
             this.btnCheck.UseVisualStyleBackColor = true;
@@ -98,8 +104,8 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("SimSun", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label2.Location = new System.Drawing.Point(12, 152);
+            this.label2.Location = new System.Drawing.Point(77, 266);
+            this.label2.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(66, 19);
             this.label2.TabIndex = 6;
@@ -107,9 +113,9 @@
             // 
             // WinDeleteLabel
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 19F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(539, 341);
+            this.ClientSize = new System.Drawing.Size(993, 568);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.btnCheck);
             this.Controls.Add(this.lbxLog);
@@ -117,7 +123,9 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.button1);
+            this.Font = new System.Drawing.Font("宋体", 14F);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "WinDeleteLabel";

@@ -57,8 +57,8 @@ namespace yidascan {
             //X = x;
             //Y = y;
 
-            X = x + adj.offsetx;
-            Y = y + adj.offsety;
+            X = x + (side == "B" ? -adj.offsetx : adj.offsetx);
+            Y = y + (side == "B" ? -adj.offsety : adj.offsety);
 
             Z = z;
             Rz = rz;
@@ -101,6 +101,7 @@ namespace yidascan {
 
 
         public static List<string> robotRSidePanel = new List<string> { "B03", "B04", "B05", "B06", "B07", "B08" };
+        public static List<string> robotCatchB = new List<string> { "B06", "B07", "B08", "B09", "B10", "B11" };
         private static int CalculateBaseIndex(string tolocation, decimal x, decimal y) {
             var baseindex = 0;
             if (x != 0) {
