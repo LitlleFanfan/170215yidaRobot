@@ -131,21 +131,21 @@
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Location = new System.Drawing.Point(0, 2);
-            this.tabControl1.Margin = new System.Windows.Forms.Padding(4);
+            this.tabControl1.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(596, 384);
+            this.tabControl1.Size = new System.Drawing.Size(745, 456);
             this.tabControl1.TabIndex = 0;
             // 
             // tabPage1
             // 
             this.tabPage1.Controls.Add(this.groupBox5);
             this.tabPage1.Controls.Add(this.groupBox1);
-            this.tabPage1.Location = new System.Drawing.Point(4, 26);
-            this.tabPage1.Margin = new System.Windows.Forms.Padding(4);
+            this.tabPage1.Location = new System.Drawing.Point(4, 29);
+            this.tabPage1.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(4);
-            this.tabPage1.Size = new System.Drawing.Size(588, 354);
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.tabPage1.Size = new System.Drawing.Size(737, 423);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "采集器";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -156,11 +156,11 @@
             this.groupBox5.Controls.Add(this.rbtType22);
             this.groupBox5.Controls.Add(this.rbtType12);
             this.groupBox5.Controls.Add(this.pnl12);
-            this.groupBox5.Location = new System.Drawing.Point(8, 182);
-            this.groupBox5.Margin = new System.Windows.Forms.Padding(4);
+            this.groupBox5.Location = new System.Drawing.Point(10, 216);
+            this.groupBox5.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Padding = new System.Windows.Forms.Padding(4);
-            this.groupBox5.Size = new System.Drawing.Size(574, 164);
+            this.groupBox5.Padding = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.groupBox5.Size = new System.Drawing.Size(718, 195);
             this.groupBox5.TabIndex = 19;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "2#采集器";
@@ -171,69 +171,69 @@
             this.pnl22.Controls.Add(this.txtIPAddr2);
             this.pnl22.Controls.Add(this.label29);
             this.pnl22.Controls.Add(this.label30);
-            this.pnl22.Location = new System.Drawing.Point(290, 61);
-            this.pnl22.Margin = new System.Windows.Forms.Padding(4);
+            this.pnl22.Location = new System.Drawing.Point(362, 72);
+            this.pnl22.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.pnl22.Name = "pnl22";
-            this.pnl22.Size = new System.Drawing.Size(276, 92);
+            this.pnl22.Size = new System.Drawing.Size(345, 109);
             this.pnl22.TabIndex = 16;
             // 
             // txtIPPort2
             // 
-            this.txtIPPort2.Location = new System.Drawing.Point(80, 53);
-            this.txtIPPort2.Margin = new System.Windows.Forms.Padding(4);
+            this.txtIPPort2.Location = new System.Drawing.Point(100, 63);
+            this.txtIPPort2.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.txtIPPort2.Maximum = new decimal(new int[] {
             65535,
             0,
             0,
             0});
             this.txtIPPort2.Name = "txtIPPort2";
-            this.txtIPPort2.Size = new System.Drawing.Size(192, 26);
+            this.txtIPPort2.Size = new System.Drawing.Size(240, 29);
             this.txtIPPort2.TabIndex = 7;
             // 
             // txtIPAddr2
             // 
-            this.txtIPAddr2.Location = new System.Drawing.Point(80, 13);
-            this.txtIPAddr2.Margin = new System.Windows.Forms.Padding(4);
+            this.txtIPAddr2.Location = new System.Drawing.Point(100, 15);
+            this.txtIPAddr2.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.txtIPAddr2.Name = "txtIPAddr2";
-            this.txtIPAddr2.Size = new System.Drawing.Size(190, 26);
+            this.txtIPAddr2.Size = new System.Drawing.Size(236, 29);
             this.txtIPAddr2.TabIndex = 6;
             // 
             // label29
             // 
-            this.label29.Location = new System.Drawing.Point(4, 13);
-            this.label29.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label29.Location = new System.Drawing.Point(5, 15);
+            this.label29.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.label29.Name = "label29";
-            this.label29.Size = new System.Drawing.Size(80, 27);
+            this.label29.Size = new System.Drawing.Size(100, 32);
             this.label29.TabIndex = 4;
             this.label29.Text = "IP";
             this.label29.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // label30
             // 
-            this.label30.Location = new System.Drawing.Point(4, 53);
-            this.label30.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label30.Location = new System.Drawing.Point(5, 63);
+            this.label30.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.label30.Name = "label30";
-            this.label30.Size = new System.Drawing.Size(80, 27);
+            this.label30.Size = new System.Drawing.Size(100, 32);
             this.label30.TabIndex = 5;
             this.label30.Text = "端口";
             this.label30.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // rbtType22
             // 
-            this.rbtType22.Location = new System.Drawing.Point(298, 26);
-            this.rbtType22.Margin = new System.Windows.Forms.Padding(4);
+            this.rbtType22.Location = new System.Drawing.Point(372, 31);
+            this.rbtType22.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.rbtType22.Name = "rbtType22";
-            this.rbtType22.Size = new System.Drawing.Size(134, 27);
+            this.rbtType22.Size = new System.Drawing.Size(168, 32);
             this.rbtType22.TabIndex = 17;
             this.rbtType22.Text = "网口通信";
             this.rbtType22.CheckedChanged += new System.EventHandler(this.rbtType2Plc_CheckedChanged);
             // 
             // rbtType12
             // 
-            this.rbtType12.Location = new System.Drawing.Point(14, 26);
-            this.rbtType12.Margin = new System.Windows.Forms.Padding(4);
+            this.rbtType12.Location = new System.Drawing.Point(18, 31);
+            this.rbtType12.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.rbtType12.Name = "rbtType12";
-            this.rbtType12.Size = new System.Drawing.Size(134, 27);
+            this.rbtType12.Size = new System.Drawing.Size(168, 32);
             this.rbtType12.TabIndex = 12;
             this.rbtType12.Text = "串口通信";
             this.rbtType12.CheckedChanged += new System.EventHandler(this.rbtType1Plc_CheckedChanged);
@@ -244,10 +244,10 @@
             this.pnl12.Controls.Add(this.cmbCom2);
             this.pnl12.Controls.Add(this.label31);
             this.pnl12.Controls.Add(this.label32);
-            this.pnl12.Location = new System.Drawing.Point(6, 61);
-            this.pnl12.Margin = new System.Windows.Forms.Padding(4);
+            this.pnl12.Location = new System.Drawing.Point(8, 72);
+            this.pnl12.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.pnl12.Name = "pnl12";
-            this.pnl12.Size = new System.Drawing.Size(276, 92);
+            this.pnl12.Size = new System.Drawing.Size(345, 109);
             this.pnl12.TabIndex = 15;
             // 
             // cmbBaudRate2
@@ -261,36 +261,36 @@
             "38400",
             "57600",
             "115200"});
-            this.cmbBaudRate2.Location = new System.Drawing.Point(80, 54);
-            this.cmbBaudRate2.Margin = new System.Windows.Forms.Padding(4);
+            this.cmbBaudRate2.Location = new System.Drawing.Point(100, 64);
+            this.cmbBaudRate2.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.cmbBaudRate2.Name = "cmbBaudRate2";
-            this.cmbBaudRate2.Size = new System.Drawing.Size(190, 24);
+            this.cmbBaudRate2.Size = new System.Drawing.Size(236, 27);
             this.cmbBaudRate2.TabIndex = 3;
             // 
             // cmbCom2
             // 
-            this.cmbCom2.Location = new System.Drawing.Point(80, 14);
-            this.cmbCom2.Margin = new System.Windows.Forms.Padding(4);
+            this.cmbCom2.Location = new System.Drawing.Point(100, 17);
+            this.cmbCom2.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.cmbCom2.Name = "cmbCom2";
-            this.cmbCom2.Size = new System.Drawing.Size(190, 24);
+            this.cmbCom2.Size = new System.Drawing.Size(236, 27);
             this.cmbCom2.TabIndex = 2;
             // 
             // label31
             // 
-            this.label31.Location = new System.Drawing.Point(4, 13);
-            this.label31.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label31.Location = new System.Drawing.Point(5, 15);
+            this.label31.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.label31.Name = "label31";
-            this.label31.Size = new System.Drawing.Size(80, 27);
+            this.label31.Size = new System.Drawing.Size(100, 32);
             this.label31.TabIndex = 4;
             this.label31.Text = "端口";
             this.label31.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // label32
             // 
-            this.label32.Location = new System.Drawing.Point(4, 53);
-            this.label32.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label32.Location = new System.Drawing.Point(5, 63);
+            this.label32.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.label32.Name = "label32";
-            this.label32.Size = new System.Drawing.Size(80, 27);
+            this.label32.Size = new System.Drawing.Size(100, 32);
             this.label32.TabIndex = 5;
             this.label32.Text = "波特率";
             this.label32.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -301,11 +301,11 @@
             this.groupBox1.Controls.Add(this.rbtType2);
             this.groupBox1.Controls.Add(this.rbtType1);
             this.groupBox1.Controls.Add(this.pnl1);
-            this.groupBox1.Location = new System.Drawing.Point(8, 11);
-            this.groupBox1.Margin = new System.Windows.Forms.Padding(4);
+            this.groupBox1.Location = new System.Drawing.Point(10, 13);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(4);
-            this.groupBox1.Size = new System.Drawing.Size(574, 164);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.groupBox1.Size = new System.Drawing.Size(718, 195);
             this.groupBox1.TabIndex = 19;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "1#采集器";
@@ -316,69 +316,69 @@
             this.pnl2.Controls.Add(this.txtIPAddr);
             this.pnl2.Controls.Add(this.lblIP);
             this.pnl2.Controls.Add(this.label5);
-            this.pnl2.Location = new System.Drawing.Point(290, 61);
-            this.pnl2.Margin = new System.Windows.Forms.Padding(4);
+            this.pnl2.Location = new System.Drawing.Point(362, 72);
+            this.pnl2.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.pnl2.Name = "pnl2";
-            this.pnl2.Size = new System.Drawing.Size(276, 92);
+            this.pnl2.Size = new System.Drawing.Size(345, 109);
             this.pnl2.TabIndex = 16;
             // 
             // txtIPPort
             // 
-            this.txtIPPort.Location = new System.Drawing.Point(80, 53);
-            this.txtIPPort.Margin = new System.Windows.Forms.Padding(4);
+            this.txtIPPort.Location = new System.Drawing.Point(100, 63);
+            this.txtIPPort.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.txtIPPort.Maximum = new decimal(new int[] {
             65535,
             0,
             0,
             0});
             this.txtIPPort.Name = "txtIPPort";
-            this.txtIPPort.Size = new System.Drawing.Size(192, 26);
+            this.txtIPPort.Size = new System.Drawing.Size(240, 29);
             this.txtIPPort.TabIndex = 7;
             // 
             // txtIPAddr
             // 
-            this.txtIPAddr.Location = new System.Drawing.Point(80, 13);
-            this.txtIPAddr.Margin = new System.Windows.Forms.Padding(4);
+            this.txtIPAddr.Location = new System.Drawing.Point(100, 15);
+            this.txtIPAddr.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.txtIPAddr.Name = "txtIPAddr";
-            this.txtIPAddr.Size = new System.Drawing.Size(190, 26);
+            this.txtIPAddr.Size = new System.Drawing.Size(236, 29);
             this.txtIPAddr.TabIndex = 6;
             // 
             // lblIP
             // 
-            this.lblIP.Location = new System.Drawing.Point(4, 13);
-            this.lblIP.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblIP.Location = new System.Drawing.Point(5, 15);
+            this.lblIP.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.lblIP.Name = "lblIP";
-            this.lblIP.Size = new System.Drawing.Size(80, 27);
+            this.lblIP.Size = new System.Drawing.Size(100, 32);
             this.lblIP.TabIndex = 4;
             this.lblIP.Text = "IP";
             this.lblIP.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // label5
             // 
-            this.label5.Location = new System.Drawing.Point(4, 53);
-            this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label5.Location = new System.Drawing.Point(5, 63);
+            this.label5.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(80, 27);
+            this.label5.Size = new System.Drawing.Size(100, 32);
             this.label5.TabIndex = 5;
             this.label5.Text = "端口";
             this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // rbtType2
             // 
-            this.rbtType2.Location = new System.Drawing.Point(298, 26);
-            this.rbtType2.Margin = new System.Windows.Forms.Padding(4);
+            this.rbtType2.Location = new System.Drawing.Point(372, 31);
+            this.rbtType2.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.rbtType2.Name = "rbtType2";
-            this.rbtType2.Size = new System.Drawing.Size(134, 27);
+            this.rbtType2.Size = new System.Drawing.Size(168, 32);
             this.rbtType2.TabIndex = 17;
             this.rbtType2.Text = "网口通信";
             this.rbtType2.CheckedChanged += new System.EventHandler(this.rbtType2_CheckedChanged);
             // 
             // rbtType1
             // 
-            this.rbtType1.Location = new System.Drawing.Point(14, 26);
-            this.rbtType1.Margin = new System.Windows.Forms.Padding(4);
+            this.rbtType1.Location = new System.Drawing.Point(18, 31);
+            this.rbtType1.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.rbtType1.Name = "rbtType1";
-            this.rbtType1.Size = new System.Drawing.Size(134, 27);
+            this.rbtType1.Size = new System.Drawing.Size(168, 32);
             this.rbtType1.TabIndex = 12;
             this.rbtType1.Text = "串口通信";
             this.rbtType1.CheckedChanged += new System.EventHandler(this.rbtType1_CheckedChanged);
@@ -389,10 +389,10 @@
             this.pnl1.Controls.Add(this.cmbCom);
             this.pnl1.Controls.Add(this.label1);
             this.pnl1.Controls.Add(this.label2);
-            this.pnl1.Location = new System.Drawing.Point(6, 61);
-            this.pnl1.Margin = new System.Windows.Forms.Padding(4);
+            this.pnl1.Location = new System.Drawing.Point(8, 72);
+            this.pnl1.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.pnl1.Name = "pnl1";
-            this.pnl1.Size = new System.Drawing.Size(276, 92);
+            this.pnl1.Size = new System.Drawing.Size(345, 109);
             this.pnl1.TabIndex = 15;
             // 
             // cmbBaudRate
@@ -406,36 +406,36 @@
             "38400",
             "57600",
             "115200"});
-            this.cmbBaudRate.Location = new System.Drawing.Point(80, 54);
-            this.cmbBaudRate.Margin = new System.Windows.Forms.Padding(4);
+            this.cmbBaudRate.Location = new System.Drawing.Point(100, 64);
+            this.cmbBaudRate.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.cmbBaudRate.Name = "cmbBaudRate";
-            this.cmbBaudRate.Size = new System.Drawing.Size(190, 24);
+            this.cmbBaudRate.Size = new System.Drawing.Size(236, 27);
             this.cmbBaudRate.TabIndex = 3;
             // 
             // cmbCom
             // 
-            this.cmbCom.Location = new System.Drawing.Point(80, 14);
-            this.cmbCom.Margin = new System.Windows.Forms.Padding(4);
+            this.cmbCom.Location = new System.Drawing.Point(100, 17);
+            this.cmbCom.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.cmbCom.Name = "cmbCom";
-            this.cmbCom.Size = new System.Drawing.Size(190, 24);
+            this.cmbCom.Size = new System.Drawing.Size(236, 27);
             this.cmbCom.TabIndex = 2;
             // 
             // label1
             // 
-            this.label1.Location = new System.Drawing.Point(4, 13);
-            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label1.Location = new System.Drawing.Point(5, 15);
+            this.label1.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(80, 27);
+            this.label1.Size = new System.Drawing.Size(100, 32);
             this.label1.TabIndex = 4;
             this.label1.Text = "端口";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // label2
             // 
-            this.label2.Location = new System.Drawing.Point(4, 53);
-            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label2.Location = new System.Drawing.Point(5, 63);
+            this.label2.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(80, 27);
+            this.label2.Size = new System.Drawing.Size(100, 32);
             this.label2.TabIndex = 5;
             this.label2.Text = "波特率";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -467,17 +467,18 @@
             this.tabPage4.Controls.Add(this.label26);
             this.tabPage4.Controls.Add(this.label23);
             this.tabPage4.Location = new System.Drawing.Point(4, 26);
+            this.tabPage4.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(588, 354);
+            this.tabPage4.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPage4.Size = new System.Drawing.Size(737, 426);
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "托板";
             this.tabPage4.UseVisualStyleBackColor = true;
             // 
             // nudMaxFloor
             // 
-            this.nudMaxFloor.Location = new System.Drawing.Point(115, 141);
-            this.nudMaxFloor.Margin = new System.Windows.Forms.Padding(4);
+            this.nudMaxFloor.Location = new System.Drawing.Point(144, 167);
+            this.nudMaxFloor.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.nudMaxFloor.Maximum = new decimal(new int[] {
             10,
             0,
@@ -489,7 +490,7 @@
             0,
             0});
             this.nudMaxFloor.Name = "nudMaxFloor";
-            this.nudMaxFloor.Size = new System.Drawing.Size(58, 26);
+            this.nudMaxFloor.Size = new System.Drawing.Size(72, 29);
             this.nudMaxFloor.TabIndex = 34;
             this.nudMaxFloor.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.nudMaxFloor.Value = new decimal(new int[] {
@@ -500,18 +501,18 @@
             // 
             // label17
             // 
-            this.label17.Location = new System.Drawing.Point(12, 141);
-            this.label17.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label17.Location = new System.Drawing.Point(15, 167);
+            this.label17.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(156, 27);
+            this.label17.Size = new System.Drawing.Size(195, 32);
             this.label17.TabIndex = 36;
             this.label17.Text = "板码垛层数:";
             this.label17.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // nudInitHeigh
             // 
-            this.nudInitHeigh.Location = new System.Drawing.Point(379, 141);
-            this.nudInitHeigh.Margin = new System.Windows.Forms.Padding(4);
+            this.nudInitHeigh.Location = new System.Drawing.Point(474, 167);
+            this.nudInitHeigh.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.nudInitHeigh.Maximum = new decimal(new int[] {
             0,
             0,
@@ -523,7 +524,7 @@
             0,
             -2147483648});
             this.nudInitHeigh.Name = "nudInitHeigh";
-            this.nudInitHeigh.Size = new System.Drawing.Size(139, 26);
+            this.nudInitHeigh.Size = new System.Drawing.Size(174, 29);
             this.nudInitHeigh.TabIndex = 31;
             this.nudInitHeigh.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.nudInitHeigh.Value = new decimal(new int[] {
@@ -534,30 +535,30 @@
             // 
             // label15
             // 
-            this.label15.Location = new System.Drawing.Point(250, 141);
-            this.label15.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label15.Location = new System.Drawing.Point(312, 167);
+            this.label15.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(156, 27);
+            this.label15.Size = new System.Drawing.Size(195, 32);
             this.label15.TabIndex = 33;
             this.label15.Text = "第一层放布高度:";
             this.label15.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // label16
             // 
-            this.label16.Location = new System.Drawing.Point(522, 141);
-            this.label16.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label16.Location = new System.Drawing.Point(652, 167);
+            this.label16.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(57, 27);
+            this.label16.Size = new System.Drawing.Size(71, 32);
             this.label16.TabIndex = 32;
             this.label16.Text = "(毫米)";
             this.label16.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // nudCacheIgnoredDiff
             // 
-            this.nudCacheIgnoredDiff.Location = new System.Drawing.Point(379, 188);
-            this.nudCacheIgnoredDiff.Margin = new System.Windows.Forms.Padding(4);
+            this.nudCacheIgnoredDiff.Location = new System.Drawing.Point(474, 223);
+            this.nudCacheIgnoredDiff.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.nudCacheIgnoredDiff.Name = "nudCacheIgnoredDiff";
-            this.nudCacheIgnoredDiff.Size = new System.Drawing.Size(139, 26);
+            this.nudCacheIgnoredDiff.Size = new System.Drawing.Size(174, 29);
             this.nudCacheIgnoredDiff.TabIndex = 25;
             this.nudCacheIgnoredDiff.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.nudCacheIgnoredDiff.Value = new decimal(new int[] {
@@ -568,8 +569,8 @@
             // 
             // nudEdgeObligate
             // 
-            this.nudEdgeObligate.Location = new System.Drawing.Point(379, 98);
-            this.nudEdgeObligate.Margin = new System.Windows.Forms.Padding(4);
+            this.nudEdgeObligate.Location = new System.Drawing.Point(474, 116);
+            this.nudEdgeObligate.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.nudEdgeObligate.Maximum = new decimal(new int[] {
             300,
             0,
@@ -581,7 +582,7 @@
             0,
             0});
             this.nudEdgeObligate.Name = "nudEdgeObligate";
-            this.nudEdgeObligate.Size = new System.Drawing.Size(139, 26);
+            this.nudEdgeObligate.Size = new System.Drawing.Size(174, 29);
             this.nudEdgeObligate.TabIndex = 25;
             this.nudEdgeObligate.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.nudEdgeObligate.Value = new decimal(new int[] {
@@ -592,10 +593,10 @@
             // 
             // label14
             // 
-            this.label14.Location = new System.Drawing.Point(235, 188);
-            this.label14.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label14.Location = new System.Drawing.Point(294, 223);
+            this.label14.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(169, 27);
+            this.label14.Size = new System.Drawing.Size(211, 32);
             this.label14.TabIndex = 29;
             this.label14.Text = "缓存比较许可偏差:";
             this.label14.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -604,27 +605,28 @@
             // 
             this.chbOddTurn.AutoSize = true;
             this.chbOddTurn.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.chbOddTurn.Location = new System.Drawing.Point(14, 101);
+            this.chbOddTurn.Location = new System.Drawing.Point(18, 120);
+            this.chbOddTurn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.chbOddTurn.Name = "chbOddTurn";
-            this.chbOddTurn.Size = new System.Drawing.Size(115, 20);
+            this.chbOddTurn.Size = new System.Drawing.Size(133, 23);
             this.chbOddTurn.TabIndex = 30;
             this.chbOddTurn.Text = "偶数层旋转:";
             this.chbOddTurn.UseVisualStyleBackColor = true;
             // 
             // label11
             // 
-            this.label11.Location = new System.Drawing.Point(299, 98);
-            this.label11.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label11.Location = new System.Drawing.Point(374, 116);
+            this.label11.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(107, 27);
+            this.label11.Size = new System.Drawing.Size(134, 32);
             this.label11.TabIndex = 29;
             this.label11.Text = "边缘预留:";
             this.label11.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // nudSplintLength
             // 
-            this.nudSplintLength.Location = new System.Drawing.Point(91, 17);
-            this.nudSplintLength.Margin = new System.Windows.Forms.Padding(4);
+            this.nudSplintLength.Location = new System.Drawing.Point(114, 20);
+            this.nudSplintLength.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.nudSplintLength.Maximum = new decimal(new int[] {
             2000,
             0,
@@ -636,7 +638,7 @@
             0,
             0});
             this.nudSplintLength.Name = "nudSplintLength";
-            this.nudSplintLength.Size = new System.Drawing.Size(139, 26);
+            this.nudSplintLength.Size = new System.Drawing.Size(174, 29);
             this.nudSplintLength.TabIndex = 21;
             this.nudSplintLength.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.nudSplintLength.Value = new decimal(new int[] {
@@ -647,18 +649,18 @@
             // 
             // label13
             // 
-            this.label13.Location = new System.Drawing.Point(522, 188);
-            this.label13.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label13.Location = new System.Drawing.Point(652, 223);
+            this.label13.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(57, 27);
+            this.label13.Size = new System.Drawing.Size(71, 32);
             this.label13.TabIndex = 26;
             this.label13.Text = "(毫米)";
             this.label13.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // nudSplintWidth
             // 
-            this.nudSplintWidth.Location = new System.Drawing.Point(379, 17);
-            this.nudSplintWidth.Margin = new System.Windows.Forms.Padding(4);
+            this.nudSplintWidth.Location = new System.Drawing.Point(474, 20);
+            this.nudSplintWidth.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.nudSplintWidth.Maximum = new decimal(new int[] {
             2000,
             0,
@@ -670,7 +672,7 @@
             0,
             0});
             this.nudSplintWidth.Name = "nudSplintWidth";
-            this.nudSplintWidth.Size = new System.Drawing.Size(139, 26);
+            this.nudSplintWidth.Size = new System.Drawing.Size(174, 29);
             this.nudSplintWidth.TabIndex = 24;
             this.nudSplintWidth.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.nudSplintWidth.Value = new decimal(new int[] {
@@ -681,55 +683,55 @@
             // 
             // label12
             // 
-            this.label12.Location = new System.Drawing.Point(522, 98);
-            this.label12.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label12.Location = new System.Drawing.Point(652, 116);
+            this.label12.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(57, 27);
+            this.label12.Size = new System.Drawing.Size(71, 32);
             this.label12.TabIndex = 26;
             this.label12.Text = "(毫米)";
             this.label12.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // label27
             // 
-            this.label27.Location = new System.Drawing.Point(522, 57);
-            this.label27.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label27.Location = new System.Drawing.Point(652, 68);
+            this.label27.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.label27.Name = "label27";
-            this.label27.Size = new System.Drawing.Size(57, 27);
+            this.label27.Size = new System.Drawing.Size(71, 32);
             this.label27.TabIndex = 26;
             this.label27.Text = "(毫米)";
             this.label27.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // label25
             // 
-            this.label25.Location = new System.Drawing.Point(234, 57);
-            this.label25.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label25.Location = new System.Drawing.Point(292, 68);
+            this.label25.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.label25.Name = "label25";
-            this.label25.Size = new System.Drawing.Size(57, 27);
+            this.label25.Size = new System.Drawing.Size(71, 32);
             this.label25.TabIndex = 28;
             this.label25.Text = "(毫米)";
             this.label25.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // label21
             // 
-            this.label21.Location = new System.Drawing.Point(234, 17);
-            this.label21.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label21.Location = new System.Drawing.Point(292, 20);
+            this.label21.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(57, 27);
+            this.label21.Size = new System.Drawing.Size(71, 32);
             this.label21.TabIndex = 22;
             this.label21.Text = "(毫米)";
             this.label21.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // nudObligateLen
             // 
-            this.nudObligateLen.Location = new System.Drawing.Point(379, 57);
-            this.nudObligateLen.Margin = new System.Windows.Forms.Padding(4);
+            this.nudObligateLen.Location = new System.Drawing.Point(474, 68);
+            this.nudObligateLen.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.nudObligateLen.Minimum = new decimal(new int[] {
             20,
             0,
             0,
             0});
             this.nudObligateLen.Name = "nudObligateLen";
-            this.nudObligateLen.Size = new System.Drawing.Size(139, 26);
+            this.nudObligateLen.Size = new System.Drawing.Size(174, 29);
             this.nudObligateLen.TabIndex = 25;
             this.nudObligateLen.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.nudObligateLen.Value = new decimal(new int[] {
@@ -740,28 +742,28 @@
             // 
             // label22
             // 
-            this.label22.Location = new System.Drawing.Point(11, 17);
-            this.label22.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label22.Location = new System.Drawing.Point(14, 20);
+            this.label22.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(107, 27);
+            this.label22.Size = new System.Drawing.Size(134, 32);
             this.label22.TabIndex = 20;
             this.label22.Text = "长:";
             this.label22.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // label28
             // 
-            this.label28.Location = new System.Drawing.Point(299, 57);
-            this.label28.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label28.Location = new System.Drawing.Point(374, 68);
+            this.label28.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.label28.Name = "label28";
-            this.label28.Size = new System.Drawing.Size(107, 27);
+            this.label28.Size = new System.Drawing.Size(134, 32);
             this.label28.TabIndex = 24;
             this.label28.Text = "布卷间隙:";
             this.label28.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // nudSplintHeight
             // 
-            this.nudSplintHeight.Location = new System.Drawing.Point(91, 57);
-            this.nudSplintHeight.Margin = new System.Windows.Forms.Padding(4);
+            this.nudSplintHeight.Location = new System.Drawing.Point(114, 68);
+            this.nudSplintHeight.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.nudSplintHeight.Maximum = new decimal(new int[] {
             2000,
             0,
@@ -773,7 +775,7 @@
             0,
             0});
             this.nudSplintHeight.Name = "nudSplintHeight";
-            this.nudSplintHeight.Size = new System.Drawing.Size(139, 26);
+            this.nudSplintHeight.Size = new System.Drawing.Size(174, 29);
             this.nudSplintHeight.TabIndex = 27;
             this.nudSplintHeight.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.nudSplintHeight.Value = new decimal(new int[] {
@@ -784,30 +786,30 @@
             // 
             // label24
             // 
-            this.label24.Location = new System.Drawing.Point(299, 17);
-            this.label24.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label24.Location = new System.Drawing.Point(374, 20);
+            this.label24.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.label24.Name = "label24";
-            this.label24.Size = new System.Drawing.Size(107, 27);
+            this.label24.Size = new System.Drawing.Size(134, 32);
             this.label24.TabIndex = 23;
             this.label24.Text = "宽:";
             this.label24.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // label26
             // 
-            this.label26.Location = new System.Drawing.Point(11, 57);
-            this.label26.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label26.Location = new System.Drawing.Point(14, 68);
+            this.label26.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.label26.Name = "label26";
-            this.label26.Size = new System.Drawing.Size(107, 27);
+            this.label26.Size = new System.Drawing.Size(134, 32);
             this.label26.TabIndex = 26;
             this.label26.Text = "限高:";
             this.label26.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // label23
             // 
-            this.label23.Location = new System.Drawing.Point(522, 17);
-            this.label23.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label23.Location = new System.Drawing.Point(652, 20);
+            this.label23.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.label23.Name = "label23";
-            this.label23.Size = new System.Drawing.Size(57, 27);
+            this.label23.Size = new System.Drawing.Size(71, 32);
             this.label23.TabIndex = 25;
             this.label23.Text = "(毫米)";
             this.label23.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -821,67 +823,68 @@
             this.tabPage2.Controls.Add(this.txtRobotIP);
             this.tabPage2.Controls.Add(this.label4);
             this.tabPage2.Location = new System.Drawing.Point(4, 26);
+            this.tabPage2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(588, 354);
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPage2.Size = new System.Drawing.Size(737, 426);
             this.tabPage2.TabIndex = 4;
             this.tabPage2.Text = "机器人设置";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
             // txtJobName
             // 
-            this.txtJobName.Location = new System.Drawing.Point(145, 141);
-            this.txtJobName.Margin = new System.Windows.Forms.Padding(4);
+            this.txtJobName.Location = new System.Drawing.Point(181, 167);
+            this.txtJobName.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.txtJobName.Name = "txtJobName";
-            this.txtJobName.Size = new System.Drawing.Size(425, 26);
+            this.txtJobName.Size = new System.Drawing.Size(530, 29);
             this.txtJobName.TabIndex = 19;
             this.txtJobName.Text = "MAIN";
             // 
             // label7
             // 
-            this.label7.Location = new System.Drawing.Point(15, 139);
-            this.label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label7.Location = new System.Drawing.Point(19, 165);
+            this.label7.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(107, 27);
+            this.label7.Size = new System.Drawing.Size(134, 32);
             this.label7.TabIndex = 18;
             this.label7.Text = "机器人程序";
             this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // textBox2
             // 
-            this.textBox2.Location = new System.Drawing.Point(145, 84);
-            this.textBox2.Margin = new System.Windows.Forms.Padding(4);
+            this.textBox2.Location = new System.Drawing.Point(181, 100);
+            this.textBox2.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.textBox2.Name = "textBox2";
             this.textBox2.ReadOnly = true;
-            this.textBox2.Size = new System.Drawing.Size(425, 26);
+            this.textBox2.Size = new System.Drawing.Size(530, 29);
             this.textBox2.TabIndex = 16;
             this.textBox2.Text = "11000";
             // 
             // label6
             // 
-            this.label6.Location = new System.Drawing.Point(15, 84);
-            this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label6.Location = new System.Drawing.Point(19, 100);
+            this.label6.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(107, 27);
+            this.label6.Size = new System.Drawing.Size(134, 32);
             this.label6.TabIndex = 17;
             this.label6.Text = "机器人端口";
             this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // txtRobotIP
             // 
-            this.txtRobotIP.Location = new System.Drawing.Point(145, 34);
-            this.txtRobotIP.Margin = new System.Windows.Forms.Padding(4);
+            this.txtRobotIP.Location = new System.Drawing.Point(181, 40);
+            this.txtRobotIP.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.txtRobotIP.Name = "txtRobotIP";
-            this.txtRobotIP.Size = new System.Drawing.Size(425, 26);
+            this.txtRobotIP.Size = new System.Drawing.Size(530, 29);
             this.txtRobotIP.TabIndex = 14;
             this.txtRobotIP.Text = "192.168.0.30";
             // 
             // label4
             // 
-            this.label4.Location = new System.Drawing.Point(15, 34);
-            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label4.Location = new System.Drawing.Point(19, 40);
+            this.label4.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(107, 27);
+            this.label4.Size = new System.Drawing.Size(134, 32);
             this.label4.TabIndex = 15;
             this.label4.Text = "机器人IP";
             this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -897,8 +900,9 @@
             this.tabPage3.Controls.Add(this.txtGetLocation);
             this.tabPage3.Controls.Add(this.label8);
             this.tabPage3.Location = new System.Drawing.Point(4, 26);
+            this.tabPage3.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(588, 354);
+            this.tabPage3.Size = new System.Drawing.Size(737, 426);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "其他";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -907,18 +911,18 @@
             // 
             this.txtOPCIP.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtOPCIP.Location = new System.Drawing.Point(121, 170);
-            this.txtOPCIP.Margin = new System.Windows.Forms.Padding(4);
+            this.txtOPCIP.Location = new System.Drawing.Point(151, 202);
+            this.txtOPCIP.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.txtOPCIP.Name = "txtOPCIP";
-            this.txtOPCIP.Size = new System.Drawing.Size(451, 26);
+            this.txtOPCIP.Size = new System.Drawing.Size(563, 29);
             this.txtOPCIP.TabIndex = 12;
             // 
             // label3
             // 
-            this.label3.Location = new System.Drawing.Point(17, 170);
-            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label3.Location = new System.Drawing.Point(21, 202);
+            this.label3.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(107, 27);
+            this.label3.Size = new System.Drawing.Size(134, 32);
             this.label3.TabIndex = 13;
             this.label3.Text = "OPC服务IP";
             this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -927,18 +931,18 @@
             // 
             this.txtPanelFinish.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtPanelFinish.Location = new System.Drawing.Point(121, 120);
-            this.txtPanelFinish.Margin = new System.Windows.Forms.Padding(4);
+            this.txtPanelFinish.Location = new System.Drawing.Point(151, 142);
+            this.txtPanelFinish.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.txtPanelFinish.Name = "txtPanelFinish";
-            this.txtPanelFinish.Size = new System.Drawing.Size(451, 26);
+            this.txtPanelFinish.Size = new System.Drawing.Size(563, 29);
             this.txtPanelFinish.TabIndex = 12;
             // 
             // label10
             // 
-            this.label10.Location = new System.Drawing.Point(17, 120);
-            this.label10.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label10.Location = new System.Drawing.Point(21, 142);
+            this.label10.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(107, 27);
+            this.label10.Size = new System.Drawing.Size(134, 32);
             this.label10.TabIndex = 11;
             this.label10.Text = "完成码垛";
             this.label10.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -947,18 +951,18 @@
             // 
             this.txtToWeight.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtToWeight.Location = new System.Drawing.Point(121, 71);
-            this.txtToWeight.Margin = new System.Windows.Forms.Padding(4);
+            this.txtToWeight.Location = new System.Drawing.Point(151, 84);
+            this.txtToWeight.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.txtToWeight.Name = "txtToWeight";
-            this.txtToWeight.Size = new System.Drawing.Size(451, 26);
+            this.txtToWeight.Size = new System.Drawing.Size(563, 29);
             this.txtToWeight.TabIndex = 10;
             // 
             // label9
             // 
-            this.label9.Location = new System.Drawing.Point(17, 71);
-            this.label9.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label9.Location = new System.Drawing.Point(21, 84);
+            this.label9.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(107, 27);
+            this.label9.Size = new System.Drawing.Size(134, 32);
             this.label9.TabIndex = 9;
             this.label9.Text = "称重";
             this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -967,18 +971,18 @@
             // 
             this.txtGetLocation.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtGetLocation.Location = new System.Drawing.Point(121, 22);
-            this.txtGetLocation.Margin = new System.Windows.Forms.Padding(4);
+            this.txtGetLocation.Location = new System.Drawing.Point(151, 26);
+            this.txtGetLocation.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.txtGetLocation.Name = "txtGetLocation";
-            this.txtGetLocation.Size = new System.Drawing.Size(451, 26);
+            this.txtGetLocation.Size = new System.Drawing.Size(563, 29);
             this.txtGetLocation.TabIndex = 8;
             // 
             // label8
             // 
-            this.label8.Location = new System.Drawing.Point(17, 22);
-            this.label8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label8.Location = new System.Drawing.Point(21, 26);
+            this.label8.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(107, 27);
+            this.label8.Size = new System.Drawing.Size(134, 32);
             this.label8.TabIndex = 7;
             this.label8.Text = "获取交地";
             this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -986,10 +990,10 @@
             // btnCancel
             // 
             this.btnCancel.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.btnCancel.Location = new System.Drawing.Point(312, 394);
-            this.btnCancel.Margin = new System.Windows.Forms.Padding(4);
+            this.btnCancel.Location = new System.Drawing.Point(390, 468);
+            this.btnCancel.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(102, 44);
+            this.btnCancel.Size = new System.Drawing.Size(128, 52);
             this.btnCancel.TabIndex = 9;
             this.btnCancel.Text = "取消";
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
@@ -997,24 +1001,24 @@
             // btnSave
             // 
             this.btnSave.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.btnSave.Location = new System.Drawing.Point(182, 394);
-            this.btnSave.Margin = new System.Windows.Forms.Padding(4);
+            this.btnSave.Location = new System.Drawing.Point(228, 468);
+            this.btnSave.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(102, 44);
+            this.btnSave.Size = new System.Drawing.Size(128, 52);
             this.btnSave.TabIndex = 8;
             this.btnSave.Text = "保存";
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
             // FrmSet
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 19F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(596, 451);
+            this.ClientSize = new System.Drawing.Size(745, 536);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.tabControl1);
-            this.Font = new System.Drawing.Font("宋体", 12F);
-            this.Margin = new System.Windows.Forms.Padding(4);
+            this.Font = new System.Drawing.Font("宋体", 14F);
+            this.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.Name = "FrmSet";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "设置";
