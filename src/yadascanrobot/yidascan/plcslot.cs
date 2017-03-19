@@ -58,7 +58,7 @@ namespace yidascan {
         /// <summary>
         /// load LAYER_SHAPE_BAD from database.
         /// </summary>
-        public static void loadLayerBadShapeLocation() {
+        public static void loadBadShapeLocation() {
             if (BadShapeLocations != null) {
                 BadShapeLocations.Clear();
             } else {

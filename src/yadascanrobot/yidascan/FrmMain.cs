@@ -127,7 +127,7 @@ namespace yidascan {
                 ShowTaskQ();
 
                 StartOpcParam();
-                PlcSlot.loadLayerBadShapeLocation();
+                PlcSlot.loadBadShapeLocation();
 
                 opcClient = CreateOpcClient("");
 
