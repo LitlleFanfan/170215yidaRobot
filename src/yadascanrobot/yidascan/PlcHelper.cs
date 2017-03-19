@@ -165,8 +165,7 @@ namespace yidascan {
 
         public static void NotifyBadLayerShape(IOpcClient client, string tolocation) {
             const int BAD_SHAPE = 1;
-            client.Write(PlcSlot.LOCATION_OF_BAD_SHAPE, tolocation);
-            client.Write(PlcSlot.LAYER_SHAPE_BAD, BAD_SHAPE);
+            client.Write(PlcSlot.BadShapeLocations[tolocation], BAD_SHAPE);
         }
     }
 }

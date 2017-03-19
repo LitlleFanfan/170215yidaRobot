@@ -53,25 +53,25 @@ namespace yidascan {
         /// <summary>
         /// tolocations for bad shape signal.
         /// </summary>
-        public static Dictionary<string, string> LAYER_SHAPE_BAD;
+        public static Dictionary<string, string> BadShapeLocations;
 
         /// <summary>
         /// load LAYER_SHAPE_BAD from database.
         /// </summary>
         public static void loadLayerBadShapeLocation() {
-            if (LAYER_SHAPE_BAD != null) {
-                LAYER_SHAPE_BAD.Clear();
+            if (BadShapeLocations != null) {
+                BadShapeLocations.Clear();
             } else {
-                LAYER_SHAPE_BAD = new Dictionary<string, string>();
+                BadShapeLocations = new Dictionary<string, string>();
             }
 
-            var sql = "select tolocation, slot from badshapelocation";
+            var sql = "select ToLocation, Slot from BadShapeLocation";
             var dt = DataAccess.DataAccess.CreateDataAccess.sa.Query(sql);
             if (dt != null) {
                 foreach (DataRow row in dt.Rows) {
-                    var k = row["tolocation"].ToString().ToUpper();
-                    var v = row["slot"].ToString();
-                    LAYER_SHAPE_BAD.Add(k, v);
+                    var k = row["ToLocation"].ToString().ToUpper();
+                    var v = row["Slot"].ToString();
+                    BadShapeLocations.Add(k, v);
                 }
             } 
         }
