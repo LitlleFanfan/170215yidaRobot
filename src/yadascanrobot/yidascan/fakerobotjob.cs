@@ -69,7 +69,7 @@ namespace yidascan {
         }
 
         public void NotifyOpcJobFinished(PanelState pState, string tolocation) {
-            throw new NotImplementedException();
+            // throw new NotImplementedException();
         }
     }
 #endif

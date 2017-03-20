@@ -136,7 +136,7 @@ namespace yidascan {
 
         private static decimal FindMaxHalfWidth(LableCode lc) {
             var lenOfUpperFloor = lc.Floor > 1
-                ? LableCode.GetSecondShortestLengthHalf(lc.PanelNo)
+                ? LableCode.GetSecondShortestLengthHalf(lc.PanelNo, lc.Floor - 1)
                 : 0;
 
             if (lenOfUpperFloor > 0) {
