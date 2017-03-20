@@ -14,17 +14,19 @@ namespace yidascan {
             return Math.Abs(d1 - d2) > 50;
         }
 
-        private static bool IsVshape(IList<decimal> ordered) {
-            var first = ordered.First();
-            var last = ordered.Last();
+        private static bool IsVshape(IList<decimal> diameters) {
+            var first = diameters.First();
+            var last = diameters.Last();
+            
+            // 计算中间较大一卷的直径。
+            var idx = (diameters.Count() - 1) / 2;
+            var cenht = Math.Max((double)diameters[idx], (double)diameters[idx + 1]);
 
-            var len = ordered.Count();
-            var meanMiddle = (double)(ordered[len / 2] + ordered[len / 2 + 1]) / 2;
+            // 计算两端直径均值加权。
+            const double FACTOR = 3.0 / 4;
+            var endht = (double)(first + last) / 2.0 * FACTOR;
 
-            const double FACTOR = 3.0 / 4.0;
-            var meanEnds = (double)(first + last) / 2.0 * FACTOR;
-
-            return meanMiddle < meanEnds;
+            return cenht < endht;
         }
 
         /// <summary>
@@ -33,22 +35,19 @@ namespace yidascan {
         /// <param name="layer"></param>
         /// <returns></returns>
         public static bool isBadShape(IList<LableCode> layer) {
-            var ordered = layer.OrderBy(x => x.FloorIndex).Select(x => x.Diameter).ToList();
+            var lst = layer.OrderBy(x => x.FloorIndex)
+                .Select(x => x.Diameter);
 
-            if (ordered.Count == 1) {
+            var count = lst.Count();
+
+            if (count == 0 ) {
+                return false;
+            } else  if (count == 1) {
                 return true;
-            }
-
-            if (ordered.Count == 2 || ordered.Count == 0) {
-                return true;
-            }
-
-            if (ordered.Count == 3) {
-                return IsSlope(ordered.First(), ordered.Last());
-            }
-
-            if (ordered.Count >= 4) {
-                return IsSlope(ordered.First(), ordered.Last()) || IsVshape(ordered);
+            } else if (count == 2) {
+                return IsSlope(lst.First(), lst.Last());
+            } else if (count >= 3) {
+                return IsSlope(lst.First(), lst.Last()) || IsVshape(lst.ToList());
             }
 
             return false;
