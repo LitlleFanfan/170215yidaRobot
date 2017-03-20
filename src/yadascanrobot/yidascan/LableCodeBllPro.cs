@@ -136,7 +136,7 @@ namespace yidascan {
 
         private static decimal FindMaxHalfWidth(LableCode lc) {
             var lenOfUpperFloor = lc.Floor > 1
-                ? LableCode.GetSecondShortestLengthHalf(lc.PanelNo, lc.Floor - 1)
+                ? LableCode.GetFloorHalfAvgLength(lc.PanelNo, lc.Floor)
                 : 0;
 
             if (lenOfUpperFloor > 0) {
@@ -367,7 +367,7 @@ namespace yidascan {
                         rt.CodeFromCache = cr.CodeFromCache;
                         rt.state = cr.state;
                     } else if (fullstate.state == PanelFullState.EXCEED) {
-                        onlog($"!current: {lc.LCode}, from cache: {rt.CodeFromCache.LCode}, 超出板宽。");
+                        onlog($"!交地: {lc.ToLocation}, current: {lc.LCode}, from cache: {rt.CodeFromCache.LCode}, 超出板宽。");
                         if (rt.CodeCome.Diameter > rt.CodeFromCache.Diameter + clsSetting.CacheIgnoredDiff) {
                             rt.state = CacheState.GetThenGo;
                         } else {

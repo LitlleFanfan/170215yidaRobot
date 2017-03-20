@@ -14,17 +14,17 @@ namespace yidascan {
             return Math.Abs(d1 - d2) > 50;
         }
 
-        private static bool IsVshape(IList<decimal> diameters) {
-            var first = diameters.First();
-            var last = diameters.Last();
+        private static bool IsVshape(IList<decimal> lst) {
+            var first = lst.First();
+            var last = lst.Last();
             
             // 计算中间较大一卷的直径。
-            var idx = (diameters.Count() - 1) / 2;
-            var cenht = Math.Max((double)diameters[idx], (double)diameters[idx + 1]);
+            var idx = (lst.Count() - 1) / 2;
+            var cenht = Math.Max((double)lst[idx], (double)lst[idx + 1]);
 
             // 计算两端直径均值加权。
-            const double FACTOR = 3.0 / 4;
-            var endht = (double)(first + last) / 2.0 * FACTOR;
+            const double DIFF = 70;
+            var endht = (double)(first + last) / 2.0 - DIFF;
 
             return cenht < endht;
         }
