@@ -48,7 +48,7 @@ namespace yidascan {
         }
 
         /// <summary>
-        /// 已上板的布卷总宽度,外加多一个边距布卷间距。
+        /// 下一卷的坐标
         /// </summary>
         /// <param name="lcs"></param>
         /// <returns></returns>
@@ -135,12 +135,8 @@ namespace yidascan {
         }
 
         private static decimal FindMaxHalfWidth(LableCode lc) {
-            //var lenOfUpperFloor = lc.Floor > 1
-            //    ? LableCode.GetFloorHalfAvgLength(lc.PanelNo, lc.Floor)
-            //    : 0;
-
             var lenOfUpperFloor = lc.Floor > 1
-                ? LableCode.GetSecondShortestLengthHalf(lc.PanelNo)
+                ? LableCode.GetSecondShortestLengthHalf(lc.PanelNo, lc.Floor - 1)
                 : 0;
 
             if (lenOfUpperFloor > 0) {
@@ -380,8 +376,6 @@ namespace yidascan {
 
                         // 当前层是最后一层, 要移入下一板???
                         // var pno = rt.CodeCome.PanelNo;
-
-
 
                     } else {
                         // can not happen.

@@ -555,12 +555,14 @@ order by floorindex desc;";
         /// </summary>
         /// <param name="panelNo"></param>
         /// <param name="currFloor"></param>
+        /// <param name="floor">todo: describe floor parameter on GetSecondShortestLengthHalf</param>
         /// <returns></returns>
-        public static decimal GetSecondShortestLengthHalf(string panelNo) {
-            var sql = "select top 2 Length from LableCode where PanelNo = @PanelNo order by Length";
+        public static decimal GetSecondShortestLengthHalf(string panelNo, int floor) {
+            var sql = "select top 2 Length from LableCode where PanelNo = @PanelNo and Floor=@Floor order by Length";
 
             var sp = new SqlParameter[]{
-                new SqlParameter("@PanelNo",panelNo)
+                new SqlParameter("@PanelNo",panelNo),
+                new SqlParameter("@Floor",floor)
             };
 
             var dt = DataAccess.CreateDataAccess.sa.Query(sql, sp);
