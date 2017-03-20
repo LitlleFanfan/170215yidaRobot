@@ -14,10 +14,10 @@ namespace yidascan {
         /// </summary>
         channel_2 = 2,
     }
-    
+
     public static class PlcHelper {
         private const int DELAY = 10;
-        
+
         /// <summary>
         /// 缓存处来料信号
         /// </summary>
@@ -26,7 +26,7 @@ namespace yidascan {
         public static bool ReadCacheSignal(IOpcClient client) {
             return client.ReadBool(PlcSlot.CACHE_SIGNAL);
         }
-        
+
         /// <summary>
         /// 写缓存动作
         /// </summary>
@@ -42,7 +42,7 @@ namespace yidascan {
             // 复位来料信号。
             client.Write(PlcSlot.CACHE_SIGNAL, 0);
         }
-        
+
         /// <summary>
         /// 读标签采集处来料信号。
         /// </summary>
@@ -51,7 +51,7 @@ namespace yidascan {
         public static bool ReadLabelUpSignal(IOpcClient client) {
             return client.ReadBool(PlcSlot.LABEL_UP_SIGNAL);
         }
-       
+
         /// <summary>
         /// 标签采集处，写布卷直径和去向。
         /// </summary>
@@ -66,7 +66,7 @@ namespace yidascan {
             // 复位标签采集处来料信号。
             client.Write(PlcSlot.LABEL_UP_SIGNAL, 0);
         }
-               
+
         /// <summary>
         /// 抓料处来料信号。
         /// </summary>
@@ -126,7 +126,7 @@ namespace yidascan {
         /// <param name="client"></param>
         /// <param name="param"></param>
         /// <param name="lcode">12位长的号码</param>
-        public static void NotifyLabelCodeDeleted(IOpcClient client, OPCParam param,  string lcode) {
+        public static void NotifyLabelCodeDeleted(IOpcClient client, OPCParam param, string lcode) {
             client.Write(param.DeleteLCode.LCode1, lcode.Substring(0, 6));
             client.Write(param.DeleteLCode.LCode2, lcode.Substring(6, 6));
             client.Write(param.DeleteLCode.Signal, true);

@@ -440,12 +440,20 @@ namespace yidascan {
                 savestate = LableCode.Update(fp, pinfo, rt.CodeCome);
             }
 
-            if (fp == FloorPerformance.BothFinish && rt.CodeCome.Floor == pinfo.MaxFloor) {
-                var lables = LableCode.GetLableCodesOfRecentFloor(rt.CodeFromCache.ToLocation, pinfo);
-                if (LayerShape.isBadShape(lables)) {
-                    PlcHelper.NotifyBadLayerShape(client, lc.ToLocation);
+            // 如果当前层形状不规则，并且当前层不是最高层，则报警。
+            if (fp == FloorPerformance.BothFinish && rt.CodeCome.Floor < pinfo.MaxFloor) {
+                try {
+                    var lables = LableCode.GetLableCodesOfRecentFloor(rt.CodeFromCache.ToLocation, pinfo);
+                    if (LayerShape.isBadShape(lables)) {
+                        onlog?.Invoke($"!板号： {rt.CodeCome.PanelNo}, 交地： {rt.CodeCome.ToLocation}, 层: {rt.CodeCome.Floor}, 形状不规则。");
+                        PlcHelper.NotifyBadLayerShape(client, lc.ToLocation);
+                    }
+                } catch (Exception ex) {
+                    onlog?.Invoke($"!判断层形状时异常: {ex}");
                 }
+            }
 
+            if (fp == FloorPerformance.BothFinish && rt.CodeCome.Floor == pinfo.MaxFloor) {
                 ErpHelper.NotifyPanelEnd(erpapi, pinfo.PanelNo, out msg);
 
             }
