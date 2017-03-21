@@ -287,10 +287,15 @@ namespace yidascan {
 
             foreach (KeyValuePair<string, string> kv in opcParam.BAreaUserFinalLayer) {
                 Task.Factory.StartNew(() => {
+                    const string SIGNAL_ON = "1";
+                    const string SIGNAL_OFF = "0";
                     while (isrun) {
-                        var signal = opcBUFL.ReadString(kv.Value);
+                        var signal = "";
+                        lock (opcBUFL) {
+                            signal = opcBUFL.ReadString(kv.Value);
+                        }
 
-                        if (signal == "1") {
+                        if (signal == SIGNAL_ON) {
                             // kv.Key是交地。
                             var tolocation = kv.Key;
 
@@ -311,7 +316,9 @@ namespace yidascan {
                             robot.NotifyOpcJobFinished(pf.PanelNo, tolocation);
 
                             // plc复位信号。
-                            opcBUFL.Write(kv.Value, "0");
+                            lock (opcBUFL) {
+                                opcBUFL.Write(kv.Value, SIGNAL_OFF);
+                            }
                         }
                         Thread.Sleep(OPCClient.DELAY * 200);
                     }
