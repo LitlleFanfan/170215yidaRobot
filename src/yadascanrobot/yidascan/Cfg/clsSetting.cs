@@ -50,6 +50,25 @@ namespace ProduceComm {
 
         private const string ROBOT_IP = "RobotIP";
 
+        public static int DiffSlope {
+            get {
+                var v = clsSetting.GetCfgValue("DiffSlope");
+                return string.IsNullOrEmpty(v) ? 100 : Int32.Parse(v);
+            }
+            set {
+                clsSetting.SetCfgValue("DiffSlope", value.ToString());
+            }
+        }
+        public static int DiffVshape {
+            get {
+                var v = clsSetting.GetCfgValue("DiffVshape");
+                return string.IsNullOrEmpty(v) ? 100 : Int32.Parse(v);
+            }
+            set {
+                clsSetting.SetCfgValue("DiffVshape", value.ToString());
+            }
+        }
+        
         /// <summary>
         /// 存于机器人本身的程序名。
         /// </summary>

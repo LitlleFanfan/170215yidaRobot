@@ -108,6 +108,15 @@ namespace yidascan {
             client.AddSubscription(PlcSlot.LABEL_UP_SIGNAL);
             client.AddSubscription(PlcSlot.ITEM_CATCH_A);
             client.AddSubscription(PlcSlot.ITEM_CATCH_B);
+
+            foreach (var item in PlcSlot.BadShapeLocations) {
+                client.AddSubscription(item.Value);
+            }
+
+            //client.AddSubscription("MicroWin.S7-1200.NewItem16");
+            //client.AddSubscription("MicroWin.S7-1200.NewItem18");
+            //client.AddSubscription("MicroWin.S7-1200.NewItem19");
+            //client.AddSubscription("MicroWin.S7-1200.NewItem20");
         }
 
         /// <summary>

@@ -99,6 +99,11 @@
             this.label8 = new System.Windows.Forms.Label();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnSave = new System.Windows.Forms.Button();
+            this.tabPage5 = new System.Windows.Forms.TabPage();
+            this.label18 = new System.Windows.Forms.Label();
+            this.label19 = new System.Windows.Forms.Label();
+            this.txDiffSlope = new System.Windows.Forms.TextBox();
+            this.txDiffVshape = new System.Windows.Forms.TextBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.groupBox5.SuspendLayout();
@@ -120,6 +125,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.nudSplintHeight)).BeginInit();
             this.tabPage2.SuspendLayout();
             this.tabPage3.SuspendLayout();
+            this.tabPage5.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -130,8 +136,9 @@
             this.tabControl1.Controls.Add(this.tabPage4);
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Controls.Add(this.tabPage3);
+            this.tabControl1.Controls.Add(this.tabPage5);
             this.tabControl1.Location = new System.Drawing.Point(0, 2);
-            this.tabControl1.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.tabControl1.Margin = new System.Windows.Forms.Padding(5);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(745, 456);
@@ -142,9 +149,9 @@
             this.tabPage1.Controls.Add(this.groupBox5);
             this.tabPage1.Controls.Add(this.groupBox1);
             this.tabPage1.Location = new System.Drawing.Point(4, 29);
-            this.tabPage1.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.tabPage1.Margin = new System.Windows.Forms.Padding(5);
             this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(5);
             this.tabPage1.Size = new System.Drawing.Size(737, 423);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "采集器";
@@ -157,9 +164,9 @@
             this.groupBox5.Controls.Add(this.rbtType12);
             this.groupBox5.Controls.Add(this.pnl12);
             this.groupBox5.Location = new System.Drawing.Point(10, 216);
-            this.groupBox5.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.groupBox5.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Padding = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.groupBox5.Padding = new System.Windows.Forms.Padding(5);
             this.groupBox5.Size = new System.Drawing.Size(718, 195);
             this.groupBox5.TabIndex = 19;
             this.groupBox5.TabStop = false;
@@ -172,7 +179,7 @@
             this.pnl22.Controls.Add(this.label29);
             this.pnl22.Controls.Add(this.label30);
             this.pnl22.Location = new System.Drawing.Point(362, 72);
-            this.pnl22.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.pnl22.Margin = new System.Windows.Forms.Padding(5);
             this.pnl22.Name = "pnl22";
             this.pnl22.Size = new System.Drawing.Size(345, 109);
             this.pnl22.TabIndex = 16;
@@ -180,7 +187,7 @@
             // txtIPPort2
             // 
             this.txtIPPort2.Location = new System.Drawing.Point(100, 63);
-            this.txtIPPort2.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.txtIPPort2.Margin = new System.Windows.Forms.Padding(5);
             this.txtIPPort2.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -193,7 +200,7 @@
             // txtIPAddr2
             // 
             this.txtIPAddr2.Location = new System.Drawing.Point(100, 15);
-            this.txtIPAddr2.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.txtIPAddr2.Margin = new System.Windows.Forms.Padding(5);
             this.txtIPAddr2.Name = "txtIPAddr2";
             this.txtIPAddr2.Size = new System.Drawing.Size(236, 29);
             this.txtIPAddr2.TabIndex = 6;
@@ -221,7 +228,7 @@
             // rbtType22
             // 
             this.rbtType22.Location = new System.Drawing.Point(372, 31);
-            this.rbtType22.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.rbtType22.Margin = new System.Windows.Forms.Padding(5);
             this.rbtType22.Name = "rbtType22";
             this.rbtType22.Size = new System.Drawing.Size(168, 32);
             this.rbtType22.TabIndex = 17;
@@ -231,7 +238,7 @@
             // rbtType12
             // 
             this.rbtType12.Location = new System.Drawing.Point(18, 31);
-            this.rbtType12.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.rbtType12.Margin = new System.Windows.Forms.Padding(5);
             this.rbtType12.Name = "rbtType12";
             this.rbtType12.Size = new System.Drawing.Size(168, 32);
             this.rbtType12.TabIndex = 12;
@@ -245,7 +252,7 @@
             this.pnl12.Controls.Add(this.label31);
             this.pnl12.Controls.Add(this.label32);
             this.pnl12.Location = new System.Drawing.Point(8, 72);
-            this.pnl12.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.pnl12.Margin = new System.Windows.Forms.Padding(5);
             this.pnl12.Name = "pnl12";
             this.pnl12.Size = new System.Drawing.Size(345, 109);
             this.pnl12.TabIndex = 15;
@@ -262,7 +269,7 @@
             "57600",
             "115200"});
             this.cmbBaudRate2.Location = new System.Drawing.Point(100, 64);
-            this.cmbBaudRate2.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.cmbBaudRate2.Margin = new System.Windows.Forms.Padding(5);
             this.cmbBaudRate2.Name = "cmbBaudRate2";
             this.cmbBaudRate2.Size = new System.Drawing.Size(236, 27);
             this.cmbBaudRate2.TabIndex = 3;
@@ -270,7 +277,7 @@
             // cmbCom2
             // 
             this.cmbCom2.Location = new System.Drawing.Point(100, 17);
-            this.cmbCom2.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.cmbCom2.Margin = new System.Windows.Forms.Padding(5);
             this.cmbCom2.Name = "cmbCom2";
             this.cmbCom2.Size = new System.Drawing.Size(236, 27);
             this.cmbCom2.TabIndex = 2;
@@ -302,9 +309,9 @@
             this.groupBox1.Controls.Add(this.rbtType1);
             this.groupBox1.Controls.Add(this.pnl1);
             this.groupBox1.Location = new System.Drawing.Point(10, 13);
-            this.groupBox1.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(5);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(5);
             this.groupBox1.Size = new System.Drawing.Size(718, 195);
             this.groupBox1.TabIndex = 19;
             this.groupBox1.TabStop = false;
@@ -317,7 +324,7 @@
             this.pnl2.Controls.Add(this.lblIP);
             this.pnl2.Controls.Add(this.label5);
             this.pnl2.Location = new System.Drawing.Point(362, 72);
-            this.pnl2.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.pnl2.Margin = new System.Windows.Forms.Padding(5);
             this.pnl2.Name = "pnl2";
             this.pnl2.Size = new System.Drawing.Size(345, 109);
             this.pnl2.TabIndex = 16;
@@ -325,7 +332,7 @@
             // txtIPPort
             // 
             this.txtIPPort.Location = new System.Drawing.Point(100, 63);
-            this.txtIPPort.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.txtIPPort.Margin = new System.Windows.Forms.Padding(5);
             this.txtIPPort.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -338,7 +345,7 @@
             // txtIPAddr
             // 
             this.txtIPAddr.Location = new System.Drawing.Point(100, 15);
-            this.txtIPAddr.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.txtIPAddr.Margin = new System.Windows.Forms.Padding(5);
             this.txtIPAddr.Name = "txtIPAddr";
             this.txtIPAddr.Size = new System.Drawing.Size(236, 29);
             this.txtIPAddr.TabIndex = 6;
@@ -366,7 +373,7 @@
             // rbtType2
             // 
             this.rbtType2.Location = new System.Drawing.Point(372, 31);
-            this.rbtType2.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.rbtType2.Margin = new System.Windows.Forms.Padding(5);
             this.rbtType2.Name = "rbtType2";
             this.rbtType2.Size = new System.Drawing.Size(168, 32);
             this.rbtType2.TabIndex = 17;
@@ -376,7 +383,7 @@
             // rbtType1
             // 
             this.rbtType1.Location = new System.Drawing.Point(18, 31);
-            this.rbtType1.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.rbtType1.Margin = new System.Windows.Forms.Padding(5);
             this.rbtType1.Name = "rbtType1";
             this.rbtType1.Size = new System.Drawing.Size(168, 32);
             this.rbtType1.TabIndex = 12;
@@ -390,7 +397,7 @@
             this.pnl1.Controls.Add(this.label1);
             this.pnl1.Controls.Add(this.label2);
             this.pnl1.Location = new System.Drawing.Point(8, 72);
-            this.pnl1.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.pnl1.Margin = new System.Windows.Forms.Padding(5);
             this.pnl1.Name = "pnl1";
             this.pnl1.Size = new System.Drawing.Size(345, 109);
             this.pnl1.TabIndex = 15;
@@ -407,7 +414,7 @@
             "57600",
             "115200"});
             this.cmbBaudRate.Location = new System.Drawing.Point(100, 64);
-            this.cmbBaudRate.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.cmbBaudRate.Margin = new System.Windows.Forms.Padding(5);
             this.cmbBaudRate.Name = "cmbBaudRate";
             this.cmbBaudRate.Size = new System.Drawing.Size(236, 27);
             this.cmbBaudRate.TabIndex = 3;
@@ -415,7 +422,7 @@
             // cmbCom
             // 
             this.cmbCom.Location = new System.Drawing.Point(100, 17);
-            this.cmbCom.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.cmbCom.Margin = new System.Windows.Forms.Padding(5);
             this.cmbCom.Name = "cmbCom";
             this.cmbCom.Size = new System.Drawing.Size(236, 27);
             this.cmbCom.TabIndex = 2;
@@ -466,11 +473,11 @@
             this.tabPage4.Controls.Add(this.label24);
             this.tabPage4.Controls.Add(this.label26);
             this.tabPage4.Controls.Add(this.label23);
-            this.tabPage4.Location = new System.Drawing.Point(4, 26);
-            this.tabPage4.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPage4.Location = new System.Drawing.Point(4, 29);
+            this.tabPage4.Margin = new System.Windows.Forms.Padding(4);
             this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.tabPage4.Size = new System.Drawing.Size(737, 426);
+            this.tabPage4.Padding = new System.Windows.Forms.Padding(4);
+            this.tabPage4.Size = new System.Drawing.Size(737, 423);
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "托板";
             this.tabPage4.UseVisualStyleBackColor = true;
@@ -478,7 +485,7 @@
             // nudMaxFloor
             // 
             this.nudMaxFloor.Location = new System.Drawing.Point(144, 167);
-            this.nudMaxFloor.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.nudMaxFloor.Margin = new System.Windows.Forms.Padding(5);
             this.nudMaxFloor.Maximum = new decimal(new int[] {
             10,
             0,
@@ -512,7 +519,7 @@
             // nudInitHeigh
             // 
             this.nudInitHeigh.Location = new System.Drawing.Point(474, 167);
-            this.nudInitHeigh.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.nudInitHeigh.Margin = new System.Windows.Forms.Padding(5);
             this.nudInitHeigh.Maximum = new decimal(new int[] {
             0,
             0,
@@ -556,7 +563,7 @@
             // nudCacheIgnoredDiff
             // 
             this.nudCacheIgnoredDiff.Location = new System.Drawing.Point(474, 223);
-            this.nudCacheIgnoredDiff.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.nudCacheIgnoredDiff.Margin = new System.Windows.Forms.Padding(5);
             this.nudCacheIgnoredDiff.Name = "nudCacheIgnoredDiff";
             this.nudCacheIgnoredDiff.Size = new System.Drawing.Size(174, 29);
             this.nudCacheIgnoredDiff.TabIndex = 25;
@@ -570,7 +577,7 @@
             // nudEdgeObligate
             // 
             this.nudEdgeObligate.Location = new System.Drawing.Point(474, 116);
-            this.nudEdgeObligate.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.nudEdgeObligate.Margin = new System.Windows.Forms.Padding(5);
             this.nudEdgeObligate.Maximum = new decimal(new int[] {
             300,
             0,
@@ -606,7 +613,7 @@
             this.chbOddTurn.AutoSize = true;
             this.chbOddTurn.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.chbOddTurn.Location = new System.Drawing.Point(18, 120);
-            this.chbOddTurn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.chbOddTurn.Margin = new System.Windows.Forms.Padding(4);
             this.chbOddTurn.Name = "chbOddTurn";
             this.chbOddTurn.Size = new System.Drawing.Size(133, 23);
             this.chbOddTurn.TabIndex = 30;
@@ -626,7 +633,7 @@
             // nudSplintLength
             // 
             this.nudSplintLength.Location = new System.Drawing.Point(114, 20);
-            this.nudSplintLength.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.nudSplintLength.Margin = new System.Windows.Forms.Padding(5);
             this.nudSplintLength.Maximum = new decimal(new int[] {
             2000,
             0,
@@ -660,7 +667,7 @@
             // nudSplintWidth
             // 
             this.nudSplintWidth.Location = new System.Drawing.Point(474, 20);
-            this.nudSplintWidth.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.nudSplintWidth.Margin = new System.Windows.Forms.Padding(5);
             this.nudSplintWidth.Maximum = new decimal(new int[] {
             2000,
             0,
@@ -724,7 +731,7 @@
             // nudObligateLen
             // 
             this.nudObligateLen.Location = new System.Drawing.Point(474, 68);
-            this.nudObligateLen.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.nudObligateLen.Margin = new System.Windows.Forms.Padding(5);
             this.nudObligateLen.Minimum = new decimal(new int[] {
             20,
             0,
@@ -763,7 +770,7 @@
             // nudSplintHeight
             // 
             this.nudSplintHeight.Location = new System.Drawing.Point(114, 68);
-            this.nudSplintHeight.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.nudSplintHeight.Margin = new System.Windows.Forms.Padding(5);
             this.nudSplintHeight.Maximum = new decimal(new int[] {
             2000,
             0,
@@ -822,11 +829,11 @@
             this.tabPage2.Controls.Add(this.label6);
             this.tabPage2.Controls.Add(this.txtRobotIP);
             this.tabPage2.Controls.Add(this.label4);
-            this.tabPage2.Location = new System.Drawing.Point(4, 26);
-            this.tabPage2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPage2.Location = new System.Drawing.Point(4, 29);
+            this.tabPage2.Margin = new System.Windows.Forms.Padding(4);
             this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.tabPage2.Size = new System.Drawing.Size(737, 426);
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(4);
+            this.tabPage2.Size = new System.Drawing.Size(737, 423);
             this.tabPage2.TabIndex = 4;
             this.tabPage2.Text = "机器人设置";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -834,7 +841,7 @@
             // txtJobName
             // 
             this.txtJobName.Location = new System.Drawing.Point(181, 167);
-            this.txtJobName.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.txtJobName.Margin = new System.Windows.Forms.Padding(5);
             this.txtJobName.Name = "txtJobName";
             this.txtJobName.Size = new System.Drawing.Size(530, 29);
             this.txtJobName.TabIndex = 19;
@@ -853,7 +860,7 @@
             // textBox2
             // 
             this.textBox2.Location = new System.Drawing.Point(181, 100);
-            this.textBox2.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.textBox2.Margin = new System.Windows.Forms.Padding(5);
             this.textBox2.Name = "textBox2";
             this.textBox2.ReadOnly = true;
             this.textBox2.Size = new System.Drawing.Size(530, 29);
@@ -873,7 +880,7 @@
             // txtRobotIP
             // 
             this.txtRobotIP.Location = new System.Drawing.Point(181, 40);
-            this.txtRobotIP.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.txtRobotIP.Margin = new System.Windows.Forms.Padding(5);
             this.txtRobotIP.Name = "txtRobotIP";
             this.txtRobotIP.Size = new System.Drawing.Size(530, 29);
             this.txtRobotIP.TabIndex = 14;
@@ -899,10 +906,10 @@
             this.tabPage3.Controls.Add(this.label9);
             this.tabPage3.Controls.Add(this.txtGetLocation);
             this.tabPage3.Controls.Add(this.label8);
-            this.tabPage3.Location = new System.Drawing.Point(4, 26);
-            this.tabPage3.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPage3.Location = new System.Drawing.Point(4, 29);
+            this.tabPage3.Margin = new System.Windows.Forms.Padding(4);
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(737, 426);
+            this.tabPage3.Size = new System.Drawing.Size(737, 423);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "其他";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -912,7 +919,7 @@
             this.txtOPCIP.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtOPCIP.Location = new System.Drawing.Point(151, 202);
-            this.txtOPCIP.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.txtOPCIP.Margin = new System.Windows.Forms.Padding(5);
             this.txtOPCIP.Name = "txtOPCIP";
             this.txtOPCIP.Size = new System.Drawing.Size(563, 29);
             this.txtOPCIP.TabIndex = 12;
@@ -932,7 +939,7 @@
             this.txtPanelFinish.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtPanelFinish.Location = new System.Drawing.Point(151, 142);
-            this.txtPanelFinish.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.txtPanelFinish.Margin = new System.Windows.Forms.Padding(5);
             this.txtPanelFinish.Name = "txtPanelFinish";
             this.txtPanelFinish.Size = new System.Drawing.Size(563, 29);
             this.txtPanelFinish.TabIndex = 12;
@@ -952,7 +959,7 @@
             this.txtToWeight.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtToWeight.Location = new System.Drawing.Point(151, 84);
-            this.txtToWeight.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.txtToWeight.Margin = new System.Windows.Forms.Padding(5);
             this.txtToWeight.Name = "txtToWeight";
             this.txtToWeight.Size = new System.Drawing.Size(563, 29);
             this.txtToWeight.TabIndex = 10;
@@ -972,7 +979,7 @@
             this.txtGetLocation.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtGetLocation.Location = new System.Drawing.Point(151, 26);
-            this.txtGetLocation.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.txtGetLocation.Margin = new System.Windows.Forms.Padding(5);
             this.txtGetLocation.Name = "txtGetLocation";
             this.txtGetLocation.Size = new System.Drawing.Size(563, 29);
             this.txtGetLocation.TabIndex = 8;
@@ -991,7 +998,7 @@
             // 
             this.btnCancel.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.btnCancel.Location = new System.Drawing.Point(390, 468);
-            this.btnCancel.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.btnCancel.Margin = new System.Windows.Forms.Padding(5);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(128, 52);
             this.btnCancel.TabIndex = 9;
@@ -1002,12 +1009,58 @@
             // 
             this.btnSave.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.btnSave.Location = new System.Drawing.Point(228, 468);
-            this.btnSave.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.btnSave.Margin = new System.Windows.Forms.Padding(5);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(128, 52);
             this.btnSave.TabIndex = 8;
             this.btnSave.Text = "保存";
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+            // 
+            // tabPage5
+            // 
+            this.tabPage5.Controls.Add(this.txDiffVshape);
+            this.tabPage5.Controls.Add(this.txDiffSlope);
+            this.tabPage5.Controls.Add(this.label19);
+            this.tabPage5.Controls.Add(this.label18);
+            this.tabPage5.Location = new System.Drawing.Point(4, 29);
+            this.tabPage5.Name = "tabPage5";
+            this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage5.Size = new System.Drawing.Size(737, 423);
+            this.tabPage5.TabIndex = 5;
+            this.tabPage5.Text = "不规则形状检测";
+            this.tabPage5.UseVisualStyleBackColor = true;
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(48, 54);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(123, 19);
+            this.label18.TabIndex = 0;
+            this.label18.Text = "两端倾斜高差";
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(52, 110);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(114, 19);
+            this.label19.TabIndex = 1;
+            this.label19.Text = "V形凹陷高差";
+            // 
+            // txDiffSlope
+            // 
+            this.txDiffSlope.Location = new System.Drawing.Point(204, 44);
+            this.txDiffSlope.Name = "txDiffSlope";
+            this.txDiffSlope.Size = new System.Drawing.Size(167, 29);
+            this.txDiffSlope.TabIndex = 2;
+            // 
+            // txDiffVshape
+            // 
+            this.txDiffVshape.Location = new System.Drawing.Point(204, 100);
+            this.txDiffVshape.Name = "txDiffVshape";
+            this.txDiffVshape.Size = new System.Drawing.Size(167, 29);
+            this.txDiffVshape.TabIndex = 3;
             // 
             // FrmSet
             // 
@@ -1017,8 +1070,8 @@
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.tabControl1);
-            this.Font = new System.Drawing.Font("宋体", 14F);
-            this.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.Font = new System.Drawing.Font("SimSun", 14F);
+            this.Margin = new System.Windows.Forms.Padding(5);
             this.Name = "FrmSet";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "设置";
@@ -1049,6 +1102,8 @@
             this.tabPage2.PerformLayout();
             this.tabPage3.ResumeLayout(false);
             this.tabPage3.PerformLayout();
+            this.tabPage5.ResumeLayout(false);
+            this.tabPage5.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -1126,5 +1181,10 @@
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.NumericUpDown nudMaxFloor;
         private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.TabPage tabPage5;
+        private System.Windows.Forms.TextBox txDiffVshape;
+        private System.Windows.Forms.TextBox txDiffSlope;
+        private System.Windows.Forms.Label label19;
+        private System.Windows.Forms.Label label18;
     }
 }

@@ -557,6 +557,7 @@ order by floorindex desc;";
         /// <param name="currFloor"></param>
         /// <param name="floor">todo: describe floor parameter on GetSecondShortestLengthHalf</param>
         /// <returns></returns>
+        [Obsolete("no use any more.")]
         public static decimal GetSecondShortestLengthHalf(string panelNo, int floor) {
             var sql = "select top 2 Length from LableCode where PanelNo = @PanelNo and Floor=@Floor order by Length";
 

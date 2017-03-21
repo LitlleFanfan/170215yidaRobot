@@ -15,15 +15,14 @@ namespace yidascan {
 
             IniCombobox(cmbCom);
             IniCombobox(cmbCom2);
-
-
         }
+
         public static CommunicationCfg pcfgScan1 = new CommunicationCfg("SCAN1");
         public static CommunicationCfg pcfgScan2 = new CommunicationCfg("SCAN2");
 
-        private void IniCombobox(ComboBox cmb) {
+        private static void IniCombobox(ComboBox cmb) {
             cmb.Items.Clear();
-            int num2 = System.IO.Ports.SerialPort.GetPortNames().Length - 1;
+            var num2 = System.IO.Ports.SerialPort.GetPortNames().Length - 1;
             for (int i = 0; i <= num2; i++) {
                 cmb.Items.Add(System.IO.Ports.SerialPort.GetPortNames().GetValue(i));
             }
@@ -67,6 +66,14 @@ namespace yidascan {
 
             clsSetting.RobotIP = txtRobotIP.Text;
             clsSetting.JobName = txtJobName.Text;
+
+            try {
+                clsSetting.DiffSlope = Int32.Parse(txDiffSlope.Text);
+                clsSetting.DiffVshape = Int32.Parse(txDiffVshape.Text);
+            } catch (Exception ex) {
+                MessageBox.Show($"保存失败: {ex.ToString()}");
+                return;
+            }
 
             this.DialogResult = DialogResult.OK;
             this.Close();
@@ -151,6 +158,9 @@ namespace yidascan {
 
             txtRobotIP.Text = clsSetting.RobotIP;
             txtJobName.Text = clsSetting.JobName;
+
+            txDiffSlope.Text = clsSetting.DiffSlope.ToString();
+            txDiffVshape.Text = clsSetting.DiffVshape.ToString();
         }
     }
 }

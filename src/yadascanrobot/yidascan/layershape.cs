@@ -4,14 +4,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using yidascan.DataAccess;
+using ProduceComm;
 
 namespace yidascan {
     /// <summary>
     /// 一组判断层直径分布的函数。
     /// </summary>
     class LayerShape {
+        public static int diffSlope = 100;
+        public static int diffVshape = 100;
+
+        // 在窗口启动时执行此函数。
+        public static void loadconf() {
+            diffSlope = clsSetting.DiffSlope;
+            diffVshape = clsSetting.DiffVshape;
+        }
+
         private static bool IsSlope(decimal d1, decimal d2) {
-            return Math.Abs(d1 - d2) > 50;
+            return Math.Abs(d1 - d2) > diffSlope;
         }
 
         private static bool IsVshape(IList<decimal> lst) {
@@ -23,10 +33,9 @@ namespace yidascan {
             var cenht = Math.Max((double)lst[idx], (double)lst[idx + 1]);
 
             // 计算两端直径均值加权。
-            const double DIFF = 70;
-            var endht = (double)(first + last) / 2.0 - DIFF;
+            var endht = (double)(first + last) / 2.0;
 
-            return cenht < endht;
+            return Math.Abs(endht - cenht) > diffVshape;
         }
 
         /// <summary>

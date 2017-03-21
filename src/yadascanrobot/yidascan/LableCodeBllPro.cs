@@ -41,7 +41,7 @@ namespace yidascan {
                 var lastRoll = (from s in lcs where IsRollInSameSide(s, lc)
                                 orderby s.FloorIndex descending select s).First();
                 xory = (Math.Abs(lastRoll.Cx + lastRoll.Cy) + lastRoll.Diameter + clsSetting.RollSep)
-                    * (lc.FloorIndex % 2 == 1 ? 1 : -1);                
+                    * (lc.FloorIndex % 2 == 1 ? 1 : -1);
             }
 
             return xory;

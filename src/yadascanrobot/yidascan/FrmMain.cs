@@ -121,6 +121,8 @@ namespace yidascan {
 
         private void FrmMain_Load(object sender, EventArgs e) {
             try {
+                LayerShape.loadconf();
+
                 taskQ = loadconf() ?? new TaskQueues();
                 cacheher = new CacheHelper(taskQ.CacheSide);
 
@@ -172,7 +174,8 @@ namespace yidascan {
         private void setupOpcClient(IOpcClient c, string name) {
             if (c.Open(clsSetting.OPCServerIP)) {
                 logOpt.Write($"{name}OPC client连接成功。", LogType.NORMAL);
-                c.AddSubscription(dtopc);
+                c.AddSubscription(dtopc); // 这个也写在plchelper比较好。
+                PlcHelper.subscribe(c);
             } else {
                 logOpt.Write($"!{name}OPC client务连接失败。", LogType.NORMAL);
             }
@@ -180,8 +183,7 @@ namespace yidascan {
 
         private IOpcClient CreateOpcClient(string name) {
             var client = GetOpcClient();
-            setupOpcClient(client, name);
-            PlcHelper.subscribe(client);
+            setupOpcClient(client, name);            
             return client;
         }
 
