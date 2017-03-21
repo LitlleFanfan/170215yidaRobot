@@ -31,6 +31,9 @@ namespace yidascan {
         public static IOpcClient opcScan;
         public static IOpcClient opcNone;
         public static IOpcClient opcWeigh;
+        public static IOpcClient opcBUFL;
+        public static IOpcClient opcACF;
+        public static IOpcClient RobotOpcClient;
 
         #endregion
         IRobotJob robot;
@@ -124,8 +127,6 @@ namespace yidascan {
 
                 ShowTaskQ();
 
-                opcScan = CreateOpcClient("采集");
-                opcParam.ScanParam = new OPCScanParam(opcScan);
                 opcNone = CreateOpcClient("其它报警");
                 opcParam.None = new NoneOpcParame(opcNone);
 
@@ -154,18 +155,18 @@ namespace yidascan {
                 LogType.NORMAL);
         }
 
-        private void setupOpcClient(IOpcClient c, string name) {
-            if (c.Open(clsSetting.OPCServerIP)) {
-                logOpt.Write($"{name}OPC client连接成功。", LogType.NORMAL);
-            } else {
-                logOpt.Write($"!{name}OPC client务连接失败。", LogType.NORMAL);
-            }
-        }
-
-        private IOpcClient CreateOpcClient(string name) {
+        public static IOpcClient CreateOpcClient(string name) {
             var client = GetOpcClient();
-            setupOpcClient(client, name);
+            if (client.Open(clsSetting.OPCServerIP)) {
+                logOpt.Write($"OPC client {name}连接成功。", LogType.NORMAL);
+            } else {
+                logOpt.Write($"!OPC client {name}连接失败。", LogType.NORMAL);
+            }
             return client;
+        }
+        public static void OpcClientClose(IOpcClient client, string name) {
+            client.Close();
+            logOpt.Write($"OPC client {name}连接关闭。", LogType.NORMAL);
         }
 
         /// <summary>
@@ -204,9 +205,8 @@ namespace yidascan {
                     }
                     Thread.Sleep(1000);
                 }
-                RobotOpcClient.Close();
+                OpcClientClose(RobotOpcClient, "机器人抓料队列");
             });
-            logOpt.Write("机器人抓料A布卷队列任务启动。", LogType.NORMAL);
         }
 
         /// <summary>
@@ -247,9 +247,14 @@ namespace yidascan {
         }
 
         private void StartRobotTask() {
-            var RobotOpcClient = CreateOpcClient("机器人");
             try {
                 logOpt.Write("机器人正在启动...", LogType.NORMAL);
+                RobotOpcClient = FrmMain.CreateOpcClient("机器人");
+                opcParam.InitBadShapeLocations(RobotOpcClient);
+                opcParam.InitBAreaFloorFinish(RobotOpcClient);
+                opcParam.InitBAreaPanelFinish(RobotOpcClient);
+                opcParam.InitBAreaPanelState(RobotOpcClient);
+
                 Task.Factory.StartNew(() => {
                     robot = GetRobot(clsSetting.RobotIP, clsSetting.JobName);
                     robot.setup(logOpt.Write, RobotOpcClient, opcParam);
@@ -277,12 +282,13 @@ namespace yidascan {
         /// B区人工完成信号任务。
         /// </summary>
         private void BAreaUserFinalLayerTask() {
-            var client = CreateOpcClient("B区手动完成");
+            opcBUFL = CreateOpcClient("B区手动完成");
+            opcParam.InitBAreaUserFinalLayer(opcBUFL);
 
             foreach (KeyValuePair<string, string> kv in opcParam.BAreaUserFinalLayer) {
                 Task.Factory.StartNew(() => {
                     while (isrun) {
-                        var signal = client.ReadString(kv.Value);
+                        var signal = opcBUFL.ReadString(kv.Value);
 
                         if (signal == "1") {
                             // kv.Key是交地。
@@ -305,14 +311,12 @@ namespace yidascan {
                             robot.NotifyOpcJobFinished(pf.PanelNo, tolocation);
 
                             // plc复位信号。
-                            client.Write(kv.Value, "0");
+                            opcBUFL.Write(kv.Value, "0");
                         }
                         Thread.Sleep(OPCClient.DELAY * 200);
                     }
                 });
             }
-
-            logOpt.Write("B区人工完成信号任务启动。", LogType.NORMAL);
         }
 
         void SetButtonState(bool isRun) {
@@ -341,8 +345,10 @@ namespace yidascan {
                 nscan1.OnDataArrived = nscan_OnDataArrived;
                 // 启动相机读取线程。
 
-                var ScannerOpcClient = CreateOpcClient("相机");
-                nscan1._StartJob(ScannerOpcClient);
+                opcScan = CreateOpcClient("相机");
+                opcParam.ScanParam = new OPCScanParam(opcScan);
+
+                nscan1._StartJob(opcScan);
 
                 lblScanner.BackColor = Color.LightGreen;
                 logOpt.Write(nscan1.name + "ok.");
@@ -398,6 +404,7 @@ namespace yidascan {
             opcWeigh = CreateOpcClient("称重");
             opcParam.WeighParam = new OPCWeighParam(opcWeigh);
 
+            logOpt.Write(JsonConvert.SerializeObject(opcParam.WeighParam), LogType.NORMAL, LogViewType.OnlyFile);
             Task.Factory.StartNew(() => {
                 while (isrun) {
                     try {
@@ -423,34 +430,34 @@ namespace yidascan {
 
                     Thread.Sleep(OPCClient.DELAY * 200);
                 }
-                opcWeigh.Close();
             });
 
             logOpt.Write("称重任务启动。", LogType.NORMAL);
         }
 
         private void ACAreaFinishTask() {
-            var opcclient = CreateOpcClient("AC区完成");
-            opcParam.InitACAreaFinish(opcclient);
+            opcACF = CreateOpcClient("AC区完成");
+            opcParam.InitACAreaFinish(opcACF);
             foreach (var kv in opcParam.ACAreaPanelFinish) {
                 Task.Factory.StartNew(() => {
                     while (isrun) {
                         try {
-                            var signal = opcclient.ReadBool(kv.Value.Signal);
-                            if (signal) {
-                                var fullLable = PlcHelper.ReadCompleteLable(opcclient, kv.Value);
+                            var signal = false;
+                            lock (opcACF) {
+                                signal = opcACF.ReadBool(kv.Value.Signal);
+                                if (signal) {
+                                    var fullLable = PlcHelper.ReadCompleteLable(opcACF, kv.Value);
+                                    opcACF.Write(kv.Value.Signal, 0);
 
-                                logOpt.Write($"{kv.Value.Signal} 收到完成信号。标签:{fullLable} 执行状态:{AreaAAndCFinish(fullLable)}", LogType.NORMAL);
+                                    logOpt.Write($"{kv.Value.Signal} 收到完成信号。标签:{fullLable} 执行状态:{AreaAAndCFinish(fullLable)}", LogType.NORMAL);
+                                }
                             }
                         } catch (Exception ex) {
                             logOpt.Write("!" + ex.Message);
                         }
 
-                        opcclient.Write(kv.Value.Signal, 0);
-
                         Thread.Sleep(OPCClient.DELAY * 2000);
                     }
-                    opcclient.Close();
                 });
             }
 
@@ -596,7 +603,7 @@ namespace yidascan {
                         logOpt.Write($"!{ex.ToString()}", LogType.BUFFER);
                     }
                 }
-                CacheOpcClient.Close();
+                OpcClientClose(CacheOpcClient, "缓存位");
             });
         }
 
@@ -634,7 +641,7 @@ namespace yidascan {
                     }
                     Thread.Sleep(OPCClient.DELAY * 200);
                 }
-                LabelUpOpcClient.Close();
+                OpcClientClose(LabelUpOpcClient, "标签朝上");
             });
         }
 
@@ -688,20 +695,24 @@ namespace yidascan {
         }
 
         private void StopAllRobotTasks() {
-            robotRun = false;
+            if (robotRun) {
+                robotRun = false;
 
-            Thread.Sleep(1000);
+                Thread.Sleep(1000);
 
-            try {
-                if (chkUseRobot.Checked) {
-                    robot.Dispose();
+                try {
+                    if (chkUseRobot.Checked) {
+                        robot.Dispose();
+                    }
+                } catch (Exception ex) {
+                    logOpt.Write("!" + ex.ToString());
                 }
-            } catch (Exception ex) {
-                logOpt.Write("!" + ex.ToString());
-            }
 
-            logOpt.Write("机器人任务停止。", LogType.NORMAL);
-            SetRobotTip(false, "机器人停止");
+                OpcClientClose(RobotOpcClient, "机器人");
+
+                logOpt.Write("机器人任务停止。", LogType.NORMAL);
+                SetRobotTip(false, "机器人停止");
+            }
         }
 
         private void StopAllJobs() {
@@ -717,6 +728,11 @@ namespace yidascan {
             if (!CommonHelper.Confirm("确定停止吗?")) { return; }
 
             StopAllJobs();
+
+            OpcClientClose(opcWeigh, "称重");
+            OpcClientClose(opcScan, "相机");
+            OpcClientClose(opcBUFL, "B区手动完成");
+            OpcClientClose(opcACF, "AC区完成");
 
             chkUseRobot.Enabled = true;
             SetButtonState(false);
@@ -798,7 +814,7 @@ namespace yidascan {
                     var re1 = JsonConvert.DeserializeObject<DataTable>(re["Data"]);
                     return (re1.Rows[0]["result"].ToString().ToUpper() != "FAIL");
                 } else {
-                    ERPAlarm(opcScan, opcParam, ERPAlarmNo.COMMUNICATION_ERROR);
+                    ERPAlarm(opcNone, opcParam, ERPAlarmNo.COMMUNICATION_ERROR);
                     return false;
                 }
             } catch (Exception ex) {
@@ -842,13 +858,16 @@ namespace yidascan {
 
                 txtLableCode1.Enabled = false;
 
-                var handScannerClient = CreateOpcClient("相机手动");
 
                 await Task.Run(() => {
+                    var handScannerClient = CreateOpcClient("相机手动");
+                    new OPCScanParam(handScannerClient);
+
                     // waiting for mutex available.
                     lock (LOCK_CAMERA_PROCESS) {
                         ScanLableCode(handScannerClient, code, 0, true);
                     }
+                    OpcClientClose(handScannerClient, "相机手动");
                 });
 
                 ResetLabelInput();
@@ -1031,13 +1050,13 @@ namespace yidascan {
                                 (handwork ? "手工" : "自动"), code, re, str["Data"]), LogType.NORMAL);
                         } else {
                             ShowWarning("取交地失败");
-                            ERPAlarm(opcScan, opcParam, ERPAlarmNo.TO_LOCATION_ERROR);
+                            ERPAlarm(opcNone, opcParam, ERPAlarmNo.TO_LOCATION_ERROR);
                             logOpt.Write(string.Format("!{0}{1}获取交地失败。{2}",
                                 (handwork ? "手工" : "自动"), code, JsonConvert.SerializeObject(str)), LogType.NORMAL);
                         }
                     } else {
                         ShowWarning("取交地失败");
-                        ERPAlarm(opcScan, opcParam, ERPAlarmNo.COMMUNICATION_ERROR);
+                        ERPAlarm(opcNone, opcParam, ERPAlarmNo.COMMUNICATION_ERROR);
                         logOpt.Write(string.Format("!{0}{1}获取交地失败。{2}",
                             (handwork ? "手工" : "自动"), code, JsonConvert.SerializeObject(str)), LogType.NORMAL);
                     }
@@ -1077,7 +1096,7 @@ namespace yidascan {
                     var path = Path.Combine(Application.StartupPath, TASKQUE_CONF);
                     TaskQueConf<TaskQueues>.save(path, taskQ);
 
-                    opcScan.Close();
+                    OpcClientClose(opcNone, "其它报警");
                 } catch (Exception ex) {
                     logOpt.Write("!关闭OPC异常。\n" + ex, LogType.NORMAL);
                 }

@@ -120,11 +120,13 @@ namespace yidascan.DataAccess {
         /// <param name="opc"></param>
         public OPCWeighParam(IOpcClient opc) {
             DataTable dt = OPCParam.Query($"where Class='{CFG}'");
+
+           FrmMain.logOpt.Write(JsonConvert.SerializeObject(dt), LogType.NORMAL, LogViewType.OnlyFile);
             if (dt == null || dt.Rows.Count < 1) {
                 return;
             }
             foreach (DataRow dr in dt.Rows) {
-                foreach (PropertyInfo property in typeof(LCodeSignal).GetProperties()) {
+                foreach (PropertyInfo property in typeof(OPCWeighParam).GetProperties()) {
                     if (property.Name == dr["Name"].ToString()) {
                         property.SetValue(this, dr["Code"].ToString());
                         opc.AddSubscription(dr["Code"].ToString());
@@ -200,7 +202,7 @@ namespace yidascan.DataAccess {
                 return;
             }
             foreach (DataRow dr in dt.Rows) {
-                foreach (PropertyInfo property in typeof(LCodeSignal).GetProperties()) {
+                foreach (PropertyInfo property in typeof(OPCLableUpParam).GetProperties()) {
                     if (property.Name == dr["Name"].ToString()) {
                         property.SetValue(this, dr["Code"].ToString());
                         opc.AddSubscription(dr["Code"].ToString());
@@ -226,7 +228,7 @@ namespace yidascan.DataAccess {
                 return;
             }
             foreach (DataRow dr in dt.Rows) {
-                foreach (PropertyInfo property in typeof(LCodeSignal).GetProperties()) {
+                foreach (PropertyInfo property in typeof(OPCRobotCarryParam).GetProperties()) {
                     if (property.Name == dr["Name"].ToString()) {
                         property.SetValue(this, dr["Code"].ToString());
                         opc.AddSubscription(dr["Code"].ToString());
@@ -288,7 +290,7 @@ namespace yidascan.DataAccess {
         public NoneOpcParame None;
 
         public static DataTable Query(string where = "") {
-            string sql = $"select IndexNo,Name,Code,Class,Remark from OPCParam {where} order by IndexNo DESC";
+            string sql = $"select Name,Code,Class,Remark from NewOPCParam {where}";
             return DataAccess.CreateDataAccess.sa.Query(sql);
         }
         

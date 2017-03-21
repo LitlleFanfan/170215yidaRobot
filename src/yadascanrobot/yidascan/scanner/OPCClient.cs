@@ -70,6 +70,11 @@ namespace ProduceComm.OPC {
         }
 
         public bool Write(string code, object value) {
+            if (string.IsNullOrEmpty(code)) {
+                yidascan.FrmMain.logOpt.Write($"!项目为空");
+                OnError(new Exception("项目为空！"));
+                return false;
+            }
             try {
                 if (!groups.Keys.Contains(code)) {
                     clsSetting.loger.Error(string.Format("{0}未添加订阅！", code));
@@ -88,6 +93,11 @@ namespace ProduceComm.OPC {
         }
 
         public object Read(string code) {
+            if (string.IsNullOrEmpty(code)) {
+                yidascan.FrmMain.logOpt.Write($"!项目为空");
+                OnError(new Exception("项目为空！"));
+                return null;
+            }
             try {
                 if (!groups.Keys.Contains(code)) {
                     clsSetting.loger.Error(string.Format("{0}未添加订阅！", code));
