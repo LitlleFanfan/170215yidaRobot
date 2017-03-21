@@ -337,7 +337,7 @@ namespace yidascan {
             return pf;
         }
 
-        public static CalResult AreaBCalculate(IOpcClient client, IErpApi erpapi, LableCode lc, string dateShiftNo, IEnumerable<LableCode> cacheq, Action<string> onlog) {
+        public static CalResult AreaBCalculate(IOpcClient client, LableCode lc, string dateShiftNo, IEnumerable<LableCode> cacheq, Action<string> onlog) {
             var rt = new CalResult(CacheState.Cache, lc, null);
             var pinfo = GetPanelNo(rt.CodeCome, dateShiftNo);
 
@@ -349,7 +349,7 @@ namespace yidascan {
 
             if (pinfo != null) {
                 // 取当前交地、当前板、当前层所有标签。
-                layerLabels = LableCode.GetLableCodesOfRecentFloor(rt.CodeCome.ToLocation, pinfo);
+                layerLabels = LableCode.GetLableCodesOfRecentFloor(rt.CodeCome.ToLocation, pinfo.PanelNo, pinfo.CurrFloor);
 
                 if (layerLabels != null && layerLabels.Count > 0) {
                     // 最近一层没满。
@@ -428,6 +428,18 @@ namespace yidascan {
                     break;
             }
 
+
+            // 记录层最后一卷
+            if (fp == FloorPerformance.BothFinish) {
+                if (rt.state == CacheState.GoThenGet) {
+                    rt.CodeFromCache.Status = 2;
+                    rt.CodeFromCache.Remark = $"{rt.CodeFromCache.Remark} 层最后一卷";
+                } else {
+                    rt.CodeCome.Status = 2;
+                    rt.CodeCome.Remark = $"{rt.CodeCome.Remark} 层最后一卷";
+                }
+            }
+
             var savestate = false;
 
             if (pinfo == null) {
@@ -438,24 +450,6 @@ namespace yidascan {
                 savestate = LableCode.Update(fp, pinfo, rt.CodeCome, rt.CodeFromCache);
             } else {
                 savestate = LableCode.Update(fp, pinfo, rt.CodeCome);
-            }
-
-            // 如果当前层形状不规则，并且当前层不是最高层，则报警。
-            if (fp == FloorPerformance.BothFinish && rt.CodeCome.Floor < pinfo.MaxFloor) {
-                try {
-                    var lables = LableCode.GetLableCodesOfRecentFloor(rt.CodeFromCache.ToLocation, pinfo);
-                    if (LayerShape.isBadShape(lables)) {
-                        onlog?.Invoke($"!板号： {rt.CodeCome.PanelNo}, 交地： {rt.CodeCome.ToLocation}, 层: {rt.CodeCome.Floor}, 形状不规则。");
-                        PlcHelper.NotifyBadLayerShape(client, lc.ToLocation);
-                    }
-                } catch (Exception ex) {
-                    onlog?.Invoke($"!判断层形状时异常: {ex}");
-                }
-            }
-
-            if (fp == FloorPerformance.BothFinish && rt.CodeCome.Floor == pinfo.MaxFloor) {
-                ErpHelper.NotifyPanelEnd(erpapi, pinfo.PanelNo, out msg);
-
             }
             rt.message = msg;
             return rt;
@@ -489,7 +483,7 @@ namespace yidascan {
                         return true;
                     }
                 } else {
-                    FrmMain.ERPAlarm(FrmMain.opcClient, FrmMain.opcParam, ERPAlarmNo.COMMUNICATION_ERROR);
+                    FrmMain.ERPAlarm(FrmMain.opcScan, FrmMain.opcParam, ERPAlarmNo.COMMUNICATION_ERROR);
                 }
             }
             msg = "!板号完成失败，板号为空。";

@@ -68,8 +68,8 @@ namespace yidascan {
             clsSetting.JobName = txtJobName.Text;
 
             try {
-                clsSetting.DiffSlope = Int32.Parse(txDiffSlope.Text);
-                clsSetting.DiffVshape = Int32.Parse(txDiffVshape.Text);
+                clsSetting.DiffSlope = (int)nudDiffSlope.Value;
+                clsSetting.DiffVshape = (int)nudDiffVshape.Value;
             } catch (Exception ex) {
                 MessageBox.Show($"保存失败: {ex.ToString()}");
                 return;
@@ -159,8 +159,8 @@ namespace yidascan {
             txtRobotIP.Text = clsSetting.RobotIP;
             txtJobName.Text = clsSetting.JobName;
 
-            txDiffSlope.Text = clsSetting.DiffSlope.ToString();
-            txDiffVshape.Text = clsSetting.DiffVshape.ToString();
+            nudDiffSlope.Value = clsSetting.DiffSlope;
+            nudDiffVshape.Value = clsSetting.DiffVshape;
         }
     }
 }

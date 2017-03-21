@@ -68,8 +68,12 @@ namespace yidascan {
             GC.SuppressFinalize(this);
         }
 
-        public void NotifyOpcJobFinished(PanelState pState, string tolocation) {
-            // throw new NotImplementedException();
+        public void NotifyOpcJobFinished(string panelNo, string tolocation) {
+            throw new NotImplementedException();
+        }
+
+        public void NotifyOpcJobFinished(RollPosition roll) {
+            throw new NotImplementedException();
         }
     }
 #endif

@@ -52,18 +52,6 @@ namespace yidascan {
             }
         }
 
-        public static void StartJobTaskA() {
-            Task.Run(() => {
-                startJobTask(param.RobotCarryA, "A");
-            });
-        }
-
-        public static void StartJobTaskB() {
-            Task.Run(() => {
-                startJobTask(param.RobotCarryB, "B");
-            });
-        }
-
         public static void StopJobTask() {
             isrun = false;
             Thread.Sleep(1000);

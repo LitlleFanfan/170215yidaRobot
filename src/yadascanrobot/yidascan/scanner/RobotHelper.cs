@@ -48,11 +48,14 @@ namespace yidascan {
             }
         }
 
-        public RollPosition(string label, string side, string locationNo, decimal rolllen, decimal diameter_, PanelState pnlState, decimal x, decimal y, decimal z, decimal rz) {
-            this.LabelCode = label;
+        public RollPosition(LableCode label, string side, PanelState pnlState, decimal x, decimal y, decimal z, decimal rz) {
+            this.LabelCode = label.LCode;
+            PanelNo = label.PanelNo;
+            Floor = label.Floor;
+            Status = label.Status;
 
             // 布卷按长度调整板上位置， 以确定坐标偏移。
-            var adj = AdjustPosByRollLength(x, clsSetting.SplintWidth, rolllen);
+            var adj = AdjustPosByRollLength(x, clsSetting.SplintWidth, label.Length);
 
             //X = x;
             //Y = y;
@@ -64,17 +67,17 @@ namespace yidascan {
             Rz = rz;
             ChangeAngle = x > 0 || y < 0;
 
-            ToLocation = locationNo;
-            diameter = diameter_;
-            Index = CalculateBaseIndex(locationNo, x, y);
+            ToLocation = label.ToLocation;
+            diameter = label.Diameter;
+            Index = CalculateBaseIndex(label.ToLocation, x, y);
 
-            LocationNo = int.Parse(locationNo.Substring(1, 2));
+            LocationNo = int.Parse(label.ToLocation.Substring(1, 2));
             BaseIndex = 4 * (LocationNo - 1) + Index + 1;
 
             Side = side;
             PnlState = pnlState;
 
-            var tmp = int.Parse(locationNo.Substring(1, 2));
+            var tmp = int.Parse(label.ToLocation.Substring(1, 2));
             var origin = RobotParam.GetOrigin(tmp);
             var point = RobotParam.GetPoint(tmp, Index);
 
@@ -134,6 +137,10 @@ namespace yidascan {
 
         public string LabelCode;
 
+        public string PanelNo;
+        public int Floor;
+        public int Status;
+
         public int LocationNo;
         public int Index;
         public int BaseIndex;
@@ -165,6 +172,7 @@ namespace yidascan {
         private string JOB_NAME = "";
 
         RobotControl.RobotControl rCtrl;
+        IErpApi erpapi;
 
         public const int DELAY = 5;
 
@@ -173,8 +181,9 @@ namespace yidascan {
         private IOpcClient client;
         private OPCParam param;
 
-        public RobotHelper(string ip, string jobName) {
+        public RobotHelper(IErpApi _erpapi, string ip, string jobName) {
             try {
+                erpapi = _erpapi;
                 rCtrl = new RobotControl.RobotControl(ip);
                 rCtrl.Connect();
                 rCtrl.ServoPower(true);
@@ -313,28 +322,28 @@ namespace yidascan {
             }
         }
 
-        public void NotifyOpcJobFinished(PanelState pState, string tolocation) {
+        public void NotifyOpcJobFinished(string panelNo, string tolocation) {
             try {
+                var pState=LableCode.IsAllRollOnPanel(panelNo) ? PanelState.Full : PanelState.HalfFull;
                 switch (pState) {
                     case PanelState.HalfFull:
-                        // FrmMain.opcClient.Write(FrmMain.opcParam.BAreaFloorFinish[tolocation], true);
                         client.Write(param.BAreaFloorFinish[tolocation], true);
                         log($"{tolocation}: 半板信号发出。slot: {param.BAreaFloorFinish[tolocation]}", LogType.ROBOT_STACK);
 
                         break;
                     case PanelState.Full:
-                        // FrmMain.opcClient.Write(FrmMain.opcParam.BAreaPanelFinish[tolocation], true);
+                        string msg;
+                        ErpHelper.NotifyPanelEnd(erpapi, panelNo, out msg);
                         client.Write(param.BAreaPanelFinish[tolocation], true);
                         log($"{tolocation}: 满板信号发出。slot: {param.BAreaPanelFinish[tolocation]}", LogType.ROBOT_STACK);
+                        log(msg, LogType.ROBOT_STACK);
 
-                        // FrmMain.opcClient.Write(FrmMain.opcParam.BAreaPanelState[tolocation], 3);
                         const int SIGNAL_3 = 3;
                         client.Write(param.BAreaPanelState[tolocation], SIGNAL_3);
                         log($"{tolocation}: 板状态信号发出，状态值: {SIGNAL_3}。slot: {param.BAreaPanelState[tolocation]}", LogType.ROBOT_STACK);
 
                         break;
                     case PanelState.LessHalf:
-                        // log($"板未半满，不发信号, {pState}", LogType.ROBOT_STACK);
                         break;
                     default:
                         log($"!板状态不明，不发信号, {pState}", LogType.ROBOT_STACK);
@@ -342,7 +351,37 @@ namespace yidascan {
                 }
             } catch (Exception ex) {
                 log($"!{ex}", LogType.ROBOT_STACK);
-                // log($"!tolocation: {tolocation} state:{pState} opc:{JsonConvert.SerializeObject(param.BAreaFloorFinish)} err:{ex}", LogType.ROBOT_STACK);
+            }
+        }
+
+        public void NotifyOpcJobFinished(RollPosition roll) {
+            try {
+                switch (roll.PnlState) {
+                    case PanelState.HalfFull:
+                        client.Write(param.BAreaFloorFinish[roll.ToLocation], true);
+                        log($"{roll.ToLocation}: 半板信号发出。slot: {param.BAreaFloorFinish[roll.ToLocation]}", LogType.ROBOT_STACK);
+
+                        break;
+                    case PanelState.Full:
+                        string msg;
+                        ErpHelper.NotifyPanelEnd(erpapi, roll.PanelNo, out msg);
+                        client.Write(param.BAreaPanelFinish[roll.ToLocation], true);
+                        log($"{roll.ToLocation}: 满板信号发出。slot: {param.BAreaPanelFinish[roll.ToLocation]}", LogType.ROBOT_STACK);
+                        log(msg, LogType.ROBOT_STACK);
+
+                        const int SIGNAL_3 = 3;
+                        client.Write(param.BAreaPanelState[roll.ToLocation], SIGNAL_3);
+                        log($"{roll.ToLocation}: 板状态信号发出，状态值: {SIGNAL_3}。slot: {param.BAreaPanelState[roll.ToLocation]}", LogType.ROBOT_STACK);
+
+                        break;
+                    case PanelState.LessHalf:
+                        break;
+                    default:
+                        log($"!板状态不明，不发信号, {roll.PnlState}", LogType.ROBOT_STACK);
+                        break;
+                }
+            } catch (Exception ex) {
+                log($"!{ex}", LogType.ROBOT_STACK);
             }
         }
 
@@ -429,7 +468,7 @@ namespace yidascan {
                     // 写数据库。
                     LableCode.SetOnPanelState(roll.LabelCode);
                     // 告知OPC
-                    NotifyOpcJobFinished(roll.PnlState, roll.ToLocation);
+                    NotifyOpcJobFinished(roll);
                     log("布卷已上垛。", LogType.ROBOT_STACK, LogViewType.Both);
                     break;
                 }

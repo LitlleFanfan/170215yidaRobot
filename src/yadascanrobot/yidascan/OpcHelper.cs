@@ -15,23 +15,16 @@ namespace yidascan {
         }
 
         public static int ReadWeighingSignal(IOpcClient client, OPCParam param) {
-            return client.ReadInt(param.ScanParam.GetWeigh);
+            return client.ReadInt(param.WeighParam.GetWeigh);
         }
 
         public static void WriteWeighingSignal(IOpcClient client, OPCParam param, bool b) {
             var val = b ? "0" : "2";
-            client.Write(param.ScanParam.GetWeigh, val);
+            client.Write(param.WeighParam.GetWeigh, val);
         }
 
         public static void WriteACAreaCompletionSignal(IOpcClient client, LCodeSignal signal) {
             client.Write(signal.Signal, 0);
-        }
-
-        public static string ReadCacheLabel(IOpcClient client, OPCParam param) {
-            const int MAX_LEN = 6;
-            var r1 = client.ReadString(param.CacheParam.BeforCacheLable1);
-            var r2 = client.ReadString(param.CacheParam.BeforCacheLable2);
-            return r1.PadLeft(MAX_LEN, '0') + r2.PadLeft(MAX_LEN, '0');
         }
 
         /// <summary>

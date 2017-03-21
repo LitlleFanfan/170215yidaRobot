@@ -139,7 +139,7 @@ namespace yidascan {
         public int ReadInt(string slot) {
             Thread.Sleep(100);
             // 称重处信号
-            if (slot == param.ScanParam.GetWeigh) {
+            if (slot == param.WeighParam.GetWeigh) {
                 return getIntSignal(ref SignalGen.WEIGTH_SIGNAL);
             }
 
@@ -171,22 +171,22 @@ namespace yidascan {
             }
 
             // 缓存区来料信号
-            if (slot == PlcSlot.CACHE_SIGNAL) {
+            if (slot == param.CacheParam.BeforCacheStatus) {
                 return getSignal(ref SignalGen.CACHE_SIGNAL);
             }
 
             // 标签向上处来料信号
-            if (slot == PlcSlot.LABEL_UP_SIGNAL) {
+            if (slot == param.LableUpParam.Signal) {
                 return getSignal(ref SignalGen.LABELUP_SIGNAL);
             }
 
             // 抓料处A
-            if (slot == PlcSlot.ITEM_CATCH_A) {
+            if (slot == param.RobotCarryParam.RobotCarryA) {
                 return getSignal(ref SignalGen.ITEMCATCH_A_SIGNAL);
             }
 
             // 抓料处B
-            if (slot == PlcSlot.ITEM_CATCH_B) {
+            if (slot == param.RobotCarryParam.RobotCarryB) {
                 return getSignal(ref SignalGen.ITEMCATCH_B_SIGNAL);
             }
 

@@ -34,7 +34,6 @@ namespace yidascan {
             client.AddSubscription(dtopc);
 
             param = new OPCParam();
-            param.Init();
         }
 
         public void close() {

@@ -14,7 +14,8 @@ namespace yidascan {
         void JobLoop(ref bool isrunning, ListView viewA, ListView viewB);
         void JobLoopPro(ref bool isrunning, TaskQueues ques, Action onupdate);
         bool JobTask(ref bool isrun, RollPosition roll);
-        void NotifyOpcJobFinished(PanelState pState, string tolocation);
+        void NotifyOpcJobFinished(string panelNo, string tolocation);
+        void NotifyOpcJobFinished(RollPosition roll);
         void Dispose();
     }
 }

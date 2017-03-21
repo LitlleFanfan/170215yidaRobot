@@ -51,8 +51,6 @@ namespace yidascan {
 
         private static void notifyOpc(string lcode) {
             var param = new OPCParam();
-            param.Init();
-
             IOpcClient client;
 
 #if DEBUG
@@ -61,12 +59,8 @@ namespace yidascan {
             client = new OPCClient();
 #endif            
             client.Open(clsSetting.OPCServerIP);
-
-            var dtopc = OPCParam.Query();
-            dtopc.Columns.Remove("Class");
-            dtopc.Columns.Add(new DataColumn("Value"));
-            client.AddSubscription(dtopc);
-
+            param.DeleteLCode = new LCodeSignal(client, "DeleteLCode");
+            
             PlcHelper.NotifyLabelCodeDeleted(client, param, lcode);
         }
 
