@@ -949,6 +949,7 @@ namespace yidascan {
                 Thread.Sleep(OPCClient.DELAY);
             }
 
+            var status = false;
             t = TimeCount.TimeIt(() => {
                 // write area and locationno.
                 client.Write(opcParam.ScanParam.ToLocationArea, clsSetting.AreaNo[lc.ParseLocationArea()]);
@@ -957,7 +958,7 @@ namespace yidascan {
                 client.Write(opcParam.ScanParam.ScanLable1, lc.CodePart1());
                 client.Write(opcParam.ScanParam.ScanLable2, lc.CodePart2());
                 // write camera no. and set state true.
-                client.Write(opcParam.ScanParam.ScanState, true);
+                status = client.Write(opcParam.ScanParam.ScanState, true);
             });
 
 #if !DEBUG
@@ -971,18 +972,20 @@ namespace yidascan {
 #endif
 
             try {
-                if (LableCode.Add(lc)) {
-                    ViewAddLable(lc);
-                    counter += 1;
-                    RefreshCounter();
+                if (status) {
+                    if (LableCode.Add(lc)) {
+                        ViewAddLable(lc);
+                        counter += 1;
+                        RefreshCounter();
 
-                    lock (taskQ.WeighQ) {
-                        taskQ.WeighQ.Enqueue(lc);
+                        lock (taskQ.WeighQ) {
+                            taskQ.WeighQ.Enqueue(lc);
+                        }
+                        showLabelQue(taskQ.WeighQ, lsvWeigh);
+                    } else {
+                        logOpt.Write($"!扫描号码{lc.LCode}存数据库失败。");
+                        ShowWarning($"扫描号码{lc.LCode}存数据库失败。", true);
                     }
-                    showLabelQue(taskQ.WeighQ, lsvWeigh);
-                } else {
-                    logOpt.Write($"!扫描号码{lc.LCode}存数据库失败。");
-                    ShowWarning($"扫描号码{lc.LCode}存数据库失败。", true);
                 }
             } catch (Exception ex) {
                 logOpt.Write($"!扫描号码过程异常: {ex}");
