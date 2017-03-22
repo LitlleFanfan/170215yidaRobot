@@ -367,16 +367,12 @@ namespace yidascan {
                         rt.CodeFromCache = cr.CodeFromCache;
                         rt.state = cr.state;
                     } else if (fullstate.state == PanelFullState.EXCEED) {
-                        onlog($"!交地: {lc.ToLocation}, current: {lc.LCode}, from cache: {rt.CodeFromCache.LCode}, 超出板宽。");
+                        onlog($"!交地: {lc.ToLocation}, current: {lc.LCode} {lc.Coordinates}, from cache: {rt.CodeFromCache.LCode} {rt.CodeFromCache.Coordinates}, 超出板宽。");
                         if (rt.CodeCome.Diameter > rt.CodeFromCache.Diameter + clsSetting.CacheIgnoredDiff) {
                             rt.state = CacheState.GetThenGo;
                         } else {
                             rt.state = CacheState.GoThenGet;
                         }
-
-                        // 当前层是最后一层, 要移入下一板???
-                        // var pno = rt.CodeCome.PanelNo;
-
                     } else {
                         // can not happen.
                     }
@@ -483,7 +479,7 @@ namespace yidascan {
                         return true;
                     }
                 } else {
-                    FrmMain.ERPAlarm(FrmMain.opcScan, FrmMain.opcParam, ERPAlarmNo.COMMUNICATION_ERROR);
+                    FrmMain.ERPAlarm(FrmMain.opcNone, FrmMain.opcParam, ERPAlarmNo.COMMUNICATION_ERROR);
                 }
             }
             msg = "!板号完成失败，板号为空。";

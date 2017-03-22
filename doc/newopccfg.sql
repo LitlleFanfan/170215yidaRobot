@@ -19,7 +19,8 @@ INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('ToLocationArea','MicroWin.S7-
 INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('ToLocationNo','MicroWin.S7-1200.NewItem14','Scan','交地编号')
 INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('ScanLable1','MicroWin.S7-1200.NewItem21','Scan','采集到的标签号01')
 INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('ScanLable2','MicroWin.S7-1200.NewItem22','Scan','采集到的标签号01')
-INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('PlcPushAside','MicroWin.S7-1200.NewItem15','Scan','给1就是要钩走（使用以前相机编号OPC代码）对称重先进先出不能有影响')
+INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('PushAside','MicroWin.S7-1200.NewItem15','Scan','通知PLC勾料信号')
+INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('PlcPushAside','MicroWin.S7-1200.NewItem2','Scan','PLC勾料信号（扫描超时）')
 
 
 INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('GetWeigh','MicroWin.S7-1200.NewItem16','Weigh','称重(1称重，称完置0，称重失败2）')
@@ -31,9 +32,9 @@ INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('LCode2','MicroWin.S7-1200.New
 
 --start2期维护
 INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('BeforCacheStatus','MicroWin.S7-1200-3.NewItem108','Cache','缓存前标签（读完写好结果后置空）')
-INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('CacheStatus','MicroWin.S7-1200.NewItem50-3','Cache','缓存状态（1走；2存；3取存，同抓子；4走取；5取走；6存取，异抓子）')
-INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('CachePoint','MicroWin.S7-1200.NewItem46-3','Cache','存入缓存区的位置')
-INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('GetPoint','MicroWin.S7-1200.NewItem47-3','Cache','从缓存区取出的位置')
+INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('CacheStatus','MicroWin.S7-1200-3.NewItem50','Cache','缓存状态（1走；2存；3取存，同抓子；4走取；5取走；6存取，异抓子）')
+INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('CachePoint','MicroWin.S7-1200-3.NewItem46','Cache','存入缓存区的位置')
+INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('GetPoint','MicroWin.S7-1200-3.NewItem47','Cache','从缓存区取出的位置')
 
 
 INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('Signal','MicroWin.S7-1200-3.NewItem113','LableUp','标签朝上采集（读完写好结果后置空）')

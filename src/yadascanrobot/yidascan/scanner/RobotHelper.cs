@@ -434,7 +434,7 @@ namespace yidascan {
 
         public bool JobTask(ref bool isrun, RollPosition roll) {
             // 等待板可放料
-            if (FrmMain.PanelAvailable(roll.ToLocation)) {
+            if (PanelAvailable(roll.ToLocation)) {
                 FrmMain.logOpt.Write($"{roll.ToLocation} PushInQueue收到可放料信号", LogType.ROBOT_STACK);
             } else {
                 FrmMain.logOpt.Write($"! {roll.ToLocation} PushInQueue未收到可放料信号", LogType.ROBOT_STACK);
