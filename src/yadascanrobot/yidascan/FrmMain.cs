@@ -421,7 +421,13 @@ namespace yidascan {
 
                             if (code != null) {
                                 signal = NotifyWeigh(code.LCode, false) ? SUCCESS : FAIL;
-                                logOpt.Write($"{code.LCode}称重API状态：{signal} 写OPC状态：{opcWeigh.Write(opcParam.WeighParam.GetWeigh, signal)}");
+
+                                if (signal != SUCCESS) {
+                                    logOpt.Write($"!通知称重到erp失败: {signal}");
+                                }
+
+                                var wstate = opcWeigh.Write(opcParam.WeighParam.GetWeigh, signal);
+                                logOpt.Write($"{code.LCode}称重API状态：{signal} 写OPC状态：{wstate}");
 
                                 showLabelQue(taskQ.WeighQ, lsvWeigh);
                                 if (code.ToLocation.Substring(0, 1) == "B") {
@@ -1199,6 +1205,7 @@ namespace yidascan {
         private void btnWeighReset_Click(object sender, EventArgs e) {
             // 称重复位。
             opcWeigh.Write(opcParam.WeighParam.GetWeigh, 0);
+            logOpt.Write("手动称重复位", LogType.NORMAL, LogViewType.Both);
         }
 
         private void btnBrowsePanels_Click(object sender, EventArgs e) {
