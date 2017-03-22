@@ -120,7 +120,7 @@ namespace ProduceComm.OPC {
         public int ReadInt(string slot) {
             var val = Read(slot);
             try {
-                return val != null ? int.Parse(val.ToString()) : 0;
+                return val != null ? int.Parse(val.ToString().Trim()) : 0;
             } catch (Exception ex) {
                 yidascan.FrmMain.logOpt.Write(string.Format("!{0}读取失败!{1} {2}", slot, val, ex));
                 return 0;
@@ -140,7 +140,7 @@ namespace ProduceComm.OPC {
         public bool ReadBool(string slot) {
             var val = Read(slot);
             try {
-                return val != null ? bool.Parse(val.ToString()) : false;
+                return val != null ? bool.Parse(val.ToString().Trim()) : false;
             } catch (Exception ex) {
                 yidascan.FrmMain.logOpt.Write(string.Format("!{0}读取失败!{1} {2}", slot, val, ex));
                 return false;
@@ -150,7 +150,7 @@ namespace ProduceComm.OPC {
         public decimal ReadDecimal(string slot) {
             var val = Read(slot);
             try {
-                return val != null ? decimal.Parse(val.ToString()) : 0;
+                return val != null ? decimal.Parse(val.ToString().Trim()) : 0;
             } catch (Exception ex) {
                 yidascan.FrmMain.logOpt.Write(string.Format("!{0}读取失败!{1} {2}", slot, val, ex));
                 return 0;

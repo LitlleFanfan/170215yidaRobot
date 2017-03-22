@@ -31,9 +31,9 @@ INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('LCode2','MicroWin.S7-1200.New
 
 --start2期维护
 INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('BeforCacheStatus','MicroWin.S7-1200-3.NewItem108','Cache','缓存前标签（读完写好结果后置空）')
-INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('CacheStatus','MicroWin.S7-1200.NewItem50-3','Cache','缓存状态（1走；2存；3取存，同抓子；4走取；5取走；6存取，异抓子）')
-INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('CachePoint','MicroWin.S7-1200.NewItem46-3','Cache','存入缓存区的位置')
-INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('GetPoint','MicroWin.S7-1200.NewItem47-3','Cache','从缓存区取出的位置')
+INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('CacheStatus','MicroWin.S7-1200-3.NewItem50','Cache','缓存状态（1走；2存；3取存，同抓子；4走取；5取走；6存取，异抓子）')
+INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('CachePoint','MicroWin.S7-1200-3.NewItem46','Cache','存入缓存区的位置')
+INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('GetPoint','MicroWin.S7-1200-3.NewItem47','Cache','从缓存区取出的位置')
 
 
 INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('Signal','MicroWin.S7-1200-3.NewItem113','LableUp','标签朝上采集（读完写好结果后置空）')
