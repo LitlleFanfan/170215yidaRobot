@@ -483,7 +483,7 @@ namespace yidascan {
                         return true;
                     }
                 } else {
-                    FrmMain.ERPAlarm(FrmMain.opcScan, FrmMain.opcParam, ERPAlarmNo.COMMUNICATION_ERROR);
+                    FrmMain.ERPAlarm(FrmMain.opcNone, FrmMain.opcParam, ERPAlarmNo.COMMUNICATION_ERROR);
                 }
             }
             msg = "!板号完成失败，板号为空。";

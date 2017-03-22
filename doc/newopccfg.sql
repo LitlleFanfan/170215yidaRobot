@@ -19,7 +19,8 @@ INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('ToLocationArea','MicroWin.S7-
 INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('ToLocationNo','MicroWin.S7-1200.NewItem14','Scan','交地编号')
 INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('ScanLable1','MicroWin.S7-1200.NewItem21','Scan','采集到的标签号01')
 INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('ScanLable2','MicroWin.S7-1200.NewItem22','Scan','采集到的标签号01')
-INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('PlcPushAside','MicroWin.S7-1200.NewItem15','Scan','给1就是要钩走（使用以前相机编号OPC代码）对称重先进先出不能有影响')
+INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('PushAside','MicroWin.S7-1200.NewItem15','Scan','通知PLC勾料信号')
+INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('PlcPushAside','MicroWin.S7-1200.NewItem2','Scan','PLC勾料信号（扫描超时）')
 
 
 INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('GetWeigh','MicroWin.S7-1200.NewItem16','Weigh','称重(1称重，称完置0，称重失败2）')

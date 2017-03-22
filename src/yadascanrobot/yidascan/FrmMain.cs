@@ -209,24 +209,6 @@ namespace yidascan {
             });
         }
 
-        /// <summary>
-        /// 去OPC的可放料信号。
-        /// </summary>
-        /// <param name="tolocation"></param>
-        /// <returns></returns>
-        [Obsolete("use plchelper.IsPanelAvailable instead.")]
-        public static bool PanelAvailable(string tolocation) {
-            try {
-                lock (opcScan) {
-                    var s = opcScan.ReadString(opcParam.BAreaPanelState[tolocation]);
-                    return s == "2";
-                }
-            } catch (Exception ex) {
-                logOpt.Write($"读交地状态信号异常 tolocation: {tolocation} opc:{JsonConvert.SerializeObject(opcParam.BAreaFloorFinish)} err:{ex}", LogType.ROBOT_STACK);
-                return true;//临时
-            }
-        }
-
         public static PanelState GetPanelState(LableCode label, PanelInfo pinfo) {
             var state = PanelState.LessHalf;
             if (label.Floor >= pinfo.MaxFloor - 1) {
