@@ -217,7 +217,7 @@ namespace yidascan.DataAccess {
             var cps = CreateLableCodeUpdate(c);
             if (c2 != null) {
                 cps.Add(new CommandParameter(@"update LableCode set FloorIndex=@FloorIndex,Coordinates=@Coordinates,
-                    Cx=@Cx,Cy=@Cy,Cz=@Cz,Crz=@Crz,UpdateDate=@UpdateDate where LCode=@LCode",
+                    Cx=@Cx,Cy=@Cy,Cz=@Cz,Crz=@Crz,Status=@Status,Remark=@Remark,UpdateDate=@UpdateDate where LCode=@LCode",
                     new SqlParameter[]{
                         new SqlParameter("@LCode",c2.LCode),
                         new SqlParameter("@FloorIndex",c2.floorIndex),
@@ -226,6 +226,8 @@ namespace yidascan.DataAccess {
                         new SqlParameter("@Cy",c2.cy),
                         new SqlParameter("@Cz",c2.cz),
                         new SqlParameter("@Crz",c2.crz),
+                        new SqlParameter("@Status",c2.Status),
+                        c2.Remark==null?new SqlParameter("@Remark",DBNull.Value):new SqlParameter("@Remark",c2.Remark),
                         new SqlParameter("@UpdateDate",DateTime.Now)}));
             }
             switch (fp) {
@@ -371,7 +373,7 @@ namespace yidascan.DataAccess {
             return new List<CommandParameter>() {
                 new CommandParameter(@"UPDATE LableCode SET [PanelNo] = @PanelNo
                   ,[Floor] = @Floor,[FloorIndex] = @FloorIndex,[Coordinates] = @Coordinates
-                  ,Cx=@Cx,Cy=@Cy,Cz=@Cz,Crz=@Crz,[GetOutLCode] = @GetOutLCode,[UpdateDate] = @UpdateDate,
+                  ,Cx=@Cx,Cy=@Cy,Cz=@Cz,Crz=@Crz,[GetOutLCode] = @GetOutLCode,[UpdateDate] = @UpdateDate,Status=@Status,
                   [Remark] = @Remark WHERE SequenceNo =@SequenceNo and [LCode] = @LCode and [ToLocation] = @ToLocation",
                 new SqlParameter[]{
                     new SqlParameter("@PanelNo",obj.PanelNo),
@@ -384,6 +386,7 @@ namespace yidascan.DataAccess {
                         new SqlParameter("@Crz",obj.crz),
                     obj.getOutLCode==null?new SqlParameter("@GetOutLCode",DBNull.Value):new SqlParameter("@GetOutLCode",obj.getOutLCode),
                     new SqlParameter("@UpdateDate",DateTime.Now),
+                    new SqlParameter("@Status",obj.Status),
                     new SqlParameter("@Remark",obj.Remark),
                     new SqlParameter("@SequenceNo",obj.SequenceNo),
                     new SqlParameter("@LCode",obj.LCode),
