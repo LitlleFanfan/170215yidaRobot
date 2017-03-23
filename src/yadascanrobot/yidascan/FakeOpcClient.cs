@@ -194,13 +194,13 @@ namespace yidascan {
         }
 
         int diameterindex = 0;
-        decimal[] diameters = new decimal[] { 215, 270, 270, 140, 240, 275, 165, 205, 210 };
+        decimal[] diameters = new decimal[] { 215, 270, 270, 140, 240, 275, 165, 205, 210, 140, 140, 170, 180, 140, 175, 145, 146, 150, 190, 130, 110, 140, 120, 175, 145, 146, 150, 193, 135, 110, 144, 220, 175, 145, 146, 150, 290, 130, 110, 140, 120 };
         public decimal ReadDecimal(string slot) {
             Thread.Sleep(100);
             if (slot == param.ScanParam.Diameter) {
                 var d = diameters[diameterindex];//50 + (decimal)(rand.NextDouble() * 150);
 
-                if (diameterindex == 8) {
+                if (diameterindex == diameters.Length - 1) {
                     diameterindex = 0;
                 } else { diameterindex++; }
 

@@ -341,9 +341,12 @@ namespace yidascan {
         /// <param name="defaultEdgeSpace">默认的边缘预留</param>
         /// <returns></returns>
         private static decimal GetEdgeSpace(IEnumerable<CachePos> cachq, string tolocation, decimal defaultEdgeSpace) {
-            lock(cachq) {
-                var maxd = cachq.Where(x => x != null && x.labelcode.ToLocation == tolocation)
-                    .Max(x => x.labelcode.Diameter);
+            lock (cachq) {
+                var tmp = cachq.Where(x => x.labelcode != null && x.labelcode.ToLocation == tolocation);
+                decimal maxd = 0;
+                if (tmp != null && tmp.Count() > 0) {
+                    maxd = tmp.Max(x => x.labelcode.Diameter);
+                }
                 return Math.Max(maxd, defaultEdgeSpace);
             }
         }

@@ -418,6 +418,7 @@ namespace yidascan {
                     try {
                         var signal = opcWeigh.ReadInt(opcParam.WeighParam.GetWeigh);
                         if (signal == TO_WEIGH) {
+#if !DEBUG
                             var codeFromPlc = GetLabelCodeWhenWeigh();
 
                             if (IsPastCode(codeFromPlc)) {
@@ -426,13 +427,14 @@ namespace yidascan {
                                 logOpt.Write($"称重复位, 原因: 重复称重。plc标签{codeFromPlc}", LogType.NORMAL, LogViewType.Both);
                                 continue;
                             }
-
+#endif
                             var code = taskQ.GetWeighQ();
-
+#if !DEBUG
                             if (code != null && codeFromPlc != code.LCode) {
                                 logOpt.Write($"无效称重。plc标签{codeFromPlc}, 称重队列标签{code.LCode}", LogType.NORMAL, LogViewType.Both);
                                 continue;
                             }
+#endif
 
                             if (code != null) {
                                 signal = NotifyWeigh(code.LCode, false) ? SUCCESS : FAIL;
@@ -449,7 +451,9 @@ namespace yidascan {
                                     showLabelQue(taskQ.CacheQ, lsvCacheBefor);//加到缓存列表中显示
                                 }
                             } else {
+#if !DEBUG
                                 logOpt.Write($"!称重信号无对应的队列号码, opc称重标签{codeFromPlc}");
+#endif
                             }
                         }
                     } catch (Exception ex) {
