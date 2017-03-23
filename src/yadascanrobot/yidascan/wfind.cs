@@ -25,11 +25,11 @@ namespace yidascan {
 
         #region PRIVATE
         void showlabel(LableCode c) {
-            lbx.Items.Insert(0, $"更新时间: {c.UpdateDate.ToString()}");
+            lbx.Items.Insert(0, $"扫描时间: {c.CreateDate.ToString()}");
             lbx.Items.Insert(0, $"板上坐标: {c.Coordinates}");
-            lbx.Items.Insert(0, $"层: {c.Floor} 位置: {c.FloorIndex}");
+            lbx.Items.Insert(0, $"层: {c.Floor} 层序号: {c.FloorIndex}");
             lbx.Items.Insert(0, $"板号: {c.PanelNo}");
-            lbx.Items.Insert(0, $"长度: {c.Length} 直径: {c.Diameter}");
+            lbx.Items.Insert(0, $"长度: {c.Length}mm 直径: {c.Diameter}mm");
             lbx.Items.Insert(0, $"号码: {c.LCode}");
             lbx.Items.Insert(0, $"交地: {c.ToLocation}");
             lbx.Items.Insert(0, $"---------------------");
