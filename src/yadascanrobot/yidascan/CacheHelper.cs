@@ -35,12 +35,12 @@ namespace yidascan {
     }
 
     [Serializable]
-    public class CacheResult {
+    public class PlcCacheResult {
         public int savepos { get; set; }
         public int getpos { get; set; }
         public CacheState state { get; set; }
 
-        public CacheResult(CacheState state, int getpos, int savepos) {
+        public PlcCacheResult(CacheState state, int getpos, int savepos) {
             this.state = state;
             this.savepos = savepos;
             this.getpos = getpos;
@@ -65,7 +65,7 @@ namespace yidascan {
             }
         }
 
-        public LableCode getOutLabel(CacheResult cr) {
+        public LableCode getOutLabel(PlcCacheResult cr) {
             if (cr.state == CacheState.GetThenCache
                 || cr.state == CacheState.GetThenGo
                 || cr.state == CacheState.GoThenGet) {
@@ -196,40 +196,40 @@ namespace yidascan {
         /// <param name="saveCode"></param>
         /// <param name="getCode"></param>
         /// <returns></returns>
-        public CacheResult WhenRollArrived(CacheState state, LableCode saveCode, LableCode getCode) {
-            CacheResult result = null;
+        public PlcCacheResult WhenRollArrived(CacheState state, LableCode saveCode, LableCode getCode) {
+            PlcCacheResult result = null;
             const int NULL_POS = 0;
             var posToGet = 0;
             var posToSave = 0;
 
             switch (state) {
                 case CacheState.Go:
-                    result = new CacheResult(state, NULL_POS, NULL_POS);
+                    result = new PlcCacheResult(state, NULL_POS, NULL_POS);
                     break;
                 case CacheState.Cache:
                     posToSave = SelectNearestNullPos(saveCode.ToLocation, -1);
                     save(saveCode, posToSave);
-                    result = new CacheResult(state, NULL_POS, posToSave);
+                    result = new PlcCacheResult(state, NULL_POS, posToSave);
                     break;
                 case CacheState.GetThenCache:
                     // 考虑错开机械手。
                     posToGet = getPosByCode(getCode);
                     posToSave = SelectNearestNullPos(saveCode.ToLocation, posToGet);
                     save(saveCode, posToSave);
-                    result = new CacheResult(state, posToGet, posToSave);
+                    result = new PlcCacheResult(state, posToGet, posToSave);
                     break;
                 case CacheState.GetThenGo:
                     posToGet = getPosByCode(getCode);
-                    result = new CacheResult(state, posToGet, NULL_POS);
+                    result = new PlcCacheResult(state, posToGet, NULL_POS);
                     break;
                 case CacheState.GoThenGet:
                     posToGet = getPosByCode(getCode);
-                    result = new CacheResult(state, posToGet, NULL_POS);
+                    result = new PlcCacheResult(state, posToGet, NULL_POS);
                     break;
                 case CacheState.CacheAndGet:
                     posToGet = getPosByCode(getCode);
                     posToSave = SelectNearestNullPos(saveCode.ToLocation, posToGet); ;
-                    result = new CacheResult(state, posToGet, posToSave);
+                    result = new PlcCacheResult(state, posToGet, posToSave);
                     break;
             }
 

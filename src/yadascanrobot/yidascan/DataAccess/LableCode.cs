@@ -214,7 +214,8 @@ namespace yidascan.DataAccess {
         }
 
         public static bool Update(FloorPerformance fp, PanelInfo pInfo, LableCode c, LableCode c2 = null) {
-            var cps = CreateLableCodeUpdate(c);
+            var cps = new List<CommandParameter>();
+            cps.Add(CreateLableCodeUpdate(c));
             if (c2 != null) {
                 cps.Add(new CommandParameter(@"update LableCode set FloorIndex=@FloorIndex,Coordinates=@Coordinates,
                     Cx=@Cx,Cy=@Cy,Cz=@Cz,Crz=@Crz,Status=@Status,Remark=@Remark,UpdateDate=@UpdateDate where LCode=@LCode",
@@ -250,6 +251,16 @@ namespace yidascan.DataAccess {
                             new SqlParameter("@PanelNo",c.PanelNo),
                             new SqlParameter("@Status",LableState.PanelFill),
                             new SqlParameter("@UpdateDate",DateTime.Now)}));
+                        if (pInfo.HasExceed) {
+                            var panelno = PanelGen.NewPanelNo();
+                            cps.Add(new CommandParameter("UPDATE LableCode SET Floor = 1,PanelNo = @NewPanelNo" +
+                                    "UpdateDate = @UpdateDate WHERE PanelNo = @PanelNo and FloorIndex=0",
+                                new SqlParameter[]{
+                            new SqlParameter("@NewPanelNo",panelno),
+                            new SqlParameter("@PanelNo",pInfo.PanelNo),
+                            new SqlParameter("@UpdateDate",DateTime.Now)}));
+                            cps.Add(CreateInsertPanel(panelno, c.ToLocation));
+                        }
                     } else {
                         cps.Add(new CommandParameter("UPDATE Panel SET CurrFloor = @CurrFloor,OddStatus = @OddStatus,EvenStatus = @EvenStatus," +
                                 "UpdateDate = @UpdateDate WHERE PanelNo = @PanelNo",
@@ -259,12 +270,85 @@ namespace yidascan.DataAccess {
                             new SqlParameter("@OddStatus",false),
                             new SqlParameter("@EvenStatus",false),
                             new SqlParameter("@UpdateDate",DateTime.Now)}));
+                        if (pInfo.HasExceed) {
+                            cps.Add(new CommandParameter("UPDATE LableCode SET Floor = @Floor" +
+                                "UpdateDate = @UpdateDate WHERE PanelNo = @PanelNo and FloorIndex=0",
+                            new SqlParameter[]{
+                            new SqlParameter("@PanelNo",pInfo.PanelNo),
+                            new SqlParameter("@Floor",c.floor+1),
+                            new SqlParameter("@UpdateDate",DateTime.Now)}));
+                        }
                     }
                     break;
                 case FloorPerformance.None:
                 default:
                     break;
             }
+            cps.Add(new CommandParameter("UPDATE Panel SET HasExceed=@HasExceed,UpdateDate = @UpdateDate WHERE PanelNo = @PanelNo",
+                new SqlParameter[]{
+                       new SqlParameter("@PanelNo",pInfo.PanelNo),
+                       new SqlParameter("@HasExceed",pInfo.HasExceed),
+                       new SqlParameter("@UpdateDate",DateTime.Now)}));
+            return DataAccess.CreateDataAccess.sa.NonQueryTran(cps);
+        }
+
+        public static bool UpdateEdgeExceed(FloorPerformance fp, PanelInfo pInfo, LableCode cur, LableCode fromcache) {
+            var cps = new List<CommandParameter>();
+            cps.Add(CreateLableCodeUpdate(fromcache));
+            switch (fp) {
+                case FloorPerformance.BothFinish:
+                    if (fromcache.floor == pInfo.MaxFloor) {//板满
+                        cps.Add(new CommandParameter("UPDATE Panel SET Status = @Status," +
+                                "UpdateDate = @UpdateDate WHERE PanelNo = @PanelNo",
+                            new SqlParameter[]{
+                            new SqlParameter("@PanelNo",pInfo.PanelNo),
+                            new SqlParameter("@Status",LableState.PanelFill),
+                            new SqlParameter("@UpdateDate",DateTime.Now)}));
+                        cur.PanelNo = PanelGen.NewPanelNo();
+                        cur.floor = 1;
+                        cur.floorIndex = 0;
+                        cur.Coordinates = null;
+                        cur.Crz = 0;
+                        cur.Cx = 0;
+                        cur.Cy = 0;
+                        cur.Cz = 0;
+                        cps.Add(CreateLableCodeUpdate(cur));
+                        cps.Add(new CommandParameter("UPDATE LableCode SET Floor = @Floor,PanelNo = @NewPanelNo" +
+                                "UpdateDate = @UpdateDate WHERE PanelNo = @PanelNo and FloorIndex=0",
+                            new SqlParameter[]{
+                            new SqlParameter("@NewPanelNo",cur.PanelNo),
+                            new SqlParameter("@PanelNo",pInfo.PanelNo),
+                            new SqlParameter("@Floor",cur.floor),
+                            new SqlParameter("@UpdateDate",DateTime.Now)}));
+                        cps.Add(CreateInsertPanel(cur.PanelNo, cur.ToLocation));
+                    } else {//层满
+                        cur.floor++;
+                        cps.Add(CreateLableCodeUpdate(cur));
+                        cps.Add(new CommandParameter("UPDATE LableCode SET Floor = @Floor" +
+                                "UpdateDate = @UpdateDate WHERE PanelNo = @PanelNo and FloorIndex=0",
+                            new SqlParameter[]{
+                            new SqlParameter("@PanelNo",pInfo.PanelNo),
+                            new SqlParameter("@Floor",cur.floor),
+                            new SqlParameter("@UpdateDate",DateTime.Now)}));
+                        cps.Add(new CommandParameter("UPDATE Panel SET CurrFloor = @CurrFloor,OddStatus = @OddStatus,EvenStatus = @EvenStatus," +
+                                "UpdateDate = @UpdateDate WHERE PanelNo = @PanelNo",
+                            new SqlParameter[]{
+                            new SqlParameter("@PanelNo",pInfo.PanelNo),
+                            new SqlParameter("@CurrFloor",cur.floor),
+                            new SqlParameter("@OddStatus",false),
+                            new SqlParameter("@EvenStatus",false),
+                            new SqlParameter("@UpdateDate",DateTime.Now)}));
+                    }
+                    break;
+                case FloorPerformance.None:
+                default:
+                    break;
+            }
+            cps.Add(new CommandParameter("UPDATE Panel SET HasExceed=@HasExceed,UpdateDate = @UpdateDate WHERE PanelNo = @PanelNo",
+                new SqlParameter[]{
+                       new SqlParameter("@PanelNo",pInfo.PanelNo),
+                       new SqlParameter("@HasExceed",pInfo.HasExceed),
+                       new SqlParameter("@UpdateDate",DateTime.Now)}));
             return DataAccess.CreateDataAccess.sa.NonQueryTran(cps);
         }
 
@@ -341,16 +425,21 @@ namespace yidascan.DataAccess {
         }
 
         public static bool Update(LableCode obj) {
-            var cps = CreateLableCodeUpdate(obj);
-            cps.Add(new CommandParameter("INSERT INTO Panel (PanelNo,ToLocation,Status,CurrFloor,MaxFloor,Remark)" +
-                    "VALUES(@PanelNo,@ToLocation,@Status,1,@MaxFloor,@Remark)",
-                new SqlParameter[]{
-                    new SqlParameter("@PanelNo",obj.PanelNo),
-                    new SqlParameter("@ToLocation",obj.ToLocation),
-                    new SqlParameter("@Status",obj.ToLocation.Substring(0,1)=="B"? LableState.Null:LableState.PanelFill),
-                    new SqlParameter("@MaxFloor",clsSetting.MaxFloor),
-                    new SqlParameter("@Remark",obj.ToLocation)}));
+            var cps = new List<CommandParameter>();
+            cps.Add(CreateLableCodeUpdate(obj));
+            cps.Add(CreateInsertPanel(obj.PanelNo, obj.ToLocation));
             return DataAccess.CreateDataAccess.sa.NonQueryTran(cps);
+        }
+
+        private static CommandParameter CreateInsertPanel(string panelNo, string tolocation) {
+            return new CommandParameter("INSERT INTO Panel (PanelNo,ToLocation,Status,CurrFloor,MaxFloor,Remark)" +
+                                "VALUES(@PanelNo,@ToLocation,@Status,1,@MaxFloor,@Remark)",
+                            new SqlParameter[]{
+                                 new SqlParameter("@PanelNo",panelNo),
+                                 new SqlParameter("@ToLocation",tolocation),
+                                 new SqlParameter("@Status",tolocation.Substring(0,1)=="B"? LableState.Null:LableState.PanelFill),
+                                 new SqlParameter("@MaxFloor",clsSetting.MaxFloor),
+                                 new SqlParameter("@Remark",tolocation)});
         }
 
         public static bool Update(string panelNo, string tolocation, List<string> lcodes) {
@@ -369,9 +458,8 @@ namespace yidascan.DataAccess {
             return DataAccess.CreateDataAccess.sa.NonQueryTran(cps);
         }
 
-        private static List<CommandParameter> CreateLableCodeUpdate(LableCode obj) {
-            return new List<CommandParameter>() {
-                new CommandParameter(@"UPDATE LableCode SET [PanelNo] = @PanelNo
+        private static CommandParameter CreateLableCodeUpdate(LableCode obj) {
+            return new CommandParameter(@"UPDATE LableCode SET [PanelNo] = @PanelNo
                   ,[Floor] = @Floor,[FloorIndex] = @FloorIndex,[Coordinates] = @Coordinates
                   ,Cx=@Cx,Cy=@Cy,Cz=@Cz,Crz=@Crz,[GetOutLCode] = @GetOutLCode,[UpdateDate] = @UpdateDate,Status=@Status,
                   [Remark] = @Remark WHERE SequenceNo =@SequenceNo and [LCode] = @LCode and [ToLocation] = @ToLocation",
@@ -380,17 +468,17 @@ namespace yidascan.DataAccess {
                     new SqlParameter("@Floor",obj.floor),
                     new SqlParameter("@FloorIndex",obj.floorIndex),
                     obj.Coordinates==null?new SqlParameter("@Coordinates",DBNull.Value):new SqlParameter("@Coordinates",obj.Coordinates),
-                        new SqlParameter("@Cx",obj.cx),
-                        new SqlParameter("@Cy",obj.cy),
-                        new SqlParameter("@Cz",obj.cz),
-                        new SqlParameter("@Crz",obj.crz),
+                    new SqlParameter("@Cx",obj.cx),
+                    new SqlParameter("@Cy",obj.cy),
+                    new SqlParameter("@Cz",obj.cz),
+                    new SqlParameter("@Crz",obj.crz),
                     obj.getOutLCode==null?new SqlParameter("@GetOutLCode",DBNull.Value):new SqlParameter("@GetOutLCode",obj.getOutLCode),
                     new SqlParameter("@UpdateDate",DateTime.Now),
                     new SqlParameter("@Status",obj.Status),
                     new SqlParameter("@Remark",obj.Remark),
                     new SqlParameter("@SequenceNo",obj.SequenceNo),
                     new SqlParameter("@LCode",obj.LCode),
-                    new SqlParameter("@ToLocation",obj.ToLocation)})};
+                    new SqlParameter("@ToLocation",obj.ToLocation)});
         }
 
         public static bool DeleteAllFinished() {
