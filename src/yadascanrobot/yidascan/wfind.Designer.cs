@@ -77,8 +77,11 @@
             this.Controls.Add(this.label1);
             this.Font = new System.Drawing.Font("SimSun", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.Margin = new System.Windows.Forms.Padding(5);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "wfind";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "查找号码";
             this.ResumeLayout(false);
             this.PerformLayout();

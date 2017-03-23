@@ -13,7 +13,7 @@ namespace yidascan {
               
         private void btnSearch_Click(object sender, EventArgs e) {
             var key = shrink(mtxCode.Text);
-            if (!string.IsNullOrEmpty(key)) { return; }
+            if (string.IsNullOrEmpty(key)) { return; }
 
             var c = LableCode.QueryByLCode(key);
             if (c != null) {
@@ -25,14 +25,13 @@ namespace yidascan {
 
         #region PRIVATE
         void showlabel(LableCode c) {
-
-            lbx.Items.Insert(0, $"交地: {c.ToLocation}");
-            lbx.Items.Insert(0, $"板号: {c.PanelNo}");
-            lbx.Items.Insert(0, $"号码: {c.LCode}");
-            lbx.Items.Insert(0, $"长度: {c.Length} 直径: {c.Diameter}");
-            lbx.Items.Insert(0, $"层: {c.Floor} 位置: {c.FloorIndex}");
-            lbx.Items.Insert(0, $"板上坐标: {c.Coordinates}");
             lbx.Items.Insert(0, $"更新时间: {c.UpdateDate.ToString()}");
+            lbx.Items.Insert(0, $"板上坐标: {c.Coordinates}");
+            lbx.Items.Insert(0, $"层: {c.Floor} 位置: {c.FloorIndex}");
+            lbx.Items.Insert(0, $"板号: {c.PanelNo}");
+            lbx.Items.Insert(0, $"长度: {c.Length} 直径: {c.Diameter}");
+            lbx.Items.Insert(0, $"号码: {c.LCode}");
+            lbx.Items.Insert(0, $"交地: {c.ToLocation}");
             lbx.Items.Insert(0, $"---------------------");
         }
 
@@ -42,7 +41,7 @@ namespace yidascan {
         }
 
         private static string shrink(string k) {
-            var s = k.Where(x => !string.IsNullOrEmpty(x.ToString()));
+            var s = k.Where(x => !string.IsNullOrWhiteSpace(x.ToString()));
             return string.Join("", s);
         }
         #endregion

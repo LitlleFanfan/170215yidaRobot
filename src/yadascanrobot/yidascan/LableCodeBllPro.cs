@@ -343,8 +343,9 @@ namespace yidascan {
         private static decimal GetEdgeSpace(IEnumerable<CachePos> cachq, string tolocation, decimal defaultEdgeSpace) {
             lock (cachq) {
                 var tmp = cachq.Where(x => x.labelcode != null && x.labelcode.ToLocation == tolocation);
+
                 decimal maxd = 0;
-                if (tmp != null && tmp.Count() > 0) {
+                if (tmp != null && tmp.Count() >= 2) {
                     maxd = tmp.Max(x => x.labelcode.Diameter);
                 }
                 return Math.Max(maxd, defaultEdgeSpace);

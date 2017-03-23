@@ -18,6 +18,10 @@ namespace commonhelper {
             return r == DialogResult.Yes;
         }
 
+        public static void Warn(string s) {
+            MessageBox.Show(s, "提醒", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
+
         /// <summary>
         /// 关闭指定名字的进程。但不会关闭本进程。        
         /// </summary>

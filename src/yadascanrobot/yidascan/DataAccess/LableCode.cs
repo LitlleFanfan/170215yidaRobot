@@ -625,8 +625,7 @@ order by floorindex desc;";
             }
             return (decimal)dt.Rows[0][0];
         }
-
-        [Obsolete("use GetSecondShortestLength instead.")]
+                
         public static decimal GetFloorHalfAvgLength(string panelNo, int currFloor) {
             var sql = "select  avg(Length)/2 " +
                 "from LableCode where PanelNo = @PanelNo and Floor=@Floor";
