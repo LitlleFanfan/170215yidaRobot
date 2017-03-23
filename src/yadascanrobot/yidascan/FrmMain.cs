@@ -119,6 +119,11 @@ namespace yidascan {
         }
 
         private void FrmMain_Load(object sender, EventArgs e) {
+#if !DEBUG
+            btnSignalGen.Visible = false;
+            btnSelfTest.Visible = false;
+#endif
+
             try {
                 LayerShape.loadconf();
 
@@ -1400,6 +1405,12 @@ namespace yidascan {
                 t.close();
                 this.Cursor = Cursors.Default;
                 logOpt.Write("--- 自检结束 ---");
+            }
+        }
+
+        private void btnSearch_Click(object sender, EventArgs e) {
+            using (var w = new wfind()) {
+                w.ShowDialog();
             }
         }
     }

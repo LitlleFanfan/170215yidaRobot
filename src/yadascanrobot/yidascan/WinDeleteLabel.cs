@@ -8,6 +8,7 @@ using yidascan.DataAccess;
 using yidascan;
 using ProduceComm.OPC;
 using ProduceComm;
+using commonhelper;
 namespace yidascan {
     public partial class WinDeleteLabel : Form {
         public WinDeleteLabel() {
@@ -26,8 +27,6 @@ namespace yidascan {
             }            
 
             DeleteLabelByHand(code);
-            lbxLog.Items.Insert(0, $"{code}已经删除。");
-
             mainwin.ShowTaskQ();
         }
 
@@ -37,8 +36,24 @@ namespace yidascan {
         /// <param name="code">标签号码</param>
         private void DeleteLabelByHand(string code) {
             // 删除号码。
+            var lc = LableCode.QueryByLCode(code);
+            if (lc == null) {
+                CommonHelper.Warn("不存在这个号码!");
+                return;
+            }
+
+            var area = lc.ParseLocationArea();
+            var bAndOnBoard = (area == "B" && lc.Status >= 3);
+            var aCarea = (area == "A" || area == "C");
+
+            if (!bAndOnBoard && !aCarea) {
+                CommonHelper.Warn("只能删除B区已上垛的号码, 或者A区、C区的号码!");
+                return;
+            }
+
             if (LableCode.Delete(code) || deleteFromTaskq(FrmMain.taskQ, code)) {
                 notifyOpc(code);
+                lbxLog.Items.Insert(0, $"{lbxLog.Items.Count} {code}已经删除。");
                 FrmMain.logOpt.Write(string.Format("删除标签{0}成功", code), LogType.NORMAL);
             } else {
                 FrmMain.logOpt.Write(string.Format("删除标签{0}失败", code), LogType.NORMAL);
@@ -116,9 +131,9 @@ namespace yidascan {
         private void checkInDb(string code) {
             var lc = LableCode.QueryByLCode(code);
             if (lc != null) {
-                lbxLog.Items.Insert(0, $"数据库: {lc.LCode} {lc.ToLocation} 板号: {lc.PanelNo}");
+                lbxLog.Items.Insert(0, $"{lbxLog.Items.Count} 数据库: {lc.LCode} {lc.ToLocation} 板号: {lc.PanelNo}");
             } else {
-                lbxLog.Items.Insert(0, $"{code}数据库中没有此号码。");
+                lbxLog.Items.Insert(0, $"{lbxLog.Items.Count} {code}数据库中没有此号码。");
             }
         }
 
@@ -141,15 +156,15 @@ namespace yidascan {
             }
 
             if (rt.Count == 0 && rr.Count == 0) {
-                lbxLog.Items.Insert(0, $"线上和机器人队列没有此号码: {code}。");
+                lbxLog.Items.Insert(0, $"{lbxLog.Items.Count} 线上和机器人队列没有此号码: {code}。");
             }
 
             foreach (var item in rt) {
-                lbxLog.Items.Insert(0, $"线上: {item.LCode} {item.ToLocation} {item.PanelNo}");
+                lbxLog.Items.Insert(0, $"{lbxLog.Items.Count} 线上: {item.LCode} {item.ToLocation} {item.PanelNo}");
             }
 
             foreach (var item in rr) {
-                lbxLog.Items.Insert(0, $"机器人号码队列: {item.LabelCode} {item.ToLocation}");
+                lbxLog.Items.Insert(0, $"{lbxLog.Items.Count} 机器人号码队列: {item.LabelCode} {item.ToLocation}");
             }
         }
 
@@ -165,6 +180,7 @@ namespace yidascan {
             var code = getInputCode();
             checkInDb(code);
             checkInqueues(code, FrmMain.taskQ);
+            lbxLog.Items.Add("");
         }
     }
 }

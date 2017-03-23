@@ -198,7 +198,12 @@ namespace yidascan {
         public decimal ReadDecimal(string slot) {
             Thread.Sleep(100);
             if (slot == param.ScanParam.Diameter) {
+<<<<<<< HEAD
                 var d = 50 + (decimal)(rand.NextDouble() * 150);//diameters[diameterindex];//
+=======
+                // var d = diameters[diameterindex];
+                var d = 50 + (decimal)(rand.NextDouble() * 250);
+>>>>>>> fc06791ecaa7f85701d83f43fb6320393f5ed29d
 
                 if (diameterindex == diameters.Length - 1) {
                     diameterindex = 0;
