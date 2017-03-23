@@ -94,7 +94,7 @@ namespace yidascan {
     class FakeOpcClient : IOpcClient {
         OPCParam param;
         private Random rand = new Random();
-        
+
         #region hand_panel_complete
         // 板完成信号
         private static string SIGNAL_PANEL_HAND_COMPLETE_B01 = "0";
@@ -192,10 +192,18 @@ namespace yidascan {
 
             return true;
         }
+
+        int diameterindex = 0;
+        decimal[] diameters = new decimal[] { 215, 270, 270, 140, 240, 275, 165, 205, 210 };
         public decimal ReadDecimal(string slot) {
             Thread.Sleep(100);
             if (slot == param.ScanParam.Diameter) {
-                var d = 50 + (decimal)(rand.NextDouble() * 150);
+                var d = diameters[diameterindex];//50 + (decimal)(rand.NextDouble() * 150);
+
+                if (diameterindex == 8) {
+                    diameterindex = 0;
+                } else { diameterindex++; }
+
                 return Math.Floor(d);
             }
 

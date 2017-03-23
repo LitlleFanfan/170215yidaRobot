@@ -165,8 +165,12 @@ namespace yidascan {
             return client;
         }
         public static void OpcClientClose(IOpcClient client, string name) {
-            client.Close();
-            logOpt.Write($"OPC client {name}连接关闭。", LogType.NORMAL);
+            try {
+                client.Close();
+                logOpt.Write($"OPC client {name}连接关闭。", LogType.NORMAL);
+            } catch {
+                logOpt.Write($"!OPC client {name}连接关闭 失败。", LogType.NORMAL);
+            }
         }
 
         /// <summary>
@@ -486,7 +490,7 @@ namespace yidascan {
             logOpt.Write("AC区完成信号任务启动。", LogType.NORMAL);
         }
 
-        private void BindQueue(LableCode code, LableCode outCacheLable, CacheResult cr) {
+        private void BindQueue(LableCode code, LableCode outCacheLable, PlcCacheResult cr) {
             try {
                 switch (cr.state) {
                     case CacheState.Go:
@@ -501,20 +505,13 @@ namespace yidascan {
                         showLabelQue(taskQ.CacheQ, lsvCacheBefor);
                         showCachePosQue(taskQ.CacheSide);
                         break;
+                    case CacheState.CacheAndGet:
                     case CacheState.GetThenCache:
                         lock (taskQ.LableUpQ) {
                             taskQ.LableUpQ.Enqueue(outCacheLable);
                         }
 
                         showLabelQue(taskQ.LableUpQ, lsvLableUp);
-                        showLabelQue(taskQ.CacheQ, lsvCacheBefor);
-                        showCachePosQue(taskQ.CacheSide);
-                        break;
-                    case CacheState.CacheAndGet:
-                        lock (taskQ.LableUpQ) {
-                            taskQ.LableUpQ.Enqueue(outCacheLable);
-                        }
-
                         showLabelQue(taskQ.CacheQ, lsvCacheBefor);
                         showCachePosQue(taskQ.CacheSide);
                         break;
@@ -590,15 +587,6 @@ namespace yidascan {
 
                                 // 确定缓存操作动作
                                 var cacheJobState = cacheher.WhenRollArrived(calResult.state, calResult.CodeCome, calResult.CodeFromCache);
-                                logOpt.Write($"{calResult.CodeCome.ToLocation} {JsonConvert.SerializeObject(cacheJobState)}" +
-                                    $" 来料标签：{calResult.CodeCome.LCode} {calResult.CodeCome.Diameter} " +
-                                    $"取出标签：{calResult.CodeFromCache?.LCode} {calResult.CodeFromCache?.Diameter}  " +
-                                    $"{calResult.message}", LogType.BUFFER);
-
-                                lock (taskQ.CacheQ) {
-                                    taskQ.CacheQ.Dequeue();
-                                }
-
                                 // 这个为什么不放在whenRollArrived里面呢?
                                 if (cacheJobState.state == CacheState.CacheAndGet || cacheJobState.state == CacheState.GetThenCache) {
                                     if (CacheHelper.isInSameCacheChannel(cacheJobState.getpos, cacheJobState.savepos)) {
@@ -607,6 +595,14 @@ namespace yidascan {
                                     } else {
                                         cacheJobState.state = CacheState.CacheAndGet;   // action 6
                                     }
+                                }
+                                logOpt.Write($"{calResult.CodeCome.ToLocation} {JsonConvert.SerializeObject(cacheJobState)}" +
+                                    $" 来料标签：{calResult.CodeCome.LCode} {calResult.CodeCome.Diameter} " +
+                                    $"取出标签：{calResult.CodeFromCache?.LCode} {calResult.CodeFromCache?.Diameter}  " +
+                                    $"{calResult.message}", LogType.BUFFER);
+
+                                lock (taskQ.CacheQ) {
+                                    taskQ.CacheQ.Dequeue();
                                 }
 
                                 // 更新界面显示
