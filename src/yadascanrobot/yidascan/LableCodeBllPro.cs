@@ -362,7 +362,7 @@ namespace yidascan {
                 // 取当前交地、当前板、当前层所有标签。
                 layerLabels = LableCode.GetLableCodesOfRecentFloor(cre.CResult.CodeCome.ToLocation, pinfo.PanelNo, pinfo.CurrFloor);
 
-                cre = CalculateCacheState(cre.CResult, pinfo, layerLabels);
+                cre = CalculateCacheState(cre.CResult, pinfo, layerLabels, onlog);
 
                 if (cre.SideState.state == SideFullState.FULL || cre.SideState.state == SideFullState.EXCEED) {
                     fp = SetFullFlag(CalculateFloorIndex(layerLabels), pinfo);
@@ -444,7 +444,7 @@ namespace yidascan {
             return cre.CResult;
         }
 
-        private static CacheResult CalculateCacheState(CalResult rt, PanelInfo pinfo, List<LableCode> layerLabels) {
+        private static CacheResult CalculateCacheState(CalResult rt, PanelInfo pinfo, List<LableCode> layerLabels, Action<string> onlog) {
             CacheResult cre = new CacheResult();
             cre.SideState = new SideFullState(SideFullState.NO_FULL, null);
             if (layerLabels != null && layerLabels.Count > 0) {
@@ -463,6 +463,7 @@ namespace yidascan {
                     rt.CodeFromCache = cr.CodeFromCache;
                     rt.state = cr.state;
                 } else if (cre.SideState.state == SideFullState.EXCEED) {
+                    onlog($"!交地: {rt.CodeCome.ToLocation}, current: {rt.CodeCome.LCode}, from cache: {rt.CodeFromCache.LCode}, 超出板宽。");
                     rt.state = CacheState.GetThenCache;
                     pinfo.HasExceed = true;
                 }

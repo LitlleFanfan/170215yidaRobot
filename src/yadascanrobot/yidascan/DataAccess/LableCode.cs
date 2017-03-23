@@ -253,7 +253,7 @@ namespace yidascan.DataAccess {
                             new SqlParameter("@UpdateDate",DateTime.Now)}));
                         if (pInfo.HasExceed) {
                             var panelno = PanelGen.NewPanelNo();
-                            cps.Add(new CommandParameter("UPDATE LableCode SET Floor = 1,PanelNo = @NewPanelNo" +
+                            cps.Add(new CommandParameter("UPDATE LableCode SET Floor = 1,PanelNo = @NewPanelNo," +
                                     "UpdateDate = @UpdateDate WHERE PanelNo = @PanelNo and FloorIndex=0",
                                 new SqlParameter[]{
                             new SqlParameter("@NewPanelNo",panelno),
@@ -271,7 +271,7 @@ namespace yidascan.DataAccess {
                             new SqlParameter("@EvenStatus",false),
                             new SqlParameter("@UpdateDate",DateTime.Now)}));
                         if (pInfo.HasExceed) {
-                            cps.Add(new CommandParameter("UPDATE LableCode SET Floor = @Floor" +
+                            cps.Add(new CommandParameter("UPDATE LableCode SET Floor = @Floor," +
                                 "UpdateDate = @UpdateDate WHERE PanelNo = @PanelNo and FloorIndex=0",
                             new SqlParameter[]{
                             new SqlParameter("@PanelNo",pInfo.PanelNo),
@@ -313,7 +313,7 @@ namespace yidascan.DataAccess {
                         cur.Cy = 0;
                         cur.Cz = 0;
                         cps.Add(CreateLableCodeUpdate(cur));
-                        cps.Add(new CommandParameter("UPDATE LableCode SET Floor = @Floor,PanelNo = @NewPanelNo" +
+                        cps.Add(new CommandParameter("UPDATE LableCode SET Floor = @Floor,PanelNo = @NewPanelNo," +
                                 "UpdateDate = @UpdateDate WHERE PanelNo = @PanelNo and FloorIndex=0",
                             new SqlParameter[]{
                             new SqlParameter("@NewPanelNo",cur.PanelNo),
@@ -324,7 +324,7 @@ namespace yidascan.DataAccess {
                     } else {//层满
                         cur.floor++;
                         cps.Add(CreateLableCodeUpdate(cur));
-                        cps.Add(new CommandParameter("UPDATE LableCode SET Floor = @Floor" +
+                        cps.Add(new CommandParameter("UPDATE LableCode SET Floor = @Floor," +
                                 "UpdateDate = @UpdateDate WHERE PanelNo = @PanelNo and FloorIndex=0",
                             new SqlParameter[]{
                             new SqlParameter("@PanelNo",pInfo.PanelNo),

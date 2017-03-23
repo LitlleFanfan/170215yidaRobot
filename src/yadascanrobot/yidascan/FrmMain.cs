@@ -478,20 +478,13 @@ namespace yidascan {
                         showLabelQue(taskQ.CacheQ, lsvCacheBefor);
                         showCachePosQue(taskQ.CacheSide);
                         break;
+                    case CacheState.CacheAndGet:
                     case CacheState.GetThenCache:
                         lock (taskQ.LableUpQ) {
                             taskQ.LableUpQ.Enqueue(outCacheLable);
                         }
 
                         showLabelQue(taskQ.LableUpQ, lsvLableUp);
-                        showLabelQue(taskQ.CacheQ, lsvCacheBefor);
-                        showCachePosQue(taskQ.CacheSide);
-                        break;
-                    case CacheState.CacheAndGet:
-                        lock (taskQ.LableUpQ) {
-                            taskQ.LableUpQ.Enqueue(outCacheLable);
-                        }
-
                         showLabelQue(taskQ.CacheQ, lsvCacheBefor);
                         showCachePosQue(taskQ.CacheSide);
                         break;
