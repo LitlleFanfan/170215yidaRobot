@@ -24,6 +24,9 @@ INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('PlcPushAside','MicroWin.S7-12
 
 
 INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('GetWeigh','MicroWin.S7-1200.NewItem16','Weigh','称重(1称重，称完置0，称重失败2）')
+-- added at 2017-03-23.
+INSERT INTO NEWOPCPARAM (NAME, CODE, CLASS, REMARK) VALUES('LabelPart1', 'MICROWIN.S7-1200.NEWITEM44', 'Weigh', '标签号码前6位');
+INSERT INTO NEWOPCPARAM (NAME, CODE, CLASS, REMARK) VALUES('LabelPart2', 'MICROWIN.S7-1200.NEWITEM45', 'Weigh', '标签号码后6位');
 
 
 INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('Signal','MicroWin.S7-1200.NewItem111','DeleteLCode','删除布卷开关信号');
@@ -183,4 +186,3 @@ INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('ERPAlarm','MicroWin.S7-1200.N
 ---机器人状态可以直接从机器人电柜里接信号
 --INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('RobotWorkState','MicroWin.S7-1200.NewItem70','None','工作状态（运行：１；空闲：０；）');
 --INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('RobotRunState','MicroWin.S7-1200.NewItem72','None','运行状态是否在安全位置（安全：１；危险：０；）');
-

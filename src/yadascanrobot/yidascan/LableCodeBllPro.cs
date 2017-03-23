@@ -208,7 +208,8 @@ namespace yidascan {
         /// <returns></returns>
         private static decimal expectedWidth(decimal installedWidth, LableCode l1, LableCode l2) {
             // 预期宽度
-            var expected = installedWidth + l1.Diameter + clsSetting.RollSep + l2.Diameter + clsSetting.EdgeSpace;
+            var edgespace = GetEdgeSpace(FrmMain.taskQ.CacheSide, l1.ToLocation, clsSetting.EdgeSpace);
+            var expected = installedWidth + l1.Diameter + clsSetting.RollSep + l2.Diameter + edgespace;
             return expected;
         }
 
@@ -226,7 +227,8 @@ namespace yidascan {
         /// <returns></returns>
         private static decimal expectedWidth(LableCode l1) {
             // 预期宽度
-            var expected = Math.Abs(l1.Cx + l1.Cy) + clsSetting.EdgeSpace;
+            var edgespace = GetEdgeSpace(FrmMain.taskQ.CacheSide, l1.ToLocation, clsSetting.EdgeSpace);
+            var expected = Math.Abs(l1.Cx + l1.Cy) + edgespace;
             return expected;
         }
 
@@ -254,7 +256,7 @@ namespace yidascan {
 
         private static PanelFullState findSmallerFromCachedRollsPro(List<LableCode> cachedRolls, LableCode current, decimal installedWidth, decimal max) {
             // 预计宽度超出
-            var e = clsSetting.EdgeSpace;
+            var e = GetEdgeSpace(FrmMain.taskQ.CacheSide, current.ToLocation, clsSetting.EdgeSpace);
             var rt = cachedRolls.Where(x => (expectedWidthNoEdgeSpace(installedWidth, current, x) > max - e))
                 .OrderBy(x => x.Diameter)
                 .FirstOrDefault();
@@ -320,6 +322,22 @@ namespace yidascan {
                 fp = FloorPerformance.BothFinish;
             return fp;
         }
+
+        /// <summary>
+        /// 取某板最佳边缘预留
+        /// </summary>
+        /// <param name="tolocation">交地</param>
+        /// <param name="cachq">缓存位队列</param>
+        /// <param name="defaultEdgeSpace">默认的边缘预留</param>
+        /// <returns></returns>
+        private static decimal GetEdgeSpace(IEnumerable<CachePos> cachq, string tolocation, decimal defaultEdgeSpace) {
+            lock(cachq) {
+                var maxd = cachq.Where(x => x != null && x.labelcode.ToLocation == tolocation)
+                    .Max(x => x.labelcode.Diameter);
+                return Math.Max(maxd, defaultEdgeSpace);
+            }
+        }
+
         #endregion
 
         #region PUBLIC_FUNCTIONS

@@ -385,6 +385,19 @@ namespace yidascan {
             RefreshRobotMenuState();
         }
 
+        private string GetLabelCodeWhenWeigh() {
+            var code1 = opcWeigh.ReadString(opcParam.WeighParam.LabelPart1);
+            var code2 = opcWeigh.ReadString(opcParam.WeighParam.LabelPart2);
+            return code1 + code2;
+        }
+
+        private bool IsPastCode(string curcode) {
+            lock (taskQ) {
+                var last = taskQ.CacheQ.LastOrDefault();
+                return last != null && last.LCode == curcode;
+            }
+        }
+
         private void WeighTask() {
             const int TO_WEIGH = 1;
             const int SUCCESS = 0;
@@ -396,10 +409,26 @@ namespace yidascan {
             logOpt.Write(JsonConvert.SerializeObject(opcParam.WeighParam), LogType.NORMAL, LogViewType.OnlyFile);
             Task.Factory.StartNew(() => {
                 while (isrun) {
+                    Thread.Sleep(OPCClient.DELAY * 200);
+
                     try {
                         var signal = opcWeigh.ReadInt(opcParam.WeighParam.GetWeigh);
                         if (signal == TO_WEIGH) {
+                            var codeFromPlc = GetLabelCodeWhenWeigh();
+
+                            if (IsPastCode(codeFromPlc)) {
+                                // 复位
+                                opcWeigh.Write(opcParam.WeighParam.GetWeigh, 0);
+                                logOpt.Write($"称重复位, 原因: 重复称重。plc标签{codeFromPlc}", LogType.NORMAL, LogViewType.Both);
+                                continue;
+                            }
+
                             var code = taskQ.GetWeighQ();
+
+                            if (code != null && codeFromPlc != code.LCode) {
+                                logOpt.Write($"无效称重。plc标签{codeFromPlc}, 称重队列标签{code.LCode}", LogType.NORMAL, LogViewType.Both);
+                                continue;
+                            }
 
                             if (code != null) {
                                 signal = NotifyWeigh(code.LCode, false) ? SUCCESS : FAIL;
@@ -416,14 +445,12 @@ namespace yidascan {
                                     showLabelQue(taskQ.CacheQ, lsvCacheBefor);//加到缓存列表中显示
                                 }
                             } else {
-                                logOpt.Write($"称重信号无对应数据");
+                                logOpt.Write($"!称重信号无对应的队列号码, opc称重标签{codeFromPlc}");
                             }
                         }
                     } catch (Exception ex) {
                         logOpt.Write($"!weigh task: {ex.ToString()}", LogType.NORMAL);
                     }
-
-                    Thread.Sleep(OPCClient.DELAY * 200);
                 }
             });
 

@@ -112,6 +112,8 @@ namespace yidascan.DataAccess {
         /// 称重
         /// </summary>
         public string GetWeigh { get; set; }
+        public string LabelPart1 { get; set; }
+        public string LabelPart2 { get; set; }
 
         public const string CFG = "Weigh";
         /// <summary>
