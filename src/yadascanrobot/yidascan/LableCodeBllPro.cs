@@ -278,10 +278,8 @@ namespace yidascan {
 
                 if (w >= max + clsSetting.WidthFix) {
                     return new SideFullState(SideFullState.EXCEED, rt);
-                } else if (w > max - e && w < max) {
-                    return new SideFullState(SideFullState.FULL, rt);
                 } else {
-                    return null;
+                    return new SideFullState(SideFullState.FULL, rt);
                 }
             }
         }
