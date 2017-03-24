@@ -423,23 +423,7 @@ namespace yidascan {
                     try {
                         var signal = opcWeigh.ReadInt(opcParam.WeighParam.GetWeigh);
                         if (signal == TO_WEIGH) {
-#if !DEBUG
-                            var codeFromPlc = GetLabelCodeWhenWeigh();
-
-                            if (IsPastCode(codeFromPlc)) {
-                                // 复位
-                                opcWeigh.Write(opcParam.WeighParam.GetWeigh, 0);
-                                logOpt.Write($"称重复位, 原因: 重复称重。plc标签{codeFromPlc}", LogType.NORMAL, LogViewType.Both);
-                                continue;
-                            }
-#endif
                             var code = taskQ.GetWeighQ();
-#if !DEBUG
-                            if (code != null && codeFromPlc != code.LCode) {
-                                logOpt.Write($"无效称重。plc标签{codeFromPlc}, 称重队列标签{code.LCode}", LogType.NORMAL, LogViewType.Both);
-                                continue;
-                            }
-#endif
 
                             if (code != null) {
                                 signal = NotifyWeigh(code.LCode, false) ? SUCCESS : FAIL;
@@ -457,6 +441,14 @@ namespace yidascan {
                                 }
                             } else {
 #if !DEBUG
+                                var codeFromPlc = GetLabelCodeWhenWeigh();
+
+                                if (IsPastCode(codeFromPlc)) {
+                                    // 复位
+                                    opcWeigh.Write(opcParam.WeighParam.GetWeigh, 0);
+                                    logOpt.Write($"称重复位, 原因: 重复称重。plc标签{codeFromPlc}", LogType.NORMAL, LogViewType.Both);
+                                    continue;
+                                }
                                 logOpt.Write($"!称重信号无对应的队列号码, opc称重标签{codeFromPlc}");
 #endif
                             }
@@ -1217,9 +1209,15 @@ namespace yidascan {
         }
 
         private void btnWeighReset_Click(object sender, EventArgs e) {
+            const int TO_WEIGH = 1;
             // 称重复位。
-            opcWeigh.Write(opcParam.WeighParam.GetWeigh, 0);
-            logOpt.Write("手动称重复位", LogType.NORMAL, LogViewType.Both);
+            var signal = opcWeigh.ReadInt(opcParam.WeighParam.GetWeigh);
+            if (signal == TO_WEIGH) {
+                opcWeigh.Write(opcParam.WeighParam.GetWeigh, 0);
+                logOpt.Write("手动称重复位", LogType.NORMAL, LogViewType.Both);
+            } else {
+                logOpt.Write("手动称重复位 状态正确无需复位", LogType.NORMAL, LogViewType.Both);
+            }
         }
 
         private void btnBrowsePanels_Click(object sender, EventArgs e) {
