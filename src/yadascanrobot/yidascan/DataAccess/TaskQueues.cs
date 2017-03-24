@@ -48,7 +48,6 @@ namespace yidascan.DataAccess {
             }
             if (code != null) {
                 var roll = AddRobotRollQ(code.LCode, "B");
-                FrmMain.logOpt.Write($"B {Newtonsoft.Json.JsonConvert.SerializeObject(roll)}", LogType.ROLL_QUEUE);
                 if (roll != null) {
                     lock (RobotRollBQ) {
                         RobotRollBQ.Enqueue(roll);
@@ -87,7 +86,6 @@ namespace yidascan.DataAccess {
             }
             if (code != null) {
                 var roll = AddRobotRollQ(code.LCode, "A");
-                FrmMain.logOpt.Write($"A {Newtonsoft.Json.JsonConvert.SerializeObject(roll)}", LogType.ROLL_QUEUE);
                 if (roll != null) {
                     lock (RobotRollAQ) {
                         RobotRollAQ.Enqueue(roll);
@@ -110,11 +108,11 @@ namespace yidascan.DataAccess {
                 return null;
             }
             if (label.Status >= (int)LableState.OnPanel) {
-                onlog?.Invoke($"!{side} {label.LCode}已在板上,未加入队列,交地{label.ToLocation}.", LogType.ROLL_QUEUE);
+                onlog?.Invoke($"!{side} {label.LCode}已在板上,未加入机器人队列,交地{label.ToLocation}.", LogType.ROLL_QUEUE);
                 return null;
             }
             if (label.CoordinatesIsEmpty()) {
-                onlog?.Invoke("!{side} {label.LCode}未算位置，未加入队列,交地{label.ToLocation}.", LogType.ROLL_QUEUE);
+                onlog?.Invoke($"!{side} {label.LCode}未算位置，未加入机器人队列,交地{label.ToLocation}.", LogType.ROLL_QUEUE);
                 return null;
             }
 

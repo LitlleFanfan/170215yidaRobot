@@ -286,6 +286,19 @@ namespace ProduceComm {
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        public static decimal WidthFix {
+            get {
+                string tmp = clsSetting.GetCfgValue("WidthFix");
+                return decimal.Parse(string.IsNullOrEmpty(tmp) ? "20" : tmp);
+            }
+            set {
+                clsSetting.SetCfgValue("WidthFix", value.ToString());
+            }
+        }
+
+        /// <summary>
         /// 最大层数
         /// </summary>
         public static int MaxFloor {

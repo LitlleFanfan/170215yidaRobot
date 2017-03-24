@@ -276,7 +276,7 @@ namespace yidascan {
             } else {
                 var w = expectedWidthNoEdgeSpace(installedWidth, current, rt);
 
-                if (w >= max) {
+                if (w >= max + clsSetting.WidthFix) {
                     return new SideFullState(SideFullState.EXCEED, rt);
                 } else if (w > max - e && w < max) {
                     return new SideFullState(SideFullState.FULL, rt);

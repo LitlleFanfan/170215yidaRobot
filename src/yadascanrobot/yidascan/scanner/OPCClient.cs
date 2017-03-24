@@ -106,12 +106,12 @@ namespace ProduceComm.OPC {
             if (rt == null) {
                 return false;
             } else {
-                FrmMain.logOpt.Write("--- log opc client write ---");
+                FrmMain.logOpt.Write("--- log opc client write ---", "normal", LogViewType.OnlyFile);
                 foreach (var item in rt) {
                     r = r && item.ResultID.Succeeded();
                     var s = JsonConvert.SerializeObject(item);
 
-                    FrmMain.logOpt.Write($"{item.ResultID.Code} {item.ResultID.Name} {item.ResultID.Succeeded()}");
+                    FrmMain.logOpt.Write($"{item.ResultID.Code} {item.ResultID.Name} {item.ResultID.Succeeded()}", "normal", LogViewType.OnlyFile);
                     FrmMain.logOpt.Write(s, "normal", LogViewType.OnlyFile);
                 }
                 return r;
