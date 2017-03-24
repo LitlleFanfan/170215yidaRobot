@@ -511,10 +511,11 @@ namespace yidascan {
         private bool PanelAvailable(string tolocation) {
             try {
                 var s = client.ReadString(param.BAreaPanelState[tolocation]);
-                var alarmstatus = client.ReadBool(param.BadShapeLocations[tolocation]);
-                return s == "2" && alarmstatus;
+                var canput = !client.ReadBool(param.BadShapeLocations[tolocation]);
+                log($"! {tolocation} 可放料信号板状态{s} 未报警{canput}", LogType.ROBOT_STACK,LogViewType.OnlyFile);
+                return s == "2" && canput;
             } catch (Exception ex) {
-                log($"!读交地状态信号异常 tolocation: {tolocation} opc:{JsonConvert.SerializeObject(param.BAreaFloorFinish)} err:{ex}", LogType.ROBOT_STACK);
+                log($"!读可放料信号异常 tolocation: {tolocation} opc:{param.BadShapeLocations[tolocation]} err:{ex}", LogType.ROBOT_STACK);
                 return false;//临时
             }
         }
