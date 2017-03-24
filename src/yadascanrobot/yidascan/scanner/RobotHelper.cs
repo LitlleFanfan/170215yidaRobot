@@ -512,7 +512,7 @@ namespace yidascan {
             try {
                 var s = client.ReadString(param.BAreaPanelState[tolocation]);
                 var alarmstatus = client.ReadBool(param.BadShapeLocations[tolocation]);
-                return s == "2" && !alarmstatus;
+                return s == "2" && alarmstatus;
             } catch (Exception ex) {
                 log($"!读交地状态信号异常 tolocation: {tolocation} opc:{JsonConvert.SerializeObject(param.BAreaFloorFinish)} err:{ex}", LogType.ROBOT_STACK);
                 return false;//临时
