@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
+using yidascan;
 
 namespace ProduceComm.OPC {
     public class OPCClient : IOpcClient {
@@ -88,6 +90,61 @@ namespace ProduceComm.OPC {
             } catch (Exception ex) {
                 yidascan.FrmMain.logOpt.Write(string.Format("!{0}写入失败！{1}", code, ex));
                 //OnError(new Exception("写入失败！", ex));
+                return false;
+            }
+        }
+        
+        /// <summary>
+        /// 解析返回结果，如果任意一项为false，则结果为false。
+        /// 详细信息写入日志。
+        /// </summary>
+        /// <param name="rt"></param>
+        /// <param name="log"></param>
+        /// <returns></returns>
+        public static Boolean ParseResult(Opc.IdentifiedResult[] rt, Action<string> log) {
+            var r = true;
+            if (rt == null) {
+                return false;
+            } else {
+                FrmMain.logOpt.Write("--- log opc client write ---");
+                foreach (var item in rt) {
+                    r = r && item.ResultID.Succeeded();
+                    var s = JsonConvert.SerializeObject(item);
+
+                    FrmMain.logOpt.Write($"{item.ResultID.Code} {item.ResultID.Name} {item.ResultID.Succeeded()}");
+                    FrmMain.logOpt.Write(s);
+                }
+                return r;
+            }
+        }
+
+        /// <summary>
+        /// 返回结果用ParseResult函数解析。
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public bool Set(string code, object value) {
+            if (string.IsNullOrEmpty(code)) {
+                yidascan.FrmMain.logOpt.Write($"!项目 {code} 为空！");                
+                return false;
+            }
+
+            try {
+                if (!groups.Keys.Contains(code)) {
+                    yidascan.FrmMain.logOpt.Write("!{code}未添加订阅！");
+                    return false;
+                }
+
+                var key = (Opc.ItemIdentifier)groups[code].Items[0];
+                var iv = new Opc.Da.ItemValue(key) {
+                    Value = value
+                };
+                var rt = groups[code].Write(new Opc.Da.ItemValue[] { iv });
+
+                return ParseResult(rt, (x) => { FrmMain.logOpt.Write(x); });
+            } catch (Exception ex) {
+                yidascan.FrmMain.logOpt.Write($"!{code}写入失败: {ex}");
                 return false;
             }
         }
