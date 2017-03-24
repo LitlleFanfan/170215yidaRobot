@@ -345,13 +345,13 @@ namespace yidascan.DataAccess {
             return true;
         }
         public bool InitBadShapeLocations(IOpcClient opc) {
-            BAreaUserFinalLayer = new Dictionary<string, string>();
+            BadShapeLocations = new Dictionary<string, string>();
             DataTable dt = Query(string.Format("where Class='BadShapeLocations'"));
             if (dt == null || dt.Rows.Count < 1) {
                 return false;
             }
             foreach (DataRow dr in dt.Rows) {
-                BAreaUserFinalLayer.Add(dr["Name"].ToString(), dr["Code"].ToString());
+                BadShapeLocations.Add(dr["Name"].ToString(), dr["Code"].ToString());
                 opc.AddSubscription(dr["Code"].ToString());
             }
             return true;
