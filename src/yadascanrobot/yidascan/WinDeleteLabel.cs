@@ -24,7 +24,7 @@ namespace yidascan {
             var question = string.Format("您确定要删除标签[{0}]吗？", code);
             if (!CommonHelper.Confirm(question)) {
                 return;
-            }            
+            }
 
             DeleteLabelByHand(code);
             mainwin.ShowTaskQ();
@@ -75,7 +75,7 @@ namespace yidascan {
 #endif            
             client.Open(clsSetting.OPCServerIP);
             param.DeleteLCode = new LCodeSignal(client, "DeleteLCode");
-            
+
             PlcHelper.NotifyLabelCodeDeleted(client, param, lcode);
         }
 
@@ -181,6 +181,12 @@ namespace yidascan {
             checkInDb(code);
             checkInqueues(code, FrmMain.taskQ);
             lbxLog.Items.Add("");
+        }
+
+        private void txtLabelCode_KeyPress(object sender, KeyPressEventArgs e) {
+            if (e.KeyChar == '\r') {
+                txtLabelCode.SelectAll();
+            }
         }
     }
 }

@@ -10,8 +10,9 @@ namespace yidascan {
         public wfind() {
             InitializeComponent();
         }
-              
+
         private void btnSearch_Click(object sender, EventArgs e) {
+            mtxCode.SelectAll();
             var key = shrink(mtxCode.Text);
             if (string.IsNullOrEmpty(key)) { return; }
 
@@ -45,5 +46,11 @@ namespace yidascan {
             return string.Join("", s);
         }
         #endregion
+
+        private void mtxCode_KeyPress(object sender, KeyPressEventArgs e) {
+            if (e.KeyChar == '\r') {
+                btnSearch_Click(sender, e);
+            }
+        }
     }
 }
