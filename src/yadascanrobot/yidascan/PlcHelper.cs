@@ -35,12 +35,12 @@ namespace yidascan {
         /// /// <param name="posSave">动作编号。</param>
         /// /// <param name="posGet">动作编号。</param>
         public static void WriteCacheJob(IOpcClient client, OPCParam param, CacheState job, int posSave, int posGet) {
-            client.Write(param.CacheParam.CacheStatus, job);
-            client.Write(param.CacheParam.CachePoint, posSave);
-            client.Write(param.CacheParam.GetPoint, posGet);
+            client.Set(param.CacheParam.CacheStatus, job);
+            client.Set(param.CacheParam.CachePoint, posSave);
+            client.Set(param.CacheParam.GetPoint, posGet);
             Thread.Sleep(DELAY);
             // 复位来料信号。
-            client.Write(param.CacheParam.BeforCacheStatus, 0);
+            client.Set(param.CacheParam.BeforCacheStatus, 0);
         }
 
         /// <summary>
@@ -51,11 +51,11 @@ namespace yidascan {
         /// <param name="channel">去向, 1 or 2.</param>
         public static void WriteLabelUpData(IOpcClient client, OPCParam param, decimal diameter, RollCatchChannel channel) {
             // diameter单位是毫米。
-            client.Write(param.LableUpParam.Diameter, diameter);
-            client.Write(param.LableUpParam.Goto, channel);
+            client.Set(param.LableUpParam.Diameter, diameter);
+            client.Set(param.LableUpParam.Goto, channel);
             Thread.Sleep(DELAY);
             // 复位标签采集处来料信号。
-            client.Write(param.LableUpParam.Signal, 0);
+            client.Set(param.LableUpParam.Signal, 0);
         }
 
         /// <summary>

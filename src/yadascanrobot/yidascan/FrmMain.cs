@@ -613,10 +613,7 @@ namespace yidascan {
                                     // 发出机械手缓存动作指令
                                     PlcHelper.WriteCacheJob(CacheOpcClient, opcParam, cacheJobState.state, cacheJobState.savepos, cacheJobState.getpos);
                                 });
-
-                                logOpt.Write($"计算缓存写OPC耗时:　{ts}ms", LogType.BUFFER);
                             });
-                            logOpt.Write($"计算缓存总耗时:　{t}ms", LogType.BUFFER);
                         }
                     } catch (Exception ex) {
                         logOpt.Write($"!{ex.ToString()}", LogType.BUFFER);
