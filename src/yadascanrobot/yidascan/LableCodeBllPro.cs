@@ -484,7 +484,6 @@ namespace yidascan {
                     rt.CodeFromCache = cr.CodeFromCache;
                     rt.state = cr.state;
                 } else if (cre.SideState.state == SideFullState.EXCEED) {
-                    onlog($"!交地: {rt.CodeCome.ToLocation}, current: {rt.CodeCome.LCode}, from cache: {rt.CodeFromCache.LCode}, 超出板宽。");
                     rt.state = CacheState.GetThenCache;
                     pinfo.HasExceed = true;
                 }

@@ -93,7 +93,7 @@ namespace ProduceComm.OPC {
                 return false;
             }
         }
-        
+
         /// <summary>
         /// 解析返回结果，如果任意一项为false，则结果为false。
         /// 详细信息写入日志。
@@ -112,7 +112,7 @@ namespace ProduceComm.OPC {
                     var s = JsonConvert.SerializeObject(item);
 
                     FrmMain.logOpt.Write($"{item.ResultID.Code} {item.ResultID.Name} {item.ResultID.Succeeded()}");
-                    FrmMain.logOpt.Write(s);
+                    FrmMain.logOpt.Write(s, "normal", LogViewType.OnlyFile);
                 }
                 return r;
             }
@@ -126,7 +126,7 @@ namespace ProduceComm.OPC {
         /// <returns></returns>
         public bool Set(string code, object value) {
             if (string.IsNullOrEmpty(code)) {
-                yidascan.FrmMain.logOpt.Write($"!项目 {code} 为空！");                
+                yidascan.FrmMain.logOpt.Write($"!项目 {code} 为空！");
                 return false;
             }
 

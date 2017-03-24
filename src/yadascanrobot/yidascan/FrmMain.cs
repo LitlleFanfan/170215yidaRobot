@@ -432,7 +432,7 @@ namespace yidascan {
                                     logOpt.Write($"!通知称重到erp失败: {signal}");
                                 }
 
-                                var wstate = opcWeigh.Write(opcParam.WeighParam.GetWeigh, signal);
+                                var wstate = opcWeigh.Set(opcParam.WeighParam.GetWeigh, signal);
                                 logOpt.Write($"{code.LCode}称重API状态：{signal} 写OPC状态：{wstate}");
 
                                 showLabelQue(taskQ.WeighQ, lsvWeigh);

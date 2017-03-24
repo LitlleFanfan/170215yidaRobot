@@ -324,7 +324,7 @@ namespace yidascan {
 
         public void NotifyOpcJobFinished(string panelNo, string tolocation) {
             try {
-                var pState=LableCode.IsAllRollOnPanel(panelNo) ? PanelState.Full : PanelState.HalfFull;
+                var pState = LableCode.IsAllRollOnPanel(panelNo) ? PanelState.Full : PanelState.HalfFull;
                 switch (pState) {
                     case PanelState.HalfFull:
                         client.Write(param.BAreaFloorFinish[tolocation], true);
@@ -361,6 +361,8 @@ namespace yidascan {
                         client.Write(param.BAreaFloorFinish[roll.ToLocation], true);
                         log($"{roll.ToLocation}: 半板信号发出。slot: {param.BAreaFloorFinish[roll.ToLocation]}", LogType.ROBOT_STACK);
 
+                        BadShape(roll);
+
                         break;
                     case PanelState.Full:
                         string msg;
@@ -375,6 +377,7 @@ namespace yidascan {
 
                         break;
                     case PanelState.LessHalf:
+                        BadShape(roll);
                         break;
                     default:
                         log($"!板状态不明，不发信号, {roll.PnlState}", LogType.ROBOT_STACK);
@@ -382,6 +385,14 @@ namespace yidascan {
                 }
             } catch (Exception ex) {
                 log($"!{ex}", LogType.ROBOT_STACK);
+            }
+        }
+
+        private void BadShape(RollPosition roll) {
+            var layerLabels = LableCode.GetLableCodesOfRecentFloor(roll.ToLocation, roll.PanelNo, roll.Floor);
+            if (LayerShape.isBadShape(layerLabels)) {
+                PlcHelper.NotifyBadLayerShape(client, param, roll.ToLocation);
+                log($"!{roll.ToLocation} 第{roll.Floor}层 形状不规则。板号{roll.PanelNo}", LogType.ROBOT_STACK);
             }
         }
 
@@ -437,7 +448,7 @@ namespace yidascan {
             if (PanelAvailable(roll.ToLocation)) {
                 FrmMain.logOpt.Write($"{roll.ToLocation} PushInQueue收到可放料信号", LogType.ROBOT_STACK);
             } else {
-                FrmMain.logOpt.Write($"! {roll.ToLocation} PushInQueue未收到可放料信号", LogType.ROBOT_STACK);
+                FrmMain.logOpt.Write($"! {roll.ToLocation} PushInQueue未收到可放料信号，请检查板状态和是否有形状不规则报警。", LogType.ROBOT_STACK);
                 return false;
             }
 
@@ -500,7 +511,8 @@ namespace yidascan {
         private bool PanelAvailable(string tolocation) {
             try {
                 var s = client.ReadString(param.BAreaPanelState[tolocation]);
-                return s == "2";
+                var alarmstatus = client.ReadBool(param.BadShapeLocations[tolocation]);
+                return s == "2" && !alarmstatus;
             } catch (Exception ex) {
                 log($"!读交地状态信号异常 tolocation: {tolocation} opc:{JsonConvert.SerializeObject(param.BAreaFloorFinish)} err:{ex}", LogType.ROBOT_STACK);
                 return false;//临时
