@@ -136,6 +136,11 @@ namespace yidascan {
 
             return "";
         }
+
+        public bool Set(string slot, object value) {
+            return true;
+        }
+
         public int ReadInt(string slot) {
             Thread.Sleep(100);
             // 称重处信号

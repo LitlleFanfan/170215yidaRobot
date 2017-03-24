@@ -28,12 +28,8 @@ namespace yidascan {
         /// <param name="path">文件名</param>
         /// <returns>加载失败会返回null</returns>
         public static T load(string path) {
-            try {
-                var s = File.ReadAllText(path);
-                return JsonConvert.DeserializeObject<T>(s);
-            } catch (Exception) {
-                return default(T);
-            }
+            var s = File.ReadAllText(path);
+            return JsonConvert.DeserializeObject<T>(s);
         }
     }
 }

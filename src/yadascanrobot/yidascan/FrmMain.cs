@@ -1361,10 +1361,12 @@ namespace yidascan {
 
         private void btnLoadTaskq_Click(object sender, EventArgs e) {
             using (var dlg = new OpenFileDialog()) {
+                dlg.InitialDirectory = Application.StartupPath;
+                dlg.Filter = "Json Files(*.json)|*.json";
                 dlg.ShowDialog();
 
                 clearAllTaskViews();
-                taskQ = loadconf() ?? new TaskQueues();
+                taskQ = loadconf(dlg.FileName) ?? new TaskQueues();
                 cacheher = new CacheHelper(taskQ.CacheSide);
                 ShowTaskQ();
             }
@@ -1372,7 +1374,9 @@ namespace yidascan {
 
         private void btnSaveTaskq_Click(object sender, EventArgs e) {
             using (var dlg = new SaveFileDialog()) {
-                dlg.ShowDialog();
+                dlg.InitialDirectory = Application.StartupPath;
+                dlg.Filter = "Json Files(*.json)|*.json";
+                dlg.ShowDialog();                
 
                 var path = string.IsNullOrEmpty(dlg.FileName)
                     ? Path.Combine(Application.StartupPath, TASKQUE_CONF)
