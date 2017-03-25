@@ -360,9 +360,7 @@ namespace yidascan {
                     case PanelState.HalfFull:
                         client.Write(param.BAreaFloorFinish[roll.ToLocation], true);
                         log($"{roll.ToLocation}: 半板信号发出。slot: {param.BAreaFloorFinish[roll.ToLocation]}", LogType.ROBOT_STACK);
-
-                        BadShape(roll);
-
+                        
                         break;
                     case PanelState.Full:
                         string msg;
@@ -377,11 +375,13 @@ namespace yidascan {
 
                         break;
                     case PanelState.LessHalf:
-                        BadShape(roll);
                         break;
                     default:
                         log($"!板状态不明，不发信号, {roll.PnlState}", LogType.ROBOT_STACK);
                         break;
+                }
+                if (roll.Status == 2 && roll.PnlState != PanelState.Full) {
+                    BadShape(roll);
                 }
             } catch (Exception ex) {
                 log($"!{ex}", LogType.ROBOT_STACK);
@@ -512,7 +512,7 @@ namespace yidascan {
             try {
                 var s = client.ReadString(param.BAreaPanelState[tolocation]);
                 var canput = !client.ReadBool(param.BadShapeLocations[tolocation]);
-                log($"! {tolocation} 可放料信号板状态{s} 未报警{canput}", LogType.ROBOT_STACK,LogViewType.OnlyFile);
+                log($"! {tolocation} 可放料信号板状态{s} 未报警{canput}", LogType.ROBOT_STACK, LogViewType.OnlyFile);
                 return s == "2" && canput;
             } catch (Exception ex) {
                 log($"!读可放料信号异常 tolocation: {tolocation} opc:{param.BadShapeLocations[tolocation]} err:{ex}", LogType.ROBOT_STACK);
