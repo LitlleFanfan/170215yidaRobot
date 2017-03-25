@@ -155,8 +155,12 @@ namespace yidascan {
                 rr.AddRange(tmp);
             }
 
-            if (rt.Count == 0 && rr.Count == 0) {
-                lbxLog.Items.Insert(0, $"{lbxLog.Items.Count} 线上和机器人队列没有此号码: {code}。");
+            var rb = from item in ques.CacheSide
+                     where item.labelcode != null && item.labelcode.LCode == code
+                     select item;
+            
+            if (rt.Count == 0 && rr.Count == 0 && rb.Count() == 0) {
+                lbxLog.Items.Insert(0, $"{lbxLog.Items.Count + 1} 线上、缓存位和机器人队列没有此号码: {code}。");
             }
 
             foreach (var item in rt) {
@@ -165,6 +169,10 @@ namespace yidascan {
 
             foreach (var item in rr) {
                 lbxLog.Items.Insert(0, $"{lbxLog.Items.Count} 机器人号码队列: {item.LabelCode} {item.ToLocation}");
+            }
+
+            foreach (var item in rb) {
+                lbxLog.Items.Insert(0, $"{lbxLog.Items.Count} 缓存位: {item.id} {item.labelcode.LCode} {item.labelcode.ToLocation}");
             }
         }
 
