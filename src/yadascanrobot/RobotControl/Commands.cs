@@ -93,104 +93,115 @@ namespace RobotControl {
     }
 
     public class PostionVar {
-        decimal _sOrX;
-
         public PostionVar() { }
 
+        decimal _sOrX;
         public decimal sOrX {
             get { return _sOrX; }
+            set { _sOrX = value; }
         }
 
         public decimal SOrX {
             get { return _sOrX / 1000; }
         }
-        decimal _lOrY;
 
+        decimal _lOrY;
         public decimal lOrY {
             get { return _lOrY; }
+            set { _lOrY = value; }
         }
 
         public decimal LOrY {
             get { return _lOrY / 1000; }
         }
         decimal _uOrZ;
-
         public decimal uOrZ {
             get { return _uOrZ; }
+            set { _uOrZ = value; }
         }
 
         public decimal UOrZ {
             get { return _uOrZ / 1000; }
         }
-        decimal _bOrRx;
 
+        decimal _bOrRx;
         public decimal bOrRx {
             get { return _bOrRx; }
+            set { _bOrRx = value; }
         }
 
         public decimal BOrRx {
             get { return _bOrRx / 10000; }
         }
-        decimal _rOrRy;
 
+        decimal _rOrRy;
         public decimal rOrRy {
             get { return _rOrRy; }
+            set { _rOrRy = value; }
         }
 
         public decimal ROrRy {
             get { return _rOrRy / 10000; }
         }
-        decimal _tOrRz;
 
+        decimal _tOrRz;
         public decimal tOrRz {
             get { return _tOrRz; }
+            set { _tOrRz = value; }
         }
 
         public decimal TOrRz {
             get { return _tOrRz / 10000; }
         }
-        decimal _axis7;
 
+        decimal _axis7;
         public decimal axis7 {
             get { return _axis7; }
+            set { _axis7 = value; }
         }
 
         public decimal Axis7 {
             get { return _axis7 / 1000; }
         }
-        decimal _axis8;
 
+        decimal _axis8;
         public decimal axis8 {
             get { return _axis8; }
+            set { _axis8 = value; }
         }
 
         public decimal Axis8 {
             get { return _axis8; }
         }
-        bool noFlip;
 
+        bool noFlip;
         public bool NoFlip {
             get { return noFlip; }
+            set { noFlip = value; }
         }
-        bool lowArm;
 
+        bool lowArm;
         public bool LowArm {
             get { return lowArm; }
+            set { lowArm = value; }
         }
-        bool back;
 
+        bool back;
         public bool Back {
             get { return back; }
+            set { back = value; }
         }
-        bool rGt180;
 
+        bool rGt180;
         public bool RGt180 {
             get { return rGt180; }
+            set { rGt180 = value; }
         }
-        bool tGt180;
 
+        bool tGt180;
         public bool TGt180 {
             get { return tGt180; }
+            set { tGt180 = value; }
         }
 
         /// <summary>
