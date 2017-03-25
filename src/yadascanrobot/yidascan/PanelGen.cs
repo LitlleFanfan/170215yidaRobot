@@ -52,8 +52,10 @@ namespace yidascan {
         }
 
         public static string NewPanelNo() {
-            lastPanelNo = (decimal.Parse(lastPanelNo) + 1).ToString();
-            return lastPanelNo;
+            lock (foo) {
+                lastPanelNo = (decimal.Parse(lastPanelNo) + 1).ToString();
+                return lastPanelNo;
+            }
         }
     }
 }
