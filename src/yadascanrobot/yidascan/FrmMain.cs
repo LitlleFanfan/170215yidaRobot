@@ -295,7 +295,8 @@ namespace yidascan {
 
                             var pf = LableCode.GetTolactionCurrPanelNo(tolocation, shiftno);
                             LableCode.SetMaxFloorAndFull(tolocation);
-                            logOpt.Write($"{kv.Key}收到人工完成信号。", LogType.NORMAL, LogViewType.OnlyFile);
+                            //LableCode.UserSetPanelLastRoll();
+                            logOpt.Write($"{kv.Key} 收到人工完成信号。", LogType.ROBOT_STACK, LogViewType.OnlyFile);
 
                             // 创建新的板信息。
                             var newPanel = PanelGen.NewPanelNo();
@@ -471,7 +472,7 @@ namespace yidascan {
                                     var fullLable = PlcHelper.ReadCompleteLable(opcACF, kv.Value);
                                     opcACF.Write(kv.Value.Signal, 0);
 
-                                    logOpt.Write($"{kv.Value.Signal} 收到完成信号。标签:{fullLable} 执行状态:{AreaAAndCFinish(fullLable)}", LogType.NORMAL);
+                                    logOpt.Write($"{kv.Key} 收到完成信号。标签:{fullLable} 执行状态:{AreaAAndCFinish(fullLable)}", LogType.NORMAL);
                                 }
                             }
                         } catch (Exception ex) {

@@ -432,13 +432,13 @@ namespace yidascan {
             // 记录层最后一卷
             if (fp == FloorPerformance.BothFinish) {
                 if (cre.CResult.state == CacheState.GetThenGo) {
-                    cre.CResult.CodeCome.Status = 2;
+                    cre.CResult.CodeCome.Status = (int)LableState.FloorLastRoll;
                     cre.CResult.CodeCome.Remark = $"{cre.CResult.CodeCome.Remark} floor last roll";
                 } else if (cre.SideState.state == SideFullState.EXCEED) {
-                    cre.CResult.CodeFromCache.Status = 2;
+                    cre.CResult.CodeFromCache.Status = (int)LableState.FloorLastRoll;
                     cre.CResult.CodeFromCache.Remark = $"{cre.CResult.CodeFromCache.Remark} floor last roll";
                 } else {
-                    cre.CResult.CodeFromCache.Status = 2;
+                    cre.CResult.CodeFromCache.Status = (int)LableState.FloorLastRoll;
                     cre.CResult.CodeFromCache.Remark = $"{cre.CResult.CodeFromCache.Remark} floor last roll";
                 }
             }

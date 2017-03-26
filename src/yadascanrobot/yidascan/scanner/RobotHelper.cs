@@ -328,8 +328,10 @@ namespace yidascan {
                 switch (pState) {
                     case PanelState.HalfFull:
                         client.Write(param.BAreaFloorFinish[tolocation], true);
-                        log($"{tolocation}: 半板信号发出。slot: {param.BAreaFloorFinish[tolocation]}", LogType.ROBOT_STACK);
 
+                        string lcode = FrmMain.taskQ.UFGetPanelLastRoll(tolocation, panelNo);
+                        LableCode.UserSetPanelLastRoll(lcode);//设置板最后一卷布。
+                        log($"{tolocation} 人工满板, 半板信号发出,最后一卷布标签{lcode}。slot: {param.BAreaFloorFinish[tolocation]}", LogType.ROBOT_STACK);
                         break;
                     case PanelState.Full:
                         string msg;
@@ -341,7 +343,6 @@ namespace yidascan {
                         const int SIGNAL_3 = 3;
                         client.Write(param.BAreaPanelState[tolocation], SIGNAL_3);
                         log($"{tolocation}: 板状态信号发出，状态值: {SIGNAL_3}。slot: {param.BAreaPanelState[tolocation]}", LogType.ROBOT_STACK);
-
                         break;
                     case PanelState.LessHalf:
                         break;
@@ -360,7 +361,7 @@ namespace yidascan {
                     case PanelState.HalfFull:
                         client.Write(param.BAreaFloorFinish[roll.ToLocation], true);
                         log($"{roll.ToLocation}: 半板信号发出。slot: {param.BAreaFloorFinish[roll.ToLocation]}", LogType.ROBOT_STACK);
-                        
+
                         break;
                     case PanelState.Full:
                         string msg;
