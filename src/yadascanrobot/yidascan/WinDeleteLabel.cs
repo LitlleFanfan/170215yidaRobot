@@ -116,6 +116,16 @@ namespace yidascan {
             return true;
         }
 
+        private static bool deleteFromCacheArea(CachePos[] cacheArea, string code) {
+            foreach (var item in cacheArea) {
+                if (item.labelcode != null && item.labelcode.LCode == code) {
+                    item.labelcode = null;
+                    return true;
+                }
+            }
+            return false;
+        }
+
         private static bool deleteFromTaskq(TaskQueues ques, string code) {
             var a = deleteFromque(ques.CacheQ, code);
             var b = deleteFromque(ques.LableUpQ, code);
@@ -125,6 +135,7 @@ namespace yidascan {
             var f = deleteFromque(ques.CatchBQ, code);
             var g = deleteFromque(ques.RobotRollAQ, code);
             var h = deleteFromque(ques.RobotRollBQ, code);
+            var i = deleteFromCacheArea(ques.CacheSide, code);
             return a || b || c || d || e || f || g || h;
         }
 

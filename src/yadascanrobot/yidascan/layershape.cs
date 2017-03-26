@@ -20,46 +20,49 @@ namespace yidascan {
             diffVshape = clsSetting.DiffVshape;
         }
 
-        private static bool IsSlope(decimal d1, decimal d2) {
-            return Math.Abs(d1 - d2) > diffSlope;
-        }
+        public static bool IsSlope(IEnumerable<LableCode> layer) {
+            try {
+                var count = layer.Count();
+                if (count <= 1) { return false; }
 
-        private static bool IsVshape(IList<decimal> lst) {
-            var first = lst.First();
-            var last = lst.Last();
-            
-            // 计算中间较大一卷的直径。
-            var idx = (lst.Count() - 1) / 2;
-            var cenht = Math.Max((double)lst[idx], (double)lst[idx + 1]);
-
-            // 计算两端直径均值加权。
-            var endht = (double)(first + last) / 2.0;
-
-            return Math.Abs(endht - cenht) > diffVshape;
-        }
-
-        /// <summary>
-        /// 判断一层布卷的直径分布是否规则。
-        /// </summary>
-        /// <param name="layer"></param>
-        /// <returns></returns>
-        public static bool isBadShape(IList<LableCode> layer) {
-            var lst = layer.OrderBy(x => x.FloorIndex)
-                .Select(x => x.Diameter);
-
-            var count = lst.Count();
-
-            if (count == 0 ) {
+                var oddmax = layer.Where(x => x.isOddSide()).Max(x => x.FloorIndex);
+                var evenmax = layer.Where(x => x.isEvenSide()).Max(x => x.FloorIndex);
+                // 取两端的直径。
+                var oddend = layer.Where(x => x.FloorIndex == oddmax).Select(x => x.Diameter).First();
+                var evenend = layer.Where(x => x.FloorIndex == evenmax).Select(x => x.Diameter).First();
+                
+                return Math.Abs(evenend - oddend) > diffSlope;
+            } catch (Exception ex) {
+                FrmMain.logOpt.Write($"isvshape异常: {ex}", LogType.NORMAL, LogViewType.OnlyFile);
                 return false;
-            } else  if (count == 1) {
-                return true;
-            } else if (count == 2) {
-                return IsSlope(lst.First(), lst.Last());
-            } else if (count >= 3) {
-                return IsSlope(lst.First(), lst.Last()) || IsVshape(lst.ToList());
             }
+        }
 
-            return false;
+        public static bool IsVshape(IEnumerable<LableCode> layer) {
+            try {
+                var count = layer.Count();
+                if (count <= 2) { return false; }
+
+                var oddmax = layer.Where(x => x.isOddSide()).Max(x => x.FloorIndex);
+                var evenmax = layer.Where(x => x.isEvenSide()).Max(x => x.FloorIndex);
+                // 取两端的直径。
+                var oddend = layer.Where(x => x.FloorIndex == oddmax).Select(x => x.Diameter).First();
+                var evenend = layer.Where(x => x.FloorIndex == evenmax).Select(x => x.Diameter).First();
+
+                // 计算两端直径均值加权。
+                var endht = (double)(oddend + evenend) / 2.0;
+
+                // 计算中间较大一卷的直径。
+                var oddfirst = layer.Where(x => x.FloorIndex == 1).Select(x => x.Diameter).First();
+                var evenfirst = layer.Where(x => x.FloorIndex == 2).Select(x => x.Diameter).First();
+
+                var cenht = (double)Math.Max(oddfirst, evenfirst);
+
+                return Math.Abs(endht - cenht) > diffVshape;
+            } catch (Exception ex) {
+                FrmMain.logOpt.Write($"isvshape异常: {ex}", LogType.NORMAL, LogViewType.OnlyFile);
+                return false;
+            }
         }
     }
 }

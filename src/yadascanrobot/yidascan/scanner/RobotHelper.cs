@@ -390,7 +390,7 @@ namespace yidascan {
 
         private void BadShape(RollPosition roll) {
             var layerLabels = LableCode.GetLableCodesOfRecentFloor(roll.ToLocation, roll.PanelNo, roll.Floor);
-            if (LayerShape.isBadShape(layerLabels)) {
+            if (LayerShape.IsSlope(layerLabels) || LayerShape.IsVshape(layerLabels)) {
                 PlcHelper.NotifyBadLayerShape(client, param, roll.ToLocation);
                 log($"!{roll.ToLocation} 第{roll.Floor}层 形状不规则。板号{roll.PanelNo}", LogType.ROBOT_STACK);
             }
