@@ -7,6 +7,7 @@ using System.Data.SqlClient;
 namespace yidascan.DataAccess {
     public enum LableState {
         Null = 0,
+        FloorLastRoll=2,
         OnPanel = 3,
         PanelFill = 5
     }

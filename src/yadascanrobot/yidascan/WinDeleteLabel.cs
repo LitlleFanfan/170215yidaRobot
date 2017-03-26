@@ -43,7 +43,7 @@ namespace yidascan {
             }
 
             var area = lc.ParseLocationArea();
-            var bAndOnBoard = (area == "B" && lc.Status >= 3);
+            var bAndOnBoard = (area == "B" && lc.Status >= (int)LableState.OnPanel);
             var aCarea = (area == "A" || area == "C");
 
             if (!bAndOnBoard && !aCarea) {

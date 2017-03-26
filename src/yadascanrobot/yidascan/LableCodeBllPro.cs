@@ -433,30 +433,33 @@ namespace yidascan {
             if (fp == FloorPerformance.BothFinish) {
                 if (cre.CResult.state == CacheState.GetThenGo) {
                     cre.CResult.CodeCome.Status = 2;
-                    cre.CResult.CodeCome.Remark = $"{cre.CResult.CodeCome.Remark} 层最后一卷";
+                    cre.CResult.CodeCome.Remark = $"{cre.CResult.CodeCome.Remark} floor last roll";
+                } else if (cre.SideState.state == SideFullState.EXCEED) {
+                    cre.CResult.CodeFromCache.Status = 2;
+                    cre.CResult.CodeFromCache.Remark = $"{cre.CResult.CodeFromCache.Remark} floor last roll";
                 } else {
                     cre.CResult.CodeFromCache.Status = 2;
-                    cre.CResult.CodeFromCache.Remark = $"{cre.CResult.CodeFromCache.Remark} 层最后一卷";
+                    cre.CResult.CodeFromCache.Remark = $"{cre.CResult.CodeFromCache.Remark} floor last roll";
                 }
             }
 
-            var savestate = false;
             if (pinfo == null) {
                 // 产生新板号赋予当前标签。
                 //板第一卷
-                savestate = LableCode.Update(cre.CResult.CodeCome);
+                LableCode.Update(cre.CResult.CodeCome);
             } else {
                 if (cre.SideState.state == SideFullState.EXCEED) {
+                    msg = $"{msg} EXCEED";
                     pinfo.HasExceed = true;
                 }
                 if (cre.CResult.CodeFromCache != null) {
                     if (fp == FloorPerformance.BothFinish && cre.SideState.state == SideFullState.EXCEED) {//层满上超出处理
-                        savestate = LableCode.UpdateEdgeExceed(fp, pinfo, cre.CResult.CodeCome, cre.CResult.CodeFromCache);
+                        LableCode.UpdateEdgeExceed(fp, pinfo, cre.CResult.CodeCome, cre.CResult.CodeFromCache);
                     } else {
-                        savestate = LableCode.Update(fp, pinfo, cre.CResult.CodeCome, cre.CResult.CodeFromCache);
+                        LableCode.Update(fp, pinfo, cre.CResult.CodeCome, cre.CResult.CodeFromCache);
                     }
                 } else {
-                    savestate = LableCode.Update(fp, pinfo, cre.CResult.CodeCome);
+                    LableCode.Update(fp, pinfo, cre.CResult.CodeCome);
                 }
             }
             cre.CResult.message = msg;
