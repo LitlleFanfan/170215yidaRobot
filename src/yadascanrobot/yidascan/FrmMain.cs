@@ -223,7 +223,7 @@ namespace yidascan {
             if (label.Floor >= pinfo.MaxFloor - 1) {
                 state = PanelState.HalfFull;
             }
-            if (pinfo.Status == 5 && LableCode.IsPanelLastRoll(pinfo.PanelNo, label.LCode)) {
+            if (pinfo.Status == 5 && label.Status == (int)LableState.FloorLastRoll) {
                 state = PanelState.Full;
             }
             return state;
@@ -1376,7 +1376,7 @@ namespace yidascan {
             using (var dlg = new SaveFileDialog()) {
                 dlg.InitialDirectory = Application.StartupPath;
                 dlg.Filter = "Json Files(*.json)|*.json";
-                dlg.ShowDialog();                
+                dlg.ShowDialog();
 
                 var path = string.IsNullOrEmpty(dlg.FileName)
                     ? Path.Combine(Application.StartupPath, TASKQUE_CONF)
