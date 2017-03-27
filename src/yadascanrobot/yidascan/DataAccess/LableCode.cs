@@ -7,7 +7,7 @@ using System.Data.SqlClient;
 namespace yidascan.DataAccess {
     public enum LableState {
         Null = 0,
-        FloorLastRoll=2,
+        FloorLastRoll = 2,
         OnPanel = 3,
         PanelFill = 5
     }
@@ -392,6 +392,13 @@ namespace yidascan.DataAccess {
             return DataAccess.CreateDataAccess.sa.NonQuery(sql, sp);
         }
 
+        public static bool UserSetPanelLastRoll(string lcode) {
+            var sql = "update LableCode set status=2,UpdateDate=getdate(),Remark=Remark+' floor last roll' where LCode=@LCode";
+            var sp = new SqlParameter[]{
+                new SqlParameter("@LCode",lcode)};
+            return DataAccess.CreateDataAccess.sa.NonQuery(sql, sp);
+        }
+
         public static bool SetAllPanelsFinished() {
             var sql = $"update Panel set Status=5 where Status!=5;"
                 + "update LableCode set Status=5 where Status != 5 and(ToLocation like 'A%' or ToLocation like 'C%'); ";
@@ -626,7 +633,7 @@ order by floorindex desc;";
             }
             return (decimal)dt.Rows[0][0];
         }
-                
+
         public static decimal GetFloorHalfAvgLength(string panelNo, int currFloor) {
             var sql = "select  avg(Length)/2 " +
                 "from LableCode where PanelNo = @PanelNo and Floor=@Floor";

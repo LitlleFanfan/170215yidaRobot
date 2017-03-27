@@ -205,5 +205,60 @@ namespace yidascan.DataAccess {
             }
             return code;
         }
+
+        private string FindodeFromRobotQue(Queue<RollPosition> qu, string tolocation, string panelNo) {
+            RollPosition lb;
+            lock (qu) {
+                lb = RobotRollAQ.LastOrDefault(item => item.ToLocation == tolocation && item.PanelNo == panelNo);
+            }
+            return lb != null ? lb.LabelCode : string.Empty;
+        }
+
+        /// <summary>
+        /// 人工满板,找板最后一卷.
+        /// </summary>
+        /// <param name="tolocation"></param>
+        /// <returns></returns>
+        public string UFGetPanelLastRoll(string tolocation, string panelNo) {
+            string lcode = string.Empty;
+            LableCode lbup;
+
+            // 检索标签朝上队列。
+            lock (LableUpQ) {
+                lbup = LableUpQ.LastOrDefault(item => item.ToLocation == tolocation && item.PanelNo== panelNo);
+            }
+            if (lbup != null) {
+                return lbup.LCode;
+            }
+
+            int tolocationareaNo = int.Parse(tolocation.Substring(1, 2));
+
+            if (tolocationareaNo < 6) {
+                lock (CatchAQ) {
+                    lbup = CatchAQ.LastOrDefault(item => item.ToLocation == tolocation && item.PanelNo == panelNo);
+                }
+                if (lbup != null) {
+                    return lbup.LCode;
+                }
+
+                lcode = FindodeFromRobotQue(RobotRollAQ, tolocation, panelNo);
+                if (!string.IsNullOrEmpty(lcode)) {
+                    return lcode;
+                }
+            } else {
+                lock (CatchBQ) {
+                    lbup = CatchBQ.LastOrDefault(item => item.ToLocation == tolocation && item.PanelNo == panelNo);
+                }
+                if (lbup != null) {
+                    return lbup.LCode;
+                }
+
+                lcode = FindodeFromRobotQue(RobotRollBQ, tolocation, panelNo);
+                if (!string.IsNullOrEmpty(lcode)) {
+                    return lcode;
+                }
+            }
+            return lcode;
+        }
     }
 }
