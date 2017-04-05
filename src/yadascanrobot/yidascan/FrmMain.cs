@@ -241,6 +241,7 @@ namespace yidascan {
             try {
                 logOpt.Write("机器人正在启动...", LogType.NORMAL);
                 RobotOpcClient = FrmMain.CreateOpcClient("机器人");
+                opcParam.RobotParam = new OPCRobotParam(RobotOpcClient);
                 opcParam.InitBadShapeLocations(RobotOpcClient);
                 opcParam.InitBAreaFloorFinish(RobotOpcClient);
                 opcParam.InitBAreaPanelFinish(RobotOpcClient);

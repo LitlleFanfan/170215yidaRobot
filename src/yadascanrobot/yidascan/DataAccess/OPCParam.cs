@@ -240,6 +240,34 @@ namespace yidascan.DataAccess {
         }
     }
 
+    public class OPCRobotParam {
+        public string RobotStartA { get; set; }
+
+        public string RobotStartB { get; set; }
+
+        public string RobotJobStart { get; set; }
+
+        public const string CFG = "Robot";
+        /// <summary>
+        /// 初始化参数同时添加订阅
+        /// </summary>
+        /// <param name="opc"></param>
+        public OPCRobotParam(IOpcClient opc) {
+            DataTable dt = OPCParam.Query($"where Class='{CFG}'");
+            if (dt == null || dt.Rows.Count < 1) {
+                return;
+            }
+            foreach (DataRow dr in dt.Rows) {
+                foreach (PropertyInfo property in typeof(OPCRobotCarryParam).GetProperties()) {
+                    if (property.Name == dr["Name"].ToString()) {
+                        property.SetValue(this, dr["Code"].ToString());
+                        opc.AddSubscription(dr["Code"].ToString());
+                    }
+                }
+            }
+        }
+    }
+
     public class NoneOpcParame {
         public const string CFG = "None";
         /// <summary>
@@ -274,6 +302,7 @@ namespace yidascan.DataAccess {
         public OPCBeforCacheParam CacheParam;
         public OPCLableUpParam LableUpParam;
         public OPCRobotCarryParam RobotCarryParam;
+        public OPCRobotParam RobotParam;
 
         public LCodeSignal DeleteLCode;
 

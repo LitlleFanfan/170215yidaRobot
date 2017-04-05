@@ -25,8 +25,8 @@ INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('PlcPushAside','MicroWin.S7-12
 
 INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('GetWeigh','MicroWin.S7-1200.NewItem16','Weigh','称重(1称重，称完置0，称重失败2）')
 -- added at 2017-03-23.
-INSERT INTO NEWOPCPARAM (NAME, CODE, CLASS, REMARK) VALUES('LabelPart1', 'MICROWIN.S7-1200.NEWITEM44', 'Weigh', '标签号码前6位');
-INSERT INTO NEWOPCPARAM (NAME, CODE, CLASS, REMARK) VALUES('LabelPart2', 'MICROWIN.S7-1200.NEWITEM45', 'Weigh', '标签号码后6位');
+INSERT INTO NEWOPCPARAM (NAME, CODE, CLASS, REMARK) VALUES('LabelPart1', 'MicroWin.S7-1200.NewItem44', 'Weigh', '标签号码前6位');
+INSERT INTO NEWOPCPARAM (NAME, CODE, CLASS, REMARK) VALUES('LabelPart2', 'MicroWin.S7-1200.NewItem45', 'Weigh', '标签号码后6位');
 
 
 INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('Signal','MicroWin.S7-1200.NewItem111','DeleteLCode','删除布卷开关信号');
@@ -45,8 +45,12 @@ INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('Diameter','MicroWin.S7-1200-3
 INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('Goto','MicroWin.S7-1200-3.NewItem52','LableUp','去哪道（1-2）')
 
 
-INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('RobotCarryA','MicroWin.S7-1200-3.NewItem109','RobotCarry','开关信号（PC读到0读标签，读完写1)');
-INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('RobotCarryB','MicroWin.S7-1200-3.NewItem110','RobotCarry','开关信号（PC读到0读标签，读完写1)');
+INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('RobotCarryA','MicroWin.S7-1200-3.NewItem109','RobotCarry','开关信号（PC读到1读标签，读完写0)');
+INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('RobotCarryB','MicroWin.S7-1200-3.NewItem110','RobotCarry','开关信号（PC读到1读标签，读完写0)');
+
+INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('RobotStartA','MicroWin.S7-1200-3.NewItem124','Robot','布卷被抓走 开关信号（PC读到1读标签，读完写0)');
+INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('RobotStartB','MicroWin.S7-1200-3.NewItem125','Robot','布卷被抓走 开关信号（PC读到1读标签，读完写0)');
+INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('RobotJobStart','MicroWin.S7-1200-3.NewItem126','Robot','机器人Job启动信号 开关信号（PC写1)');
 
 --end2期维护
 
