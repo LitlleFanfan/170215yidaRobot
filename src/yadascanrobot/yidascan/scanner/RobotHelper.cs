@@ -408,9 +408,9 @@ namespace yidascan {
                 foreach (var qu in ques) {
                     if (qu.Count() > 0) {
                         var item = qu.Peek();
-                        if (item != null && JobTask(ref isrunning, item)) {
-                            qu.Dequeue();
-                        }
+                        //if (item != null && JobTask(ref isrunning, item)) {
+                        //    qu.Dequeue();
+                        //}
                     }
                 }
                 onupdate();
@@ -478,6 +478,9 @@ namespace yidascan {
             Thread.Sleep(RobotHelper.DELAY * 200);
             log($"check roll is leaving from PLC: {roll.LabelCode}.", LogType.ROBOT_STACK, LogViewType.OnlyFile);
             //删除对列布卷
+            var startTime = System.DateTime.Now;
+            var now = System.DateTime.Now;
+            var time = now - startTime;
             while (isrun) {
                 var leaving = client.ReadBool(isSideA ? param.RobotParam.RobotStartA : param.RobotParam.RobotStartB);
                 if (leaving) {
@@ -486,10 +489,18 @@ namespace yidascan {
                     client.Write(isSideA ? param.RobotParam.RobotStartA : param.RobotParam.RobotStartB, false);
                     break;
                 }
+                now = System.DateTime.Now;
+                time = now - startTime;
+                if (time.Milliseconds > RobotHelper.DELAY * 600) {//等leaving信号超时，等3秒
+                    break;
+                }
                 Thread.Sleep(RobotHelper.DELAY);
             }
 
-            Thread.Sleep(RobotHelper.DELAY * 800);
+            var sleeptime = RobotHelper.DELAY * 1000 - time.Milliseconds;
+            if (sleeptime > 0) {
+                Thread.Sleep(sleeptime);
+            }
 
             // 等待布卷上垛信号
             while (isrun) {

@@ -49,9 +49,9 @@ namespace yidascan {
                 foreach (var qu in ques) {
                     if (qu.Count() > 0) {
                         var item = qu.Peek();
-                        if (item != null && JobTask(ref isrunning, item)) {
-                            qu.Dequeue();
-                        }
+                        //if (item != null && JobTask(ref isrunning, item)) {
+                        //    qu.Dequeue();
+                        //}
                     }
                 }
                 onupdate();
@@ -60,7 +60,7 @@ namespace yidascan {
             }
         }
 
-        public bool JobTask(ref bool isrun, RollPosition roll) {
+        public bool JobTask(ref bool isrun, bool isSideA, Queue<RollPosition> robotRollQ, RollPosition roll, ListView lv) {
             return true;
         }
 
