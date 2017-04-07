@@ -258,7 +258,7 @@ namespace yidascan.DataAccess {
                 return;
             }
             foreach (DataRow dr in dt.Rows) {
-                foreach (PropertyInfo property in typeof(OPCRobotCarryParam).GetProperties()) {
+                foreach (PropertyInfo property in typeof(OPCRobotParam).GetProperties()) {
                     if (property.Name == dr["Name"].ToString()) {
                         property.SetValue(this, dr["Code"].ToString());
                         opc.AddSubscription(dr["Code"].ToString());
