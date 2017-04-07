@@ -331,7 +331,7 @@ namespace yidascan {
 
                         string lcode = FrmMain.taskQ.UFGetPanelLastRoll(tolocation, panelNo);
                         LableCode.UserSetPanelLastRoll(lcode);//设置板最后一卷布。
-                        log($"{tolocation} 人工满板, 半板信号发出,最后一卷布标签{lcode}。slot: {param.BAreaFloorFinish[tolocation]}", LogType.ROBOT_STACK);
+                        log($"{tolocation} 人工满板,半板信号发出,最后一卷布标签{lcode}。slot: {param.BAreaFloorFinish[tolocation]}", LogType.ROBOT_STACK);
                         break;
                     case PanelState.Full:
                         string msg;
@@ -408,9 +408,9 @@ namespace yidascan {
                 foreach (var qu in ques) {
                     if (qu.Count() > 0) {
                         var item = qu.Peek();
-                        if (item != null && JobTask(ref isrunning, item)) {
-                            qu.Dequeue();
-                        }
+                        //if (item != null && JobTask(ref isrunning, item)) {
+                        //    qu.Dequeue();
+                        //}
                     }
                 }
                 onupdate();
@@ -425,26 +425,33 @@ namespace yidascan {
                 if (FrmMain.taskQ.RobotRollAQ.Count > 0) {
                     var roll = FrmMain.taskQ.RobotRollAQ.Peek();
                     if (roll != null) {
-                        if (JobTask(ref isrun, roll)) {
-                            FrmMain.taskQ.RobotRollAQ.Dequeue();
-                            FrmMain.showRobotQue(FrmMain.taskQ.RobotRollAQ, la);
-                        }
+                        JobTask(ref isrun, true, FrmMain.taskQ.RobotRollAQ, roll, la);
                     }
                 }
                 if (FrmMain.taskQ.RobotRollBQ.Count > 0) {
                     var roll = FrmMain.taskQ.RobotRollBQ.Peek();
                     if (roll != null) {
-                        if (JobTask(ref isrun, roll)) {
-                            FrmMain.taskQ.RobotRollBQ.Dequeue();
-                            FrmMain.showRobotQue(FrmMain.taskQ.RobotRollBQ, lb);
-                        }
+                        JobTask(ref isrun, false, FrmMain.taskQ.RobotRollBQ, roll, lb);
                     }
                 }
                 Thread.Sleep(RobotHelper.DELAY * 40);
             }
         }
 
-        public bool JobTask(ref bool isrun, RollPosition roll) {
+        private void DequeueRoll(Queue<RollPosition> robotRollQ, RollPosition roll, ListView lv) {
+            try {
+                var roll2 = robotRollQ.Peek();
+                if (roll2 != null && roll.LabelCode == roll2.LabelCode) {//如果取出来还是原来那一个，就删一下
+                    robotRollQ.Dequeue();
+                    FrmMain.showRobotQue(robotRollQ, lv);
+                    log($"robot Dequeue roll: {roll.LabelCode}.", LogType.ROBOT_STACK, LogViewType.OnlyFile);
+                }
+            } catch (Exception ex) {
+                log($"robot Dequeue roll: {roll.LabelCode}. {ex}", LogType.ROBOT_STACK, LogViewType.OnlyFile);
+            }
+        }
+
+        public bool JobTask(ref bool isrun, bool isSideA, Queue<RollPosition> robotRollQ, RollPosition roll, ListView lv) {
             // 等待板可放料
             if (PanelAvailable(roll.ToLocation)) {
                 FrmMain.logOpt.Write($"{roll.ToLocation} PushInQueue收到可放料信号", LogType.ROBOT_STACK);
@@ -467,12 +474,37 @@ namespace yidascan {
 
             if (TryRunJob(JOB_NAME)) {
                 log($"发出机器人示教器动作{JOB_NAME}命令成功。", LogType.ROBOT_STACK);
+                client.Write(param.RobotParam.RobotJobStart, true);
             } else {
                 log($"!机器人示教器动作{JOB_NAME}发送失败。", LogType.ROBOT_STACK);
                 return false;
             }
+            Thread.Sleep(RobotHelper.DELAY * 200);
+            log($"check roll is leaving from PLC: {roll.LabelCode}.", LogType.ROBOT_STACK, LogViewType.OnlyFile);
+            //删除对列布卷
+            var startTime = System.DateTime.Now;
+            var now = System.DateTime.Now;
+            var time = now - startTime;
+            while (isrun) {
+                var leaving = client.ReadBool(isSideA ? param.RobotParam.RobotStartA : param.RobotParam.RobotStartB);
+                if (leaving) {
+                    log($"roll is leaving: {roll.LabelCode}.", LogType.ROBOT_STACK, LogViewType.OnlyFile);
+                    DequeueRoll(robotRollQ, roll, lv);
+                    client.Write(isSideA ? param.RobotParam.RobotStartA : param.RobotParam.RobotStartB, false);
+                    break;
+                }
+                now = System.DateTime.Now;
+                time = now - startTime;
+                if (time.Milliseconds > RobotHelper.DELAY * 600) {//等leaving信号超时，等3秒
+                    break;
+                }
+                Thread.Sleep(RobotHelper.DELAY);
+            }
 
-            Thread.Sleep(RobotHelper.DELAY * 1000);
+            var sleeptime = RobotHelper.DELAY * 1000 - time.Milliseconds;
+            if (sleeptime > 0) {
+                Thread.Sleep(sleeptime);
+            }
 
             // 等待布卷上垛信号
             while (isrun) {
@@ -493,6 +525,7 @@ namespace yidascan {
             while (isrun && IsBusy()) {
                 Thread.Sleep(RobotHelper.DELAY * 20);
             }
+            DequeueRoll(robotRollQ, roll, lv);
             log($"robot job done: {roll.LabelCode}.", LogType.ROBOT_STACK);
             return true;
         }
