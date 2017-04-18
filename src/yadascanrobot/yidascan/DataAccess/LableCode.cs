@@ -401,7 +401,11 @@ namespace yidascan.DataAccess {
 
         public static bool SetAllPanelsFinished() {
             var sql = $"update Panel set Status=5 where Status!=5;"
-                + "update LableCode set Status=5 where Status != 5 and(ToLocation like 'A%' or ToLocation like 'C%'); ";
+                + "update LableCode set Status=5 where Status != 5 and(ToLocation like 'A%' or ToLocation like 'C%'); " +
+                "insert into LableCodeHis([LCode],[ToLocation],[PanelNo],[Status],[Floor],[FloorIndex],[Diameter],[Length]," +
+                "[Coordinates],[Cx],[Cy],[Cz],[Crz],[GetOutLCode],[CreateDate],[UpdateDate],[Remark]) " +
+                "select [LCode],[ToLocation],[PanelNo],[Status],[Floor],[FloorIndex],[Diameter],[Length],[Coordinates]," +
+                "[Cx],[Cy],[Cz],[Crz],[GetOutLCode],[CreateDate],[UpdateDate],[Remark] from LableCode; delete from LableCode;";
             return DataAccess.CreateDataAccess.sa.NonQuery(sql, new SqlParameter[] { });
         }
 
@@ -489,11 +493,6 @@ namespace yidascan.DataAccess {
                     new SqlParameter("@ToLocation",obj.ToLocation)});
         }
 
-        public static bool DeleteAllFinished() {
-            var sql = "delete from LableCode where Status=5";
-            return DataAccess.CreateDataAccess.sa.NonQuery(sql);
-        }
-
         public static bool Delete(string code) {
             var sql = "delete from LableCode where LCode=@LCode";
             var sp = new SqlParameter[]{
@@ -517,6 +516,19 @@ namespace yidascan.DataAccess {
 
         public static bool PanelNoFinished(string panelNo) {
             var sql = "select * from LableCode where PanelNo=@PanelNo and Status=5";
+            var sp = new SqlParameter[]{
+                new SqlParameter("@PanelNo",panelNo)};
+            var dt = DataAccess.CreateDataAccess.sa.Query(sql, sp);
+            return dt != null && dt.Rows.Count > 0;
+        }
+
+        public static bool SetPanelFinished(string panelNo) {
+            var sql = $"update LableCode set Status=5 where PanelNo=@PanelNo;" +
+                $"insert into LableCodeHis([LCode],[ToLocation],[PanelNo],[Status],[Floor],[FloorIndex],[Diameter],[Length]," +
+                "[Coordinates],[Cx],[Cy],[Cz],[Crz],[GetOutLCode],[CreateDate],[UpdateDate],[Remark]) " +
+                "select [LCode],[ToLocation],[PanelNo],[Status],[Floor],[FloorIndex],[Diameter],[Length]," +
+                "[Coordinates],[Cx],[Cy],[Cz],[Crz],[GetOutLCode],[CreateDate],[UpdateDate],[Remark] " +
+                "from LableCode where PanelNo=@PanelNo; delete from LableCode where PanelNo=@PanelNo;";
             var sp = new SqlParameter[]{
                 new SqlParameter("@PanelNo",panelNo)};
             var dt = DataAccess.CreateDataAccess.sa.Query(sql, sp);
@@ -592,7 +604,13 @@ and Status<3 and FloorIndex<>0";
                 (select SequenceNo,ToLocation,PanelNo from lablecode where LCode=@lCode) tmp 
                 where
                 tmp.ToLocation = lablecode.ToLocation and
-                tmp.SequenceNo > lablecode.SequenceNo and lablecode.Status = 0";
+                tmp.SequenceNo > lablecode.SequenceNo and lablecode.Status = 0;
+                insert into LableCodeHis([LCode],[ToLocation],[PanelNo],[Status],[Floor],[FloorIndex],[Diameter],[Length],
+                [Coordinates],[Cx],[Cy],[Cz],[Crz],[GetOutLCode],[CreateDate],[UpdateDate],[Remark]) 
+                select [LCode],[ToLocation],[PanelNo],[Status],[Floor],[FloorIndex],[Diameter],[Length],
+                [Coordinates],[Cx],[Cy],[Cz],[Crz],[GetOutLCode],[CreateDate],[UpdateDate],[Remark] 
+                from LableCode where PanelNo=(select PanelNo from lablecode where LCode=@lCode);
+                delete from LableCode where PanelNo=(select PanelNo from lablecode where LCode=@lCode);";
             var sp = new SqlParameter[]{
                 new SqlParameter("@lCode",lCode)};
             return DataAccess.CreateDataAccess.sa.NonQuery(sql, sp);
@@ -700,21 +718,6 @@ and Status<3 and FloorIndex<>0";
                 return 0;
             }
             return (decimal)dt.Rows[0][0];
-        }
-
-        public static bool SetPanelFloorFill(string panelNo, int floor) {
-            var sql = "update LableCode set Status=5 where PanelNo='@PanelNo' and Floor=@Floor";
-            var sp = new SqlParameter[]{
-                new SqlParameter("@PanelNo",panelNo),
-                new SqlParameter("@Floor",floor)};
-            return DataAccess.CreateDataAccess.sa.NonQuery(sql, sp);
-        }
-
-        public static DataTable Query(string panelDate) {
-            var sql = "select LCode Code,ToLocation,PanelNo,Floor,FloorIndex,Diameter,Coordinates,case status when 5 then '完成' else '未完成' end Finished from LableCode where PanelNo like @PanelDate+'%'  order by SequenceNo desc";
-            var sp = new SqlParameter[]{
-                new SqlParameter("@PanelDate",panelDate)};
-            return DataAccess.CreateDataAccess.sa.Query(sql, sp);
         }
 
         public static LableCode QueryByLCode(string lcode) {

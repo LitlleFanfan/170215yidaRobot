@@ -8,6 +8,8 @@ using ProduceComm;
 
 namespace yidascan.DataAccess {
     public class TaskQueues {
+        public DateTime PanelNoFrefix;
+
         /// <summary>
         /// 用于访问锁定。
         /// </summary>
@@ -28,6 +30,7 @@ namespace yidascan.DataAccess {
         public static Action<string, string> onlog;
 
         public TaskQueues() {
+            PanelNoFrefix = DateTime.Now;
             const int CACHE_LEN = 20;
             CacheSide = new CachePos[CACHE_LEN];
             for (int i = 0; i < CACHE_LEN; i++) {

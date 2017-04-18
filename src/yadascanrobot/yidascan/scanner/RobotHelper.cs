@@ -381,7 +381,7 @@ namespace yidascan {
                         log($"!板状态不明，不发信号, {roll.PnlState}", LogType.ROBOT_STACK);
                         break;
                 }
-                if (roll.Status == 2 && roll.PnlState != PanelState.Full) {
+                if (roll.Status == (int)LableState.FloorLastRoll && roll.PnlState != PanelState.Full) {
                     BadShape(roll);
                 }
             } catch (Exception ex) {
