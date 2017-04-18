@@ -22,6 +22,27 @@ UpdateDate datetime not null default getdate(),
 Remark varchar(256)
 );
 
+create table LableCodeHis(
+SequenceNo Integer identity PRIMARY KEY,--
+LCode varchar(64) not null,
+ToLocation varchar(64) null,
+PanelNo varchar(64) null,
+Status int not null default 0,
+Floor int null,
+FloorIndex int null,
+Diameter NUMERIC default 0,
+Length NUMERIC default 0,
+Coordinates varchar(64) null,
+Cx NUMERIC default 0,
+Cy NUMERIC default 0,
+Cz NUMERIC default 0,
+Crz NUMERIC default 0,
+GetOutLCode varchar(64) null,
+CreateDate datetime not null default getdate(),
+UpdateDate datetime not null default getdate(),
+Remark varchar(256)
+);
+
 create table Panel(
 SequenceNo Integer identity PRIMARY KEY,
 PanelNo varchar(64) null unique,

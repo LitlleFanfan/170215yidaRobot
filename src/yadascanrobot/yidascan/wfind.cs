@@ -28,6 +28,21 @@ namespace yidascan {
         void showlabel(LableCode c) {
             lbx.Items.Insert(0, $"扫描时间: {c.CreateDate.ToString()}");
             lbx.Items.Insert(0, $"板上坐标: {c.Coordinates}");
+            switch (c.Status) {
+                case 5:
+                    lbx.Items.Insert(0, $"状态: 已上垛，且板已完成。");
+                    break;
+                case 3:
+                    lbx.Items.Insert(0, $"状态: 已上垛。");
+                    break;
+                case 2:
+                    lbx.Items.Insert(0, $"状态: 未上垛，是层最后一卷。");
+                    break;
+                case 0:
+                default:
+                    lbx.Items.Insert(0, $"状态: 未上垛。");
+                    break;
+            }
             lbx.Items.Insert(0, $"层: {c.Floor} 层序号: {c.FloorIndex}");
             lbx.Items.Insert(0, $"板号: {c.PanelNo}");
             lbx.Items.Insert(0, $"长度: {c.Length}mm 直径: {c.Diameter}mm");

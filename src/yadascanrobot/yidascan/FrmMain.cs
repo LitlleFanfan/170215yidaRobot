@@ -130,6 +130,11 @@ namespace yidascan {
                 taskQ = loadconf() ?? new TaskQueues();
                 cacheher = new CacheHelper(taskQ.CacheSide);
 
+                if (taskQ.PanelNoFrefix == null) {
+                    taskQ.PanelNoFrefix = DateTime.Now;
+                }
+                dtpDate.Value = taskQ.PanelNoFrefix;
+
                 ShowTaskQ();
 
                 opcNone = CreateOpcClient("其它报警");
@@ -138,12 +143,10 @@ namespace yidascan {
                 ShowTitle();
                 ShowTaskState(false);
                 RefreshRobotMenuState();
-                cmbShiftNo.SelectedIndex = 0;
 
                 SetRobotTip(false);
                 SetButtonState(false);
                 InitCfgView();
-                LableCode.DeleteAllFinished();
 
             } catch (Exception ex) {
                 logOpt.Write($"!初始化失败, {ex.ToString()}。\n{ex}", LogType.NORMAL);
@@ -223,7 +226,7 @@ namespace yidascan {
             if (label.Floor >= pinfo.MaxFloor - 1) {
                 state = PanelState.HalfFull;
             }
-            if (pinfo.Status == 5 && label.Status == (int)LableState.FloorLastRoll) {
+            if (pinfo.Status == (int)LableState.PanelFill && label.Status == (int)LableState.FloorLastRoll) {
                 state = PanelState.Full;
             }
             return state;
@@ -327,7 +330,6 @@ namespace yidascan {
                 btnNewRun.Enabled = !isRun;
 
                 dtpDate.Enabled = !isRun;
-                cmbShiftNo.Enabled = !isRun;
 
                 grbHandwork.Enabled = isRun;
                 btnStop.Enabled = isRun;
@@ -360,7 +362,6 @@ namespace yidascan {
 
         private void btnRun_Click(object sender, EventArgs e) {
             StartTime = DateTime.Now;
-            dtpDate.Value = DateTime.Now;
 
             SetButtonState(true);
             logOpt.Write(string.Format("!系统流程开始运行"), LogType.NORMAL);
@@ -440,7 +441,7 @@ namespace yidascan {
 #if !DEBUG
                                 var codeFromPlc = GetLabelCodeWhenWeigh();
 
-                                if (codeFromPlc== lastweighLable) {
+                                if (codeFromPlc == lastweighLable) {
                                     // 复位
                                     opcWeigh.Write(opcParam.WeighParam.GetWeigh, 0);
                                     logOpt.Write($"称重复位, 原因: 重复称重。plc标签{codeFromPlc}", LogType.NORMAL, LogViewType.Both);
@@ -544,8 +545,7 @@ namespace yidascan {
 
         private string createShiftNo() {
             var d1 = dtpDate.Value.ToString(clsSetting.LABEL_CODE_DATE_FORMAT);
-            var d2 = cmbShiftNo.SelectedIndex.ToString();
-            return $"{d1}{d2}";
+            return $"{d1}";
         }
 
         private void BeforCacheTask_new() {
@@ -1347,6 +1347,9 @@ namespace yidascan {
 
         private void ClearAllRunningData() {
             if (taskQ != null) {
+                taskQ.PanelNoFrefix = DateTime.Now;
+                dtpDate.Value = taskQ.PanelNoFrefix;
+
                 taskQ.clearAll();
                 clearAllTaskViews();
                 ShowTaskQ();

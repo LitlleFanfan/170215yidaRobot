@@ -120,7 +120,6 @@
             this.chkUseRobot = new System.Windows.Forms.CheckBox();
             this.lbTaskState = new System.Windows.Forms.Label();
             this.lblCount = new System.Windows.Forms.Label();
-            this.cmbShiftNo = new System.Windows.Forms.ComboBox();
             this.dtpDate = new System.Windows.Forms.DateTimePicker();
             this.label10 = new System.Windows.Forms.Label();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
@@ -656,7 +655,6 @@
             this.groupBox1.Controls.Add(this.chkUseRobot);
             this.groupBox1.Controls.Add(this.lbTaskState);
             this.groupBox1.Controls.Add(this.lblCount);
-            this.groupBox1.Controls.Add(this.cmbShiftNo);
             this.groupBox1.Controls.Add(this.dtpDate);
             this.groupBox1.Controls.Add(this.label10);
             this.groupBox1.Location = new System.Drawing.Point(4, 70);
@@ -716,20 +714,6 @@
             this.lblCount.TabIndex = 15;
             this.lblCount.Text = "0";
             this.lblCount.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // cmbShiftNo
-            // 
-            this.cmbShiftNo.FormattingEnabled = true;
-            this.cmbShiftNo.Items.AddRange(new object[] {
-            "白班",
-            "中班",
-            "夜班"});
-            this.cmbShiftNo.Location = new System.Drawing.Point(272, 31);
-            this.cmbShiftNo.Name = "cmbShiftNo";
-            this.cmbShiftNo.Size = new System.Drawing.Size(321, 27);
-            this.cmbShiftNo.TabIndex = 10;
-            this.cmbShiftNo.Text = "白班";
-            this.cmbShiftNo.Visible = false;
             // 
             // dtpDate
             // 
@@ -1481,7 +1465,6 @@
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.ComboBox cmbShiftNo;
         private System.Windows.Forms.DateTimePicker dtpDate;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.ToolStripButton btnLog;

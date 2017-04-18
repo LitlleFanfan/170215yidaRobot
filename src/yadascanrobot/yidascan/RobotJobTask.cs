@@ -76,17 +76,5 @@ namespace yidascan {
                 return false;//临时
             }
         }
-
-        private static PanelState GetPanelState(LableCode label, PanelInfo pinfo) {
-            var state = PanelState.LessHalf;
-            if (label.Floor >= pinfo.MaxFloor - 1) {
-                state = PanelState.HalfFull;
-            }
-            if (pinfo.Status == 5 && LableCode.IsPanelLastRoll(pinfo.PanelNo, label.LCode)) {
-                state = PanelState.Full;
-            }
-            return state;
-        }
-
     }
 }

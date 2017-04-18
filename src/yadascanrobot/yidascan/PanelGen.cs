@@ -45,7 +45,7 @@ namespace yidascan {
             lock (foo) {
                 panelNo = LableCode.GetLastPanelNo(string.Format("{0}", dtime.ToString(clsSetting.LABEL_CODE_DATE_FORMAT)));
                 panelNo = string.IsNullOrEmpty(panelNo)
-                    ? string.Format("{0}{1}", dtime.ToString(clsSetting.LABEL_CODE_DATE_FORMAT), "0001")
+                    ? string.Format("{0}{1}", dtime.ToString(clsSetting.LABEL_CODE_DATE_FORMAT), "0000000001")
                     : (decimal.Parse(panelNo) + 1).ToString();
             }
             return panelNo;
