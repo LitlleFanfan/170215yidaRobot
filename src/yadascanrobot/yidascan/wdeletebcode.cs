@@ -24,7 +24,7 @@ namespace yidascan {
             var code = txtLabelCode.Text.Trim();
 
             if (code.Length != 12) {
-                log($"号码长度不正确: {code.Length}");
+                log($"号码{code}长度应当是12位，实际长度: {code.Length}");
                 return;
             }
 
@@ -39,9 +39,7 @@ namespace yidascan {
             wmain.ShowTaskQ();
 
             if (rt) {
-                // show message.    
-                var msg = $"{code}已经删除。";
-                log(msg);
+                var msg = $"{code}已经删除";
                 FrmMain.logOpt.Write(msg, LogType.NORMAL);
             } else {
                 var msg = $"数据库中没有这个号码: {code}";
@@ -63,8 +61,15 @@ namespace yidascan {
                 label.Remark += ";delete";
                 // delete
                 deleteFromTaskq(FrmMain.taskQ, label.LCode);
-                LableCode.Delete(label.LCode);
-                LableCode.SaveToHistory(label);
+                log($"号码{code}已从队列中删除");
+
+                // 只有没计算过位置的布卷才可以从数据库中删除。
+                if (!string.IsNullOrEmpty(label.PanelNo) && label.FloorIndex != 0) {
+                    LableCode.Delete(label.LCode);
+                    LableCode.SaveToHistory(label);
+                    log($"号码{label.LCode}已经从数据库中删除");
+                }
+
                 // tell plc.
                 notifyOpc(label.LCode);
                 
@@ -142,7 +147,7 @@ namespace yidascan {
         }
 
         private void log(string s) {
-            lbxLog.Items.Insert(0, $"{lbxLog.Items.Count + 1} {s}。");
+            lbxLog.Items.Insert(0, $"{lbxLog.Items.Count + 1} {s}");
         }
         #endregion
     }

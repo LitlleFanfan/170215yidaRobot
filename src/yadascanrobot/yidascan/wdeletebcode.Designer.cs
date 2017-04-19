@@ -113,7 +113,7 @@
             this.MinimizeBox = false;
             this.Name = "wdeletebcode";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "删除号码";
+            this.Text = "删除B区号码号码";
             this.ResumeLayout(false);
             this.PerformLayout();
 
