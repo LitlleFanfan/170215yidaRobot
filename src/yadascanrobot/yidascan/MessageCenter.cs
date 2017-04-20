@@ -21,7 +21,7 @@ namespace yidascan {
 
         public override string ToString() {
             var prefix = "";
-            if (this.Text.StartsWith("!") || this.Text.StartsWith("?")) {
+            if (IsWarning()) {
                 prefix = this.Text.Substring(0, 1);                
             }
 
@@ -30,6 +30,11 @@ namespace yidascan {
                 Timestamp.ToString(FMT_DATE),
                 Group,
                 Text);
+        }
+
+        public bool IsWarning() {
+            return !string.IsNullOrEmpty(Text) 
+                && (Text.StartsWith("!") || Text.StartsWith("?"));
         }
     }
 
