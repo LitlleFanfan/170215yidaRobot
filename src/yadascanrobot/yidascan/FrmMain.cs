@@ -96,6 +96,7 @@ namespace yidascan {
             lsvLog.Initstyle();
             lsvRobotStackLog.Initstyle();
             lsvAlarmLog.Initstyle();
+            lsvWarn.Initstyle();
         }
 
         private void ShowTaskState(bool running) {
@@ -1132,11 +1133,25 @@ namespace yidascan {
 
         }
 
-        private void timer_message_Tick(object sender, EventArgs e) {
-            var msgs = logOpt.msgCenter.GetAll();
+        #region LISTBOX_MESSAGES
 
-            if (msgs == null) { return; }
+        private void showWarningMessages(ListBox lbx, IEnumerable<MessageItem> warnmessages) {
+            MessageItem last = null;
+            foreach (var msg in warnmessages) {
+                // 连续的重复消息更新显示，非重复消息增加显示。
+                if (last != null && msg.Text == last.Text && msg.Group == last.Group) {
+                    lbx.Items[0] = msg;
+                } else {
+                    lbx.Items.Insert(0, msg);
+                }
+                last = msg;
+            }
 
+            // 显示的总条数超过1000条。
+            limitShowCount(lbx);
+        }
+
+        private void showNormalMessages(IEnumerable<MessageItem> msgs) {
             foreach (var msg in msgs) {
                 var box = lsvLog;
 
@@ -1151,11 +1166,29 @@ namespace yidascan {
                 box.Items.Insert(0, msg);
 
                 // 显示的总条数超过1000条。
-                var len = box.Items.Count;
-                if (len > 1000) {
-                    box.Items.RemoveAt(len - 1);
-                }
+                limitShowCount(box);
             }
+        }
+
+        private void limitShowCount(ListBox lbx) {
+            const int MAX = 1000;
+            var len = lbx.Items.Count;
+            if (len > MAX) {
+                lbx.Items.RemoveAt(len - 1);
+            }
+        }
+
+        #endregion
+
+        private void timer_message_Tick(object sender, EventArgs e) {
+            var msgs = logOpt.msgCenter.GetAll();
+            if (msgs == null) { return; }
+
+            var normals = msgs.Where(x => !x.IsWarning());
+            showNormalMessages(normals);
+
+            var warnmsgs = msgs.Where(x => x.IsWarning());
+            showWarningMessages(lsvWarn, warnmsgs);
         }
 
         private void btnHelp_Click(object sender, EventArgs e) {
@@ -1395,9 +1428,10 @@ namespace yidascan {
         }
 
         private void btnSelfTest_Click(object sender, EventArgs e) {
-            logOpt.Write("--- 自检开始 ---");
+            const string GROUP = "SELF TEST";
+            logOpt.Write("!--- 自检开始 ---", GROUP);
             var t = new SelfTest(FrmSet.pcfgScan1, (s) => {
-                logOpt.Write(s);
+                logOpt.Write(s, GROUP);
                 Application.DoEvents();
             });
             try {
@@ -1406,7 +1440,7 @@ namespace yidascan {
             } finally {
                 t.close();
                 this.Cursor = Cursors.Default;
-                logOpt.Write("--- 自检结束 ---");
+                logOpt.Write("!--- 自检结束 ---", GROUP);
             }
         }
 

@@ -61,7 +61,7 @@ namespace yidascan {
                 robot.Close();
                 return true;
             } catch (Exception ex) {
-                log?.Invoke($"机器人访问异常: {ex}");
+                log?.Invoke($"!机器人访问异常: {ex}");
                 return false;
             } 
         }
