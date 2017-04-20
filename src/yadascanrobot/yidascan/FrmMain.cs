@@ -333,6 +333,9 @@ namespace yidascan {
 
                 grbHandwork.Enabled = isRun;
                 btnStop.Enabled = isRun;
+
+                // 删除号码菜单项
+                btnDeleteCodeFromQueueAndDb.Enabled = !isRun;
             }));
         }
 
@@ -1409,6 +1412,18 @@ namespace yidascan {
 
         private void btnSearch_Click(object sender, EventArgs e) {
             using (var w = new wfind()) {
+                w.ShowDialog();
+            }
+        }
+
+        private void btnCodeFromBarea_Click(object sender, EventArgs e) {
+            if (isrun) {
+                commonhelper.CommonHelper.Warn("生产线正在运行，不能删除号码。");
+                return;
+            }
+
+            using (var w = new wdeletebcode()) {
+                w.wmain = this;
                 w.ShowDialog();
             }
         }

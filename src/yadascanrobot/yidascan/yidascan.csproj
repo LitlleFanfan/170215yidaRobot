@@ -147,6 +147,12 @@
     <Compile Include="SelfTest.cs" />
     <Compile Include="taskqueconf.cs" />
     <Compile Include="TempTest.cs" />
+    <Compile Include="wdeletebcode.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="wdeletebcode.Designer.cs">
+      <DependentUpon>wdeletebcode.cs</DependentUpon>
+    </Compile>
     <Compile Include="Web References\ERPService\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -186,6 +192,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="wdeletebcode.resx">
+      <DependentUpon>wdeletebcode.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="wfind.resx">
       <DependentUpon>wfind.cs</DependentUpon>
     </EmbeddedResource>
