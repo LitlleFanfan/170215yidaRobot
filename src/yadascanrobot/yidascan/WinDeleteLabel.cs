@@ -204,6 +204,7 @@ namespace yidascan {
 
         private void txtLabelCode_KeyPress(object sender, KeyPressEventArgs e) {
             if (e.KeyChar == '\r') {
+                txtLabelCode.Text = txtLabelCode.Text.Substring(0, 12);
                 txtLabelCode.SelectAll();
             }
         }

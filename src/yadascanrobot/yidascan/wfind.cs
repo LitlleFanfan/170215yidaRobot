@@ -64,6 +64,7 @@ namespace yidascan {
 
         private void mtxCode_KeyPress(object sender, KeyPressEventArgs e) {
             if (e.KeyChar == '\r') {
+                mtxCode.Text = mtxCode.Text.Substring(0, 12);
                 btnSearch_Click(sender, e);
             }
         }
