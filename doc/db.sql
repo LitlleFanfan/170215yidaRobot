@@ -57,6 +57,20 @@ ToLocation varchar(64) null,
 Remark varchar(256)
 );
 
+create table PanelHis(
+SequenceNo Integer identity PRIMARY KEY,
+PanelNo varchar(64) null,
+Status int not null default 0,
+CurrFloor int not null,
+MaxFloor int not null default 7,
+OddStatus bit not null default 0,
+EvenStatus bit not null default 0,
+CreateDate datetime not null default getdate(),
+UpdateDate datetime not null default getdate(),
+ToLocation varchar(64) null,
+Remark varchar(256)
+);
+
 create table RobotParam(
 SequenceNo Integer identity PRIMARY KEY,
 PanelIndexNo int not null,

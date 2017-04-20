@@ -15,19 +15,20 @@ namespace yidascan {
             return lc.FloorIndex > 0 && lc.FloorIndex % 2 == findex % 2;
         }
 
-        private static void CalculatePosition(List<LableCode> lcs, LableCode lc) {
+        private static void CalculatePosition(List<LableCode> lcs, LableCode lc, int state) {
             lc.FloorIndex = CalculateFloorIndex(lcs);
 
-            OnlinCalculatePosition(lcs, lc);
+            OnlinCalculatePosition(lcs, lc, state);
         }
 
-        private static void OnlinCalculatePosition(List<LableCode> lcs, LableCode lc) {
+        private static void OnlinCalculatePosition(List<LableCode> lcs, LableCode lc, int state) {
             var z = lc.Floor == 1 ? clsSetting.InitHeigh : LableCode.GetFloorMaxDiameter(lc.PanelNo, lc.Floor) - (lc.Floor * 5);
             var r = clsSetting.OddTurn ?
                 (lc.Floor % 2 == 1 ? 0 : 90) : //奇数层横放
                 (lc.Floor % 2 == 1 ? 90 : 0); //偶数层横放
 
             var xory = CalculateXory(lcs, lc);
+            xory = OffsetSideLastRollXory(state, lc, xory);
 
             //z,r,x/y
             lc.Coordinates = string.Format("{0},{1},{2}", z, r, xory);
@@ -84,12 +85,13 @@ namespace yidascan {
             return oddcount > evencount ? 2 * evencount + 2 : 2 * oddcount + 1;
         }
 
-        private static void CalculatePosition(List<LableCode> lcs, LableCode lc, LableCode lc2) {
-            CalculatePosition(lcs, lc);
+        private static void CalculatePosition(List<LableCode> lcs, LableCode lc, LableCode lc2, int state) {
+            CalculatePosition(lcs, lc, SideFullState.NO_FULL);
             lc2.FloorIndex = lc.FloorIndex + 2;
 
             var d = Math.Abs(lc.Cx + lc.Cy) + lc.Diameter + clsSetting.RollSep;
             var xory = d * (lc.FloorIndex % 2 == 1 ? 1 : -1);
+            xory = OffsetSideLastRollXory(state, lc2, xory);
 
             lc2.Coordinates = string.Format("{0},{1},{2}", lc.Cz, lc.Crz, xory);
 
@@ -99,10 +101,25 @@ namespace yidascan {
             lc2.Crz = lc.Crz;
         }
 
-        private static void CalculatePositionEdgeExceed(List<LableCode> lcs, LableCode cur, LableCode fromcache) {
-            CalculatePosition(lcs, fromcache);
+        private static decimal OffsetSideLastRollXory(int state, LableCode lc, decimal xory) {
+            if (state == SideFullState.NO_FULL) {//未满不须要靠边放。
+                return xory;
+            }
+            var maxwidth = FindMaxHalfWidth(lc);
+            var newxory = (maxwidth - lc.Diameter - 40) * (lc.FloorIndex % 2 == 1 ? 1 : -1);
+
+            if (Math.Abs(xory) > Math.Abs(newxory)) {
+                return xory;
+            } else {
+                lc.Remark = $"{lc.Remark} offsetSLR[{(int)(Math.Abs(newxory) - Math.Abs(xory))}mm]";
+                return newxory;
+            }
+        }
+
+        private static void CalculatePositionEdgeExceed(List<LableCode> lcs, LableCode cur, LableCode fromcache, int state) {
+            CalculatePosition(lcs, fromcache, SideFullState.NO_FULL);
             cur.FloorIndex = fromcache.FloorIndex + 1;
-            OnlinCalculatePosition(lcs, cur);
+            OnlinCalculatePosition(lcs, cur, state);
         }
 
         /// <summary>
@@ -391,20 +408,20 @@ namespace yidascan {
             var msg = $"";
             switch (cre.CResult.state) {
                 case CacheState.Go:
-                    CalculatePosition(layerLabels, cre.CResult.CodeCome);
+                    CalculatePosition(layerLabels, cre.CResult.CodeCome, cre.SideState.state);
                     break;
                 case CacheState.GetThenCache:
                 case CacheState.CacheAndGet:
-                    CalculatePosition(layerLabels, cre.CResult.CodeFromCache);
+                    CalculatePosition(layerLabels, cre.CResult.CodeFromCache, cre.SideState.state);
                     break;
                 case CacheState.GoThenGet:
                     //计算位置坐标, 赋予层号
                     cre.CResult.CodeCome.Floor = cre.CResult.CodeFromCache.Floor;
-                    CalculatePosition(layerLabels, cre.CResult.CodeCome, cre.CResult.CodeFromCache);
+                    CalculatePosition(layerLabels, cre.CResult.CodeCome, cre.CResult.CodeFromCache, cre.SideState.state);
                     break;
                 case CacheState.GetThenGo:
                     cre.CResult.CodeCome.Floor = cre.CResult.CodeFromCache.Floor;
-                    CalculatePosition(layerLabels, cre.CResult.CodeFromCache, cre.CResult.CodeCome);
+                    CalculatePosition(layerLabels, cre.CResult.CodeFromCache, cre.CResult.CodeCome, cre.SideState.state);
                     break;
                 case CacheState.Cache:
                     var cancachesum = pinfo == null ? 2 : (pinfo.OddStatus ? 0 : 1) + (pinfo.EvenStatus ? 0 : 1);
@@ -416,7 +433,7 @@ namespace yidascan {
                     var go = CanIgo(cacheq, cre.CResult, cancachesum - cachelcs);
                     if (go) {
                         cre.CResult.state = CacheState.Go;
-                        CalculatePosition(layerLabels, cre.CResult.CodeCome);
+                        CalculatePosition(layerLabels, cre.CResult.CodeCome, cre.SideState.state);
 
                         if (pinfo != null && IsPanelFull(cre.CResult.CodeCome)) {
                             fp = SetFullFlag(cre.CResult.CodeFromCache.FloorIndex, pinfo);
