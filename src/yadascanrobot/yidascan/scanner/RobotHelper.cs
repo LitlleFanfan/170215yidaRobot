@@ -369,6 +369,7 @@ namespace yidascan {
                         client.Write(param.BAreaPanelFinish[roll.ToLocation], true);
                         log($"{roll.ToLocation}: 满板信号发出。slot: {param.BAreaPanelFinish[roll.ToLocation]}", LogType.ROBOT_STACK);
                         log(msg, LogType.ROBOT_STACK);
+                        LableCode.SetPanelFinished(roll.PanelNo);
 
                         const int SIGNAL_3 = 3;
                         client.Write(param.BAreaPanelState[roll.ToLocation], SIGNAL_3);
