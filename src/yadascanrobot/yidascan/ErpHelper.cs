@@ -55,7 +55,7 @@ namespace yidascan {
                     return true;
                 }
             } else {
-                msg = $"{0}板号{1}完成失败, {re}";
+                msg = $"{mode}板号{paramJson}完成失败, {resultJson}";
                 return false;
             }
         }

@@ -479,7 +479,7 @@ namespace yidascan.DataAccess {
                     new SqlParameter("@ToLocation",tolocation),
                     new SqlParameter("@Status",tolocation.Substring(0,1)=="B"? LableState.Null:LableState.PanelFill),
                     new SqlParameter("@MaxFloor",clsSetting.MaxFloor),
-                    new SqlParameter("@Remark","")}) };
+                    new SqlParameter("@Remark","人工满板重新计算。")}) };
             return DataAccess.CreateDataAccess.sa.NonQueryTran(cps);
         }
 
