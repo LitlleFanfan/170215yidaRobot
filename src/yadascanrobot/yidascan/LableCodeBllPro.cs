@@ -102,7 +102,7 @@ namespace yidascan {
         }
 
         private static decimal OffsetSideLastRollXory(int state, LableCode lc, decimal xory) {
-            if (state == SideFullState.NO_FULL) {//未满不须要靠边放。
+            if (state == SideFullState.NO_FULL || lc.Floor == 1) {//未满不须要靠边放。
                 return xory;
             }
             var maxwidth = FindMaxHalfWidth(lc);

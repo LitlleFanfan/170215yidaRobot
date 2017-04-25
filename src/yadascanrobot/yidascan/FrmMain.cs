@@ -201,6 +201,12 @@ namespace yidascan {
 
                             showLabelQue(taskQ.CatchAQ, lsvCatch1);
                             showRobotQue(taskQ.RobotRollAQ, lsvRobotA);
+
+                            var str = ProduceComm.Helper.retryTime(() => {
+                                return RobotOpcClient.ReadBool(opcParam.RobotCarryParam.RobotCarryA);
+                            }, 330, 30);
+                            logOpt.Write($"抓料A处来料信号状态:{str} " +
+                                $"{opcParam.RobotCarryParam.RobotCarryA}", LogType.ROLL_QUEUE);
                         }
                     }
                     Thread.Sleep(1000);
@@ -214,6 +220,12 @@ namespace yidascan {
 
                             showLabelQue(taskQ.CatchBQ, lsvCatch2);
                             showRobotQue(taskQ.RobotRollBQ, lsvRobotB);
+
+                            var str = ProduceComm.Helper.retryTime(() => {
+                                return RobotOpcClient.ReadBool(opcParam.RobotCarryParam.RobotCarryB);
+                            }, 330, 30);
+                            logOpt.Write($"抓料A处来料信号状态:{str} " +
+                                $"{opcParam.RobotCarryParam.RobotCarryB}", LogType.ROLL_QUEUE);
                         }
                     }
                     Thread.Sleep(1000);
@@ -578,43 +590,45 @@ namespace yidascan {
                                 continue;
                             }
 
-                            var t = TimeCount.TimeIt(() => {
-                                // 计算位置, lc和cache队列里比较。
-                                var calResult = LableCodeBllPro.AreaBCalculate(CacheOpcClient,
-                                    lc,
-                                    createShiftNo(),
-                                    taskQ.GetBeforCacheLables(lc),
-                                    x => { logOpt.Write(x, LogType.BUFFER); }
-                                    );
+                            // 计算位置, lc和cache队列里比较。
+                            var calResult = LableCodeBllPro.AreaBCalculate(CacheOpcClient,
+                                lc,
+                                createShiftNo(),
+                                taskQ.GetBeforCacheLables(lc),
+                                x => { logOpt.Write(x, LogType.BUFFER); }
+                                );
 
-                                // 确定缓存操作动作
-                                var cacheJobState = cacheher.WhenRollArrived(calResult.state, calResult.CodeCome, calResult.CodeFromCache);
-                                // 这个为什么不放在whenRollArrived里面呢?
-                                if (cacheJobState.state == CacheState.CacheAndGet || cacheJobState.state == CacheState.GetThenCache) {
-                                    if (CacheHelper.isInSameCacheChannel(cacheJobState.getpos, cacheJobState.savepos)) {
-                                        // 在同一侧
-                                        cacheJobState.state = CacheState.GetThenCache;  // action 3.
-                                    } else {
-                                        cacheJobState.state = CacheState.CacheAndGet;   // action 6
-                                    }
+                            // 确定缓存操作动作
+                            var cacheJobState = cacheher.WhenRollArrived(calResult.state, calResult.CodeCome, calResult.CodeFromCache);
+                            // 这个为什么不放在whenRollArrived里面呢?
+                            if (cacheJobState.state == CacheState.CacheAndGet || cacheJobState.state == CacheState.GetThenCache) {
+                                if (CacheHelper.isInSameCacheChannel(cacheJobState.getpos, cacheJobState.savepos)) {
+                                    // 在同一侧
+                                    cacheJobState.state = CacheState.GetThenCache;  // action 3.
+                                } else {
+                                    cacheJobState.state = CacheState.CacheAndGet;   // action 6
                                 }
-                                logOpt.Write($"{calResult.CodeCome.ToLocation} {JsonConvert.SerializeObject(cacheJobState)}" +
-                                    $" 来料标签：{calResult.CodeCome.LCode} {calResult.CodeCome.Diameter} " +
-                                    $"取出标签：{calResult.CodeFromCache?.LCode} {calResult.CodeFromCache?.Diameter}  " +
-                                    $"{calResult.message}", LogType.BUFFER);
+                            }
+                            logOpt.Write($"{calResult.CodeCome.ToLocation} {JsonConvert.SerializeObject(cacheJobState)}" +
+                                $" 来料标签：{calResult.CodeCome.LCode} {calResult.CodeCome.Diameter} " +
+                                $"取出标签：{calResult.CodeFromCache?.LCode} {calResult.CodeFromCache?.Diameter}  " +
+                                $"{calResult.message}", LogType.BUFFER);
 
-                                lock (taskQ.CacheQ) {
-                                    taskQ.CacheQ.Dequeue();
-                                }
+                            lock (taskQ.CacheQ) {
+                                taskQ.CacheQ.Dequeue();
+                            }
 
-                                // 更新界面显示
-                                BindQueue(lc, calResult.CodeFromCache, cacheJobState);
+                            // 更新界面显示
+                            BindQueue(lc, calResult.CodeFromCache, cacheJobState);
 
-                                var ts = TimeCount.TimeIt(() => {
-                                    // 发出机械手缓存动作指令
-                                    PlcHelper.WriteCacheJob(CacheOpcClient, opcParam, cacheJobState.state, cacheJobState.savepos, cacheJobState.getpos);
-                                });
-                            });
+                            // 发出机械手缓存动作指令
+                            PlcHelper.WriteCacheJob(CacheOpcClient, opcParam, cacheJobState.state, cacheJobState.savepos, cacheJobState.getpos);
+
+                            var str = ProduceComm.Helper.retryTime(() => {
+                                return CacheOpcClient.ReadBool(opcParam.CacheParam.BeforCacheStatus);
+                            }, 330, 30);
+                            logOpt.Write($"缓存处来料信号状态:{str} " +
+                                $"{opcParam.CacheParam.BeforCacheStatus}", LogType.BUFFER);
                         }
                     } catch (Exception ex) {
                         logOpt.Write($"!{ex.ToString()}", LogType.BUFFER);
@@ -651,6 +665,12 @@ namespace yidascan {
                                 } else {
                                     showLabelQue(taskQ.CatchBQ, lsvCatch2);
                                 }
+
+                                var str = ProduceComm.Helper.retryTime(() => {
+                                    return LabelUpOpcClient.ReadBool(opcParam.LableUpParam.Signal);
+                                }, 330, 30);
+                                logOpt.Write($"标签朝上处来料信号状态:{str} " +
+                                    $"{opcParam.LableUpParam.Signal}", LogType.ROLL_QUEUE);
                             }
                         }
                     } catch (Exception ex) {
