@@ -1155,8 +1155,8 @@ namespace yidascan {
 
         #region LISTBOX_MESSAGES
 
-        private void showWarningMessages(ListBox lbx, IEnumerable<MessageItem> warnmessages) {
-            MessageItem last = null;
+        private MessageItem last = null;
+        private void showWarningMessages(ListBox lbx, IEnumerable<MessageItem> warnmessages) {            
             foreach (var msg in warnmessages) {
                 // 连续的重复消息更新显示，非重复消息增加显示。
                 if (last != null && msg.Text == last.Text && msg.Group == last.Group) {
