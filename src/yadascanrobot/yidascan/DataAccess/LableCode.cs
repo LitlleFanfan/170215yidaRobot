@@ -245,10 +245,10 @@ namespace yidascan.DataAccess {
                         new SqlParameter("@UpdateDate",DateTime.Now)}));
                     break;
                 case FloorPerformance.BothFinish:
-                    if (c.floor == pInfo.MaxFloor) {
+                    if (c.floor == pInfo.MaxFloor || clsSetting.SplintHeight < GetFloorMaxDiameter(c.PanelNo, c.floor + 1) + 50) {
                         cps.Add(new CommandParameter("UPDATE Panel SET Status = @Status," +
-                                "UpdateDate = @UpdateDate WHERE PanelNo = @PanelNo",
-                            new SqlParameter[]{
+                            "UpdateDate = @UpdateDate WHERE PanelNo = @PanelNo",
+                        new SqlParameter[]{
                             new SqlParameter("@PanelNo",c.PanelNo),
                             new SqlParameter("@Status",LableState.PanelFill),
                             new SqlParameter("@UpdateDate",DateTime.Now)}));
@@ -298,7 +298,7 @@ namespace yidascan.DataAccess {
             cps.Add(CreateLableCodeUpdate(fromcache));
             switch (fp) {
                 case FloorPerformance.BothFinish:
-                    if (fromcache.floor == pInfo.MaxFloor) {//板满
+                    if (fromcache.floor == pInfo.MaxFloor|| clsSetting.SplintHeight < GetFloorMaxDiameter(cur.PanelNo, cur.floor + 1) + 50) {//板满
                         cps.Add(new CommandParameter("UPDATE Panel SET Status = @Status," +
                                 "UpdateDate = @UpdateDate WHERE PanelNo = @PanelNo",
                             new SqlParameter[]{

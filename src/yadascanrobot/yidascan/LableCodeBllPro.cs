@@ -106,7 +106,7 @@ namespace yidascan {
                 return xory;
             }
             var maxwidth = FindMaxHalfWidth(lc);
-            var newxory = (maxwidth - lc.Diameter - 40) * (lc.FloorIndex % 2 == 1 ? 1 : -1);
+            var newxory = (maxwidth - lc.Diameter - 50) * (lc.FloorIndex % 2 == 1 ? 1 : -1);
 
             if (Math.Abs(xory) > Math.Abs(newxory)) {
                 return xory;
