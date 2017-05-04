@@ -209,12 +209,12 @@ namespace yidascan.DataAccess {
             return code;
         }
 
-        private string FindodeFromRobotQue(Queue<RollPosition> qu, string tolocation, string panelNo) {
+        private RollPosition FindodeFromRobotQue(Queue<RollPosition> qu, string tolocation, string panelNo) {
             RollPosition lb;
             lock (qu) {
                 lb = RobotRollAQ.LastOrDefault(item => item.ToLocation == tolocation && item.PanelNo == panelNo);
             }
-            return lb != null ? lb.LabelCode : string.Empty;
+            return lb;
         }
 
         /// <summary>
@@ -231,6 +231,7 @@ namespace yidascan.DataAccess {
                 lbup = LableUpQ.LastOrDefault(item => item.ToLocation == tolocation && item.PanelNo== panelNo);
             }
             if (lbup != null) {
+                lbup.Status = (int)LableState.FloorLastRoll;
                 return lbup.LCode;
             }
 
@@ -241,24 +242,30 @@ namespace yidascan.DataAccess {
                     lbup = CatchAQ.LastOrDefault(item => item.ToLocation == tolocation && item.PanelNo == panelNo);
                 }
                 if (lbup != null) {
+                    lbup.Status = (int)LableState.FloorLastRoll;
                     return lbup.LCode;
                 }
 
-                lcode = FindodeFromRobotQue(RobotRollAQ, tolocation, panelNo);
-                if (!string.IsNullOrEmpty(lcode)) {
-                    return lcode;
+                RollPosition rp = FindodeFromRobotQue(RobotRollAQ, tolocation, panelNo);
+                if (rp != null) {
+                    rp.Status = (int)LableState.FloorLastRoll;
+                    rp.PnlState = PanelState.Full;
+                    return rp.LabelCode;
                 }
             } else {
                 lock (CatchBQ) {
                     lbup = CatchBQ.LastOrDefault(item => item.ToLocation == tolocation && item.PanelNo == panelNo);
                 }
                 if (lbup != null) {
+                    lbup.Status = (int)LableState.FloorLastRoll;
                     return lbup.LCode;
                 }
 
-                lcode = FindodeFromRobotQue(RobotRollBQ, tolocation, panelNo);
-                if (!string.IsNullOrEmpty(lcode)) {
-                    return lcode;
+                RollPosition rp = FindodeFromRobotQue(RobotRollBQ, tolocation, panelNo);
+                if (rp != null) {
+                    rp.Status = (int)LableState.FloorLastRoll;
+                    rp.PnlState = PanelState.Full;
+                    return rp.LabelCode;
                 }
             }
             return lcode;

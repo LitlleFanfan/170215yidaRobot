@@ -126,64 +126,80 @@ namespace ProduceComm {
             }
             return false;
         }
+
+        /// <summary>
+        /// 重复运行某个函数。
+        /// </summary>
+        /// <param name="func">需要重复运行的函数</param>
+        /// <param name="maxtimes">持续时间，毫秒</param>
+        /// <param name="delay">每次运行之间的间隔</param>
+        public static string retryTime(Func<bool> func, int maxtimes = 300, int delay = 30) {
+            string str = string.Empty;
+            DateTime dt = DateTime.Now;
+            while (func != null && dt.Subtract(DateTime.Now).Duration().TotalMilliseconds < maxtimes) {
+                str = $"{str} {DateTime.Now.ToString("mm:ss fff")} {func()}";
+                Thread.Sleep(delay);
+            }
+            return str;
+        }
+    }
+}
+
+/// <summary>
+/// var items = dt.ToList<Item>();
+/// 
+/// //or
+/// var mappings = new Dictionary<string, string>();
+/// 
+/// //keys are the properties.
+/// 
+/// mappings.Add("ItemId", "item_id");
+/// mappings.Add("ItemName ", "item_name");
+/// mappings.Add("Price ", "price);
+/// 
+/// var items = dt.ToList<Item>(mappings);
+/// </summary>
+public static class DataTableExtensions {
+    public static IList<T> ToList<T>(this DataTable table) where T : new() {
+        IList<PropertyInfo> properties = typeof(T).GetProperties().ToList();
+        IList<T> result = new List<T>();
+
+        foreach (var row in table.Rows) {
+            var item = CreateItemFromRow<T>((DataRow)row, properties);
+            result.Add(item);
+        }
+
+        return result;
     }
 
-    /// <summary>
-    /// var items = dt.ToList<Item>();
-    /// 
-    /// //or
-    /// var mappings = new Dictionary<string, string>();
-    /// 
-    /// //keys are the properties.
-    /// 
-    /// mappings.Add("ItemId", "item_id");
-    /// mappings.Add("ItemName ", "item_name");
-    /// mappings.Add("Price ", "price);
-    /// 
-    /// var items = dt.ToList<Item>(mappings);
-    /// </summary>
-    public static class DataTableExtensions {
-        public static IList<T> ToList<T>(this DataTable table) where T : new() {
-            IList<PropertyInfo> properties = typeof(T).GetProperties().ToList();
-            IList<T> result = new List<T>();
+    public static IList<T> ToList<T>(this DataTable table, Dictionary<string, string> mappings) where T : new() {
+        IList<PropertyInfo> properties = typeof(T)
+            .GetProperties()
+            .ToList();
+        IList<T> result = new List<T>();
 
-            foreach (var row in table.Rows) {
-                var item = CreateItemFromRow<T>((DataRow)row, properties);
-                result.Add(item);
-            }
-
-            return result;
+        foreach (var row in table.Rows) {
+            var item = CreateItemFromRow<T>((DataRow)row, properties, mappings);
+            result.Add(item);
         }
 
-        public static IList<T> ToList<T>(this DataTable table, Dictionary<string, string> mappings) where T : new() {
-            IList<PropertyInfo> properties = typeof(T)
-                .GetProperties()
-                .ToList();
-            IList<T> result = new List<T>();
+        return result;
+    }
 
-            foreach (var row in table.Rows) {
-                var item = CreateItemFromRow<T>((DataRow)row, properties, mappings);
-                result.Add(item);
-            }
-
-            return result;
+    private static T CreateItemFromRow<T>(DataRow row, IList<PropertyInfo> properties) where T : new() {
+        var item = new T();
+        foreach (var property in properties) {
+            property.SetValue(item, row[property.Name], null);
         }
+        return item;
+    }
 
-        private static T CreateItemFromRow<T>(DataRow row, IList<PropertyInfo> properties) where T : new() {
-            var item = new T();
-            foreach (var property in properties) {
-                property.SetValue(item, row[property.Name], null);
-            }
-            return item;
+    private static T CreateItemFromRow<T>(DataRow row, IList<PropertyInfo> properties, Dictionary<string, string> mappings) where T : new() {
+        var item = new T();
+        foreach (var property in properties) {
+            if (mappings.ContainsKey(property.Name))
+                property.SetValue(item, row[mappings[property.Name]], null);
         }
-
-        private static T CreateItemFromRow<T>(DataRow row, IList<PropertyInfo> properties, Dictionary<string, string> mappings) where T : new() {
-            var item = new T();
-            foreach (var property in properties) {
-                if (mappings.ContainsKey(property.Name))
-                    property.SetValue(item, row[mappings[property.Name]], null);
-            }
-            return item;
-        }
+        return item;
     }
 }
