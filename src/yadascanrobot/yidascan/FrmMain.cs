@@ -438,32 +438,36 @@ namespace yidascan {
                         if (signal == TO_WEIGH) {
                             var code = taskQ.GetWeighQ();
 
+                            var codeFromPlc = GetLabelCodeWhenWeigh();
                             if (code != null) {
-                                lastweighLable = code.LCode;
-                                signal = NotifyWeigh(code.LCode, false) ? SUCCESS : FAIL;
+                                if (codeFromPlc == code.LCode) {
+                                    signal = NotifyWeigh(code.LCode, false) ? SUCCESS : FAIL;
 
-                                if (signal != SUCCESS) {
-                                    logOpt.Write($"!通知称重到erp失败: {signal}");
-                                }
+                                    if (signal != SUCCESS) {
+                                        logOpt.Write($"!通知称重到erp失败: {signal}");
+                                    }
 
-                                var wstate = opcWeigh.Set(opcParam.WeighParam.GetWeigh, signal);
-                                logOpt.Write($"{code.LCode}称重API状态：{signal} 写OPC状态：{wstate}");
+                                    var wstate = opcWeigh.Set(opcParam.WeighParam.GetWeigh, signal);
+                                    logOpt.Write($"{code.LCode}称重API状态：{signal} 写OPC状态：{wstate}");
 
-                                showLabelQue(taskQ.WeighQ, lsvWeigh);
-                                if (code.ToLocation.Substring(0, 1) == "B") {
-                                    showLabelQue(taskQ.CacheQ, lsvCacheBefor);//加到缓存列表中显示
+                                    lastweighLable = code.LCode;
+
+                                    showLabelQue(taskQ.WeighQ, lsvWeigh);
+                                    if (code.ToLocation.Substring(0, 1) == "B") {
+                                        showLabelQue(taskQ.CacheQ, lsvCacheBefor);//加到缓存列表中显示
+                                    }
+                                } else {
+                                    logOpt.Write($"!称重队列号码与opc号码对应不上。opc称重标签{codeFromPlc} 称重标签{code.LCode}");
                                 }
                             } else {
 #if !DEBUG
-                                var codeFromPlc = GetLabelCodeWhenWeigh();
-
                                 if (codeFromPlc == lastweighLable) {
                                     // 复位
                                     opcWeigh.Write(opcParam.WeighParam.GetWeigh, 0);
                                     logOpt.Write($"称重复位, 原因: 重复称重。plc标签{codeFromPlc}", LogType.NORMAL, LogViewType.Both);
-                                    continue;
+                                } else {
+                                    logOpt.Write($"!称重信号无对应的队列号码, opc称重标签{codeFromPlc} 最后称重标签{lastweighLable}");
                                 }
-                                logOpt.Write($"!称重信号无对应的队列号码, opc称重标签{codeFromPlc} 最后称重标签{lastweighLable}");
 #endif
                             }
                         }
@@ -918,7 +922,6 @@ namespace yidascan {
             ShowWarning(code, false);
 
 #if !DEBUG
-            Thread.Sleep(40);
             //PLC已将布卷勾走
             if (client.ReadBool(opcParam.ScanParam.PlcPushAside)) {
                 client.Write(opcParam.ScanParam.PlcPushAside, 0);
@@ -932,8 +935,9 @@ namespace yidascan {
             var t = TimeCount.TimeIt(() => {
                 tolocation = GetLocationAndLength(code, handwork);
             });
-            var str = tolocation.Split('|');
+            logOpt.Write($"取交地耗时:　{t}ms");
 
+            var str = tolocation.Split('|');
             if (string.IsNullOrEmpty(tolocation) || string.IsNullOrEmpty(str[0])) {
                 PlcHelper.PushAside(client, opcParam);
                 return;
@@ -951,6 +955,7 @@ namespace yidascan {
                     Thread.Sleep(OPCClient.DELAY);
                 }
             });
+            logOpt.Write($"等尺寸信号耗时:{t}ms", LogType.NORMAL);
 
             t = TimeCount.TimeIt(() => {
                 clothsize.getFromOPC(client, opcParam);
@@ -966,6 +971,7 @@ namespace yidascan {
             }
 
             lc.SetSize(clothsize.diameter, clothsize.length);
+            logOpt.Write($"{lc.Size_s()}, 耗时: {t}ms");
 
             while (isrun) {
                 // 等待可写信号为false。
@@ -986,9 +992,9 @@ namespace yidascan {
                 // write camera no. and set state true.
                 status = client.Write(opcParam.ScanParam.ScanState, true);
             });
+            logOpt.Write($"写OPC耗时: {t}ms", LogType.NORMAL);
 
 #if !DEBUG
-            Thread.Sleep(40);
             //PLC已将布卷勾走
             if (client.ReadBool(opcParam.ScanParam.PlcPushAside)) {
                 client.Write(opcParam.ScanParam.PlcPushAside, 0);
@@ -1156,7 +1162,7 @@ namespace yidascan {
         #region LISTBOX_MESSAGES
 
         private MessageItem last = null;
-        private void showWarningMessages(ListBox lbx, IEnumerable<MessageItem> warnmessages) {            
+        private void showWarningMessages(ListBox lbx, IEnumerable<MessageItem> warnmessages) {
             foreach (var msg in warnmessages) {
                 // 连续的重复消息更新显示，非重复消息增加显示。
                 if (last != null && msg.Text == last.Text && msg.Group == last.Group) {
@@ -1483,7 +1489,7 @@ namespace yidascan {
         }
 
         private void btnVirtualLocations_Click(object sender, EventArgs e) {
-            using(var w = new wloc()) {
+            using (var w = new wloc()) {
                 var loc = new LocationHelper();
                 w.setdata(loc);
                 w.ShowMap();
