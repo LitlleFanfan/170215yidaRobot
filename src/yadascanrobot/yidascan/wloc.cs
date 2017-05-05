@@ -20,7 +20,7 @@ namespace yidascan {
             locs = locs_;
         }
 
-        public void ShowItems() {
+        public void ShowMap() {
             var view = listView1;
             view.Items.Clear();
 
@@ -29,7 +29,6 @@ namespace yidascan {
                     var viewitem1 = new ListViewItem {
                         Text = item.Key,
                     };
-                    viewitem1.SubItems.Add("-");
                     viewitem1.SubItems.Add("-");
 
                     view.Items.Add(viewitem1);
@@ -42,33 +41,61 @@ namespace yidascan {
                     Text = item.Key,
                 };
                 viewitem.SubItems.Add(real.readloc);
-                viewitem.SubItems.Add(LocationHelper.LocationState_s(real.state));
 
                 view.Items.Add(viewitem);
             }
         }
 
+        public void ShowRealLocs() {
+            var view = listView2;
+            view.Items.Clear();
+
+            foreach (var item in locs.RealLocations) {
+                var vi = new ListViewItem {
+                    Text = item.readloc,
+                };
+                vi.SubItems.Add(LocationHelper.state_s(item.state));
+                vi.SubItems.Add(LocationHelper.priority_s(item.priority));
+                view.Items.Add(vi);
+            }
+        }
+
         private void btnReset_Click(object sender, EventArgs e) {
             locs.Resetall();
-            ShowItems();
+            ShowMap();
+            ShowRealLocs();
         }
 
         private void listView1_SelectedIndexChanged(object sender, EventArgs e) {
             if (listView1.SelectedItems.Count > 0) {
                 var item = listView1.SelectedItems[0];
                 txVirtual.Text = item.Text;
-                txReal.Text = item.SubItems[1].Text;
             }
         }
 
-        private void btnSet_Click(object sender, EventArgs e) {
-            locs.Map(txVirtual.Text, txReal.Text);
-            ShowItems();
+        private void btnOnFull_Click(object sender, EventArgs e) {
+            locs.OnFull(txOnFull.Text);
+            ShowMap();
+            ShowRealLocs();
         }
 
-        private void btnUnset_Click(object sender, EventArgs e) {
-            locs.Map(txVirtual.Text, txReal.Text);
-            ShowItems();
+        private void btnOnReady_Click(object sender, EventArgs e) {
+            locs.OnReady(txOnFull.Text);
+            ShowMap();
+            ShowRealLocs();
+        }
+
+        private void btnGet_Click(object sender, EventArgs e) {
+            locs.Get(txVirtual.Text);
+            ShowMap();
+            ShowRealLocs();
+        }
+
+        private void listView2_SelectedIndexChanged(object sender, EventArgs e) {
+            var items = listView2.SelectedItems;
+            if (items.Count > 0) {
+                txOnFull.Text = items[0].Text;
+            }
         }
     }
 }

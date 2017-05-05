@@ -1486,7 +1486,8 @@ namespace yidascan {
             using(var w = new wloc()) {
                 var loc = new LocationHelper();
                 w.setdata(loc);
-                w.ShowItems(loc);
+                w.ShowMap();
+                w.ShowRealLocs();
                 w.ShowDialog();
             }
         }
