@@ -1481,5 +1481,15 @@ namespace yidascan {
                 w.ShowDialog();
             }
         }
+
+        private void btnVirtualLocations_Click(object sender, EventArgs e) {
+            using(var w = new wloc()) {
+                var loc = new LocationHelper();
+                w.setdata(loc);
+                w.ShowMap();
+                w.ShowRealLocs();
+                w.ShowDialog();
+            }
+        }
     }
 }
