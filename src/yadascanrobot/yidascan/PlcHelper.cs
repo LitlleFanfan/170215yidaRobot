@@ -26,6 +26,10 @@ namespace yidascan {
         public static bool ReadCacheSignal(IOpcClient client, OPCParam param) {
             return client.ReadBool(param.CacheParam.BeforCacheStatus);
         }
+        public static string ReadCacheLabble(IOpcClient client, OPCParam param) {
+            return client.ReadString(param.CacheParam.BeforCacheLable1).PadLeft(6, '0') +
+                client.ReadString(param.CacheParam.BeforCacheLable2).PadLeft(6, '0');
+        }
 
         /// <summary>
         /// 写缓存动作
@@ -34,7 +38,9 @@ namespace yidascan {
         /// <param name="job">动作编号。</param>
         /// /// <param name="posSave">动作编号。</param>
         /// /// <param name="posGet">动作编号。</param>
-        public static void WriteCacheJob(IOpcClient client, OPCParam param, CacheState job, int posSave, int posGet) {
+        public static void WriteCacheJob(IOpcClient client, OPCParam param, CacheState job, int posSave, int posGet, string lcode) {
+            client.Set(param.CacheParam.BeforCacheLable1, lcode.Substring(0, 6));
+            client.Set(param.CacheParam.BeforCacheLable2, lcode.Substring(6, 6));
             client.Set(param.CacheParam.CacheStatus, job);
             client.Set(param.CacheParam.CachePoint, posSave);
             client.Set(param.CacheParam.GetPoint, posGet);
@@ -142,7 +148,7 @@ namespace yidascan {
             client.Write(param.ScanParam.PushAside, PUSH_ASIDE);
         }
 
-        public static void NotifyBadLayerShape(IOpcClient client,OPCParam param, string tolocation) {
+        public static void NotifyBadLayerShape(IOpcClient client, OPCParam param, string tolocation) {
             const int BAD_SHAPE = 1;
             client.Write(param.BadShapeLocations[tolocation], BAD_SHAPE);
         }

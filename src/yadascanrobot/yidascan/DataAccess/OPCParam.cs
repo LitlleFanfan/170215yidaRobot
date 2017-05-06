@@ -143,6 +143,14 @@ namespace yidascan.DataAccess {
         /// 缓存前信号
         /// </summary>
         public string BeforCacheStatus { get; set; }
+        /// <summary>
+        /// 缓存前标签 
+        /// </summary>
+        public string BeforCacheLable1 { get; set; }
+        /// <summary>
+        /// 缓存前标签 
+        /// </summary>
+        public string BeforCacheLable2 { get; set; }
 
         /// <summary>
         /// 缓存状态（1走；2存；3取存，同抓子；4走取；5取走；6存取，异抓子）

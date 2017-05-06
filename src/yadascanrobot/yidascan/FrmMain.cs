@@ -414,8 +414,8 @@ namespace yidascan {
         }
 
         private string GetLabelCodeWhenWeigh() {
-            var code1 = opcWeigh.ReadString(opcParam.WeighParam.LabelPart1);
-            var code2 = opcWeigh.ReadString(opcParam.WeighParam.LabelPart2);
+            var code1 = opcWeigh.ReadString(opcParam.WeighParam.LabelPart1).PadLeft(6, '0');
+            var code2 = opcWeigh.ReadString(opcParam.WeighParam.LabelPart2).PadLeft(6, '0');
             return code1 + code2;
         }
 
@@ -439,25 +439,20 @@ namespace yidascan {
                             var code = taskQ.GetWeighQ();
 
                             var codeFromPlc = GetLabelCodeWhenWeigh();
-                            if (code != null) {
-                                if (codeFromPlc == code.LCode) {
-                                    signal = NotifyWeigh(code.LCode, false) ? SUCCESS : FAIL;
+                            if (code != null && codeFromPlc == code.LCode) {
+                                lastweighLable = code.LCode;
+                                signal = NotifyWeigh(code.LCode, false) ? SUCCESS : FAIL;
 
-                                    if (signal != SUCCESS) {
-                                        logOpt.Write($"!通知称重到erp失败: {signal}");
-                                    }
+                                if (signal != SUCCESS) {
+                                    logOpt.Write($"!通知称重到erp失败: {signal}");
+                                }
 
-                                    var wstate = opcWeigh.Set(opcParam.WeighParam.GetWeigh, signal);
-                                    logOpt.Write($"{code.LCode}称重API状态：{signal} 写OPC状态：{wstate}");
+                                var wstate = opcWeigh.Set(opcParam.WeighParam.GetWeigh, signal);
+                                logOpt.Write($"{code.LCode}称重API状态：{signal} 写OPC状态：{wstate}");
 
-                                    lastweighLable = code.LCode;
-
-                                    showLabelQue(taskQ.WeighQ, lsvWeigh);
-                                    if (code.ToLocation.Substring(0, 1) == "B") {
-                                        showLabelQue(taskQ.CacheQ, lsvCacheBefor);//加到缓存列表中显示
-                                    }
-                                } else {
-                                    logOpt.Write($"!称重队列号码与opc号码对应不上。opc称重标签{codeFromPlc} 称重标签{code.LCode}");
+                                showLabelQue(taskQ.WeighQ, lsvWeigh);
+                                if (code.ToLocation.Substring(0, 1) == "B") {
+                                    showLabelQue(taskQ.CacheQ, lsvCacheBefor);//加到缓存列表中显示
                                 }
                             } else {
 #if !DEBUG
@@ -626,7 +621,7 @@ namespace yidascan {
                             BindQueue(lc, calResult.CodeFromCache, cacheJobState);
 
                             // 发出机械手缓存动作指令
-                            PlcHelper.WriteCacheJob(CacheOpcClient, opcParam, cacheJobState.state, cacheJobState.savepos, cacheJobState.getpos);
+                            PlcHelper.WriteCacheJob(CacheOpcClient, opcParam, cacheJobState.state, cacheJobState.savepos, cacheJobState.getpos, lc.LCode);
 
                             var str = ProduceComm.Helper.retryTime(() => {
                                 return CacheOpcClient.ReadBool(opcParam.CacheParam.BeforCacheStatus);
