@@ -417,8 +417,8 @@ namespace yidascan {
         }
 
         private string GetLabelCodeWhenWeigh() {
-            var code1 = opcWeigh.ReadString(opcParam.WeighParam.LabelPart1);
-            var code2 = opcWeigh.ReadString(opcParam.WeighParam.LabelPart2);
+            var code1 = opcWeigh.ReadString(opcParam.WeighParam.LabelPart1).PadLeft(6, '0');
+            var code2 = opcWeigh.ReadString(opcParam.WeighParam.LabelPart2).PadLeft(6, '0');
             return code1 + code2;
         }
 
@@ -441,7 +441,8 @@ namespace yidascan {
                         if (signal == TO_WEIGH) {
                             var code = taskQ.GetWeighQ();
 
-                            if (code != null) {
+                            var codeFromPlc = GetLabelCodeWhenWeigh();
+                            if (code != null && codeFromPlc == code.LCode) {
                                 lastweighLable = code.LCode;
                                 signal = NotifyWeigh(code.LCode, false) ? SUCCESS : FAIL;
 
@@ -458,15 +459,13 @@ namespace yidascan {
                                 }
                             } else {
 #if !DEBUG
-                                var codeFromPlc = GetLabelCodeWhenWeigh();
-
                                 if (codeFromPlc == lastweighLable) {
                                     // 复位
                                     opcWeigh.Write(opcParam.WeighParam.GetWeigh, 0);
                                     logOpt.Write($"称重复位, 原因: 重复称重。plc标签{codeFromPlc}", LogType.NORMAL, LogViewType.Both);
-                                    continue;
+                                } else {
+                                    logOpt.Write($"!称重信号无对应的队列号码, opc称重标签{codeFromPlc} 最后称重标签{lastweighLable}");
                                 }
-                                logOpt.Write($"!称重信号无对应的队列号码, opc称重标签{codeFromPlc} 最后称重标签{lastweighLable}");
 #endif
                             }
                         }
@@ -625,7 +624,7 @@ namespace yidascan {
                             BindQueue(lc, calResult.CodeFromCache, cacheJobState);
 
                             // 发出机械手缓存动作指令
-                            PlcHelper.WriteCacheJob(CacheOpcClient, opcParam, cacheJobState.state, cacheJobState.savepos, cacheJobState.getpos);
+                            PlcHelper.WriteCacheJob(CacheOpcClient, opcParam, cacheJobState.state, cacheJobState.savepos, cacheJobState.getpos, lc.LCode);
 
                             var str = ProduceComm.Helper.retryTime(() => {
                                 return CacheOpcClient.ReadBool(opcParam.CacheParam.BeforCacheStatus);
@@ -921,7 +920,6 @@ namespace yidascan {
             ShowWarning(code, false);
 
 #if !DEBUG
-            Thread.Sleep(40);
             //PLC已将布卷勾走
             if (client.ReadBool(opcParam.ScanParam.PlcPushAside)) {
                 client.Write(opcParam.ScanParam.PlcPushAside, 0);
@@ -935,8 +933,9 @@ namespace yidascan {
             var t = TimeCount.TimeIt(() => {
                 tolocation = GetLocationAndLength(code, handwork);
             });
-            var str = tolocation.Split('|');
+            logOpt.Write($"取交地耗时:　{t}ms");
 
+            var str = tolocation.Split('|');
             if (string.IsNullOrEmpty(tolocation) || string.IsNullOrEmpty(str[0])) {
                 PlcHelper.PushAside(client, opcParam);
                 return;
@@ -954,6 +953,7 @@ namespace yidascan {
                     Thread.Sleep(OPCClient.DELAY);
                 }
             });
+            logOpt.Write($"等尺寸信号耗时:{t}ms", LogType.NORMAL);
 
             t = TimeCount.TimeIt(() => {
                 clothsize.getFromOPC(client, opcParam);
@@ -969,6 +969,7 @@ namespace yidascan {
             }
 
             lc.SetSize(clothsize.diameter, clothsize.length);
+            logOpt.Write($"{lc.Size_s()}, 耗时: {t}ms");
 
             while (isrun) {
                 // 等待可写信号为false。
@@ -989,9 +990,9 @@ namespace yidascan {
                 // write camera no. and set state true.
                 status = client.Write(opcParam.ScanParam.ScanState, true);
             });
+            logOpt.Write($"写OPC耗时: {t}ms", LogType.NORMAL);
 
 #if !DEBUG
-            Thread.Sleep(40);
             //PLC已将布卷勾走
             if (client.ReadBool(opcParam.ScanParam.PlcPushAside)) {
                 client.Write(opcParam.ScanParam.PlcPushAside, 0);
@@ -1159,7 +1160,7 @@ namespace yidascan {
         #region LISTBOX_MESSAGES
 
         private MessageItem last = null;
-        private void showWarningMessages(ListBox lbx, IEnumerable<MessageItem> warnmessages) {            
+        private void showWarningMessages(ListBox lbx, IEnumerable<MessageItem> warnmessages) {
             foreach (var msg in warnmessages) {
                 // 连续的重复消息更新显示，非重复消息增加显示。
                 if (last != null && msg.Text == last.Text && msg.Group == last.Group) {

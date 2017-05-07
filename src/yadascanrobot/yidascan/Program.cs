@@ -19,12 +19,8 @@ namespace yidascan {
 
             // 在创建mutex之后，执行此代码。
             if (!created) {
-                if (CommonHelper.Confirm("已经有一个程序在运行, 要强制关闭前一个吗?")) {
-                    CommonHelper.KillInstance(Process.GetCurrentProcess().ProcessName);
-                    Thread.Sleep(500);
-                } else {
-                    return;
-                }
+                CommonHelper.Warn("已经有一个程序在运行。");
+                Application.Exit();
             }
 
             try {
@@ -35,6 +31,6 @@ namespace yidascan {
                 mutex.ReleaseMutex();
             }
         }
-    }        
+    }
 }
 
