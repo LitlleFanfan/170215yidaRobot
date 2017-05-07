@@ -32,12 +32,12 @@ namespace yidascan {
     }
 
     public class RealLoc {
-        public string readloc { get; set; }
+        public string realloc { get; set; }
         public LocationState state { get; set; }
         public Priority priority { get; set; }
 
         public RealLoc(string loc, LocationState s, Priority p) {
-            this.readloc = loc;
+            this.realloc = loc;
             this.state = s;
             this.priority = p;
         }
@@ -103,11 +103,18 @@ namespace yidascan {
             return count > 0;
         }
 
+        public string Current(string virtualloc) {
+            if (!LocMap.ContainsKey(virtualloc)) {
+                throw new Exception($"来源: {nameof(Current)}, 交地错误: {virtualloc}");
+            }
+
+            return LocMap[virtualloc];
+        }
 
         // 根据erp所指的交地，换算出真实交地
-        public string Get(string virtualloc) {
+        public string Convert(string virtualloc) {
             if (!LocMap.ContainsKey(virtualloc)) {
-                throw new Exception($"来源: {nameof(Get)}, 交地错误: {virtualloc}");
+                throw new Exception($"来源: {nameof(Convert)}, 交地错误: {virtualloc}");
             }
 
             if (LocMap[virtualloc] == string.Empty) {
@@ -122,7 +129,7 @@ namespace yidascan {
                 throw new Exception($"函数: {nameof(SetState)}, 交地错误： {realloc}");
             }
 
-            var loc = RealLocations.First(x => x.readloc == realloc);
+            var loc = RealLocations.First(x => x.realloc == realloc);
             loc.state = state;
         }
 
@@ -146,7 +153,7 @@ namespace yidascan {
 
 
         private bool IsRealLocExists(string loc) {
-            return RealLocations.Exists(x => x.readloc == loc);
+            return RealLocations.Exists(x => x.realloc == loc);
         }
 
         private void Map(string virtualloc, string realloc) {
@@ -182,14 +189,20 @@ namespace yidascan {
         }
 
         // 找到最近的一个空板
-        private string FindEmptyRealLoc() {
+        private string FindAvailableRealLoc() {
             // 如果有板闲置，返回该板号, 无则返回空字符串。
             var locs = RealLocations.Where(x => x.state == LocationState.IDLE)
                 .OrderByDescending(x => x.priority)
                 .FirstOrDefault();
-            
+
             if (locs != null) {
-                return locs.readloc;
+                locs = RealLocations.Where(x => x.state == LocationState.FULL)
+                    .OrderBy(x => x.priority)
+                    .FirstOrDefault();
+            }
+
+            if (locs != null) {
+                return locs.realloc;
             } else {
                 return "";
             }
@@ -200,7 +213,7 @@ namespace yidascan {
         }
 
         private bool automap(string virtualloc) {
-            var realloc = FindEmptyRealLoc();
+            var realloc = FindAvailableRealLoc();
             if (!string.IsNullOrEmpty(realloc)) {
                 Map(virtualloc, realloc);
                 return true;
@@ -236,7 +249,7 @@ namespace yidascan {
                 throw new Exception($"来源: {nameof(OnReady)}, 交地忙: {realloc}");
             }
 
-            var loc = RealLocations.Single(x => x.readloc == realloc);
+            var loc = RealLocations.Single(x => x.realloc == realloc);
             loc.state = LocationState.IDLE;
         }
 
@@ -246,9 +259,11 @@ namespace yidascan {
                 throw new Exception($"来源: {nameof(IsRealAvailable)}, 交地错误: {realloc}");
             }
 
-            var loc = RealLocations.Single(x => x.readloc == realloc);
+            var loc = RealLocations.Single(x => x.realloc == realloc);
             return loc.state == LocationState.IDLE;
         }
+
+
 
         public override string ToString() {
             var s = new StringBuilder();
@@ -288,6 +303,20 @@ namespace yidascan {
                     break;
             }
             return v;
+        }
+
+        public void panelCheckLoop(IRobotJob robot) {
+            Task.Run(() => {
+                foreach(var item in RealLocations) {
+                    if (item.state == LocationState.FULL) {
+                        if (robot.PanelAvailable(item.realloc)) {
+                            item.state = LocationState.IDLE;
+                        }
+                    }
+                }
+
+                Task.Delay(500);
+            });
         }
     }
 }

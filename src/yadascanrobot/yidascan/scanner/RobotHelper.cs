@@ -48,7 +48,7 @@ namespace yidascan {
             }
         }
 
-        public RollPosition(LableCode label, string side, PanelState pnlState, decimal x, decimal y, decimal z, decimal rz) {
+        public RollPosition(LableCode label, string side, PanelState pnlState, decimal x, decimal y, decimal z, decimal rz, string realloction) {
             this.LabelCode = label.LCode;
             PanelNo = label.PanelNo;
             Floor = label.Floor;
@@ -68,11 +68,14 @@ namespace yidascan {
             ChangeAngle = x > 0 || y < 0;
 
             ToLocation = label.ToLocation;
+            RealLocation = realloction;
             diameter = label.Diameter;
             Index = CalculateBaseIndex(label.ToLocation, x, y);
 
-            LocationNo = int.Parse(label.ToLocation.Substring(1, 2));
-            BaseIndex = 4 * (LocationNo - 1) + Index + 1;
+            // LocationNo = int.Parse(label.ToLocation.Substring(1, 2));
+            // LocationNo改为getLocationNo.
+
+            BaseIndex = 4 * (GetLocationNo() - 1) + Index + 1;
 
             Side = side;
             PnlState = pnlState;
@@ -87,6 +90,11 @@ namespace yidascan {
             X = X + XOffSet;
             Origin = new PostionVar(XOffSet, 0, 1700, origin.Rx, origin.Ry, origin.Rz + rz);
             Target = new PostionVar(X, Y, Z, origin.Rx, origin.Ry, origin.Rz + rz);
+        }
+
+        // 获取交地序号。
+        public int GetLocationNo() {
+            return int.Parse(ToLocation.Substring(1, 2));
         }
 
         private static decimal GetXOffSet(decimal originBase, decimal targetBase) {
@@ -141,7 +149,9 @@ namespace yidascan {
         public int Floor;
         public int Status;
 
-        public int LocationNo;
+        // public int LocationNo;
+        // 改为getLocationNo();
+
         public int Index;
         public int BaseIndex;
         public bool ChangeAngle;
@@ -158,6 +168,7 @@ namespace yidascan {
         public decimal Base2;
 
         public string ToLocation { get; set; }
+        public string RealLocation { get; set; }
         public decimal diameter { get; set; }
         // A侧或B侧
         public string Side { get; set; }
@@ -243,7 +254,7 @@ namespace yidascan {
 
             // 原点高位旋转
             var d = rCtrl.SetPostion(RobotControl.PosVarType.Robot,
-                rollPos.Origin, 100, RobotControl.PosType.User, 0, rollPos.LocationNo);
+                rollPos.Origin, 100, RobotControl.PosType.User, 0, rollPos.GetLocationNo());
             Thread.Sleep(DELAY);
 
             //基座
@@ -255,7 +266,7 @@ namespace yidascan {
 
             // 目标位置
             var f = rCtrl.SetPostion(RobotControl.PosVarType.Robot,
-               rollPos.Target, 101, RobotControl.PosType.User, 0, rollPos.LocationNo);
+               rollPos.Target, 101, RobotControl.PosType.User, 0, rollPos.GetLocationNo());
             Thread.Sleep(DELAY);
 
             return a && b && c && d && e && f;
@@ -269,9 +280,9 @@ namespace yidascan {
 
             // 原点高位旋转
             if (rCtrl.SetPostion(RobotControl.PosVarType.Robot,
-                rollPos.Origin, 100, RobotControl.PosType.User, 0, rollPos.LocationNo)) {
+                rollPos.Origin, 100, RobotControl.PosType.User, 0, rollPos.GetLocationNo())) {
                 rCtrl.SetPostion(RobotControl.PosVarType.Robot,
-                    rollPos.Origin, 100, RobotControl.PosType.User, 0, rollPos.LocationNo);
+                    rollPos.Origin, 100, RobotControl.PosType.User, 0, rollPos.GetLocationNo());
             }
 
             //基座
@@ -285,9 +296,9 @@ namespace yidascan {
 
             // 目标位置
             if (rCtrl.SetPostion(RobotControl.PosVarType.Robot,
-               rollPos.Target, 101, RobotControl.PosType.User, 0, rollPos.LocationNo)) {
+               rollPos.Target, 101, RobotControl.PosType.User, 0, rollPos.GetLocationNo())) {
                 rCtrl.SetPostion(RobotControl.PosVarType.Robot,
-                    rollPos.Target, 101, RobotControl.PosType.User, 0, rollPos.LocationNo);
+                    rollPos.Target, 101, RobotControl.PosType.User, 0, rollPos.GetLocationNo());
             }
         }
 
@@ -331,7 +342,7 @@ namespace yidascan {
 
                         string lcode = FrmMain.taskQ.UFGetPanelLastRoll(tolocation, panelNo);
                         LableCode.UserSetPanelLastRoll(lcode);//设置板最后一卷布。
-                        log($"{tolocation} 人工满板,半板信号发出,最后一卷布标签{lcode}。slot: {param.BAreaFloorFinish[tolocation]}", LogType.ROBOT_STACK);
+                        log($"{tolocation} 半板信号发出,最后一卷布标签{lcode}。slot: {param.BAreaFloorFinish[tolocation]}", LogType.ROBOT_STACK);
                         break;
                     case PanelState.Full:
                         string msg;
@@ -456,7 +467,7 @@ namespace yidascan {
 
         public bool JobTask(ref bool isrun, bool isSideA, Queue<RollPosition> robotRollQ, RollPosition roll, ListView lv) {
             // 等待板可放料
-            if (PanelAvailable(roll.ToLocation)) {
+            if (PanelAvailable(roll.RealLocation)) {
                 FrmMain.logOpt.Write($"{roll.ToLocation} PushInQueue收到可放料信号", LogType.ROBOT_STACK);
             } else {
                 FrmMain.logOpt.Write($"! {roll.ToLocation} PushInQueue未收到可放料信号，请检查板状态和是否有形状不规则报警。", LogType.ROBOT_STACK);
@@ -517,6 +528,10 @@ namespace yidascan {
                     // 告知OPC
                     NotifyOpcJobFinished(roll);
                     log("布卷已上垛。", LogType.ROBOT_STACK, LogViewType.Both);
+
+                    // 自由板位处理。
+                    TaskQueues.lochelper.OnFull(roll.RealLocation);
+
                     break;
                 }
                 Thread.Sleep(RobotHelper.DELAY * 20);
@@ -545,7 +560,7 @@ namespace yidascan {
             }
         }
 
-        private bool PanelAvailable(string tolocation) {
+        public bool PanelAvailable(string tolocation) {
             try {
                 var s = client.ReadString(param.BAreaPanelState[tolocation]);
                 var canput = !client.ReadBool(param.BadShapeLocations[tolocation]);

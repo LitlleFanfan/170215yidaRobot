@@ -10,6 +10,9 @@ namespace yidascan.DataAccess {
     public class TaskQueues {
         public DateTime PanelNoFrefix;
 
+        // 交地映射类。
+        public static LocationHelper lochelper = new LocationHelper();
+
         /// <summary>
         /// 用于访问锁定。
         /// </summary>
@@ -146,8 +149,18 @@ namespace yidascan.DataAccess {
             if (RollPosition.robotRSidePanel.Contains(label.ToLocation)) {
                 rz = rz + 180;
             }
-            var roll = new RollPosition(label, side, state, x, y, z, rz);
-            onlog?.Invoke($"{side} {label.LCode} {label.ToLocation}", LogType.ROLL_QUEUE);
+
+            // 调用locationhelper类的Get函数，获取真实交地。
+            var realloc = lochelper.Convert(label.ToLocation);
+            
+            if (string.IsNullOrEmpty(realloc)) {
+                var msg = $"!来源: {nameof(AddRobotRollQ)}, 获取真实交地失败: {label.ToLocation}";
+                onlog?.Invoke(msg, LogType.ROLL_QUEUE);
+                throw new Exception(msg);
+            }
+
+            var roll = new RollPosition(label, side, state, x, y, z, rz, realloc);
+            onlog?.Invoke($"来源: {nameof(AddRobotRollQ)}, {side} {label.LCode} 名义交地: {label.ToLocation}, 真实交地: {realloc}, ", LogType.ROLL_QUEUE);
             return roll;
         }
 

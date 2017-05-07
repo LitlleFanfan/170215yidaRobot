@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using commonhelper;
 
 namespace yidascan {
     public partial class wloc : Form {
@@ -35,12 +36,12 @@ namespace yidascan {
                     continue;
                 }
 
-                var real = locs.RealLocations.Single(x => x.readloc == item.Value);
+                var real = locs.RealLocations.Single(x => x.realloc == item.Value);
 
                 var viewitem = new ListViewItem {
                     Text = item.Key,
                 };
-                viewitem.SubItems.Add(real.readloc);
+                viewitem.SubItems.Add(real.realloc);
 
                 view.Items.Add(viewitem);
             }
@@ -52,7 +53,7 @@ namespace yidascan {
 
             foreach (var item in locs.RealLocations) {
                 var vi = new ListViewItem {
-                    Text = item.readloc,
+                    Text = item.realloc,
                 };
                 vi.SubItems.Add(LocationHelper.state_s(item.state));
                 vi.SubItems.Add(LocationHelper.priority_s(item.priority));
@@ -61,9 +62,11 @@ namespace yidascan {
         }
 
         private void btnReset_Click(object sender, EventArgs e) {
-            locs.Resetall();
-            ShowMap();
-            ShowRealLocs();
+            if (commonhelper.CommonHelper.Confirm("确定要复位吗?")) {
+                locs.Resetall();
+                ShowMap();
+                ShowRealLocs();
+            }
         }
 
         private void listView1_SelectedIndexChanged(object sender, EventArgs e) {
@@ -86,7 +89,7 @@ namespace yidascan {
         }
 
         private void btnGet_Click(object sender, EventArgs e) {
-            locs.Get(txVirtual.Text);
+            locs.Convert(txVirtual.Text);
             ShowMap();
             ShowRealLocs();
         }

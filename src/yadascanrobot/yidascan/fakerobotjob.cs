@@ -75,6 +75,8 @@ namespace yidascan {
         public void NotifyOpcJobFinished(RollPosition roll) {
             throw new NotImplementedException();
         }
-    }
+
+        public bool PanelAvailable(string tolocation) { return true; }
+        }
 #endif
 }

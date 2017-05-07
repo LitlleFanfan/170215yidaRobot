@@ -33,12 +33,12 @@
             this.listView2 = new System.Windows.Forms.ListView();
             this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.btnOnFull = new System.Windows.Forms.Button();
             this.txOnFull = new System.Windows.Forms.TextBox();
             this.btnOnReady = new System.Windows.Forms.Button();
             this.btnGet = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
-            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.SuspendLayout();
             // 
             // listView1
@@ -69,9 +69,9 @@
             // 
             // btnReset
             // 
-            this.btnReset.Location = new System.Drawing.Point(463, 22);
+            this.btnReset.Location = new System.Drawing.Point(465, 274);
             this.btnReset.Name = "btnReset";
-            this.btnReset.Size = new System.Drawing.Size(75, 23);
+            this.btnReset.Size = new System.Drawing.Size(124, 23);
             this.btnReset.TabIndex = 1;
             this.btnReset.Text = "复位";
             this.btnReset.UseVisualStyleBackColor = true;
@@ -79,25 +79,25 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(463, 61);
+            this.button2.Location = new System.Drawing.Point(465, 303);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
+            this.button2.Size = new System.Drawing.Size(124, 23);
             this.button2.TabIndex = 2;
             this.button2.Text = "关闭窗口";
             this.button2.UseVisualStyleBackColor = true;
             // 
             // txVirtual
             // 
-            this.txVirtual.Location = new System.Drawing.Point(463, 121);
+            this.txVirtual.Location = new System.Drawing.Point(463, 35);
             this.txVirtual.Name = "txVirtual";
             this.txVirtual.ReadOnly = true;
-            this.txVirtual.Size = new System.Drawing.Size(100, 21);
+            this.txVirtual.Size = new System.Drawing.Size(126, 21);
             this.txVirtual.TabIndex = 3;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(463, 103);
+            this.label1.Location = new System.Drawing.Point(463, 17);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(53, 12);
             this.label1.TabIndex = 7;
@@ -130,11 +130,16 @@
             this.columnHeader6.Text = "交地状态";
             this.columnHeader6.Width = 120;
             // 
+            // columnHeader3
+            // 
+            this.columnHeader3.Text = "优先级";
+            this.columnHeader3.Width = 120;
+            // 
             // btnOnFull
             // 
-            this.btnOnFull.Location = new System.Drawing.Point(465, 265);
+            this.btnOnFull.Location = new System.Drawing.Point(463, 178);
             this.btnOnFull.Name = "btnOnFull";
-            this.btnOnFull.Size = new System.Drawing.Size(75, 23);
+            this.btnOnFull.Size = new System.Drawing.Size(126, 23);
             this.btnOnFull.TabIndex = 10;
             this.btnOnFull.Text = "onfull";
             this.btnOnFull.UseVisualStyleBackColor = true;
@@ -142,16 +147,16 @@
             // 
             // txOnFull
             // 
-            this.txOnFull.Location = new System.Drawing.Point(465, 237);
+            this.txOnFull.Location = new System.Drawing.Point(463, 150);
             this.txOnFull.Name = "txOnFull";
-            this.txOnFull.Size = new System.Drawing.Size(100, 21);
+            this.txOnFull.Size = new System.Drawing.Size(126, 21);
             this.txOnFull.TabIndex = 11;
             // 
             // btnOnReady
             // 
-            this.btnOnReady.Location = new System.Drawing.Point(465, 294);
+            this.btnOnReady.Location = new System.Drawing.Point(463, 207);
             this.btnOnReady.Name = "btnOnReady";
-            this.btnOnReady.Size = new System.Drawing.Size(75, 23);
+            this.btnOnReady.Size = new System.Drawing.Size(126, 23);
             this.btnOnReady.TabIndex = 13;
             this.btnOnReady.Text = "onready";
             this.btnOnReady.UseVisualStyleBackColor = true;
@@ -159,9 +164,9 @@
             // 
             // btnGet
             // 
-            this.btnGet.Location = new System.Drawing.Point(463, 148);
+            this.btnGet.Location = new System.Drawing.Point(463, 62);
             this.btnGet.Name = "btnGet";
-            this.btnGet.Size = new System.Drawing.Size(75, 23);
+            this.btnGet.Size = new System.Drawing.Size(126, 23);
             this.btnGet.TabIndex = 14;
             this.btnGet.Text = "get";
             this.btnGet.UseVisualStyleBackColor = true;
@@ -170,22 +175,17 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(465, 219);
+            this.label2.Location = new System.Drawing.Point(463, 132);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(53, 12);
             this.label2.TabIndex = 15;
             this.label2.Text = "实际交地";
             // 
-            // columnHeader3
-            // 
-            this.columnHeader3.Text = "优先级";
-            this.columnHeader3.Width = 120;
-            // 
             // wloc
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(601, 481);
+            this.ClientSize = new System.Drawing.Size(614, 481);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.btnGet);
             this.Controls.Add(this.btnOnReady);

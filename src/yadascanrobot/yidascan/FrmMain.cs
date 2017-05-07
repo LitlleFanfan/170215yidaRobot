@@ -318,6 +318,9 @@ namespace yidascan {
                             // 创建新的板信息。
                             var newPanel = PanelGen.NewPanelNo();
 
+                            // 满板时设置自由板位标志。
+                            TaskQueues.lochelper.OnFull(tolocation);
+
                             // 重新计算缓存区的布卷的坐标。
                             cacheher.ReCalculateCoordinate(newPanel, tolocation);
 
@@ -1484,7 +1487,7 @@ namespace yidascan {
 
         private void btnVirtualLocations_Click(object sender, EventArgs e) {
             using(var w = new wloc()) {
-                var loc = new LocationHelper();
+                var loc = TaskQueues.lochelper;
                 w.setdata(loc);
                 w.ShowMap();
                 w.ShowRealLocs();
