@@ -98,32 +98,7 @@ namespace yidascan {
             };
         }
 
-        private bool IsRealLocUsing(string realloc) {
-            var count = LocMap.Count(x => x.Value == realloc);
-            return count > 0;
-        }
-
-        public string Current(string virtualloc) {
-            if (!LocMap.ContainsKey(virtualloc)) {
-                throw new Exception($"来源: {nameof(Current)}, 交地错误: {virtualloc}");
-            }
-
-            return LocMap[virtualloc];
-        }
-
-        // 根据erp所指的交地，换算出真实交地
-        public string Convert(string virtualloc) {
-            if (!LocMap.ContainsKey(virtualloc)) {
-                throw new Exception($"来源: {nameof(Convert)}, 交地错误: {virtualloc}");
-            }
-
-            if (LocMap[virtualloc] == string.Empty) {
-                automap(virtualloc);
-            }
-
-            return LocMap[virtualloc];
-        }
-
+        #region private_func
         private void SetState(string realloc, LocationState state) {
             if (!IsRealLocExists(realloc)) {
                 throw new Exception($"函数: {nameof(SetState)}, 交地错误： {realloc}");
@@ -133,7 +108,7 @@ namespace yidascan {
             loc.state = state;
         }
 
-        public void Unmap(string realloc) {
+        private void Unmap(string realloc) {
             if (string.IsNullOrEmpty(realloc)) {
                 return;
             }
@@ -151,7 +126,6 @@ namespace yidascan {
             SetState(realloc, LocationState.IDLE);
         }
 
-
         private bool IsRealLocExists(string loc) {
             return RealLocations.Exists(x => x.realloc == loc);
         }
@@ -168,24 +142,6 @@ namespace yidascan {
             Unmap(realloc);
             LocMap[virtualloc] = realloc;
             SetState(realloc, LocationState.BUSY);
-        }
-
-        public void Resetall() {
-            ResetVirtual();
-            ResetReal();
-        }
-
-        public void ResetVirtual() {
-            var keys = LocMap.Select(x => x.Key).ToList();
-            foreach (var k in keys) {
-                LocMap[k] = "";
-            }
-        }
-
-        public void ResetReal() {
-            foreach (var k in RealLocations) {
-                k.state = LocationState.IDLE;
-            }
         }
 
         // 找到最近的一个空板
@@ -209,7 +165,8 @@ namespace yidascan {
         }
 
         private string FindInMapByRealLoc(string realloc) {
-            return LocMap.Where(x => x.Value == realloc).Select(x => x.Key).FirstOrDefault();
+            return LocMap.Where(x => x.Value == realloc).Select(x => x.Key)
+                .FirstOrDefault();
         }
 
         private bool automap(string virtualloc) {
@@ -222,6 +179,103 @@ namespace yidascan {
             }
         }
 
+        // 判断真实板号是否可用。
+        private bool IsRealAvailable(string realloc) {
+            if (!IsRealLocExists(realloc)) {
+                throw new Exception($"来源: {nameof(IsRealAvailable)}, 交地错误: {realloc}");
+            }
+
+            var loc = RealLocations.Single(x => x.realloc == realloc);
+            return loc.state == LocationState.IDLE;
+        }
+        #endregion
+
+        #region public_func
+        // 根据erp所指的交地，换算出真实交地
+        public string Convert(string virtualloc) {
+            if (!LocMap.ContainsKey(virtualloc)) {
+                throw new Exception($"来源: {nameof(Convert)}, 交地错误: {virtualloc}");
+            }
+
+            if (LocMap[virtualloc] == string.Empty) {
+                automap(virtualloc);
+            }
+
+            return LocMap[virtualloc];
+        }
+
+        public string Current(string virtualloc) {
+            if (!LocMap.ContainsKey(virtualloc)) {
+                throw new Exception($"来源: {nameof(Current)}, 交地错误: {virtualloc}");
+            }
+
+            return LocMap[virtualloc];
+        }
+
+        public override string ToString() {
+            var s = new StringBuilder();
+            foreach (var item in LocMap) {
+                s.Append($"{item.Key} => {item.Value}");
+            }
+            return s.ToString();
+        }
+
+        public static string state_s(LocationState s) {
+            var v = "";
+            switch (s) {
+                case LocationState.BUSY:
+                    v = "忙";
+                    break;
+                case LocationState.FULL:
+                    v = "满板";
+                    break;
+                case LocationState.IDLE:
+                    v = "空闲";
+                    break;
+            }
+            return v;
+        }
+
+        public static string priority_s(Priority p) {
+            var v = "";
+            switch (p) {
+                case Priority.HIGH:
+                    v = "高";
+                    break;
+                case Priority.MEDIUM:
+                    v = "中";
+                    break;
+                case Priority.LOW:
+                    v = "低";
+                    break;
+            }
+            return v;
+        }
+
+        public void Resetall() {
+            ResetVirtual();
+            ResetReal();
+        }
+
+        public void ResetVirtual() {
+            var keys = LocMap.Select(x => x.Key).ToList();
+            foreach (var k in keys) {
+                LocMap[k] = "";
+            }
+        }
+
+        public void ResetReal() {
+            foreach (var k in RealLocations) {
+                k.state = LocationState.IDLE;
+            }
+        }
+
+        public void panelCheckLoop(IRobotJob robot) {
+            
+        }
+        #endregion
+
+        #region event_handler
         /// <summary>
         /// 当板满的时候，调用此函数。
         /// </summary>
@@ -240,83 +294,19 @@ namespace yidascan {
         /// </summary>
         /// <param name="realloc"></param>
         public void OnReady(string realloc) {
+            var self = nameof(OnReady);
+
             if (!IsRealLocExists(realloc)) {
-                throw new Exception($"来源: {nameof(OnReady)}, 交地错误: {realloc}");
+                throw new Exception($"来源: {self}, 交地错误: {realloc}");
             }
 
             var virtualloc = FindInMapByRealLoc(realloc);
             if (!string.IsNullOrEmpty(virtualloc)) {
-                throw new Exception($"来源: {nameof(OnReady)}, 交地忙: {realloc}");
+                throw new Exception($"来源: {self}, 交地忙: {realloc}");
             }
 
-            var loc = RealLocations.Single(x => x.realloc == realloc);
-            loc.state = LocationState.IDLE;
+            SetState(realloc, LocationState.IDLE);
         }
-
-        // 判断真实板号是否可用。
-        private bool IsRealAvailable(string realloc) {
-            if (!IsRealLocExists(realloc)) {
-                throw new Exception($"来源: {nameof(IsRealAvailable)}, 交地错误: {realloc}");
-            }
-
-            var loc = RealLocations.Single(x => x.realloc == realloc);
-            return loc.state == LocationState.IDLE;
-        }
-
-
-
-        public override string ToString() {
-            var s = new StringBuilder();
-            foreach (var item in LocMap) {
-                s.Append($"{item.Key} => {item.Value}");
-            }
-            return s.ToString();
-        }
-
-        public static string state_s(LocationState s) {
-            var v = "";
-            switch(s) {
-                case LocationState.BUSY:
-                    v = "忙";
-                    break;
-                case LocationState.FULL:
-                    v = "满板";
-                    break;
-                case LocationState.IDLE:
-                    v = "空闲";
-                    break;
-            }
-            return v;
-        }
-
-        public static string priority_s(Priority p) {
-            var v = "";
-            switch(p) {
-                case Priority.HIGH:
-                    v = "高";
-                    break;
-                case Priority.MEDIUM:
-                    v = "中";
-                    break;
-                case Priority.LOW:
-                    v = "低";
-                    break;
-            }
-            return v;
-        }
-
-        public void panelCheckLoop(IRobotJob robot) {
-            Task.Run(() => {
-                foreach(var item in RealLocations) {
-                    if (item.state == LocationState.FULL) {
-                        if (robot.PanelAvailable(item.realloc)) {
-                            item.state = LocationState.IDLE;
-                        }
-                    }
-                }
-
-                Task.Delay(500);
-            });
-        }
+        #endregion
     }
 }

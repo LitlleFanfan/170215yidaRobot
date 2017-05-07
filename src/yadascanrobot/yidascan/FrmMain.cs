@@ -406,6 +406,8 @@ namespace yidascan {
             } else {
                 logOpt.Write("未使用机器人。", LogType.NORMAL);
             }
+            
+            StartPanelEndTask(); // 自由板位，监听板准备好。
 
             LogParam();
             // 焦点设在手工输入框。
@@ -1487,13 +1489,32 @@ namespace yidascan {
         }
 
         private void btnVirtualLocations_Click(object sender, EventArgs e) {
-            using(var w = new wloc()) {
+            using (var w = new wloc()) {
                 var loc = TaskQueues.lochelper;
                 w.setdata(loc);
                 w.ShowMap();
                 w.ShowRealLocs();
                 w.ShowDialog();
             }
+        }
+
+        // 监听板准备好信号
+        private void StartPanelEndTask() {
+            Task.Run(() => {
+                while (isrun) {
+                    var keys = TaskQueues.lochelper.RealLocations
+                        .Where(x => x.state == LocationState.FULL)
+                        .Select(x => x.realloc)
+                        .ToList();
+                    foreach (var item in keys) {
+                        if (robot.PanelAvailable(item)) {
+                            TaskQueues.lochelper.OnReady(item);
+                        }
+                    }
+
+                    Task.Delay(500);
+                }
+            });
         }
     }
 }
