@@ -36,31 +36,39 @@ namespace yidascan {
             return true;
         }
 
-        public void JobLoop(ref bool isrunning, ListView viewA, ListView viewB) { }
-
-        public void JobLoopPro(ref bool isrunning, TaskQueues taskq, Action onupdate) {
-            loghandler.Invoke($"enter loop. isrunning: {isrunning}", LogType.ROBOT_STACK, LogViewType.OnlyForm);
-
+        public void JobLoop(ref bool isrunning, ListView la, ListView lb) {
             while (isrunning) {
-                loghandler.Invoke("move queue.", LogType.ROBOT_STACK, LogViewType.OnlyForm);
-
-                var ques = new List<Queue<RollPosition>> { taskq.RobotRollAQ, taskq.RobotRollBQ };
-
-                foreach (var qu in ques) {
-                    if (qu.Count() > 0) {
-                        var item = qu.Peek();
-                        //if (item != null && JobTask(ref isrunning, item)) {
-                        //    qu.Dequeue();
-                        //}
+                if (FrmMain.taskQ.RobotRollAQ.Count > 0) {
+                    var roll = FrmMain.taskQ.RobotRollAQ.Peek();
+                    if (roll != null) {
+                        JobTask(ref isrunning, true, FrmMain.taskQ.RobotRollAQ, roll, la);
                     }
                 }
-                onupdate();
-
-                Thread.Sleep(500);
+                if (FrmMain.taskQ.RobotRollBQ.Count > 0) {
+                    var roll = FrmMain.taskQ.RobotRollBQ.Peek();
+                    if (roll != null) {
+                        JobTask(ref isrunning, false, FrmMain.taskQ.RobotRollBQ, roll, lb);
+                    }
+                }
+                Thread.Sleep(RobotHelper.DELAY * 40);
             }
         }
 
+        public void JobLoopPro(ref bool isrunning, TaskQueues taskq, Action onupdate) { }
+
         public bool JobTask(ref bool isrun, bool isSideA, Queue<RollPosition> robotRollQ, RollPosition roll, ListView lv) {
+            LableCode.SetOnPanelState(roll.LabelCode);
+            
+            // 告知OPC
+            NotifyOpcJobFinished(roll);
+
+            // 自由板位处理。
+            if (roll.PnlState == PanelState.Full) {
+                TaskQueues.lochelper.OnFull(roll.RealLocation);
+            }
+
+            DequeueRoll(robotRollQ, roll, lv);
+            
             return true;
         }
 
@@ -69,14 +77,29 @@ namespace yidascan {
         }
 
         public void NotifyOpcJobFinished(string panelNo, string tolocation) {
-            throw new NotImplementedException();
+            // throw new NotImplementedException();
         }
 
         public void NotifyOpcJobFinished(RollPosition roll) {
-            throw new NotImplementedException();
+            // throw new NotImplementedException();
         }
 
         public bool PanelAvailable(string tolocation) { return true; }
+
+        private void DequeueRoll(Queue<RollPosition> robotRollQ, RollPosition roll, ListView lv) {
+            try {
+                if (robotRollQ == null) { return; }
+
+                var roll2 = robotRollQ.Peek();
+                if (roll2 != null && roll.LabelCode == roll2.LabelCode) {//如果取出来还是原来那一个，就删一下
+                    robotRollQ.Dequeue();
+                    FrmMain.showRobotQue(robotRollQ, lv);
+                }
+            } catch (Exception ex) {
+                var msg = $"robot Dequeue roll: {roll.LabelCode}. {ex}";
+                throw new Exception(msg);
+            }
         }
+    }
 #endif
 }

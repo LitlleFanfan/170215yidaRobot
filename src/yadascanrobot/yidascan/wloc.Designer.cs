@@ -23,22 +23,22 @@
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
+            this.components = new System.ComponentModel.Container();
             this.listView1 = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.btnReset = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
-            this.txVirtual = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
             this.listView2 = new System.Windows.Forms.ListView();
             this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.btnOnFull = new System.Windows.Forms.Button();
-            this.txOnFull = new System.Windows.Forms.TextBox();
-            this.btnOnReady = new System.Windows.Forms.Button();
-            this.btnGet = new System.Windows.Forms.Button();
-            this.label2 = new System.Windows.Forms.Label();
+            this.btnRefresh = new System.Windows.Forms.Button();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.stMessage = new System.Windows.Forms.ToolStripStatusLabel();
+            this.btnDefaultReal = new System.Windows.Forms.Button();
+            this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // listView1
@@ -48,14 +48,14 @@
             this.columnHeader2});
             this.listView1.FullRowSelect = true;
             this.listView1.GridLines = true;
-            this.listView1.Location = new System.Drawing.Point(12, 12);
+            this.listView1.Location = new System.Drawing.Point(20, 19);
+            this.listView1.Margin = new System.Windows.Forms.Padding(5);
             this.listView1.MultiSelect = false;
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(427, 246);
+            this.listView1.Size = new System.Drawing.Size(321, 447);
             this.listView1.TabIndex = 0;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
-            this.listView1.SelectedIndexChanged += new System.EventHandler(this.listView1_SelectedIndexChanged);
             // 
             // columnHeader1
             // 
@@ -69,39 +69,27 @@
             // 
             // btnReset
             // 
-            this.btnReset.Location = new System.Drawing.Point(465, 274);
+            this.btnReset.BackColor = System.Drawing.SystemColors.Control;
+            this.btnReset.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.btnReset.Location = new System.Drawing.Point(172, 476);
+            this.btnReset.Margin = new System.Windows.Forms.Padding(5);
             this.btnReset.Name = "btnReset";
-            this.btnReset.Size = new System.Drawing.Size(124, 23);
+            this.btnReset.Size = new System.Drawing.Size(142, 36);
             this.btnReset.TabIndex = 1;
-            this.btnReset.Text = "复位";
-            this.btnReset.UseVisualStyleBackColor = true;
+            this.btnReset.Text = "设置默认板位";
+            this.btnReset.UseVisualStyleBackColor = false;
             this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(465, 303);
+            this.button2.Location = new System.Drawing.Point(604, 476);
+            this.button2.Margin = new System.Windows.Forms.Padding(5);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(124, 23);
+            this.button2.Size = new System.Drawing.Size(142, 36);
             this.button2.TabIndex = 2;
             this.button2.Text = "关闭窗口";
             this.button2.UseVisualStyleBackColor = true;
-            // 
-            // txVirtual
-            // 
-            this.txVirtual.Location = new System.Drawing.Point(463, 35);
-            this.txVirtual.Name = "txVirtual";
-            this.txVirtual.ReadOnly = true;
-            this.txVirtual.Size = new System.Drawing.Size(126, 21);
-            this.txVirtual.TabIndex = 3;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(463, 17);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(53, 12);
-            this.label1.TabIndex = 7;
-            this.label1.Text = "名义交地";
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // listView2
             // 
@@ -111,14 +99,14 @@
             this.columnHeader3});
             this.listView2.FullRowSelect = true;
             this.listView2.GridLines = true;
-            this.listView2.Location = new System.Drawing.Point(12, 264);
+            this.listView2.Location = new System.Drawing.Point(351, 19);
+            this.listView2.Margin = new System.Windows.Forms.Padding(5);
             this.listView2.MultiSelect = false;
             this.listView2.Name = "listView2";
-            this.listView2.Size = new System.Drawing.Size(427, 205);
+            this.listView2.Size = new System.Drawing.Size(395, 447);
             this.listView2.TabIndex = 9;
             this.listView2.UseCompatibleStateImageBehavior = false;
             this.listView2.View = System.Windows.Forms.View.Details;
-            this.listView2.SelectedIndexChanged += new System.EventHandler(this.listView2_SelectedIndexChanged);
             // 
             // columnHeader5
             // 
@@ -135,73 +123,74 @@
             this.columnHeader3.Text = "优先级";
             this.columnHeader3.Width = 120;
             // 
-            // btnOnFull
+            // btnRefresh
             // 
-            this.btnOnFull.Location = new System.Drawing.Point(463, 178);
-            this.btnOnFull.Name = "btnOnFull";
-            this.btnOnFull.Size = new System.Drawing.Size(126, 23);
-            this.btnOnFull.TabIndex = 10;
-            this.btnOnFull.Text = "onfull";
-            this.btnOnFull.UseVisualStyleBackColor = true;
-            this.btnOnFull.Click += new System.EventHandler(this.btnOnFull_Click);
+            this.btnRefresh.Location = new System.Drawing.Point(20, 476);
+            this.btnRefresh.Margin = new System.Windows.Forms.Padding(5);
+            this.btnRefresh.Name = "btnRefresh";
+            this.btnRefresh.Size = new System.Drawing.Size(142, 36);
+            this.btnRefresh.TabIndex = 16;
+            this.btnRefresh.Text = "刷新";
+            this.btnRefresh.UseVisualStyleBackColor = true;
+            this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
             // 
-            // txOnFull
+            // timer1
             // 
-            this.txOnFull.Location = new System.Drawing.Point(463, 150);
-            this.txOnFull.Name = "txOnFull";
-            this.txOnFull.Size = new System.Drawing.Size(126, 21);
-            this.txOnFull.TabIndex = 11;
+            this.timer1.Enabled = true;
+            this.timer1.Interval = 1000;
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
-            // btnOnReady
+            // statusStrip1
             // 
-            this.btnOnReady.Location = new System.Drawing.Point(463, 207);
-            this.btnOnReady.Name = "btnOnReady";
-            this.btnOnReady.Size = new System.Drawing.Size(126, 23);
-            this.btnOnReady.TabIndex = 13;
-            this.btnOnReady.Text = "onready";
-            this.btnOnReady.UseVisualStyleBackColor = true;
-            this.btnOnReady.Click += new System.EventHandler(this.btnOnReady_Click);
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.stMessage});
+            this.statusStrip1.Location = new System.Drawing.Point(0, 521);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Padding = new System.Windows.Forms.Padding(2, 0, 23, 0);
+            this.statusStrip1.Size = new System.Drawing.Size(761, 22);
+            this.statusStrip1.TabIndex = 17;
+            this.statusStrip1.Text = "statusStrip1";
             // 
-            // btnGet
+            // stMessage
             // 
-            this.btnGet.Location = new System.Drawing.Point(463, 62);
-            this.btnGet.Name = "btnGet";
-            this.btnGet.Size = new System.Drawing.Size(126, 23);
-            this.btnGet.TabIndex = 14;
-            this.btnGet.Text = "get";
-            this.btnGet.UseVisualStyleBackColor = true;
-            this.btnGet.Click += new System.EventHandler(this.btnGet_Click);
+            this.stMessage.Name = "stMessage";
+            this.stMessage.Size = new System.Drawing.Size(32, 17);
+            this.stMessage.Text = "状态";
             // 
-            // label2
+            // btnDefaultReal
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(463, 132);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(53, 12);
-            this.label2.TabIndex = 15;
-            this.label2.Text = "实际交地";
+            this.btnDefaultReal.BackColor = System.Drawing.Color.Red;
+            this.btnDefaultReal.ForeColor = System.Drawing.Color.White;
+            this.btnDefaultReal.Location = new System.Drawing.Point(324, 476);
+            this.btnDefaultReal.Margin = new System.Windows.Forms.Padding(5);
+            this.btnDefaultReal.Name = "btnDefaultReal";
+            this.btnDefaultReal.Size = new System.Drawing.Size(142, 36);
+            this.btnDefaultReal.TabIndex = 18;
+            this.btnDefaultReal.Text = "清空板位";
+            this.btnDefaultReal.UseVisualStyleBackColor = false;
+            this.btnDefaultReal.Click += new System.EventHandler(this.btnDefaultReal_Click);
             // 
             // wloc
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 19F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(614, 481);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.btnGet);
-            this.Controls.Add(this.btnOnReady);
-            this.Controls.Add(this.txOnFull);
-            this.Controls.Add(this.btnOnFull);
+            this.ClientSize = new System.Drawing.Size(761, 543);
+            this.Controls.Add(this.btnDefaultReal);
+            this.Controls.Add(this.statusStrip1);
+            this.Controls.Add(this.btnRefresh);
             this.Controls.Add(this.listView2);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.txVirtual);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.btnReset);
             this.Controls.Add(this.listView1);
+            this.Font = new System.Drawing.Font("SimSun", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.Margin = new System.Windows.Forms.Padding(5);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "wloc";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "板号状态";
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -214,16 +203,14 @@
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.ColumnHeader columnHeader1;
         private System.Windows.Forms.ColumnHeader columnHeader2;
-        private System.Windows.Forms.TextBox txVirtual;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ListView listView2;
         private System.Windows.Forms.ColumnHeader columnHeader5;
         private System.Windows.Forms.ColumnHeader columnHeader6;
-        private System.Windows.Forms.Button btnOnFull;
-        private System.Windows.Forms.TextBox txOnFull;
-        private System.Windows.Forms.Button btnOnReady;
-        private System.Windows.Forms.Button btnGet;
-        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ColumnHeader columnHeader3;
+        private System.Windows.Forms.Button btnRefresh;
+        private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.ToolStripStatusLabel stMessage;
+        private System.Windows.Forms.Button btnDefaultReal;
     }
 }

@@ -90,6 +90,20 @@ namespace yidascan {
             }
         }
 
+        // !! 此函数应当在TaskQueues加载后，立即执行。
+        private static LocationHelper loadLocationConf() {
+            try {
+                var p = Path.Combine(Application.StartupPath, LOCATION_CONF);
+                return LocationHelper.LoadConf(p);
+            } catch (FileNotFoundException) {
+                logOpt.Write($"!来源: {nameof(loadLocationConf)}. 没找到自由板位文件，使用默认配置。");
+                return null;
+            } catch (Exception ex) {
+                logOpt.Write($"!来源: {nameof(loadLocationConf)}. 加载配置异常: {ex}。");
+                return null;
+            }
+        }
+
         // 运行效果不正确。无红字显示。
         private void InitListBoxes() {
             lsvBufferLog.Initstyle();
@@ -128,6 +142,7 @@ namespace yidascan {
             try {
                 LayerShape.loadconf();
 
+                TaskQueues.lochelper = loadLocationConf() ?? new LocationHelper();
                 taskQ = loadconf() ?? new TaskQueues();
                 cacheher = new CacheHelper(taskQ.CacheSide);
 
@@ -406,7 +421,7 @@ namespace yidascan {
             } else {
                 logOpt.Write("未使用机器人。", LogType.NORMAL);
             }
-            
+
             StartPanelEndTask(); // 自由板位，监听板准备好。
 
             LogParam();
@@ -444,31 +459,32 @@ namespace yidascan {
                             var code = taskQ.GetWeighQ();
 
                             var codeFromPlc = GetLabelCodeWhenWeigh();
-                            if (code != null && codeFromPlc == code.LCode) {
-                                lastweighLable = code.LCode;
-                                signal = NotifyWeigh(code.LCode, false) ? SUCCESS : FAIL;
+                            if (code != null) {
+                                if (codeFromPlc == code.LCode) {
+                                    lastweighLable = code.LCode;
+                                    signal = NotifyWeigh(code.LCode, false) ? SUCCESS : FAIL;
 
-                                if (signal != SUCCESS) {
-                                    logOpt.Write($"!通知称重到erp失败: {signal}");
+                                    if (signal != SUCCESS) {
+                                        logOpt.Write($"!通知称重到erp失败: {signal}");
+                                    }
+
+                                    var wstate = opcWeigh.Set(opcParam.WeighParam.GetWeigh, signal);
+                                    logOpt.Write($"{code.LCode}称重API状态：{signal} 写OPC状态：{wstate}");
+                                } else {
+#if !DEBUG
+                                    if (codeFromPlc == lastweighLable) {
+                                        // 复位
+                                        opcWeigh.Write(opcParam.WeighParam.GetWeigh, 0);
+                                        logOpt.Write($"称重复位, 原因: 重复称重。plc标签{codeFromPlc}", LogType.NORMAL, LogViewType.Both);
+                                    } else {
+                                        logOpt.Write($"!称重信号无对应的队列号码, opc称重标签{codeFromPlc} 最后称重标签{lastweighLable}");
+                                    }
+#endif
                                 }
-
-                                var wstate = opcWeigh.Set(opcParam.WeighParam.GetWeigh, signal);
-                                logOpt.Write($"{code.LCode}称重API状态：{signal} 写OPC状态：{wstate}");
-
                                 showLabelQue(taskQ.WeighQ, lsvWeigh);
                                 if (code.ToLocation.Substring(0, 1) == "B") {
                                     showLabelQue(taskQ.CacheQ, lsvCacheBefor);//加到缓存列表中显示
                                 }
-                            } else {
-#if !DEBUG
-                                if (codeFromPlc == lastweighLable) {
-                                    // 复位
-                                    opcWeigh.Write(opcParam.WeighParam.GetWeigh, 0);
-                                    logOpt.Write($"称重复位, 原因: 重复称重。plc标签{codeFromPlc}", LogType.NORMAL, LogViewType.Both);
-                                } else {
-                                    logOpt.Write($"!称重信号无对应的队列号码, opc称重标签{codeFromPlc} 最后称重标签{lastweighLable}");
-                                }
-#endif
                             }
                         }
                     } catch (Exception ex) {
@@ -780,6 +796,13 @@ namespace yidascan {
             ShowTaskState(isrun);
             RefreshRobotMenuState();
 
+            // 保存自由板位状态。
+            var p = Path.Combine(Application.StartupPath, LOCATION_CONF);
+            TaskQueues.lochelper.SaveConf(p);
+
+            // 保存缓存位状态。
+            saveTaskQ();
+
             logOpt.Write("停止操作完成。", LogType.NORMAL);
         }
 
@@ -1036,6 +1059,8 @@ namespace yidascan {
             var re = LableCodeBllPro.NotifyPanelEnd(callErpApi, lc.PanelNo, out msg);
             logOpt.Write(string.Format("{0} {1}", lc.ToLocation, msg), LogType.NORMAL);
 
+            LableCode.DeleteFinishPanel(lCode);
+
             return re;
         }
 
@@ -1129,6 +1154,13 @@ namespace yidascan {
         }
 
         private const string TASKQUE_CONF = "taskq.json";
+        private const string LOCATION_CONF = "location.json";
+
+
+        private void saveTaskQ() {
+            var path = Path.Combine(Application.StartupPath, TASKQUE_CONF);
+            TaskQueConf<TaskQueues>.save(path, taskQ);
+        }
 
         private void FrmMain_FormClosing(object sender, FormClosingEventArgs e) {
             if (btnStop.Enabled) {
@@ -1136,8 +1168,7 @@ namespace yidascan {
                 e.Cancel = true;
             } else {
                 try {
-                    var path = Path.Combine(Application.StartupPath, TASKQUE_CONF);
-                    TaskQueConf<TaskQueues>.save(path, taskQ);
+                    saveTaskQ();
 
                     OpcClientClose(opcNone, "其它报警");
                 } catch (Exception ex) {
@@ -1328,8 +1359,8 @@ namespace yidascan {
 #endif
         }
 
-        private void btnStartAllSignals_Click(object sender, EventArgs e) {
 #if DEBUG
+        private static void startAllFakeSignals() {
             SignalGen.startTimerWeigh();
             Thread.Sleep(100);
             SignalGen.startTimerCache();
@@ -1339,6 +1370,23 @@ namespace yidascan {
             SignalGen.startTimerItemCatchA();
             Thread.Sleep(100);
             SignalGen.startTimerItemCatchB();
+            logOpt.Write("!模拟信号发生启动.");
+        }
+
+        private static void stopAllFakeSignals() {
+            SignalGen.stopTimerWeigh();
+            SignalGen.stopTimerCache();
+            SignalGen.stopTimerLabelUp();
+            SignalGen.stopTimerItemCatchA();
+            SignalGen.stopTimerItemCatchB();
+            logOpt.Write("!模拟信号发生停止.");
+        }
+#endif
+
+        private void btnStartAllSignals_Click(object sender, EventArgs e) {
+#if DEBUG
+            startAllFakeSignals();
+            logOpt.Write("!模拟信号发生启动.");
 #endif
         }
 
@@ -1411,6 +1459,9 @@ namespace yidascan {
             if (taskQ != null) {
                 taskQ.PanelNoFrefix = DateTime.Now;
                 dtpDate.Value = taskQ.PanelNoFrefix;
+
+                logOpt.Write("!使用默认板位");
+                TaskQueues.lochelper.SetRealDefaultPriority();
 
                 taskQ.clearAll();
                 clearAllTaskViews();
@@ -1491,6 +1542,7 @@ namespace yidascan {
         private void btnVirtualLocations_Click(object sender, EventArgs e) {
             using (var w = new wloc()) {
                 var loc = TaskQueues.lochelper;
+                w.keep_refreshing = isrun;
                 w.setdata(loc);
                 w.ShowMap();
                 w.ShowRealLocs();

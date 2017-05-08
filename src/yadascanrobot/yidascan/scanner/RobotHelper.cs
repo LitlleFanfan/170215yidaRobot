@@ -530,7 +530,9 @@ namespace yidascan {
                     log("布卷已上垛。", LogType.ROBOT_STACK, LogViewType.Both);
 
                     // 自由板位处理。
-                    TaskQueues.lochelper.OnFull(roll.RealLocation);
+                    if (roll.PnlState == PanelState.Full) {
+                        TaskQueues.lochelper.OnFull(roll.RealLocation);
+                    }
 
                     break;
                 }

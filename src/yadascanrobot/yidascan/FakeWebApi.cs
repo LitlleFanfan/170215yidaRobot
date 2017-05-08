@@ -26,7 +26,7 @@ namespace yidascan {
             if (url == clsSetting.GetLocation) {
                 var s = "{ \"State\":\"成功\",\"Msg\":null,\"Data\":\"\",\"ContinueCount\":0}";
                 var dic = JsonConvert.DeserializeObject<Dictionary<string, string>>(s);
-                dic["Data"] = "[{\"LOCATION\":\"" + location[rand.Next(0, location.Count - 1)] + "|" + (1000 + (int)(rand.NextDouble() * 1000)) + "\"}]";
+                dic["Data"] = "[{\"LOCATION\":\"" + location[rand.Next(0, location.Count)] + "|" + (1000 + (int)(rand.NextDouble() * 1000)) + "\"}]";
                 dic.Add("ERPState", "OK");
                 return dic;
             } else if (url == clsSetting.ToWeight || url == clsSetting.PanelFinish) {

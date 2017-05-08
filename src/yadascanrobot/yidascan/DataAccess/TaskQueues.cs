@@ -11,7 +11,7 @@ namespace yidascan.DataAccess {
         public DateTime PanelNoFrefix;
 
         // 交地映射类。
-        public static LocationHelper lochelper = new LocationHelper();
+        public static LocationHelper lochelper;
 
         /// <summary>
         /// 用于访问锁定。
@@ -110,7 +110,7 @@ namespace yidascan.DataAccess {
         private static RollPosition AddRobotRollQ(string lcode, string side) {
             var label = LableCode.QueryByLCode(lcode);
             if (label == null) {
-                onlog?.Invoke($"!{side} {label.LCode}找不到", LogType.ROLL_QUEUE);
+                onlog?.Invoke($"!{side} {lcode}找不到", LogType.ROLL_QUEUE);
                 return null;
             }
             if (label.Status >= (int)LableState.OnPanel) {

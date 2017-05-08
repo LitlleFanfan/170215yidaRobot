@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 using yidascan.DataAccess;
+using System.Windows.Forms;
 
 namespace yidascan {
 
@@ -31,60 +32,60 @@ namespace yidascan {
             timerWeigh = new System.Windows.Forms.Timer {
                 Interval = DELAY
             };
-            timerWeigh.Tick += TimerWeigh_Tick;
+            timerWeigh.Tick += (s, e) => { WEIGTH_SIGNAL = 1; };
             timerWeigh.Enabled = true;
+        }
+
+        public static void stopTimerWeigh() {
+            timerWeigh.Enabled = false;
         }
 
         public static void startTimerCache() {
             timerCache = new System.Windows.Forms.Timer {
                 Interval = 2000
             };
-            timerCache.Tick += TimerCache_Tick;
+            timerCache.Tick += (s, e) => { CACHE_SIGNAL = true; };
             timerCache.Enabled = true;
+        }
+
+        public static void stopTimerCache() {
+            timerCache.Enabled = false;
         }
 
         public static void startTimerLabelUp() {
             timerLabelUp = new System.Windows.Forms.Timer {
                 Interval = DELAY
             };
-            timerLabelUp.Tick += TimerLabelUp_Tick;
+            timerLabelUp.Tick += (s, e) => { LABELUP_SIGNAL = true; };
             timerLabelUp.Enabled = true;
+        }
+
+        public static void stopTimerLabelUp() {
+            timerLabelUp.Enabled = false;
         }
 
         public static void startTimerItemCatchA() {
             timerItemCatchA = new System.Windows.Forms.Timer {
                 Interval = DELAY
             };
-            timerItemCatchA.Tick += TimerItemCatchA_Tick;
+            timerItemCatchA.Tick += (s, e) => { ITEMCATCH_A_SIGNAL = true; };
             timerItemCatchA.Enabled = true;
+        }
+
+        public static void stopTimerItemCatchA() {
+            timerItemCatchA.Enabled = false;
         }
 
         public static void startTimerItemCatchB() {
             timerItemCatchB = new System.Windows.Forms.Timer {
                 Interval = DELAY
             };
-            timerItemCatchB.Tick += TimerItemCatchB_Tick;
+            timerItemCatchB.Tick += (s, e) => { ITEMCATCH_B_SIGNAL = true; };
             timerItemCatchB.Enabled = true;
         }
 
-        private static void TimerWeigh_Tick(object sender, EventArgs e) {
-            WEIGTH_SIGNAL = 1;
-        }
-
-        private static void TimerCache_Tick(object sender, EventArgs e) {
-            CACHE_SIGNAL = true;
-        }
-
-        private static void TimerLabelUp_Tick(object sender, EventArgs e) {
-            LABELUP_SIGNAL = true;
-        }
-
-        private static void TimerItemCatchA_Tick(object sender, EventArgs e) {
-            ITEMCATCH_A_SIGNAL = true;
-        }
-
-        private static void TimerItemCatchB_Tick(object sender, EventArgs e) {
-            ITEMCATCH_B_SIGNAL = true;
+        public static void stopTimerItemCatchB() {
+            timerItemCatchB.Enabled = false;
         }
     }
 

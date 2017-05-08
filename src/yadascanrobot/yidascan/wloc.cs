@@ -16,6 +16,7 @@ namespace yidascan {
         }
 
         private LocationHelper locs;
+        public bool keep_refreshing = false;
 
         public void setdata(LocationHelper locs_) {
             locs = locs_;
@@ -26,24 +27,15 @@ namespace yidascan {
             view.Items.Clear();
 
             foreach (var item in locs.LocMap) {
-                if (string.IsNullOrEmpty(item.Value)) {
-                    var viewitem1 = new ListViewItem {
-                        Text = item.Key,
-                    };
-                    viewitem1.SubItems.Add("-");
-
-                    view.Items.Add(viewitem1);
-                    continue;
-                }
-
-                var real = locs.RealLocations.Single(x => x.realloc == item.Value);
-
-                var viewitem = new ListViewItem {
+                var viewitem1 = new ListViewItem {
                     Text = item.Key,
                 };
-                viewitem.SubItems.Add(real.realloc);
-
-                view.Items.Add(viewitem);
+                if (string.IsNullOrEmpty(item.Value)) {
+                    viewitem1.SubItems.Add("-");
+                } else {
+                    viewitem1.SubItems.Add(item.Value);
+                }
+                view.Items.Add(viewitem1);
             }
         }
 
@@ -62,43 +54,40 @@ namespace yidascan {
         }
 
         private void btnReset_Click(object sender, EventArgs e) {
-            if (commonhelper.CommonHelper.Confirm("确定要复位吗?")) {
-                locs.Resetall();
+            if (commonhelper.CommonHelper.Confirm("确定要设置默认板位吗?")) {
+                // locs.Resetall();
+                locs.SetRealDefaultPriority();
                 ShowMap();
                 ShowRealLocs();
             }
         }
 
-        private void listView1_SelectedIndexChanged(object sender, EventArgs e) {
-            if (listView1.SelectedItems.Count > 0) {
-                var item = listView1.SelectedItems[0];
-                txVirtual.Text = item.Text;
+        private void btnRefresh_Click(object sender, EventArgs e) {
+            ShowMap();
+            ShowRealLocs();
+        }
+
+        private void timer1_Tick(object sender, EventArgs e) {
+            try {
+                if (keep_refreshing) {
+                    ShowMap();
+                    ShowRealLocs();
+                    stMessage.Text = $"刷新时间: {DateTime.Now}";
+                }
+            } catch {
+                stMessage.Text = "刷新失败";
             }
         }
 
-        private void btnOnFull_Click(object sender, EventArgs e) {
-            locs.OnFull(txOnFull.Text);
-            ShowMap();
-            ShowRealLocs();
+        private void button2_Click(object sender, EventArgs e) {
+            timer1.Enabled = false;
+            Close();
         }
 
-        private void btnOnReady_Click(object sender, EventArgs e) {
-            locs.OnReady(txOnFull.Text);
+        private void btnDefaultReal_Click(object sender, EventArgs e) {
+            locs.Resetall();
             ShowMap();
             ShowRealLocs();
-        }
-
-        private void btnGet_Click(object sender, EventArgs e) {
-            locs.Convert(txVirtual.Text);
-            ShowMap();
-            ShowRealLocs();
-        }
-
-        private void listView2_SelectedIndexChanged(object sender, EventArgs e) {
-            var items = listView2.SelectedItems;
-            if (items.Count > 0) {
-                txOnFull.Text = items[0].Text;
-            }
         }
     }
 }

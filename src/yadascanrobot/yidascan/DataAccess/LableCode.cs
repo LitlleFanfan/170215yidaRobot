@@ -628,8 +628,13 @@ and Status<3 and FloorIndex<>0";
                 (select SequenceNo,ToLocation,PanelNo from lablecode where LCode=@lCode) tmp 
                 where    tmp.ToLocation = lablecode.ToLocation and
                 tmp.SequenceNo > lablecode.SequenceNo and lablecode.Status = 0",
-                new SqlParameter[]{new SqlParameter("@lCode", lCode) }),
-                new CommandParameter(
+                new SqlParameter[]{new SqlParameter("@lCode", lCode) }) };
+            return DataAccess.CreateDataAccess.sa.NonQueryTran(cps);
+        }
+
+        public static bool DeleteFinishPanel(string lCode) {
+            var cps = new List<CommandParameter>() {
+            new CommandParameter(
                     @"insert into LableCodeHis([LCode],[ToLocation],[PanelNo],[Status],[Floor],[FloorIndex],[Diameter],[Length],
                 [Coordinates],[Cx],[Cy],[Cz],[Crz],[GetOutLCode],[CreateDate],[UpdateDate],[Remark])
                 select [LCode],[ToLocation],[PanelNo],[Status],[Floor],[FloorIndex],[Diameter],[Length],
@@ -648,6 +653,7 @@ and Status<3 and FloorIndex<>0";
                 new SqlParameter[]{new SqlParameter("@lCode", lCode) }) };
             return DataAccess.CreateDataAccess.sa.NonQueryTran(cps);
         }
+
 
         public static List<LableCode> GetLastLableCode(string panelNo, int currFloor) {
             var sql = "select * from LableCode where PanelNo=@PanelNo and Floor=@Floor";
