@@ -230,25 +230,31 @@ namespace yidascan {
         #region public_func
         // 根据erp所指的交地，换算出真实交地
         public string Convert(string virtualloc) {
-            if (!LocMap.ContainsKey(virtualloc)) {
-                throw new Exception($"来源: {nameof(Convert)}, 交地错误: {virtualloc}");
+            var rt = string.Empty;
+            var trytimes = 3; // 尝试3次。
+
+            while(true) {
+                if (!LocMap.ContainsKey(virtualloc)) {
+                    throw new Exception($"来源: {nameof(Convert)}, 名义交地错误: {virtualloc}");
+                }
+
+                if (LocMap[virtualloc] == string.Empty) {
+                    automap(virtualloc);
+                }
+
+                rt = LocMap[virtualloc];
+                trytimes--;
+
+                if (trytimes >= 0 && string.IsNullOrEmpty(rt)) {
+                    Thread.Sleep(1000);
+                } else {
+                    break;
+                }
             }
 
-            if (LocMap[virtualloc] == string.Empty) {
-                automap(virtualloc);
-            }
-
-            return LocMap[virtualloc];
+            return rt;
         }
-
-        public string Current(string virtualloc) {
-            if (!LocMap.ContainsKey(virtualloc)) {
-                throw new Exception($"来源: {nameof(Current)}, 交地错误: {virtualloc}");
-            }
-
-            return LocMap[virtualloc];
-        }
-
+        
         public override string ToString() {
             var s = new StringBuilder();
             foreach (var item in LocMap) {

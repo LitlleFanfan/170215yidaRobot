@@ -70,17 +70,22 @@ namespace yidascan {
             ToLocation = label.ToLocation;
             RealLocation = realloction;
             diameter = label.Diameter;
-            Index = CalculateBaseIndex(label.ToLocation, x, y);
+
+            // Index = CalculateBaseIndex(label.ToLocation, x, y);
+            Index = CalculateBaseIndex(realloction, x, y);
 
             // LocationNo = int.Parse(label.ToLocation.Substring(1, 2));
             // LocationNo改为getLocationNo.
 
-            BaseIndex = 4 * (GetLocationNo() - 1) + Index + 1;
+            // BaseIndex = 4 * (GetLocationNo() - 1) + Index + 1;
+            BaseIndex = 4 * (GetRealLocationNo() - 1) + Index + 1;
 
             Side = side;
             PnlState = pnlState;
 
-            var tmp = int.Parse(label.ToLocation.Substring(1, 2));
+            // var tmp = int.Parse(label.ToLocation.Substring(1, 2));
+            var tmp = GetRealLocationNo();
+
             var origin = RobotParam.GetOrigin(tmp);
             var point = RobotParam.GetPoint(tmp, Index);
 
@@ -93,8 +98,12 @@ namespace yidascan {
         }
 
         // 获取交地序号。
-        public int GetLocationNo() {
-            return int.Parse(ToLocation.Substring(1, 2));
+        //public int GetLocationNo() {
+        //    return int.Parse(ToLocation.Substring(1, 2));
+        //}
+
+        public int GetRealLocationNo() {
+            return int.Parse(RealLocation.Substring(1, 2));
         }
 
         private static decimal GetXOffSet(decimal originBase, decimal targetBase) {
@@ -175,7 +184,7 @@ namespace yidascan {
         public PanelState PnlState { get; set; }
 
         public string brief() {
-            return $"{LabelCode} {ToLocation} {diameter}";
+            return $"{LabelCode} {ToLocation}/{RealLocation} {diameter}";
         }
     }
 
@@ -254,7 +263,7 @@ namespace yidascan {
 
             // 原点高位旋转
             var d = rCtrl.SetPostion(RobotControl.PosVarType.Robot,
-                rollPos.Origin, 100, RobotControl.PosType.User, 0, rollPos.GetLocationNo());
+                rollPos.Origin, 100, RobotControl.PosType.User, 0, rollPos.GetRealLocationNo());
             Thread.Sleep(DELAY);
 
             //基座
@@ -266,40 +275,10 @@ namespace yidascan {
 
             // 目标位置
             var f = rCtrl.SetPostion(RobotControl.PosVarType.Robot,
-               rollPos.Target, 101, RobotControl.PosType.User, 0, rollPos.GetLocationNo());
+               rollPos.Target, 101, RobotControl.PosType.User, 0, rollPos.GetRealLocationNo());
             Thread.Sleep(DELAY);
 
             return a && b && c && d && e && f;
-        }
-
-        [Obsolete("使用WritePositionPro.")]
-        public void WritePosition(RollPosition rollPos) {
-            rCtrl.SetVariables(RobotControl.VariableType.B, 10, 1, rollPos.ChangeAngle ? "1" : "0");
-            rCtrl.SetVariables(RobotControl.VariableType.B, 0, 1, rollPos.BaseIndex.ToString());
-            rCtrl.SetVariables(RobotControl.VariableType.B, 5, 1, "1");
-
-            // 原点高位旋转
-            if (rCtrl.SetPostion(RobotControl.PosVarType.Robot,
-                rollPos.Origin, 100, RobotControl.PosType.User, 0, rollPos.GetLocationNo())) {
-                rCtrl.SetPostion(RobotControl.PosVarType.Robot,
-                    rollPos.Origin, 100, RobotControl.PosType.User, 0, rollPos.GetLocationNo());
-            }
-
-            //基座
-            if (rCtrl.SetPostion(RobotControl.PosVarType.Base,
-                new RobotControl.PostionVar(rollPos.Base2 * 1000, 0, 0, 0, 0),
-                0, RobotControl.PosType.Robot, 0, 0)) {
-                rCtrl.SetPostion(RobotControl.PosVarType.Base,
-                    new RobotControl.PostionVar(rollPos.Base2 * 1000, 0, 0, 0, 0),
-                    0, RobotControl.PosType.Robot, 0, 0);
-            }
-
-            // 目标位置
-            if (rCtrl.SetPostion(RobotControl.PosVarType.Robot,
-               rollPos.Target, 101, RobotControl.PosType.User, 0, rollPos.GetLocationNo())) {
-                rCtrl.SetPostion(RobotControl.PosVarType.Robot,
-                    rollPos.Target, 101, RobotControl.PosType.User, 0, rollPos.GetLocationNo());
-            }
         }
 
         /// <summary>

@@ -33,6 +33,7 @@ namespace yidascan.DataAccess {
         public int SequenceNo { get; set; }
         public string LCode { get; set; }
         public string ToLocation { get; set; }
+        public string RealLocation { get; set; }
         public string PanelNo { get; set; }
         public int Status { get; set; }
         public DateTime CreateDate { get; set; }
@@ -177,6 +178,12 @@ namespace yidascan.DataAccess {
                 : ToLocation.Substring(1, 2);
         }
 
+        public static string ParseRealLocationNo(string locno) {
+            return string.IsNullOrEmpty(locno) || locno.Length < 3
+                ? string.Empty
+                : locno.Substring(1, 2);
+        }
+
         /// <summary>
         /// 从交地字符串中提取区域字符。
         /// </summary>
@@ -298,7 +305,7 @@ namespace yidascan.DataAccess {
             cps.Add(CreateLableCodeUpdate(fromcache));
             switch (fp) {
                 case FloorPerformance.BothFinish:
-                    if (fromcache.floor == pInfo.MaxFloor|| clsSetting.SplintHeight < GetFloorMaxDiameter(cur.PanelNo, cur.floor + 1) + 50) {//板满
+                    if (fromcache.floor == pInfo.MaxFloor || clsSetting.SplintHeight < GetFloorMaxDiameter(cur.PanelNo, cur.floor + 1) + 50) {//板满
                         cps.Add(new CommandParameter("UPDATE Panel SET Status = @Status," +
                                 "UpdateDate = @UpdateDate WHERE PanelNo = @PanelNo",
                             new SqlParameter[]{
@@ -453,6 +460,15 @@ namespace yidascan.DataAccess {
             var cps = new List<CommandParameter>();
             cps.Add(CreateLableCodeUpdate(obj));
             cps.Add(CreateInsertPanel(obj.PanelNo, obj.ToLocation));
+            return DataAccess.CreateDataAccess.sa.NonQueryTran(cps);
+        }
+
+        public static bool UpdateRealLocation(LableCode obj) {
+            var cps = new List<CommandParameter>() {
+                new CommandParameter(@"update lablecode set reallocation=@reallocation where lcode=@lcode",
+                new SqlParameter[] {
+                new SqlParameter("@lcode", obj.LCode) ,
+                new SqlParameter("@reallocation", obj.RealLocation) }) };
             return DataAccess.CreateDataAccess.sa.NonQueryTran(cps);
         }
 
@@ -812,7 +828,7 @@ and Status<3 and FloorIndex<>0";
         /// </summary>
         /// <returns></returns>
         public string brief() {
-            return $"{LCode} {ToLocation} {diameter}";
+            return $"{LCode} {ToLocation}/{RealLocation} {diameter}";
         }
 
         private static List<CommandParameter> CreateLableCodeInsertHistory(LableCode c) {

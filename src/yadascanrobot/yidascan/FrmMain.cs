@@ -673,14 +673,23 @@ namespace yidascan {
                         if (r) {
                             var code = taskQ.GetLableUpQ(); if (code != null) {
                                 logOpt.Write(string.Format("收到标签朝上来料信号。号码: {0}", code.LCode), LogType.ROLL_QUEUE);
+                                
+                                if (string.IsNullOrEmpty(code.RealLocation)) {
+                                    var msg = $"!来源: {nameof(LableUpTask)}, 真实交地是空值: {code.LCode} / {code.ToLocation}";
+                                    logOpt.Write(msg, LogType.ROLL_QUEUE);
+                                    throw new Exception(msg);
+                                }
 
                                 // 写plc直径和分道号。1~5号板走1道， 其他走2道。
                                 PlcHelper.WriteLabelUpData(LabelUpOpcClient, opcParam, code.Diameter,
-                                    int.Parse(code.ParseLocationNo()) < 6 ? RollCatchChannel.channel_1 : RollCatchChannel.channel_2);
+                                    int.Parse(LableCode.ParseRealLocationNo(code.RealLocation)) < 6 ? RollCatchChannel.channel_1 : RollCatchChannel.channel_2);
 
                                 showLabelQue(taskQ.LableUpQ, lsvLableUp);
                                 showCachePosQue(taskQ.CacheSide);
-                                if (int.Parse(code.ParseLocationNo()) < 6) {
+
+                                // if (int.Parse(code.ParseLocationNo()) < 6) {
+                                
+                                if (int.Parse(LableCode.ParseRealLocationNo(code.RealLocation)) < 6) {
                                     showLabelQue(taskQ.CatchAQ, lsvCatch1);
                                 } else {
                                     showLabelQue(taskQ.CatchBQ, lsvCatch2);
@@ -1183,7 +1192,7 @@ namespace yidascan {
         }
 
         private void btnLog_Click(object sender, EventArgs e) {
-            openDirectory(Application.StartupPath, "log");
+            openLocationWin();
         }
 
         private void btnReset_Click(object sender, EventArgs e) {
@@ -1460,8 +1469,10 @@ namespace yidascan {
                 taskQ.PanelNoFrefix = DateTime.Now;
                 dtpDate.Value = taskQ.PanelNoFrefix;
 
-                logOpt.Write("!使用默认板位");
-                TaskQueues.lochelper.SetRealDefaultPriority();
+                lock (TaskQueues.lochelper) {
+                    logOpt.Write("!使用默认板位");
+                    TaskQueues.lochelper.SetRealDefaultPriority();
+                }
 
                 taskQ.clearAll();
                 clearAllTaskViews();
@@ -1539,13 +1550,17 @@ namespace yidascan {
             }
         }
 
-        private void btnVirtualLocations_Click(object sender, EventArgs e) {
+        private void openLocationWin() {
             using (var w = new wloc()) {
                 var loc = TaskQueues.lochelper;
-                w.keep_refreshing = isrun;
-                w.setdata(loc);
-                w.ShowMap();
-                w.ShowRealLocs();
+                w.setRunState(isrun);
+
+                lock (loc) {
+                    w.setdata(loc);
+                    w.ShowMap();
+                    w.ShowRealLocs();
+                }
+
                 w.ShowDialog();
             }
         }
@@ -1567,6 +1582,10 @@ namespace yidascan {
                     Task.Delay(500);
                 }
             });
+        }
+
+        private void btnOpenLogDir_Click(object sender, EventArgs e) {
+            openDirectory(Application.StartupPath, "log");
         }
     }
 }

@@ -149,18 +149,15 @@ namespace yidascan.DataAccess {
             if (RollPosition.robotRSidePanel.Contains(label.ToLocation)) {
                 rz = rz + 180;
             }
-
-            // 调用locationhelper类的Get函数，获取真实交地。
-            var realloc = lochelper.Convert(label.ToLocation);
             
-            if (string.IsNullOrEmpty(realloc)) {
+            if (string.IsNullOrEmpty(label.RealLocation)) {
                 var msg = $"!来源: {nameof(AddRobotRollQ)}, 获取真实交地失败: {label.ToLocation}";
                 onlog?.Invoke(msg, LogType.ROLL_QUEUE);
                 throw new Exception(msg);
             }
 
-            var roll = new RollPosition(label, side, state, x, y, z, rz, realloc);
-            onlog?.Invoke($"来源: {nameof(AddRobotRollQ)}, {side} {label.LCode} 名义交地: {label.ToLocation}, 真实交地: {realloc}, ", LogType.ROLL_QUEUE);
+            var roll = new RollPosition(label, side, state, x, y, z, rz, label.RealLocation);
+            onlog?.Invoke($"来源: {nameof(AddRobotRollQ)}, {side} {label.LCode} 名义交地: {label.ToLocation}, 真实交地: {label.RealLocation}, ", LogType.ROLL_QUEUE);
             return roll;
         }
 
@@ -176,7 +173,20 @@ namespace yidascan.DataAccess {
                 }
             }
             if (code != null) {
-                if (int.Parse(code.ParseLocationNo()) < 6) {
+                lock (lochelper) {
+                    code.RealLocation = lochelper.Convert(code.ToLocation);
+                }
+
+                if (string.IsNullOrEmpty(code.RealLocation)) {
+                    var msg = $"!来源: {nameof(GetLableUpQ)}, 获取真实交地失败: {code.ToLocation}";
+                    onlog?.Invoke(msg, LogType.ROLL_QUEUE);
+                    throw new Exception(msg);
+                }
+
+                var ok = LableCode.UpdateRealLocation(code);
+                if (!ok) { throw new Exception($"保存标签的实际交地失败"); }
+
+                if (int.Parse(LableCode.ParseRealLocationNo(code.RealLocation)) < 6) {
                     lock (CatchAQ) {
                         CatchAQ.Enqueue(code);
                     }

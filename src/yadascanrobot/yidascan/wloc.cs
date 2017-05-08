@@ -16,7 +16,13 @@ namespace yidascan {
         }
 
         private LocationHelper locs;
-        public bool keep_refreshing = false;
+        private bool isrunning = false;
+
+        public void setRunState(bool isrunning) {
+            this.isrunning = isrunning;
+            btnDefaultReal.Enabled = !isrunning;
+            btnReset.Enabled = !isrunning;
+        }
 
         public void setdata(LocationHelper locs_) {
             locs = locs_;
@@ -55,23 +61,28 @@ namespace yidascan {
 
         private void btnReset_Click(object sender, EventArgs e) {
             if (commonhelper.CommonHelper.Confirm("确定要设置默认板位吗?")) {
-                // locs.Resetall();
-                locs.SetRealDefaultPriority();
+                lock (locs) {
+                    locs.SetRealDefaultPriority();
+                    ShowMap();
+                    ShowRealLocs();
+                }
+            }
+        }
+
+        private void btnRefresh_Click(object sender, EventArgs e) {
+            lock (locs) {
                 ShowMap();
                 ShowRealLocs();
             }
         }
 
-        private void btnRefresh_Click(object sender, EventArgs e) {
-            ShowMap();
-            ShowRealLocs();
-        }
-
         private void timer1_Tick(object sender, EventArgs e) {
             try {
-                if (keep_refreshing) {
-                    ShowMap();
-                    ShowRealLocs();
+                if (isrunning) {
+                    lock (locs) {
+                        ShowMap();
+                        ShowRealLocs();
+                    }
                     stMessage.Text = $"刷新时间: {DateTime.Now}";
                 }
             } catch {
@@ -85,9 +96,13 @@ namespace yidascan {
         }
 
         private void btnDefaultReal_Click(object sender, EventArgs e) {
-            locs.Resetall();
-            ShowMap();
-            ShowRealLocs();
+            if (commonhelper.CommonHelper.Confirm("确定要设置默认板位吗?")) {
+                lock (locs) {
+                    locs.Resetall();
+                    ShowMap();
+                    ShowRealLocs();
+                }
+            }
         }
     }
 }

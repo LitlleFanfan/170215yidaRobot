@@ -76,7 +76,7 @@
             this.btnStop = new System.Windows.Forms.ToolStripButton();
             this.btnWeighReset = new System.Windows.Forms.ToolStripButton();
             this.btnSet = new System.Windows.Forms.ToolStripButton();
-            this.btnLog = new System.Windows.Forms.ToolStripButton();
+            this.btnOpenLocationWin = new System.Windows.Forms.ToolStripButton();
             this.btnOther = new System.Windows.Forms.ToolStripDropDownButton();
             this.btnStartRobot = new System.Windows.Forms.ToolStripMenuItem();
             this.btnStopRobot = new System.Windows.Forms.ToolStripMenuItem();
@@ -179,7 +179,7 @@
             this.panel8 = new System.Windows.Forms.Panel();
             this.panel7 = new System.Windows.Forms.Panel();
             this.panel11 = new System.Windows.Forms.Panel();
-            this.btnVirtualLocations = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnOpenLogDir = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1.SuspendLayout();
             this.grbHandwork.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -224,7 +224,7 @@
             this.btnStop,
             this.btnWeighReset,
             this.btnSet,
-            this.btnLog,
+            this.btnOpenLocationWin,
             this.btnOther,
             this.btnQuit});
             this.toolStrip1.Location = new System.Drawing.Point(3, 0);
@@ -302,18 +302,18 @@
             this.btnSet.Text = "设置(&M)";
             this.btnSet.Click += new System.EventHandler(this.btnSet_Click);
             // 
-            // btnLog
+            // btnOpenLocationWin
             // 
-            this.btnLog.AutoSize = false;
-            this.btnLog.BackColor = System.Drawing.Color.CornflowerBlue;
-            this.btnLog.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.btnLog.Font = new System.Drawing.Font("Microsoft YaHei", 14F);
-            this.btnLog.Image = ((System.Drawing.Image)(resources.GetObject("btnLog.Image")));
-            this.btnLog.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnLog.Name = "btnLog";
-            this.btnLog.Size = new System.Drawing.Size(160, 64);
-            this.btnLog.Text = "日志(&L)";
-            this.btnLog.Click += new System.EventHandler(this.btnLog_Click);
+            this.btnOpenLocationWin.AutoSize = false;
+            this.btnOpenLocationWin.BackColor = System.Drawing.Color.CornflowerBlue;
+            this.btnOpenLocationWin.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.btnOpenLocationWin.Font = new System.Drawing.Font("Microsoft YaHei", 14F);
+            this.btnOpenLocationWin.Image = ((System.Drawing.Image)(resources.GetObject("btnOpenLocationWin.Image")));
+            this.btnOpenLocationWin.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnOpenLocationWin.Name = "btnOpenLocationWin";
+            this.btnOpenLocationWin.Size = new System.Drawing.Size(160, 64);
+            this.btnOpenLocationWin.Text = "交地状态";
+            this.btnOpenLocationWin.Click += new System.EventHandler(this.btnLog_Click);
             // 
             // btnOther
             // 
@@ -336,8 +336,8 @@
             this.btnLoadTaskq,
             this.btnSaveTaskq,
             this.toolStripMenuItem2,
-            this.btnVirtualLocations,
-            this.btnSelfTest});
+            this.btnSelfTest,
+            this.btnOpenLogDir});
             this.btnOther.Font = new System.Drawing.Font("Microsoft YaHei", 14F);
             this.btnOther.Image = ((System.Drawing.Image)(resources.GetObject("btnOther.Image")));
             this.btnOther.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -1424,12 +1424,12 @@
             this.panel11.Size = new System.Drawing.Size(300, 89);
             this.panel11.TabIndex = 3;
             // 
-            // btnVirtualLocations
+            // btnOpenLogDir
             // 
-            this.btnVirtualLocations.Name = "btnVirtualLocations";
-            this.btnVirtualLocations.Size = new System.Drawing.Size(274, 30);
-            this.btnVirtualLocations.Text = "虚拟交地";
-            this.btnVirtualLocations.Click += new System.EventHandler(this.btnVirtualLocations_Click);
+            this.btnOpenLogDir.Name = "btnOpenLogDir";
+            this.btnOpenLogDir.Size = new System.Drawing.Size(274, 30);
+            this.btnOpenLogDir.Text = "日志";
+            this.btnOpenLogDir.Click += new System.EventHandler(this.btnOpenLogDir_Click);
             // 
             // FrmMain
             // 
@@ -1513,7 +1513,7 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.DateTimePicker dtpDate;
         private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.ToolStripButton btnLog;
+        private System.Windows.Forms.ToolStripButton btnOpenLocationWin;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.ToolStripStatusLabel lblOpcIp;
         private System.Windows.Forms.Label lbTaskState;
@@ -1604,7 +1604,7 @@
         private System.Windows.Forms.ToolStripMenuItem btnDeleteCodeFromQueueAndDb;
         private System.Windows.Forms.TabPage tbpWarnLog;
         private System.Windows.Forms.ListBox lsvWarn;
-        private System.Windows.Forms.ToolStripMenuItem btnVirtualLocations;
+        private System.Windows.Forms.ToolStripMenuItem btnOpenLogDir;
     }
 }
 
