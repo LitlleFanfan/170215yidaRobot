@@ -188,7 +188,7 @@
             this.MinimizeBox = false;
             this.Name = "wloc";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "板号状态";
+            this.Text = "交地状态";
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);

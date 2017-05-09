@@ -165,7 +165,7 @@ namespace yidascan {
                 InitCfgView();
 
             } catch (Exception ex) {
-                logOpt.Write($"!初始化失败, {ex.ToString()}。\n{ex}", LogType.NORMAL);
+                logOpt.Write($"!来源: {nameof(FrmMain_Load)}, 初始化失败: {ex}", LogType.NORMAL);
             }
         }
 
@@ -297,7 +297,7 @@ namespace yidascan {
                     }
                 });
             } catch (Exception ex) {
-                logOpt.Write($"机器人启动异常。{ex}", LogType.NORMAL);
+                logOpt.Write($"来源: {nameof(StartRobotTask)}机器人启动异常。{ex}", LogType.NORMAL);
             }
         }
 
@@ -488,7 +488,7 @@ namespace yidascan {
                             }
                         }
                     } catch (Exception ex) {
-                        logOpt.Write($"!weigh task: {ex.ToString()}", LogType.NORMAL);
+                        logOpt.Write($"!来源: {nameof(WeighTask)} {ex}", LogType.NORMAL);
                     }
                 }
             });
@@ -514,7 +514,7 @@ namespace yidascan {
                                 }
                             }
                         } catch (Exception ex) {
-                            logOpt.Write("!" + ex.Message);
+                            logOpt.Write($"!来源: {nameof(ACAreaFinishTask)}, {ex}");
                         }
 
                         Thread.Sleep(OPCClient.DELAY * 2000);
@@ -574,8 +574,8 @@ namespace yidascan {
                         break;
                 }
             } catch (Exception ex) {
-                logOpt.Write($"!{ex}", LogType.BUFFER);
-                logOpt.Write($"!code: {code.LCode}, outlable: {outCacheLable}, state: {nameof(cr.state)}, {cr.state}");
+                logOpt.Write($"!来源: {nameof(BindQueue)}, {ex}", LogType.BUFFER);
+                logOpt.Write($"!来源: {nameof(BindQueue)}, code: {code.LCode}, outlable: {outCacheLable}, state: {nameof(cr.state)}, {cr.state}");
             }
         }
 
@@ -651,7 +651,7 @@ namespace yidascan {
                                 $"{opcParam.CacheParam.BeforCacheStatus}", LogType.BUFFER);
                         }
                     } catch (Exception ex) {
-                        logOpt.Write($"!{ex.ToString()}", LogType.BUFFER);
+                        logOpt.Write($"!来源: {nameof(BeforCacheTask_new)}, {ex}", LogType.BUFFER);
                     }
                 }
                 OpcClientClose(CacheOpcClient, "缓存位");
@@ -703,7 +703,7 @@ namespace yidascan {
                             }
                         }
                     } catch (Exception ex) {
-                        logOpt.Write($"!{ex}", LogType.ROLL_QUEUE);
+                        logOpt.Write($"!来源: {nameof(LableUpTask)}, {ex}", LogType.ROLL_QUEUE);
                     }
                     Thread.Sleep(OPCClient.DELAY * 200);
                 }
@@ -737,7 +737,7 @@ namespace yidascan {
                 }
                 return nscan.Open();
             } catch (Exception ex) {
-                clsSetting.loger.Error(string.Format("!{0}", ex.ToString()));
+                clsSetting.loger.Error($"!来源: {nameof(OpenPort)}, {ex}");
                 return false;
             }
         }
@@ -771,7 +771,7 @@ namespace yidascan {
                         robot.Dispose();
                     }
                 } catch (Exception ex) {
-                    logOpt.Write("!" + ex.ToString());
+                    logOpt.Write($"!来源: {nameof(StopAllRobotTasks)}, {ex}");
                 }
 
                 OpcClientClose(RobotOpcClient, "机器人");
@@ -891,7 +891,7 @@ namespace yidascan {
                     return false;
                 }
             } catch (Exception ex) {
-                logOpt.Write(string.Format("!称重调用webapi异常: {0}", ex));
+                logOpt.Write($"!来源: {nameof(NotifyWeigh)}, {ex}");
                 return false;
             }
         }
@@ -1052,7 +1052,7 @@ namespace yidascan {
                     }
                 }
             } catch (Exception ex) {
-                logOpt.Write($"!扫描号码过程异常: {ex}");
+                logOpt.Write($"!来源: {nameof(ScanLableCode)}, 扫描号码过程异常: {ex}");
             }
         }
 
@@ -1138,7 +1138,7 @@ namespace yidascan {
                             (handwork ? "手工" : "自动"), code, JsonConvert.SerializeObject(str)), LogType.NORMAL);
                     }
                 } catch (Exception ex) {
-                    logOpt.Write("!" + ex.Message, LogType.NORMAL);
+                    logOpt.Write($"!来源: {nameof(GetLocationAndLength)}, {ex}", LogType.NORMAL);
                 }
             }
             return re;
@@ -1281,7 +1281,7 @@ namespace yidascan {
             try {
                 opcClient.Write(opcParam.None.ERPAlarm, (int)erpAlarm);
             } catch (Exception ex) {
-                logOpt.Write("!OPC写信号失败: " + ex.ToString());
+                logOpt.Write($"!来源: {nameof(ERPAlarm)}, OPC写信号失败: {ex}");
             }
         }
 
@@ -1569,17 +1569,24 @@ namespace yidascan {
         private void StartPanelEndTask() {
             Task.Run(() => {
                 while (isrun) {
-                    var keys = TaskQueues.lochelper.RealLocations
-                        .Where(x => x.state == LocationState.FULL)
-                        .Select(x => x.realloc)
-                        .ToList();
-                    foreach (var item in keys) {
-                        if (robot.PanelAvailable(item)) {
-                            TaskQueues.lochelper.OnReady(item);
-                        }
+                    try {
+                        var keys = TaskQueues.lochelper.RealLocations
+                            .Where(x => x.state == LocationState.FULL)
+                            .Select(x => x.realloc)
+                            .ToList();
+                        foreach (var item in keys) {
+                            if (robot.PanelAvailable(item)) {
+                                TaskQueues.lochelper.OnReady(item);
+                            }
+
+                            Thread.Sleep(50);
+                        }                        
+                    }catch (Exception ex) {
+                        logOpt.Write($"!来源: {nameof(StartPanelEndTask)}, {ex}");
                     }
 
-                    Task.Delay(500);
+                    // delay 10 secs.
+                    Thread.Sleep(1000 * 5);
                 }
             });
         }

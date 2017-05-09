@@ -307,7 +307,7 @@ namespace yidascan {
                     return (status["Start"] || status["Hold"]);
                 }
             } catch (Exception ex) {
-                log($"{ex}", LogType.ROBOT_STACK, LogViewType.OnlyFile);
+                log($"来源: {nameof(IsBusy)}, {ex}", LogType.ROBOT_STACK, LogViewType.OnlyFile);
                 return true;
             }
         }
@@ -341,7 +341,7 @@ namespace yidascan {
                         break;
                 }
             } catch (Exception ex) {
-                log($"!{ex}", LogType.ROBOT_STACK);
+                log($"!来源: {nameof(NotifyOpcJobFinished)}, {ex}", LogType.ROBOT_STACK);
             }
         }
 
@@ -376,7 +376,7 @@ namespace yidascan {
                     BadShape(roll);
                 }
             } catch (Exception ex) {
-                log($"!{ex}", LogType.ROBOT_STACK);
+                log($"!来源: {nameof(NotifyOpcJobFinished)}, {ex}", LogType.ROBOT_STACK);
             }
         }
 
@@ -440,7 +440,7 @@ namespace yidascan {
                     log($"robot Dequeue roll: {roll.LabelCode}.", LogType.ROBOT_STACK, LogViewType.OnlyFile);
                 }
             } catch (Exception ex) {
-                log($"robot Dequeue roll: {roll.LabelCode}. {ex}", LogType.ROBOT_STACK, LogViewType.OnlyFile);
+                log($"来源: {nameof(DequeueRoll)}, robot Dequeue roll: {roll.LabelCode}. {ex}", LogType.ROBOT_STACK, LogViewType.OnlyFile);
             }
         }
 
@@ -536,7 +536,7 @@ namespace yidascan {
                 var b5 = rCtrl.GetVariables(VariableType.B, 5, 1);
                 return (b5 != null && b5.ContainsKey(KEY) && b5[KEY] == V_ON_PANEL);
             } catch (Exception ex) {
-                log($"!IsRollOnPanel异常: {ex}", LogType.ROBOT_STACK, LogViewType.OnlyFile);
+                log($"!来源: nameof(IsRollOnPanel): {ex}", LogType.ROBOT_STACK, LogViewType.OnlyFile);
                 return false;
             }
         }
@@ -548,7 +548,7 @@ namespace yidascan {
                 log($"! {tolocation} 可放料信号板状态{s} 未报警{canput}", LogType.ROBOT_STACK, LogViewType.OnlyFile);
                 return s == "2" && canput;
             } catch (Exception ex) {
-                log($"!读可放料信号异常 tolocation: {tolocation} opc:{param.BadShapeLocations[tolocation]} err:{ex}", LogType.ROBOT_STACK);
+                log($"!来源: {nameof(PanelAvailable)}, 读可放料信号异常 tolocation: {tolocation} opc:{param.BadShapeLocations[tolocation]} err:{ex}", LogType.ROBOT_STACK);
                 return false;//临时
             }
         }

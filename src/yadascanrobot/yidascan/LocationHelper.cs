@@ -86,7 +86,7 @@ namespace yidascan {
                 RealLoc.Create("B08", LocationState.IDLE, Priority.MEDIUM),
                 RealLoc.Create("B09", LocationState.IDLE, Priority.LOW),
                 RealLoc.Create("B10", LocationState.IDLE, Priority.HIGH),
-                RealLoc.Create("B11", LocationState.IDLE, Priority.DISABLE)
+                RealLoc.Create("B11", LocationState.IDLE, Priority.MEDIUM)
             };
 
             VirtualLocations = new List<VirtualLoc>() {
