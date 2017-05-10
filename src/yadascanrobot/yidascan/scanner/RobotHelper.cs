@@ -48,7 +48,7 @@ namespace yidascan {
             }
         }
 
-        public RollPosition(LableCode label, string side, PanelState pnlState, decimal x, decimal y, decimal z, decimal rz, string realloction) {
+        public RollPosition(LableCode label, string side, PanelState pnlState, decimal x, decimal y, decimal z, decimal rz) {
             this.LabelCode = label.LCode;
             PanelNo = label.PanelNo;
             Floor = label.Floor;
@@ -65,14 +65,15 @@ namespace yidascan {
 
             Z = z;
             Rz = rz;
+            //
             ChangeAngle = x > 0 || y < 0;
 
+            RealLocation = label.RealLocation;
             ToLocation = label.ToLocation;
-            RealLocation = realloction;
             diameter = label.Diameter;
 
             // Index = CalculateBaseIndex(label.ToLocation, x, y);
-            Index = CalculateBaseIndex(realloction, x, y);
+            Index = CalculateBaseIndex(RealLocation, x, y);
 
             // LocationNo = int.Parse(label.ToLocation.Substring(1, 2));
             // LocationNo改为getLocationNo.
@@ -176,8 +177,8 @@ namespace yidascan {
         public decimal Base1;
         public decimal Base2;
 
-        public string ToLocation { get; set; }
         public string RealLocation { get; set; }
+        public string ToLocation { get; set; }
         public decimal diameter { get; set; }
         // A侧或B侧
         public string Side { get; set; }
@@ -312,27 +313,27 @@ namespace yidascan {
             }
         }
 
-        public void NotifyOpcJobFinished(string panelNo, string tolocation) {
+        public void NotifyOpcJobFinished(string panelNo, string tolocation, string reallocation) {
             try {
                 var pState = LableCode.IsAllRollOnPanel(panelNo) ? PanelState.Full : PanelState.HalfFull;
                 switch (pState) {
                     case PanelState.HalfFull:
-                        client.Write(param.BAreaFloorFinish[tolocation], true);
+                        client.Write(param.BAreaFloorFinish[reallocation], true);
 
-                        string lcode = FrmMain.taskQ.UFGetPanelLastRoll(tolocation, panelNo);
+                        var lcode = FrmMain.taskQ.UFGetPanelLastRoll(tolocation, panelNo);
                         LableCode.UserSetPanelLastRoll(lcode);//设置板最后一卷布。
-                        log($"{tolocation} 半板信号发出,最后一卷布标签{lcode}。slot: {param.BAreaFloorFinish[tolocation]}", LogType.ROBOT_STACK);
+                        log($"{reallocation} 半板信号发出,最后一卷布标签{lcode}。slot: {param.BAreaFloorFinish[reallocation]}", LogType.ROBOT_STACK);
                         break;
                     case PanelState.Full:
                         string msg;
                         ErpHelper.NotifyPanelEnd(erpapi, panelNo, out msg);
-                        client.Write(param.BAreaPanelFinish[tolocation], true);
-                        log($"{tolocation}: 满板信号发出。slot: {param.BAreaPanelFinish[tolocation]}", LogType.ROBOT_STACK);
+                        client.Write(param.BAreaPanelFinish[reallocation], true);
+                        log($"{reallocation}: 满板信号发出。slot: {param.BAreaPanelFinish[reallocation]}", LogType.ROBOT_STACK);
                         log(msg, LogType.ROBOT_STACK);
 
                         const int SIGNAL_3 = 3;
-                        client.Write(param.BAreaPanelState[tolocation], SIGNAL_3);
-                        log($"{tolocation}: 板状态信号发出，状态值: {SIGNAL_3}。slot: {param.BAreaPanelState[tolocation]}", LogType.ROBOT_STACK);
+                        client.Write(param.BAreaPanelState[reallocation], SIGNAL_3);
+                        log($"{reallocation}: 板状态信号发出，状态值: {SIGNAL_3}。slot: {param.BAreaPanelState[reallocation]}", LogType.ROBOT_STACK);
                         break;
                     case PanelState.LessHalf:
                         break;
@@ -349,21 +350,21 @@ namespace yidascan {
             try {
                 switch (roll.PnlState) {
                     case PanelState.HalfFull:
-                        client.Write(param.BAreaFloorFinish[roll.ToLocation], true);
-                        log($"{roll.ToLocation}: 半板信号发出。slot: {param.BAreaFloorFinish[roll.ToLocation]}", LogType.ROBOT_STACK);
+                        client.Write(param.BAreaFloorFinish[roll.RealLocation], true);
+                        log($"{roll.RealLocation}: 半板信号发出。slot: {param.BAreaFloorFinish[roll.RealLocation]}", LogType.ROBOT_STACK);
 
                         break;
                     case PanelState.Full:
                         string msg;
                         ErpHelper.NotifyPanelEnd(erpapi, roll.PanelNo, out msg);
-                        client.Write(param.BAreaPanelFinish[roll.ToLocation], true);
-                        log($"{roll.ToLocation}: 满板信号发出。slot: {param.BAreaPanelFinish[roll.ToLocation]}", LogType.ROBOT_STACK);
+                        client.Write(param.BAreaPanelFinish[roll.RealLocation], true);
+                        log($"{roll.RealLocation}: 满板信号发出。slot: {param.BAreaPanelFinish[roll.RealLocation]}", LogType.ROBOT_STACK);
                         log(msg, LogType.ROBOT_STACK);
                         LableCode.SetPanelFinished(roll.PanelNo);
 
                         const int SIGNAL_3 = 3;
-                        client.Write(param.BAreaPanelState[roll.ToLocation], SIGNAL_3);
-                        log($"{roll.ToLocation}: 板状态信号发出，状态值: {SIGNAL_3}。slot: {param.BAreaPanelState[roll.ToLocation]}", LogType.ROBOT_STACK);
+                        client.Write(param.BAreaPanelState[roll.RealLocation], SIGNAL_3);
+                        log($"{roll.RealLocation}: 板状态信号发出，状态值: {SIGNAL_3}。slot: {param.BAreaPanelState[roll.RealLocation]}", LogType.ROBOT_STACK);
 
                         break;
                     case PanelState.LessHalf:
@@ -381,10 +382,10 @@ namespace yidascan {
         }
 
         private void BadShape(RollPosition roll) {
-            var layerLabels = LableCode.GetLableCodesOfRecentFloor(roll.ToLocation, roll.PanelNo, roll.Floor);
+            var layerLabels = LableCode.GetLableCodesOfRecentFloor(roll.RealLocation, roll.PanelNo, roll.Floor);
             if (LayerShape.IsSlope(layerLabels) || LayerShape.IsVshape(layerLabels)) {
-                PlcHelper.NotifyBadLayerShape(client, param, roll.ToLocation);
-                log($"!{roll.ToLocation} 第{roll.Floor}层 形状不规则。板号{roll.PanelNo}", LogType.ROBOT_STACK);
+                PlcHelper.NotifyBadLayerShape(client, param, roll.RealLocation);
+                log($"!{roll.RealLocation} 第{roll.Floor}层 形状不规则。板号{roll.PanelNo}", LogType.ROBOT_STACK);
             }
         }
 
@@ -447,9 +448,9 @@ namespace yidascan {
         public bool JobTask(ref bool isrun, bool isSideA, Queue<RollPosition> robotRollQ, RollPosition roll, ListView lv) {
             // 等待板可放料
             if (PanelAvailable(roll.RealLocation)) {
-                FrmMain.logOpt.Write($"{roll.ToLocation} PushInQueue收到可放料信号", LogType.ROBOT_STACK);
+                FrmMain.logOpt.Write($"{roll.RealLocation} PushInQueue收到可放料信号", LogType.ROBOT_STACK);
             } else {
-                FrmMain.logOpt.Write($"! {roll.ToLocation} PushInQueue未收到可放料信号，请检查板状态和是否有形状不规则报警。", LogType.ROBOT_STACK);
+                FrmMain.logOpt.Write($"! {roll.RealLocation} PushInQueue未收到可放料信号，请检查板状态和是否有形状不规则报警。", LogType.ROBOT_STACK);
                 return false;
             }
 
@@ -542,6 +543,10 @@ namespace yidascan {
         }
 
         public bool PanelAvailable(string tolocation) {
+#if DEBUG
+            // 用于测试
+            return true;
+#endif
             try {
                 var s = client.ReadString(param.BAreaPanelState[tolocation]);
                 var canput = !client.ReadBool(param.BadShapeLocations[tolocation]);

@@ -156,7 +156,7 @@ namespace yidascan.DataAccess {
                 throw new Exception(msg);
             }
 
-            var roll = new RollPosition(label, side, state, x, y, z, rz, label.RealLocation);
+            var roll = new RollPosition(label, side, state, x, y, z, rz);
             onlog?.Invoke($"来源: {nameof(AddRobotRollQ)}, {side} {label.LCode} 名义交地: {label.ToLocation}, 真实交地: {label.RealLocation}, ", LogType.ROLL_QUEUE);
             return roll;
         }
@@ -235,7 +235,7 @@ namespace yidascan.DataAccess {
         private RollPosition FindodeFromRobotQue(Queue<RollPosition> qu, string tolocation, string panelNo) {
             RollPosition lb;
             lock (qu) {
-                lb = RobotRollAQ.LastOrDefault(item => item.ToLocation == tolocation && item.PanelNo == panelNo);
+                lb = RobotRollAQ.LastOrDefault(item => item.RealLocation == tolocation && item.PanelNo == panelNo);
             }
             return lb;
         }

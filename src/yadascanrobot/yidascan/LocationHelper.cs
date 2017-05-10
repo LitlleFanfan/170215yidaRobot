@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Threading;
+using System.Reflection;
 using Newtonsoft.Json;
 
 namespace yidascan {
@@ -76,17 +77,18 @@ namespace yidascan {
             };
 
             RealLocations = new RealLoc[] {
-                RealLoc.Create("B01", LocationState.IDLE, Priority.HIGH),
+                RealLoc.Create("B01", LocationState.IDLE, Priority.MEDIUM),
                 RealLoc.Create("B02", LocationState.IDLE, Priority.MEDIUM),
-                RealLoc.Create("B03", LocationState.IDLE, Priority.HIGH),
+                RealLoc.Create("B03", LocationState.IDLE, Priority.DISABLE),
                 RealLoc.Create("B04", LocationState.IDLE, Priority.HIGH),
+
                 RealLoc.Create("B05", LocationState.IDLE, Priority.HIGH),
-                RealLoc.Create("B06", LocationState.IDLE, Priority.MEDIUM),
-                RealLoc.Create("B07", LocationState.IDLE, Priority.MEDIUM),
-                RealLoc.Create("B08", LocationState.IDLE, Priority.MEDIUM),
-                RealLoc.Create("B09", LocationState.IDLE, Priority.LOW),
-                RealLoc.Create("B10", LocationState.IDLE, Priority.HIGH),
-                RealLoc.Create("B11", LocationState.IDLE, Priority.MEDIUM)
+                RealLoc.Create("B06", LocationState.IDLE, Priority.DISABLE),
+                RealLoc.Create("B07", LocationState.IDLE, Priority.DISABLE),
+                RealLoc.Create("B08", LocationState.IDLE, Priority.DISABLE),
+                RealLoc.Create("B09", LocationState.IDLE, Priority.DISABLE),
+                RealLoc.Create("B10", LocationState.IDLE, Priority.DISABLE),
+                RealLoc.Create("B11", LocationState.IDLE, Priority.DISABLE)
             };
 
             VirtualLocations = new List<VirtualLoc>() {
@@ -140,7 +142,7 @@ namespace yidascan {
         }
 
         // 交地可用
-        private bool IsRealEnable(string realloc) {
+        private bool IsRealEnabled(string realloc) {
             var count = RealLocations.Count(x => x.realloc == realloc && x.priority != Priority.DISABLE);
             return count == 1;
         }
@@ -154,7 +156,7 @@ namespace yidascan {
                 throw new Exception($"函数: {nameof(Map)}, 实际交地错误： {realloc}");
             }
 
-            if (!IsRealEnable(realloc)) {
+            if (!IsRealEnabled(realloc)) {
                 throw new Exception($"函数: {nameof(Map)}, 交地禁用： {realloc}");
             }
 
@@ -197,33 +199,6 @@ namespace yidascan {
                 return false;
             }
         }
-
-        //private void copyfrom(LocationHelper loc_) {
-        //    foreach (var item in loc_.LocMap) {
-        //        if (LocMap.Keys.Contains(item.Key)) {
-        //            LocMap[item.Key] = item.Value;
-        //        } else {
-        //            LocMap.Add(item.Key, item.Value);
-        //        }
-        //    }
-
-        //    foreach(var item in VirtualLocations) {
-        //        var l = VirtualLocations.Single(x => x.virtualloc == item.virtualloc);
-        //        if (l != null) {
-        //            l.priority = item.priority;
-        //        }
-        //    }
-
-        //    foreach(var item in loc_.RealLocations) {
-        //        var l = RealLocations.Single(x => x.realloc == item.realloc);
-        //        if (l != null) {
-        //            l.priority = item.priority;
-        //            l.state = item.state;
-        //        } else {
-        //            throw new Exception($"来源: {nameof(copyfrom)}, 不存在板位{item.realloc}");
-        //        }
-        //    }
-        //}
 
         #endregion
 
@@ -310,6 +285,15 @@ namespace yidascan {
             }
         }
 
+        public static string lookupVirtual(string reallocation) {
+            var v = LocMap.Where(x => x.Value == reallocation);
+            if (v.Count() == 1) {
+                return v.First().Key;
+            } else {
+                throw new Exception($"来源: {}, 查找不到{reallocation}对应的虚拟交地。");
+            }
+        }
+
         public void ResetReal() {
             for (var i = 0; i < RealLocations.Length; i++) {
                 if (RealLocations[i].priority != Priority.DISABLE) {
@@ -318,21 +302,20 @@ namespace yidascan {
             }
         }
 
-        public void SetRealDefaultPriority() {
-            var keys = LocMap.Select(x => x.Key).ToList();
-            foreach (var k in keys) {
-                if (IsRealEnable(k)) {
-                    LocMap[k] = k;
-                } else {
-                    LocMap[k] = "";
-                }
-            }
+        public static LocationHelper LoadRealDefaultPriority() {
+            //var keys = LocMap.Select(x => x.Key).ToList();
+            //foreach (var k in keys) {
+            //    LocMap[k] = "";
+            //}
 
-            for (var i = 0; i < RealLocations.Length; i++) {
-                if (RealLocations[i].priority != Priority.DISABLE) {
-                    RealLocations[i].state = LocationState.BUSY;
-                }
-            }
+            //for (var i = 0; i < RealLocations.Length; i++) {
+            //    if (RealLocations[i].priority != Priority.DISABLE) {
+            //        RealLocations[i].state = LocationState.IDLE;
+            //    }
+            //}
+            var exe = Assembly.GetExecutingAssembly().Location;
+            var exepath = Path.GetDirectoryName(exe);
+            return LoadConf(Path.Combine("location_default.json"));
         }
 
         public static LocationHelper LoadConf(string fn) {
@@ -341,7 +324,7 @@ namespace yidascan {
         }
 
         public void SaveConf(string fn) {
-            var jsonstr = JsonConvert.SerializeObject(this);
+            var jsonstr = JsonConvert.SerializeObject(this, Formatting.Indented);
             File.WriteAllText(fn, jsonstr);
         }        
         #endregion

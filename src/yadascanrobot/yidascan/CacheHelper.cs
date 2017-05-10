@@ -241,7 +241,7 @@ namespace yidascan {
         /// 其他队列的布卷坐标不动。
         /// 原板的最高层设为当前层。
         /// </summary>
-        /// <param name="tolocation">交地</param>
+        /// <param name="tolocation">名义交地</param>
         /// <param name="panelno">板号</param>
         public bool ReCalculateCoordinate(string panelno, string tolocation) {
             // 设新的板号，层数设为1

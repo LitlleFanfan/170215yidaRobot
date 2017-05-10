@@ -11,7 +11,6 @@ using ProduceComm;
 using Newtonsoft.Json;
 
 namespace yidascan {
-#if DEBUG
     public class FakeWebApi : IErpApi {
         public bool CheckValidationResult(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors errors) {
             //直接确认，否则打不开    
@@ -19,7 +18,9 @@ namespace yidascan {
         }
         private Random rand = new Random();
 
-        readonly List<string> location = new List<string>() { "B01", "B02", "B03", "B04", "B05", "B06", "B07", "B08", "B09", "B10", "A01", "A02", "A03", "C01", "C02", "C03" };
+        readonly List<string> location = new List<string> { "B03", "B04"};
+        // , "B03", "B04", "B05", "B06", "B07", "B08", "B09", "B10", "A01", "A02", "A03", "C01", "C02", "C03" 
+        
         public Dictionary<string, string> Post(string url, Dictionary<string, string> agr, int timeout = 100) {
             Thread.Sleep(30);
             // 取布卷交地。
@@ -45,5 +46,4 @@ namespace yidascan {
             return "";
         }
     }
-#endif
 }

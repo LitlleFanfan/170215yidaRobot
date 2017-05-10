@@ -27,6 +27,10 @@
             this.listView1 = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.miResetItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.miEnable = new System.Windows.Forms.ToolStripMenuItem();
+            this.miDisable = new System.Windows.Forms.ToolStripMenuItem();
             this.btnReset = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.listView2 = new System.Windows.Forms.ListView();
@@ -37,7 +41,9 @@
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.stMessage = new System.Windows.Forms.ToolStripStatusLabel();
-            this.btnDefaultReal = new System.Windows.Forms.Button();
+            this.btnLoad = new System.Windows.Forms.Button();
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
+            this.contextMenuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -46,6 +52,7 @@
             this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
             this.columnHeader2});
+            this.listView1.ContextMenuStrip = this.contextMenuStrip1;
             this.listView1.FullRowSelect = true;
             this.listView1.GridLines = true;
             this.listView1.Location = new System.Drawing.Point(20, 19);
@@ -56,6 +63,7 @@
             this.listView1.TabIndex = 0;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
+            this.listView1.SelectedIndexChanged += new System.EventHandler(this.listView1_SelectedIndexChanged);
             // 
             // columnHeader1
             // 
@@ -67,11 +75,39 @@
             this.columnHeader2.Text = "实际交地";
             this.columnHeader2.Width = 120;
             // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.miResetItem,
+            this.toolStripMenuItem1,
+            this.miEnable,
+            this.miDisable});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(125, 76);
+            // 
+            // miResetItem
+            // 
+            this.miResetItem.Name = "miResetItem";
+            this.miResetItem.Size = new System.Drawing.Size(124, 22);
+            this.miResetItem.Text = "取消对应";
+            // 
+            // miEnable
+            // 
+            this.miEnable.Name = "miEnable";
+            this.miEnable.Size = new System.Drawing.Size(100, 22);
+            this.miEnable.Text = "空闲";
+            // 
+            // miDisable
+            // 
+            this.miDisable.Name = "miDisable";
+            this.miDisable.Size = new System.Drawing.Size(100, 22);
+            this.miDisable.Text = "禁用";
+            // 
             // btnReset
             // 
             this.btnReset.BackColor = System.Drawing.SystemColors.Control;
             this.btnReset.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.btnReset.Location = new System.Drawing.Point(172, 476);
+            this.btnReset.Location = new System.Drawing.Point(166, 476);
             this.btnReset.Margin = new System.Windows.Forms.Padding(5);
             this.btnReset.Name = "btnReset";
             this.btnReset.Size = new System.Drawing.Size(142, 36);
@@ -97,6 +133,7 @@
             this.columnHeader5,
             this.columnHeader6,
             this.columnHeader3});
+            this.listView2.ContextMenuStrip = this.contextMenuStrip1;
             this.listView2.FullRowSelect = true;
             this.listView2.GridLines = true;
             this.listView2.Location = new System.Drawing.Point(351, 19);
@@ -157,25 +194,27 @@
             this.stMessage.Size = new System.Drawing.Size(32, 17);
             this.stMessage.Text = "状态";
             // 
-            // btnDefaultReal
+            // btnLoad
             // 
-            this.btnDefaultReal.BackColor = System.Drawing.Color.Red;
-            this.btnDefaultReal.ForeColor = System.Drawing.Color.White;
-            this.btnDefaultReal.Location = new System.Drawing.Point(324, 476);
-            this.btnDefaultReal.Margin = new System.Windows.Forms.Padding(5);
-            this.btnDefaultReal.Name = "btnDefaultReal";
-            this.btnDefaultReal.Size = new System.Drawing.Size(142, 36);
-            this.btnDefaultReal.TabIndex = 18;
-            this.btnDefaultReal.Text = "清空板位";
-            this.btnDefaultReal.UseVisualStyleBackColor = false;
-            this.btnDefaultReal.Click += new System.EventHandler(this.btnDefaultReal_Click);
+            this.btnLoad.Location = new System.Drawing.Point(316, 476);
+            this.btnLoad.Name = "btnLoad";
+            this.btnLoad.Size = new System.Drawing.Size(142, 36);
+            this.btnLoad.TabIndex = 19;
+            this.btnLoad.Text = "加载";
+            this.btnLoad.UseVisualStyleBackColor = true;
+            this.btnLoad.Click += new System.EventHandler(this.btnLoad_Click);
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(97, 6);
             // 
             // wloc
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 19F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(761, 543);
-            this.Controls.Add(this.btnDefaultReal);
+            this.Controls.Add(this.btnLoad);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.btnRefresh);
             this.Controls.Add(this.listView2);
@@ -183,12 +222,14 @@
             this.Controls.Add(this.btnReset);
             this.Controls.Add(this.listView1);
             this.Font = new System.Drawing.Font("SimSun", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Margin = new System.Windows.Forms.Padding(5);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "wloc";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "交地状态";
+            this.contextMenuStrip1.ResumeLayout(false);
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
@@ -211,6 +252,11 @@
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel stMessage;
-        private System.Windows.Forms.Button btnDefaultReal;
+        private System.Windows.Forms.Button btnLoad;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem miResetItem;
+        private System.Windows.Forms.ToolStripMenuItem miEnable;
+        private System.Windows.Forms.ToolStripMenuItem miDisable;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
     }
 }

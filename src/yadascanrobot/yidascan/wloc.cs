@@ -20,7 +20,6 @@ namespace yidascan {
 
         public void setRunState(bool isrunning) {
             this.isrunning = isrunning;
-            btnDefaultReal.Enabled = !isrunning;
             btnReset.Enabled = !isrunning;
         }
 
@@ -62,7 +61,7 @@ namespace yidascan {
         private void btnReset_Click(object sender, EventArgs e) {
             if (commonhelper.CommonHelper.Confirm("确定要设置默认板位吗?")) {
                 lock (locs) {
-                    locs.SetRealDefaultPriority();
+                    locs = LocationHelper.LoadRealDefaultPriority();
                     ShowMap();
                     ShowRealLocs();
                 }
@@ -95,13 +94,23 @@ namespace yidascan {
             Close();
         }
 
-        private void btnDefaultReal_Click(object sender, EventArgs e) {
-            if (commonhelper.CommonHelper.Confirm("确定要设置默认板位吗?")) {
-                lock (locs) {
-                    locs.Resetall();
+        private void btnLoad_Click(object sender, EventArgs e) {
+            using (var dlg = new OpenFileDialog()) {
+                dlg.Filter = "Json Files(*.json) | *.json";
+                var rt = dlg.ShowDialog();
+                if (rt == DialogResult.Yes || rt == DialogResult.OK) {
+                    locs = LocationHelper.LoadConf(dlg.FileName);
                     ShowMap();
                     ShowRealLocs();
                 }
+            }
+        }
+
+        private void listView1_SelectedIndexChanged(object sender, EventArgs e) {
+            var item = listView1.SelectedItems;
+            if (item.Count > 0) {
+                var selected = item[0];
+
             }
         }
     }

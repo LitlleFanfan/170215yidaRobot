@@ -179,7 +179,7 @@ namespace yidascan {
             }
 
             foreach (var item in rr) {
-                lbxLog.Items.Insert(0, $"{lbxLog.Items.Count} 机器人号码队列: {item.LabelCode} {item.ToLocation}");
+                lbxLog.Items.Insert(0, $"{lbxLog.Items.Count} 机器人号码队列: {item.LabelCode} {item.RealLocation}");
             }
 
             foreach (var item in rb) {

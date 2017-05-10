@@ -90,20 +90,6 @@ namespace yidascan {
             }
         }
 
-        // !! 此函数应当在TaskQueues加载后，立即执行。
-        private static LocationHelper loadLocationConf() {
-            try {
-                var p = Path.Combine(Application.StartupPath, LOCATION_CONF);
-                return LocationHelper.LoadConf(p);
-            } catch (FileNotFoundException) {
-                logOpt.Write($"!来源: {nameof(loadLocationConf)}. 没找到自由板位文件，使用默认配置。");
-                return null;
-            } catch (Exception ex) {
-                logOpt.Write($"!来源: {nameof(loadLocationConf)}. 加载配置异常: {ex}。");
-                return null;
-            }
-        }
-
         // 运行效果不正确。无红字显示。
         private void InitListBoxes() {
             lsvBufferLog.Initstyle();
@@ -262,7 +248,12 @@ namespace yidascan {
 
         private IRobotJob GetRobot(string ip, string jobname) {
 #if DEBUG
-            return new FakeRobotJob(ip, jobname);
+            // return new FakeRobotJob(ip, jobname);
+
+            var msg = "!使用真实机器人";
+            MessageBox.Show(msg);
+            logOpt.Write(msg);
+            return new RobotHelper(callErpApi, ip, jobname);
 #else
             return new RobotHelper(callErpApi, ip, jobname);
 #endif
@@ -320,13 +311,14 @@ namespace yidascan {
 
                         if (signal == SIGNAL_ON) {
                             // kv.Key是交地。
-                            var tolocation = kv.Key;
+                            var reallocation = kv.Key;
+                            var virtuallocation = LocationHelper.lookupVirtual(reallocation);
 
                             // 修改当前板号的属性。
                             var shiftno = createShiftNo();
 
-                            var pf = LableCode.GetTolactionCurrPanelNo(tolocation, shiftno);
-                            LableCode.SetMaxFloorAndFull(tolocation);
+                            var pf = LableCode.GetTolactionCurrPanelNo(virtuallocation, shiftno);
+                            LableCode.SetMaxFloorAndFull(virtuallocation);
                             //LableCode.UserSetPanelLastRoll();
                             logOpt.Write($"{kv.Key} 收到人工完成信号。", LogType.ROBOT_STACK, LogViewType.OnlyFile);
 
@@ -334,13 +326,13 @@ namespace yidascan {
                             var newPanel = PanelGen.NewPanelNo();
 
                             // 满板时设置自由板位标志。
-                            TaskQueues.lochelper.OnFull(tolocation);
+                            TaskQueues.lochelper.OnFull(reallocation);
 
                             // 重新计算缓存区的布卷的坐标。
-                            cacheher.ReCalculateCoordinate(newPanel, tolocation);
+                            cacheher.ReCalculateCoordinate(newPanel, virtuallocation);
 
                             //处理满板信号
-                            robot.NotifyOpcJobFinished(pf.PanelNo, tolocation);
+                            robot.NotifyOpcJobFinished(pf.PanelNo, virtuallocation, reallocation);
 
                             // plc复位信号。
                             lock (opcBUFL) {
@@ -673,7 +665,7 @@ namespace yidascan {
                         if (r) {
                             var code = taskQ.GetLableUpQ(); if (code != null) {
                                 logOpt.Write(string.Format("收到标签朝上来料信号。号码: {0}", code.LCode), LogType.ROLL_QUEUE);
-                                
+
                                 if (string.IsNullOrEmpty(code.RealLocation)) {
                                     var msg = $"!来源: {nameof(LableUpTask)}, 真实交地是空值: {code.LCode} / {code.ToLocation}";
                                     logOpt.Write(msg, LogType.ROLL_QUEUE);
@@ -688,7 +680,7 @@ namespace yidascan {
                                 showCachePosQue(taskQ.CacheSide);
 
                                 // if (int.Parse(code.ParseLocationNo()) < 6) {
-                                
+
                                 if (int.Parse(LableCode.ParseRealLocationNo(code.RealLocation)) < 6) {
                                     showLabelQue(taskQ.CatchAQ, lsvCatch1);
                                 } else {
@@ -1164,6 +1156,7 @@ namespace yidascan {
 
         private const string TASKQUE_CONF = "taskq.json";
         private const string LOCATION_CONF = "location.json";
+        private const string LOCATION_DEFAULT_CONF = "location_default.json";
 
 
         private void saveTaskQ() {
@@ -1323,11 +1316,18 @@ namespace yidascan {
         }
 
         private void initErpApi() {
+
 #if DEBUG
             callErpApi = new FakeWebApi();
 #else
-            callErpApi = new CallWebApi();
+            // callErpApi = new CallWebApi();
+
+            callErpApi = new FakeWebApi();
+            var msg = "!测试版，使用虚拟Webpi!!!";
+            logOpt.Write(msg);
+            CommonHelper.Warn(msg);
 #endif
+
         }
 
         private static IOpcClient GetOpcClient() {
@@ -1471,7 +1471,7 @@ namespace yidascan {
 
                 lock (TaskQueues.lochelper) {
                     logOpt.Write("!使用默认板位");
-                    TaskQueues.lochelper.SetRealDefaultPriority();
+                    TaskQueues.lochelper = LocationHelper.LoadRealDefaultPriority();
                 }
 
                 taskQ.clearAll();
@@ -1580,8 +1580,8 @@ namespace yidascan {
                             }
 
                             Thread.Sleep(50);
-                        }                        
-                    }catch (Exception ex) {
+                        }
+                    } catch (Exception ex) {
                         logOpt.Write($"!来源: {nameof(StartPanelEndTask)}, {ex}");
                     }
 
@@ -1594,5 +1594,30 @@ namespace yidascan {
         private void btnOpenLogDir_Click(object sender, EventArgs e) {
             openDirectory(Application.StartupPath, "log");
         }
+
+        #region LOCATION_CONF
+        // !! 此函数应当在TaskQueues加载后，立即执行。
+        private static LocationHelper loadlocconf(string conffile) {
+            try {
+                var p = Path.Combine(Application.StartupPath, conffile);
+                return LocationHelper.LoadConf(p);
+            } catch (FileNotFoundException) {
+                logOpt.Write($"!来源: {nameof(loadDefaultLocationConf)}. 没找到板位文件{conffile}，使用默认配置。");
+                return null;
+            } catch (Exception ex) {
+                logOpt.Write($"!来源: {nameof(loadDefaultLocationConf)}. 加载配置异常: {ex}。");
+                return null;
+            }
+        }
+
+        private static LocationHelper loadDefaultLocationConf() {
+            return loadlocconf(LOCATION_DEFAULT_CONF);
+        }
+
+        // !! 此函数应当在TaskQueues加载后，立即执行。
+        private static LocationHelper loadLocationConf() {
+            return loadlocconf(LOCATION_CONF);
+        }
+        #endregion
     }
 }
