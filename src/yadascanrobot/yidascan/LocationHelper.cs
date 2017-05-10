@@ -285,12 +285,12 @@ namespace yidascan {
             }
         }
 
-        public static string lookupVirtual(string reallocation) {
+        public string lookupVirtual(string reallocation) {
             var v = LocMap.Where(x => x.Value == reallocation);
             if (v.Count() == 1) {
                 return v.First().Key;
             } else {
-                throw new Exception($"来源: {}, 查找不到{reallocation}对应的虚拟交地。");
+                throw new Exception($"来源: {nameof(lookupVirtual)}, 查找不到{reallocation}对应的虚拟交地。");
             }
         }
 

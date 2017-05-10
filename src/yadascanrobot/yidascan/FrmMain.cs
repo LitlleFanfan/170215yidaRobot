@@ -312,7 +312,9 @@ namespace yidascan {
                         if (signal == SIGNAL_ON) {
                             // kv.Key是交地。
                             var reallocation = kv.Key;
-                            var virtuallocation = LocationHelper.lookupVirtual(reallocation);
+
+                            // 取名义交地
+                            var virtuallocation = TaskQueues.lochelper.lookupVirtual(reallocation);
 
                             // 修改当前板号的属性。
                             var shiftno = createShiftNo();

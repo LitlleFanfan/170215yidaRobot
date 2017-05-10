@@ -74,7 +74,7 @@ namespace yidascan {
             GC.SuppressFinalize(this);
         }
 
-        public void NotifyOpcJobFinished(string panelNo, string tolocation) {
+        public void NotifyOpcJobFinished(string panelNo, string tolocation, string reallocation) {
             // throw new NotImplementedException();
         }
 

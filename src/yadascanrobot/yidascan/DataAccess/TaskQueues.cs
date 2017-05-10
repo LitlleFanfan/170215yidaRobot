@@ -124,7 +124,6 @@ namespace yidascan.DataAccess {
 
             var pinfo = LableCode.GetPanel(label.PanelNo);
             var state = FrmMain.GetPanelState(label, pinfo);
-            onlog?.Invoke($"{label.LCode} {label.ToLocation} {Enum.GetName(typeof(PanelState), state)}", LogType.ROLL_QUEUE);
 
             var x = label.Cx;
             var y = label.Cy;
@@ -146,18 +145,14 @@ namespace yidascan.DataAccess {
                     rz = rz * -1;
                 }
             }
-            if (RollPosition.robotRSidePanel.Contains(label.ToLocation)) {
+
+            if (RollPosition.robotRSidePanel.Contains(label.RealLocation)) {
                 rz = rz + 180;
-            }
-            
-            if (string.IsNullOrEmpty(label.RealLocation)) {
-                var msg = $"!来源: {nameof(AddRobotRollQ)}, 获取真实交地失败: {label.ToLocation}";
-                onlog?.Invoke(msg, LogType.ROLL_QUEUE);
-                throw new Exception(msg);
             }
 
             var roll = new RollPosition(label, side, state, x, y, z, rz);
-            onlog?.Invoke($"来源: {nameof(AddRobotRollQ)}, {side} {label.LCode} 名义交地: {label.ToLocation}, 真实交地: {label.RealLocation}, ", LogType.ROLL_QUEUE);
+            onlog?.Invoke($"来源: {nameof(AddRobotRollQ)}, {side} {label.LCode} 名义交地: {label.ToLocation}, 真实交地: {label.RealLocation}, {Enum.GetName(typeof(PanelState), state)}", LogType.ROLL_QUEUE);
+            
             return roll;
         }
 
