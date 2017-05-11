@@ -1322,12 +1322,12 @@ namespace yidascan {
 #if DEBUG
             callErpApi = new FakeWebApi();
 #else
-            // callErpApi = new CallWebApi();
+            callErpApi = new CallWebApi();
 
-            callErpApi = new FakeWebApi();
-            var msg = "!测试版，使用虚拟Webpi!!!";
-            logOpt.Write(msg);
-            CommonHelper.Warn(msg);
+            //callErpApi = new FakeWebApi();
+            //var msg = "!测试版，使用虚拟Webpi!!!";
+            //logOpt.Write(msg);
+            //CommonHelper.Warn(msg);
 #endif
 
         }
