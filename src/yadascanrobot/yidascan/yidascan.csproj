@@ -189,6 +189,12 @@
     <Compile Include="WRollBrowser.Designer.cs">
       <DependentUpon>WRollBrowser.cs</DependentUpon>
     </Compile>
+    <Compile Include="wtestpanel.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="wtestpanel.Designer.cs">
+      <DependentUpon>wtestpanel.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="FrmMain.resx">
       <DependentUpon>FrmMain.cs</DependentUpon>
     </EmbeddedResource>
@@ -222,6 +228,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="WRollBrowser.resx">
       <DependentUpon>WRollBrowser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="wtestpanel.resx">
+      <DependentUpon>wtestpanel.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="app.config" />
     <None Include="ClassDiagram1.cd" />

@@ -14,11 +14,11 @@ namespace yidascan {
     /// 模拟信号发生。
     /// </summary>
     public class SignalGen {
-        static System.Windows.Forms.Timer timerWeigh;
-        static System.Windows.Forms.Timer timerCache;
-        static System.Windows.Forms.Timer timerLabelUp;
-        static System.Windows.Forms.Timer timerItemCatchA;
-        static System.Windows.Forms.Timer timerItemCatchB;
+        public static System.Windows.Forms.Timer timerWeigh;
+        public static System.Windows.Forms.Timer timerCache;
+        public static System.Windows.Forms.Timer timerLabelUp;
+        public static System.Windows.Forms.Timer timerItemCatchA;
+        public static System.Windows.Forms.Timer timerItemCatchB;
 
         public static int WEIGTH_SIGNAL = 0;
         public static bool CACHE_SIGNAL = false;
@@ -28,65 +28,73 @@ namespace yidascan {
 
         private static int DELAY = 1000;
 
-        public static void startTimerWeigh() {
+        public static void toggle(System.Windows.Forms.Timer t) {
+            t.Enabled = !t.Enabled;
+        }
+
+        private static void startTimerWeigh() {
             timerWeigh = new System.Windows.Forms.Timer {
                 Interval = DELAY
             };
             timerWeigh.Tick += (s, e) => { WEIGTH_SIGNAL = 1; };
-            timerWeigh.Enabled = true;
         }
 
-        public static void stopTimerWeigh() {
-            timerWeigh.Enabled = false;
-        }
-
-        public static void startTimerCache() {
+        private static void startTimerCache() {
             timerCache = new System.Windows.Forms.Timer {
                 Interval = 4000
             };
             timerCache.Tick += (s, e) => { CACHE_SIGNAL = true; };
-            timerCache.Enabled = true;
         }
 
-        public static void stopTimerCache() {
-            timerCache.Enabled = false;
-        }
-
-        public static void startTimerLabelUp() {
+        private static void startTimerLabelUp() {
             timerLabelUp = new System.Windows.Forms.Timer {
                 Interval = DELAY
             };
             timerLabelUp.Tick += (s, e) => { LABELUP_SIGNAL = true; };
-            timerLabelUp.Enabled = true;
         }
 
-        public static void stopTimerLabelUp() {
-            timerLabelUp.Enabled = false;
-        }
-
-        public static void startTimerItemCatchA() {
+        private static void startTimerItemCatchA() {
             timerItemCatchA = new System.Windows.Forms.Timer {
                 Interval = DELAY
             };
             timerItemCatchA.Tick += (s, e) => { ITEMCATCH_A_SIGNAL = true; };
-            timerItemCatchA.Enabled = true;
         }
 
-        public static void stopTimerItemCatchA() {
-            timerItemCatchA.Enabled = false;
-        }
-
-        public static void startTimerItemCatchB() {
+        private static void startTimerItemCatchB() {
             timerItemCatchB = new System.Windows.Forms.Timer {
                 Interval = DELAY
             };
             timerItemCatchB.Tick += (s, e) => { ITEMCATCH_B_SIGNAL = true; };
+        }
+
+        public static void Init() {
+            startTimerWeigh();
+            startTimerCache();
+            startTimerLabelUp();
+            startTimerItemCatchA();
+            startTimerItemCatchB();
+        }
+
+        public static void startall() {
+            timerWeigh.Enabled = true;
+            Thread.Sleep(100);
+            timerCache.Enabled = true;
+            Thread.Sleep(100);
+            timerLabelUp.Enabled = true;
+            Thread.Sleep(100);
+            timerItemCatchA.Enabled = true;
+            Thread.Sleep(100);
             timerItemCatchB.Enabled = true;
         }
 
-        public static void stopTimerItemCatchB() {
+        public static void stoptall() {
+            timerWeigh.Enabled = false;
+            timerCache.Enabled = false;
+            timerLabelUp.Enabled = false;
+            timerItemCatchA.Enabled = false;
             timerItemCatchB.Enabled = false;
         }
+
     }
 
     /// <summary>

@@ -16,13 +16,15 @@ namespace yidascan {
 
         public LocationHelper locs;
 
-        private void showVirtualLocations() {
+        public void showVirtualLocations() {
+            listView1.Items.Clear();
             foreach (var item in locs.VirtualLocations) {
                 var vi = new ListViewItem {
                     Text = item.virtualloc
                 };
                 vi.SubItems.Add(LocationHelper.priority_s(item.priority));
                 vi.Tag = item;
+                listView1.Items.Add(vi);
             }
         }
 
@@ -49,6 +51,7 @@ namespace yidascan {
                         rbLow.Checked = true;
                         break;
                 }
+                lbLocation.Text = item.virtualloc;
             }
         }
 
