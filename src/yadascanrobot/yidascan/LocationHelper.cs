@@ -230,7 +230,6 @@ namespace yidascan {
                     };
                 }
 
-
                 // 验证是否成功
                 rt = LocMap[virtualloc];
                 trytimes--;

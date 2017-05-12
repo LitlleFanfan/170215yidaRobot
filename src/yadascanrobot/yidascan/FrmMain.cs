@@ -1573,7 +1573,9 @@ namespace yidascan {
                 }
 
                 w.ShowDialog();
+                TaskQueues.lochelper = w.getdata();
             }
+
         }
 
         // 监听板准备好信号
@@ -1630,5 +1632,12 @@ namespace yidascan {
             return loadlocconf(LOCATION_CONF);
         }
         #endregion
+
+        private void btnSetPriority_Click(object sender, EventArgs e) {
+            using(var w = new wpriority { locs = TaskQueues.lochelper}) {
+                w.showVirtualLocations();
+                w.ShowDialog();
+            }
+        }
     }
 }

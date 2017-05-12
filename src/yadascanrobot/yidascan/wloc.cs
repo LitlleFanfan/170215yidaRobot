@@ -27,6 +27,10 @@ namespace yidascan {
             locs = locs_;
         }
 
+        public LocationHelper getdata() {
+            return locs;
+        }
+
         public void ShowMap() {
             var view = listView1;
             view.Items.Clear();

@@ -101,6 +101,7 @@
             this.btnSaveTaskq = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
             this.btnSelfTest = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnOpenLogDir = new System.Windows.Forms.ToolStripMenuItem();
             this.btnQuit = new System.Windows.Forms.ToolStripButton();
             this.grbHandwork = new System.Windows.Forms.GroupBox();
             this.panel1 = new System.Windows.Forms.Panel();
@@ -179,7 +180,7 @@
             this.panel8 = new System.Windows.Forms.Panel();
             this.panel7 = new System.Windows.Forms.Panel();
             this.panel11 = new System.Windows.Forms.Panel();
-            this.btnOpenLogDir = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnSetPriority = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1.SuspendLayout();
             this.grbHandwork.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -337,7 +338,8 @@
             this.btnSaveTaskq,
             this.toolStripMenuItem2,
             this.btnSelfTest,
-            this.btnOpenLogDir});
+            this.btnOpenLogDir,
+            this.btnSetPriority});
             this.btnOther.Font = new System.Drawing.Font("Microsoft YaHei", 14F);
             this.btnOther.Image = ((System.Drawing.Image)(resources.GetObject("btnOther.Image")));
             this.btnOther.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -500,6 +502,13 @@
             this.btnSelfTest.Size = new System.Drawing.Size(274, 30);
             this.btnSelfTest.Text = "self test";
             this.btnSelfTest.Click += new System.EventHandler(this.btnSelfTest_Click);
+            // 
+            // btnOpenLogDir
+            // 
+            this.btnOpenLogDir.Name = "btnOpenLogDir";
+            this.btnOpenLogDir.Size = new System.Drawing.Size(274, 30);
+            this.btnOpenLogDir.Text = "日志";
+            this.btnOpenLogDir.Click += new System.EventHandler(this.btnOpenLogDir_Click);
             // 
             // btnQuit
             // 
@@ -1424,12 +1433,12 @@
             this.panel11.Size = new System.Drawing.Size(300, 89);
             this.panel11.TabIndex = 3;
             // 
-            // btnOpenLogDir
+            // btnSetPriority
             // 
-            this.btnOpenLogDir.Name = "btnOpenLogDir";
-            this.btnOpenLogDir.Size = new System.Drawing.Size(274, 30);
-            this.btnOpenLogDir.Text = "日志";
-            this.btnOpenLogDir.Click += new System.EventHandler(this.btnOpenLogDir_Click);
+            this.btnSetPriority.Name = "btnSetPriority";
+            this.btnSetPriority.Size = new System.Drawing.Size(274, 30);
+            this.btnSetPriority.Text = "板位优先级设置";
+            this.btnSetPriority.Click += new System.EventHandler(this.btnSetPriority_Click);
             // 
             // FrmMain
             // 
@@ -1605,6 +1614,7 @@
         private System.Windows.Forms.TabPage tbpWarnLog;
         private System.Windows.Forms.ListBox lsvWarn;
         private System.Windows.Forms.ToolStripMenuItem btnOpenLogDir;
+        private System.Windows.Forms.ToolStripMenuItem btnSetPriority;
     }
 }
 
