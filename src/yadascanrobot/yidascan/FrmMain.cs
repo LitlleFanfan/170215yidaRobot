@@ -128,7 +128,7 @@ namespace yidascan {
             try {
                 LayerShape.loadconf();
 
-                TaskQueues.lochelper = loadLocationConf() ?? new LocationHelper();
+                TaskQueues.lochelper = loadLocationConf() ?? loadDefaultLocationConf();
                 taskQ = loadconf() ?? new TaskQueues();
                 cacheher = new CacheHelper(taskQ.CacheSide);
 
@@ -248,12 +248,12 @@ namespace yidascan {
 
         private IRobotJob GetRobot(string ip, string jobname) {
 #if DEBUG
-            // return new FakeRobotJob(ip, jobname);
+            return new FakeRobotJob(ip, jobname);
 
-            var msg = "!使用真实机器人";
-            MessageBox.Show(msg);
-            logOpt.Write(msg);
-            return new RobotHelper(callErpApi, ip, jobname);
+            //var msg = "!使用真实机器人";
+            //MessageBox.Show(msg);
+            //logOpt.Write(msg);
+            //return new RobotHelper(callErpApi, ip, jobname);
 #else
             return new RobotHelper(callErpApi, ip, jobname);
 #endif
@@ -293,7 +293,7 @@ namespace yidascan {
         }
 
         /// <summary>
-        /// B区人工完成信号任务。
+        /// B区人工满板信号任务。
         /// </summary>
         private void BAreaUserFinalLayerTask() {
             opcBUFL = CreateOpcClient("B区手动完成");
@@ -480,6 +480,15 @@ namespace yidascan {
                                     showLabelQue(taskQ.CacheQ, lsvCacheBefor);//加到缓存列表中显示
                                 }
                             }
+#if !DEBUG
+                            if (codeFromPlc == lastweighLable) {
+                                // 复位
+                                opcWeigh.Write(opcParam.WeighParam.GetWeigh, 0);
+                                logOpt.Write($"称重复位, 原因: 重复称重。plc标签{codeFromPlc}", LogType.NORMAL, LogViewType.Both);
+                            } else {
+                                logOpt.Write($"!称重信号无对应的队列号码, opc称重标签{codeFromPlc} 最后称重标签{lastweighLable}");
+                            }
+#endif
                         }
                     } catch (Exception ex) {
                         logOpt.Write($"!来源: {nameof(WeighTask)} {ex}", LogType.NORMAL);

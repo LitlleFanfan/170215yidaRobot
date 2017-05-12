@@ -59,12 +59,7 @@ namespace yidascan {
             
             // 告知OPC
             NotifyOpcJobFinished(roll);
-
-            // 自由板位处理。
-            if (roll.PnlState == PanelState.Full) {
-                TaskQueues.lochelper.OnFull(roll.RealLocation);
-            }
-
+            TaskQueues.lochelper.OnFull(roll.RealLocation);
             DequeueRoll(robotRollQ, roll, lv);
             
             return true;

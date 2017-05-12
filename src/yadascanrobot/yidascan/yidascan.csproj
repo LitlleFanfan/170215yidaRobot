@@ -177,6 +177,12 @@
     <Compile Include="wloc.Designer.cs">
       <DependentUpon>wloc.cs</DependentUpon>
     </Compile>
+    <Compile Include="wpriority.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="wpriority.Designer.cs">
+      <DependentUpon>wpriority.cs</DependentUpon>
+    </Compile>
     <Compile Include="WRollBrowser.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -210,6 +216,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="wloc.resx">
       <DependentUpon>wloc.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="wpriority.resx">
+      <DependentUpon>wpriority.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="WRollBrowser.resx">
       <DependentUpon>WRollBrowser.cs</DependentUpon>

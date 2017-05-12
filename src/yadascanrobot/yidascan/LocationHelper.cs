@@ -40,6 +40,7 @@ namespace yidascan {
         public string realloc { get; set; }
         public LocationState state { get; set; }
         public Priority priority { get; set; }
+        public string panelno { get; set; }
 
         public RealLoc(string loc, LocationState s, Priority p) {
             this.realloc = loc;
@@ -60,7 +61,7 @@ namespace yidascan {
         // 板满时，value是false，空时，value是true。
         public RealLoc[] RealLocations;
 
-        public List<VirtualLoc> VirtualLocations;
+        public VirtualLoc[] VirtualLocations;
 
         public LocationHelper() {
             LocMap = new Dictionary<string, string> {
@@ -91,7 +92,7 @@ namespace yidascan {
                 RealLoc.Create("B11", LocationState.IDLE, Priority.DISABLE)
             };
 
-            VirtualLocations = new List<VirtualLoc>() {
+            VirtualLocations = new VirtualLoc[] {
                 VirtualLoc.Create("B01", Priority.MEDIUM),
                 VirtualLoc.Create("B02", Priority.MEDIUM),
                 VirtualLoc.Create("B03", Priority.MEDIUM),
@@ -106,7 +107,7 @@ namespace yidascan {
         }
 
         #region private_func
-        private void SetState(string realloc, LocationState state) {
+        private void SetState(string realloc, LocationState state, string panelno) {
             if (!IsRealLocExists(realloc)) {
                 throw new Exception($"函数: {nameof(SetState)}, 交地错误： {realloc}");
             }
@@ -115,25 +116,30 @@ namespace yidascan {
 
             if (loc.priority != Priority.DISABLE) {
                 loc.state = state;
+                loc.panelno = panelno;
             }
         }
+        
+        private void Unmap(string realloc, string includePanelno, string excludePanelno) {
+            var real = RealLocations.Single(x => x.realloc == realloc);
 
-        private void Unmap(string realloc) {
-            if (string.IsNullOrEmpty(realloc)) {
-                return;
-            }
-
-            var kyes = LocMap.Where(x => x.Value == realloc)
-                .Select(x => x.Key)
-                .ToList(); ;
-
-            foreach (var k in kyes) {
-                if (LocMap[k] == realloc) {
+            foreach (var k in LocMap.Keys.ToList()) {
+                var cond = true;
+                if (!string.IsNullOrEmpty(includePanelno)) {
+                    cond = cond && real.panelno == includePanelno;
+                }
+                if (!string.IsNullOrEmpty(excludePanelno)) {
+                    cond = cond && real.panelno != excludePanelno;
+                }
+                if (LocMap[k] == realloc && cond) {
                     LocMap[k] = "";
                 }
             }
 
-            SetState(realloc, LocationState.IDLE);
+            // 检查结果的正确性
+            if (LocMap.Any(x => x.Value == realloc)) {
+                throw new Exception($"来源: {nameof(Unmap)}, 未能解除交地对应: {realloc}");
+            }
         }
 
         private bool IsRealLocExists(string loc) {
@@ -147,7 +153,7 @@ namespace yidascan {
             return count == 1;
         }
 
-        private void Map(string virtualloc, string realloc) {
+        private void Map(string virtualloc, string realloc, string panelno) {
             if (!LocMap.ContainsKey(virtualloc)) {
                 throw new Exception($"来源: {nameof(Map)}, 名义交地错误: {virtualloc}");
             }
@@ -160,9 +166,9 @@ namespace yidascan {
                 throw new Exception($"函数: {nameof(Map)}, 交地禁用： {realloc}");
             }
 
-            Unmap(realloc);
+            Unmap(realloc, "", panelno);
             LocMap[virtualloc] = realloc;
-            SetState(realloc, LocationState.BUSY);
+            SetState(realloc, LocationState.BUSY, panelno);
         }
 
         // 找到最近的一个空板
@@ -190,10 +196,10 @@ namespace yidascan {
                 .FirstOrDefault();
         }
 
-        private bool automap(string virtualloc) {
+        private bool automap(string virtualloc, string panelno) {
             var realloc = FindAvailableRealLoc();
             if (!string.IsNullOrEmpty(realloc)) {
-                Map(virtualloc, realloc);
+                Map(virtualloc, realloc, panelno);
                 return true;
             } else {
                 return false;
@@ -204,19 +210,28 @@ namespace yidascan {
 
         #region public_func
         // 根据erp所指的交地，换算出真实交地
-        public string Convert(string virtualloc) {
+        public string Convert(string virtualloc, string panelno) {
             var rt = string.Empty;
             var trytimes = 3; // 尝试3次。
 
-            while(true) {
+            while (true) {
                 if (!LocMap.ContainsKey(virtualloc)) {
                     throw new Exception($"来源: {nameof(Convert)}, 名义交地错误: {virtualloc}");
                 }
 
                 if (LocMap[virtualloc] == string.Empty) {
-                    automap(virtualloc);
+                    automap(virtualloc, panelno);
+                } else {
+                    var realoc = RealLocations.Single(x => x.realloc == LocMap[virtualloc]);
+
+                    if (realoc.panelno == panelno) { return realoc.realloc; } else {
+                        Unmap(realoc.realloc, "", "");
+                        automap(virtualloc, panelno);
+                    };
                 }
 
+
+                // 验证是否成功
                 rt = LocMap[virtualloc];
                 trytimes--;
 
@@ -229,7 +244,7 @@ namespace yidascan {
 
             return rt;
         }
-        
+
         public override string ToString() {
             var s = new StringBuilder();
             foreach (var item in LocMap) {
@@ -303,16 +318,6 @@ namespace yidascan {
         }
 
         public static LocationHelper LoadRealDefaultPriority() {
-            //var keys = LocMap.Select(x => x.Key).ToList();
-            //foreach (var k in keys) {
-            //    LocMap[k] = "";
-            //}
-
-            //for (var i = 0; i < RealLocations.Length; i++) {
-            //    if (RealLocations[i].priority != Priority.DISABLE) {
-            //        RealLocations[i].state = LocationState.IDLE;
-            //    }
-            //}
             var exe = Assembly.GetExecutingAssembly().Location;
             var exepath = Path.GetDirectoryName(exe);
             return LoadConf(Path.Combine("location_default.json"));
@@ -326,7 +331,7 @@ namespace yidascan {
         public void SaveConf(string fn) {
             var jsonstr = JsonConvert.SerializeObject(this, Formatting.Indented);
             File.WriteAllText(fn, jsonstr);
-        }        
+        }
         #endregion
 
         #region event_handler
@@ -339,8 +344,11 @@ namespace yidascan {
                 throw new Exception($"来源: {nameof(OnFull)}, 交地错误: {realloc}");
             }
 
-            Unmap(realloc);
-            SetState(realloc, LocationState.FULL);
+            var real = RealLocations.Single(x => x.realloc == realloc);
+            if (real.state == LocationState.BUSY) {
+                Unmap(realloc, real.panelno, "");
+                SetState(realloc, LocationState.FULL, real.panelno);
+            }
         }
 
         /// <summary>
@@ -359,9 +367,9 @@ namespace yidascan {
 #if DEBUG
                 Thread.Sleep(1000 * 30); // 调试用，等半分钟
 #endif
-                SetState(realloc, LocationState.IDLE);
+                SetState(realloc, LocationState.IDLE, "");
             }
         }
-#endregion
+        #endregion
     }
 }
