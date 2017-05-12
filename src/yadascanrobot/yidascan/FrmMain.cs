@@ -327,9 +327,6 @@ namespace yidascan {
                             // 创建新的板信息。
                             var newPanel = PanelGen.NewPanelNo();
 
-                            // 满板时设置自由板位标志。
-                            TaskQueues.lochelper.OnFull(reallocation);
-
                             // 重新计算缓存区的布卷的坐标。
                             cacheher.ReCalculateCoordinate(newPanel, virtuallocation);
 
