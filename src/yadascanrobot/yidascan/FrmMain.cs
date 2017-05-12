@@ -150,6 +150,10 @@ namespace yidascan {
                 SetButtonState(false);
                 InitCfgView();
 
+#if DEBUG
+                SignalGen.Init();
+#endif
+
             } catch (Exception ex) {
                 logOpt.Write($"!来源: {nameof(FrmMain_Load)}, 初始化失败: {ex}", LogType.NORMAL);
             }
@@ -1346,67 +1350,6 @@ namespace yidascan {
 #endif
         }
 
-        private void btnSignalWeigh_Click(object sender, EventArgs e) {
-#if DEBUG
-            SignalGen.startTimerWeigh();
-#endif
-        }
-
-        private void btnSignalCache_Click(object sender, EventArgs e) {
-#if DEBUG
-            SignalGen.startTimerCache();
-#endif
-        }
-
-        private void btnSignalLabelUp_Click(object sender, EventArgs e) {
-#if DEBUG
-            SignalGen.startTimerLabelUp();
-#endif
-        }
-
-        private void btnSignalItemCatchA_Click(object sender, EventArgs e) {
-#if DEBUG
-            SignalGen.startTimerItemCatchA();
-#endif
-        }
-
-        private void btnSignalItemCatchB_Click(object sender, EventArgs e) {
-#if DEBUG
-            SignalGen.startTimerItemCatchB();
-#endif
-        }
-
-#if DEBUG
-        private static void startAllFakeSignals() {
-            SignalGen.startTimerWeigh();
-            Thread.Sleep(100);
-            SignalGen.startTimerCache();
-            Thread.Sleep(100);
-            SignalGen.startTimerLabelUp();
-            Thread.Sleep(100);
-            SignalGen.startTimerItemCatchA();
-            Thread.Sleep(100);
-            SignalGen.startTimerItemCatchB();
-            logOpt.Write("!模拟信号发生启动.");
-        }
-
-        private static void stopAllFakeSignals() {
-            SignalGen.stopTimerWeigh();
-            SignalGen.stopTimerCache();
-            SignalGen.stopTimerLabelUp();
-            SignalGen.stopTimerItemCatchA();
-            SignalGen.stopTimerItemCatchB();
-            logOpt.Write("!模拟信号发生停止.");
-        }
-#endif
-
-        private void btnStartAllSignals_Click(object sender, EventArgs e) {
-#if DEBUG
-            startAllFakeSignals();
-            logOpt.Write("!模拟信号发生启动.");
-#endif
-        }
-
         private void clearAllTaskViews() {
             var views = new List<ListView> {
                 lsvCacheBefor,
@@ -1633,6 +1576,12 @@ namespace yidascan {
         private void btnSetPriority_Click(object sender, EventArgs e) {
             using(var w = new wpriority { locs = TaskQueues.lochelper}) {
                 w.showVirtualLocations();
+                w.ShowDialog();
+            }
+        }
+
+        private void btnSignalGen_Click(object sender, EventArgs e) {
+            using (var w = new wtestpanel()) {
                 w.ShowDialog();
             }
         }
