@@ -29,6 +29,7 @@
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.miResetItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.miEnable = new System.Windows.Forms.ToolStripMenuItem();
             this.miDisable = new System.Windows.Forms.ToolStripMenuItem();
             this.btnReset = new System.Windows.Forms.Button();
@@ -37,12 +38,12 @@
             this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.btnRefresh = new System.Windows.Forms.Button();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.stMessage = new System.Windows.Forms.ToolStripStatusLabel();
             this.btnLoad = new System.Windows.Forms.Button();
-            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.contextMenuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -59,7 +60,7 @@
             this.listView1.Margin = new System.Windows.Forms.Padding(5);
             this.listView1.MultiSelect = false;
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(321, 447);
+            this.listView1.Size = new System.Drawing.Size(288, 447);
             this.listView1.TabIndex = 0;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
@@ -91,16 +92,21 @@
             this.miResetItem.Size = new System.Drawing.Size(124, 22);
             this.miResetItem.Text = "取消对应";
             // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(121, 6);
+            // 
             // miEnable
             // 
             this.miEnable.Name = "miEnable";
-            this.miEnable.Size = new System.Drawing.Size(100, 22);
+            this.miEnable.Size = new System.Drawing.Size(124, 22);
             this.miEnable.Text = "空闲";
             // 
             // miDisable
             // 
             this.miDisable.Name = "miDisable";
-            this.miDisable.Size = new System.Drawing.Size(100, 22);
+            this.miDisable.Size = new System.Drawing.Size(124, 22);
             this.miDisable.Text = "禁用";
             // 
             // btnReset
@@ -118,7 +124,7 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(604, 476);
+            this.button2.Location = new System.Drawing.Point(693, 476);
             this.button2.Margin = new System.Windows.Forms.Padding(5);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(142, 36);
@@ -132,15 +138,16 @@
             this.listView2.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader5,
             this.columnHeader6,
-            this.columnHeader3});
+            this.columnHeader3,
+            this.columnHeader4});
             this.listView2.ContextMenuStrip = this.contextMenuStrip1;
             this.listView2.FullRowSelect = true;
             this.listView2.GridLines = true;
-            this.listView2.Location = new System.Drawing.Point(351, 19);
+            this.listView2.Location = new System.Drawing.Point(318, 19);
             this.listView2.Margin = new System.Windows.Forms.Padding(5);
             this.listView2.MultiSelect = false;
             this.listView2.Name = "listView2";
-            this.listView2.Size = new System.Drawing.Size(395, 447);
+            this.listView2.Size = new System.Drawing.Size(517, 447);
             this.listView2.TabIndex = 9;
             this.listView2.UseCompatibleStateImageBehavior = false;
             this.listView2.View = System.Windows.Forms.View.Details;
@@ -148,7 +155,6 @@
             // columnHeader5
             // 
             this.columnHeader5.Text = "交地";
-            this.columnHeader5.Width = 120;
             // 
             // columnHeader6
             // 
@@ -159,6 +165,11 @@
             // 
             this.columnHeader3.Text = "优先级";
             this.columnHeader3.Width = 120;
+            // 
+            // columnHeader4
+            // 
+            this.columnHeader4.Text = "板号";
+            this.columnHeader4.Width = 200;
             // 
             // btnRefresh
             // 
@@ -184,7 +195,7 @@
             this.statusStrip1.Location = new System.Drawing.Point(0, 521);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Padding = new System.Windows.Forms.Padding(2, 0, 23, 0);
-            this.statusStrip1.Size = new System.Drawing.Size(761, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(849, 22);
             this.statusStrip1.TabIndex = 17;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -204,16 +215,11 @@
             this.btnLoad.UseVisualStyleBackColor = true;
             this.btnLoad.Click += new System.EventHandler(this.btnLoad_Click);
             // 
-            // toolStripMenuItem1
-            // 
-            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(97, 6);
-            // 
             // wloc
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 19F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(761, 543);
+            this.ClientSize = new System.Drawing.Size(849, 543);
             this.Controls.Add(this.btnLoad);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.btnRefresh);
@@ -258,5 +264,6 @@
         private System.Windows.Forms.ToolStripMenuItem miEnable;
         private System.Windows.Forms.ToolStripMenuItem miDisable;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
+        private System.Windows.Forms.ColumnHeader columnHeader4;
     }
 }

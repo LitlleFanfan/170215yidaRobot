@@ -508,11 +508,8 @@ namespace yidascan {
                     // 告知OPC
                     NotifyOpcJobFinished(roll);
                     log("布卷已上垛。", LogType.ROBOT_STACK, LogViewType.Both);
-
-                    // 自由板位处理。
-                    if (roll.PnlState == PanelState.Full) {
-                        TaskQueues.lochelper.OnFull(roll.RealLocation);
-                    }
+                    
+                    TaskQueues.lochelper.OnFull(roll.RealLocation);
 
                     break;
                 }

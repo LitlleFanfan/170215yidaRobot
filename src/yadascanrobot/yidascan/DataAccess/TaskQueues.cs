@@ -169,7 +169,7 @@ namespace yidascan.DataAccess {
             }
             if (code != null) {
                 lock (lochelper) {
-                    code.RealLocation = lochelper.Convert(code.ToLocation);
+                    code.RealLocation = lochelper.Convert(code.ToLocation, code.PanelNo);
                 }
 
                 if (string.IsNullOrEmpty(code.RealLocation)) {

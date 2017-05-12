@@ -54,6 +54,7 @@ namespace yidascan {
                 };
                 vi.SubItems.Add(LocationHelper.state_s(item.state));
                 vi.SubItems.Add(LocationHelper.priority_s(item.priority));
+                vi.SubItems.Add(item.panelno);
                 view.Items.Add(vi);
             }
         }
