@@ -240,7 +240,7 @@ namespace yidascan {
             if (label.Floor >= pinfo.MaxFloor - 1) {
                 state = PanelState.HalfFull;
             }
-            if (pinfo.Status == (int)LableState.PanelFill && label.Status == (int)LableState.FloorLastRoll) {
+            if (pinfo.Status == (int)LableState.PanelFill && label.Floor == pinfo.MaxFloor && label.Status == (int)LableState.FloorLastRoll) {
                 state = PanelState.Full;
             }
             return state;

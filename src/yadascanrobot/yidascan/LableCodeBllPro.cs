@@ -436,7 +436,7 @@ namespace yidascan {
                         CalculatePosition(layerLabels, cre.CResult.CodeCome, cre.SideState == null ? SideFullState.NO_FULL : cre.SideState.state);
 
                         if (pinfo != null && IsPanelFull(cre.CResult.CodeCome)) {
-                            fp = SetFullFlag(cre.CResult.CodeFromCache.FloorIndex, pinfo);
+                            fp = SetFullFlag(cre.CResult.CodeCome.FloorIndex, pinfo);
                         }
 
                         msg = $"cache change go";
