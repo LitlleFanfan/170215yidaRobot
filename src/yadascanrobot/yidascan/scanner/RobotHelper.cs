@@ -67,6 +67,7 @@ namespace yidascan {
             Rz = rz;
             //
             ChangeAngle = x > 0 || y < 0;
+            ChangeAngle = robotChangeAngle.Contains(RealLocation) ? !ChangeAngle : ChangeAngle;//3\4\5\9\10\11标签朝外
 
             RealLocation = label.RealLocation;
             ToLocation = label.ToLocation;
@@ -122,7 +123,7 @@ namespace yidascan {
 
 
         public static List<string> robotRSidePanel = new List<string> { "B03", "B04", "B05", "B06", "B07", "B08" };
-        public static List<string> robotCatchB = new List<string> { "B06", "B07", "B08", "B09", "B10", "B11" };
+        public static List<string> robotChangeAngle = new List<string> { "B03", "B04", "B05", "B09", "B10", "B11" };
         private static int CalculateBaseIndex(string tolocation, decimal x, decimal y) {
             var baseindex = 0;
             if (x != 0) {

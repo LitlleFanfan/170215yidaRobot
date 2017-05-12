@@ -322,7 +322,7 @@ namespace yidascan {
                             var pf = LableCode.GetTolactionCurrPanelNo(virtuallocation, shiftno);
                             LableCode.SetMaxFloorAndFull(virtuallocation);
                             //LableCode.UserSetPanelLastRoll();
-                            logOpt.Write($"{kv.Key} 收到人工完成信号。", LogType.ROBOT_STACK, LogViewType.OnlyFile);
+                            logOpt.Write($"{kv.Key} 收到人工完成信号。ERP交地：{virtuallocation}", LogType.ROBOT_STACK, LogViewType.OnlyFile);
 
                             // 创建新的板信息。
                             var newPanel = PanelGen.NewPanelNo();
