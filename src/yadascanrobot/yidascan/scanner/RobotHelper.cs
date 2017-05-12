@@ -67,6 +67,7 @@ namespace yidascan {
             Rz = rz;
             //
             ChangeAngle = x > 0 || y < 0;
+            ChangeAngle = robotChangeAngle.Contains(RealLocation) ? !ChangeAngle : ChangeAngle;//3\4\5\9\10\11标签朝外
 
             RealLocation = label.RealLocation;
             ToLocation = label.ToLocation;
@@ -122,7 +123,7 @@ namespace yidascan {
 
 
         public static List<string> robotRSidePanel = new List<string> { "B03", "B04", "B05", "B06", "B07", "B08" };
-        public static List<string> robotCatchB = new List<string> { "B06", "B07", "B08", "B09", "B10", "B11" };
+        public static List<string> robotChangeAngle = new List<string> { "B03", "B04", "B05", "B09", "B10", "B11" };
         private static int CalculateBaseIndex(string tolocation, decimal x, decimal y) {
             var baseindex = 0;
             if (x != 0) {
@@ -330,6 +331,9 @@ namespace yidascan {
                         client.Write(param.BAreaPanelFinish[reallocation], true);
                         log($"{reallocation}: 满板信号发出。slot: {param.BAreaPanelFinish[reallocation]}", LogType.ROBOT_STACK);
                         log(msg, LogType.ROBOT_STACK);
+                        
+                        // 满板时设置自由板位标志。
+                        TaskQueues.lochelper.OnFull(reallocation);
 
                         const int SIGNAL_3 = 3;
                         client.Write(param.BAreaPanelState[reallocation], SIGNAL_3);
@@ -361,6 +365,8 @@ namespace yidascan {
                         log($"{roll.RealLocation}: 满板信号发出。slot: {param.BAreaPanelFinish[roll.RealLocation]}", LogType.ROBOT_STACK);
                         log(msg, LogType.ROBOT_STACK);
                         LableCode.SetPanelFinished(roll.PanelNo);
+                        
+                        TaskQueues.lochelper.OnFull(roll.RealLocation);
 
                         const int SIGNAL_3 = 3;
                         client.Write(param.BAreaPanelState[roll.RealLocation], SIGNAL_3);
@@ -508,8 +514,6 @@ namespace yidascan {
                     // 告知OPC
                     NotifyOpcJobFinished(roll);
                     log("布卷已上垛。", LogType.ROBOT_STACK, LogViewType.Both);
-                    
-                    TaskQueues.lochelper.OnFull(roll.RealLocation);
 
                     break;
                 }

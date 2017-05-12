@@ -46,6 +46,7 @@ namespace ProduceComm {
                 myHttpWebRequest.Method = "POST";
                 myHttpWebRequest.ContentType = "application/json";
                 myHttpWebRequest.Accept = "application/json";
+                myHttpWebRequest.Timeout = 1000;
                 bs = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(agr));
 
                 myHttpWebRequest.ContentLength = bs.Length;

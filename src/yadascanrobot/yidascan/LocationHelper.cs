@@ -142,6 +142,19 @@ namespace yidascan {
             }
         }
 
+        private void Unmap(string realloc) {
+            foreach (var k in LocMap.Keys.ToList()) {
+                if (LocMap[k] == realloc) {
+                    LocMap[k] = "";
+                }
+            }
+
+            // 检查结果的正确性
+            if (LocMap.Any(x => x.Value == realloc)) {
+                throw new Exception($"来源: {nameof(Unmap)}, 未能解除交地对应: {realloc}");
+            }
+        }
+
         private bool IsRealLocExists(string loc) {
             var q = RealLocations.Count(x => x.realloc == loc) == 1;
             return q;
@@ -215,6 +228,11 @@ namespace yidascan {
             var trytimes = 3; // 尝试3次。
 
             while (true) {
+                var realoc1 = RealLocations.FirstOrDefault(x => x.panelno == panelno);
+                if (realoc1 != null) {
+                    return realoc1.realloc;
+                }
+
                 if (!LocMap.ContainsKey(virtualloc)) {
                     throw new Exception($"来源: {nameof(Convert)}, 名义交地错误: {virtualloc}");
                 }
@@ -345,7 +363,6 @@ namespace yidascan {
 
             var real = RealLocations.Single(x => x.realloc == realloc);
             if (real.state == LocationState.BUSY) {
-                Unmap(realloc, real.panelno, "");
                 SetState(realloc, LocationState.FULL, real.panelno);
             }
         }
@@ -366,6 +383,7 @@ namespace yidascan {
 #if DEBUG
                 Thread.Sleep(1000 * 30); // 调试用，等半分钟
 #endif
+                //Unmap(realloc);
                 SetState(realloc, LocationState.IDLE, "");
             }
         }

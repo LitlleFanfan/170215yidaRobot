@@ -60,18 +60,18 @@
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NLog">
-      <HintPath>..\..\..\..\packages\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.dll</HintPath>
     </Reference>
     <Reference Include="OpcNetApi">
-      <HintPath>..\..\..\..\packages\OpcNetApi.dll</HintPath>
+      <HintPath>..\packages\OpcNetApi.dll</HintPath>
     </Reference>
     <Reference Include="OpcNetApi.Com">
-      <HintPath>..\..\..\..\packages\OpcNetApi.Com.dll</HintPath>
+      <HintPath>..\packages\OpcNetApi.Com.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.SQLite">
-      <HintPath>..\..\..\..\packages\System.Data.SQLite.dll</HintPath>
+      <HintPath>..\packages\System.Data.SQLite.dll</HintPath>
     </Reference>
     <Reference Include="System.EnterpriseServices" />
     <Reference Include="System.Net.Http" />

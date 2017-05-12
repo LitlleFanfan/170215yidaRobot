@@ -56,12 +56,11 @@ namespace yidascan {
 
         public bool JobTask(ref bool isrun, bool isSideA, Queue<RollPosition> robotRollQ, RollPosition roll, ListView lv) {
             LableCode.SetOnPanelState(roll.LabelCode);
-            
+
             // 告知OPC
             NotifyOpcJobFinished(roll);
-            TaskQueues.lochelper.OnFull(roll.RealLocation);
             DequeueRoll(robotRollQ, roll, lv);
-            
+
             return true;
         }
 
@@ -70,11 +69,69 @@ namespace yidascan {
         }
 
         public void NotifyOpcJobFinished(string panelNo, string tolocation, string reallocation) {
-            // throw new NotImplementedException();
+            try {
+                var pState = LableCode.IsAllRollOnPanel(panelNo) ? PanelState.Full : PanelState.HalfFull;
+                switch (pState) {
+                    case PanelState.HalfFull:
+                        var lcode = FrmMain.taskQ.UFGetPanelLastRoll(tolocation, panelNo);
+                        LableCode.UserSetPanelLastRoll(lcode);//设置板最后一卷布。
+                        FrmMain.logOpt.Write($"{reallocation} 半板信号发出,最后一卷布标签{lcode}。slot: ", LogType.ROBOT_STACK);
+                        break;
+                    case PanelState.Full:
+                        FrmMain.logOpt.Write($"{reallocation}: 满板信号发出。slot: ", LogType.ROBOT_STACK);
+
+                        // 满板时设置自由板位标志。
+                        TaskQueues.lochelper.OnFull(reallocation);
+
+                        FrmMain.logOpt.Write($"{reallocation}: 板状态信号发出，状态值: 。slot: ", LogType.ROBOT_STACK);
+                        break;
+                    case PanelState.LessHalf:
+                        break;
+                    default:
+                        FrmMain.logOpt.Write($"!板状态不明，不发信号, {pState}", LogType.ROBOT_STACK);
+                        break;
+                }
+            } catch (Exception ex) {
+                FrmMain.logOpt.Write($"!来源: {nameof(NotifyOpcJobFinished)}, {ex}", LogType.ROBOT_STACK);
+            }
         }
 
         public void NotifyOpcJobFinished(RollPosition roll) {
-            // throw new NotImplementedException();
+            try {
+                switch (roll.PnlState) {
+                    case PanelState.HalfFull:
+                        FrmMain.logOpt.Write($"{roll.RealLocation}: 半满板信号发出。slot: ", LogType.ROBOT_STACK);
+                        break;
+                    case PanelState.Full:
+                       FrmMain.logOpt.Write($"{roll.RealLocation}: 满板信号发出。slot: ", LogType.ROBOT_STACK);
+                        
+                        LableCode.SetPanelFinished(roll.PanelNo);
+
+                        TaskQueues.lochelper.OnFull(roll.RealLocation);
+
+                        const int SIGNAL_3 = 3;
+                        FrmMain.logOpt.Write($"{roll.RealLocation}: 板状态信号发出，状态值: {SIGNAL_3}。slot: ", LogType.ROBOT_STACK);
+
+                        break;
+                    case PanelState.LessHalf:
+                        break;
+                    default:
+                        FrmMain.logOpt.Write($"!板状态不明，不发信号, {roll.PnlState}", LogType.ROBOT_STACK);
+                        break;
+                }
+                if (roll.Status == (int)LableState.FloorLastRoll && roll.PnlState != PanelState.Full) {
+                    BadShape(roll);
+                }
+            } catch (Exception ex) {
+                FrmMain.logOpt.Write($"!来源: {nameof(NotifyOpcJobFinished)}, {ex}", LogType.ROBOT_STACK);
+            }
+        }
+
+        private void BadShape(RollPosition roll) {
+            var layerLabels = LableCode.GetLableCodesOfRecentFloor(roll.RealLocation, roll.PanelNo, roll.Floor);
+            if (LayerShape.IsSlope(layerLabels) || LayerShape.IsVshape(layerLabels)) {
+                FrmMain.logOpt.Write($"!{roll.RealLocation} 第{roll.Floor}层 形状不规则。板号{roll.PanelNo}", LogType.ROBOT_STACK);
+            }
         }
 
         public bool PanelAvailable(string tolocation) { return true; }
