@@ -41,7 +41,7 @@ namespace yidascan {
 
         private static void startTimerCache() {
             timerCache = new System.Windows.Forms.Timer {
-                Interval = 4000
+                Interval = 2000
             };
             timerCache.Tick += (s, e) => { CACHE_SIGNAL = true; };
         }

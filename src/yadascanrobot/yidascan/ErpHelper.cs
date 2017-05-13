@@ -40,7 +40,7 @@ namespace yidascan {
                         { "Board_No", panelNo },  // first item.
                         { "AllBarCode", string.Join(",", data.ToArray()) } // second item.
                     };
-            var re = erpapi.Post(clsSetting.PanelFinish, erpParam);
+            var re = erpapi.Post(clsSetting.PanelFinish, erpParam, clsSetting.ErpTimeout);
 
             var mode = handwork ? "手工" : "自动";
             var paramJson = JsonConvert.SerializeObject(erpParam);
@@ -70,7 +70,7 @@ namespace yidascan {
         /// <returns></returns>
         public static bool NotifyWeigh(IErpApi callErpApi, string code) {
             var re = callErpApi.Post(clsSetting.ToWeight,
-                new Dictionary<string, string>() { { "Fabric_Code", code } });
+                new Dictionary<string, string>() { { "Fabric_Code", code } }, clsSetting.ErpTimeout);
 
             if (re["ERPState"] == "OK") {
                 var re1 = JsonConvert.DeserializeObject<DataTable>(re["Data"]);
@@ -86,7 +86,7 @@ namespace yidascan {
             Dictionary<string, string> str;
             try {
                 str = erpapi.Post(clsSetting.GetLocation, new Dictionary<string, string>()
-                { { "Bar_Code", code } });
+                { { "Bar_Code", code } }, clsSetting.ErpTimeout);
                 var res = JsonConvert.DeserializeObject<DataTable>(str["Data"].ToString());
                 if (str["ERPState"] == "OK") {
                     if (res.Rows.Count > 0 && res.Rows[0]["LOCATION"].ToString() != "Fail") {

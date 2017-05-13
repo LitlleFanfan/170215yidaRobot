@@ -327,6 +327,14 @@ namespace ProduceComm {
             //get { return Path.Combine(System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase, @"Data.db"); }
             get { return clsSetting.GetCfgValue("ConStr"); }
         }
+
+        public static int ErpTimeout {
+            get { 
+                string tmp = clsSetting.GetCfgValue("ErpTimeout");
+                return int.Parse(string.IsNullOrEmpty(tmp) ? "100" : tmp);
+            }
+        }
+
         #region "params"
         public static string GetCfgValue(string key) {
             string str = null;

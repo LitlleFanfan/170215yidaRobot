@@ -525,7 +525,7 @@ namespace yidascan {
                         { "Board_No", panelNo },  // first item.
                         { "AllBarCode", string.Join(",", data.ToArray()) } // second item.
                     };
-                var re = erpapi.Post(clsSetting.PanelFinish, erpParam);
+                var re = erpapi.Post(clsSetting.PanelFinish, erpParam, clsSetting.ErpTimeout);
 
                 // show result.
                 if (re["ERPState"] == "OK") {
