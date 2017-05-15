@@ -66,8 +66,12 @@ namespace yidascan {
             Z = z;
             Rz = rz;
             //
-            ChangeAngle = x > 0 || y < 0;
-            ChangeAngle = robotChangeAngle.Contains(RealLocation) ? !ChangeAngle : ChangeAngle;//3\4\5\9\10\11标签朝外
+            if (robotChangeAngle.Contains(RealLocation)) {
+                ChangeAngle = x < 0 || y < 0;//3\4\5\9\10\11标签朝外
+
+            } else {
+                ChangeAngle = x > 0 || y < 0;
+            }
 
             RealLocation = label.RealLocation;
             ToLocation = label.ToLocation;

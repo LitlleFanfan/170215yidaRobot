@@ -1123,8 +1123,8 @@ namespace yidascan {
                 try {
                     str = callErpApi.Post(clsSetting.GetLocation, new Dictionary<string, string>()
                     { { "Bar_Code", code } }, clsSetting.ErpTimeout);
-                    var res = JsonConvert.DeserializeObject<DataTable>(str["Data"].ToString());
                     if (str["ERPState"] == "OK") {
+                        var res = JsonConvert.DeserializeObject<DataTable>(str["Data"].ToString());
                         if (res.Rows.Count > 0 && res.Rows[0]["LOCATION"].ToString() != "Fail") {
                             re = res.Rows[0]["LOCATION"].ToString();
                             logOpt.Write(string.Format("{0}扫描{1}交地{2}。{3}",
@@ -1142,6 +1142,7 @@ namespace yidascan {
                             (handwork ? "手工" : "自动"), code, JsonConvert.SerializeObject(str)), LogType.NORMAL);
                     }
                 } catch (Exception ex) {
+                    ShowWarning("取交地失败");
                     logOpt.Write($"!来源: {nameof(GetLocationAndLength)}, {ex}, {JsonConvert.SerializeObject(str)}", LogType.NORMAL);
                 }
             }
