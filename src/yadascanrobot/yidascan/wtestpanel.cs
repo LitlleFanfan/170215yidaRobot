@@ -44,19 +44,25 @@ namespace yidascan {
         }
 
         private void btnSignalCatchA_Click(object sender, EventArgs e) {
+#if DEBUG
             SignalGen.toggle(SignalGen.timerItemCatchA);
+#endif
         }
 
         private void button1_Click(object sender, EventArgs e) {
+#if DEBUG
             SignalGen.toggle(SignalGen.timerItemCatchB);
+#endif
         }
 
         private void refreshSignals() {
+#if DEBUG
             lbWeigth.Text = SignalGen.timerWeigh.Enabled ? "on" : "off";
             lbCache.Text = SignalGen.timerCache.Enabled ? "on" : "off";
             lbCatchA.Text = SignalGen.timerItemCatchA.Enabled ? "on" : "off";
             lbCatchB.Text = SignalGen.timerItemCatchB.Enabled ? "on" : "off";
             lbLableUp.Text = SignalGen.timerLabelUp.Enabled ? "on" : "off";
+#endif
         }
 
         private void timer1_Tick(object sender, EventArgs e) {
@@ -64,7 +70,9 @@ namespace yidascan {
         }
 
         private void btnStopAll_Click(object sender, EventArgs e) {
+#if DEBUG
             SignalGen.stoptall();
+#endif
             refreshSignals();
         }
     }

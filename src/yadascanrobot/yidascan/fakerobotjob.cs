@@ -55,12 +55,20 @@ namespace yidascan {
         public void JobLoopPro(ref bool isrunning, TaskQueues taskq, Action onupdate) { }
 
         public bool JobTask(ref bool isrun, bool isSideA, Queue<RollPosition> robotRollQ, RollPosition roll, ListView lv) {
+                       // 等待板可放料
+            if (PanelAvailable(roll.RealLocation)) {
+                FrmMain.logOpt.Write($"{roll.RealLocation} PushInQueue收到可放料信号", LogType.ROBOT_STACK);
+            } else {
+                FrmMain.logOpt.Write($"! {roll.RealLocation} PushInQueue未收到可放料信号，请检查板状态和是否有形状不规则报警。", LogType.ROBOT_STACK);
+                return false;
+            }
             LableCode.SetOnPanelState(roll.LabelCode);
 
             // 告知OPC
             NotifyOpcJobFinished(roll);
             DequeueRoll(robotRollQ, roll, lv);
 
+            FrmMain.logOpt.Write($"robot job done: {roll.LabelCode}.", LogType.ROBOT_STACK);
             return true;
         }
 
@@ -80,10 +88,10 @@ namespace yidascan {
                     case PanelState.Full:
                         FrmMain.logOpt.Write($"{reallocation}: 满板信号发出。slot: ", LogType.ROBOT_STACK);
 
+                        LableCode.SetPanelFinished(panelNo);
+
                         // 满板时设置自由板位标志。
                         TaskQueues.lochelper.OnFull(reallocation);
-
-                        FrmMain.logOpt.Write($"{reallocation}: 板状态信号发出，状态值: 。slot: ", LogType.ROBOT_STACK);
                         break;
                     case PanelState.LessHalf:
                         break;
@@ -108,10 +116,6 @@ namespace yidascan {
                         LableCode.SetPanelFinished(roll.PanelNo);
 
                         TaskQueues.lochelper.OnFull(roll.RealLocation);
-
-                        const int SIGNAL_3 = 3;
-                        FrmMain.logOpt.Write($"{roll.RealLocation}: 板状态信号发出，状态值: {SIGNAL_3}。slot: ", LogType.ROBOT_STACK);
-
                         break;
                     case PanelState.LessHalf:
                         break;

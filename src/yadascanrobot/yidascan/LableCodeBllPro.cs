@@ -436,7 +436,7 @@ namespace yidascan {
                         CalculatePosition(layerLabels, cre.CResult.CodeCome, cre.SideState == null ? SideFullState.NO_FULL : cre.SideState.state);
 
                         if (pinfo != null && IsPanelFull(cre.CResult.CodeCome)) {
-                            fp = SetFullFlag(cre.CResult.CodeFromCache.FloorIndex, pinfo);
+                            fp = SetFullFlag(cre.CResult.CodeCome.FloorIndex, pinfo);
                         }
 
                         msg = $"cache change go";
@@ -525,7 +525,7 @@ namespace yidascan {
                         { "Board_No", panelNo },  // first item.
                         { "AllBarCode", string.Join(",", data.ToArray()) } // second item.
                     };
-                var re = erpapi.Post(clsSetting.PanelFinish, erpParam);
+                var re = erpapi.Post(clsSetting.PanelFinish, erpParam, clsSetting.ErpTimeout);
 
                 // show result.
                 if (re["ERPState"] == "OK") {

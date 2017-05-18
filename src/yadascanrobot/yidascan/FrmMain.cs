@@ -244,7 +244,7 @@ namespace yidascan {
             if (label.Floor >= pinfo.MaxFloor - 1) {
                 state = PanelState.HalfFull;
             }
-            if (pinfo.Status == (int)LableState.PanelFill && label.Status == (int)LableState.FloorLastRoll) {
+            if (pinfo.Status == (int)LableState.PanelFill && label.Floor == pinfo.MaxFloor && label.Status == (int)LableState.FloorLastRoll) {
                 state = PanelState.Full;
             }
             return state;
@@ -882,7 +882,7 @@ namespace yidascan {
         private bool NotifyWeigh(string code, bool handwork = true) {
             try {
                 var re = callErpApi.Post(clsSetting.ToWeight,
-                    new Dictionary<string, string>() { { "Fabric_Code", code } });
+                    new Dictionary<string, string>() { { "Fabric_Code", code } }, clsSetting.ErpTimeout);
 
                 var msg = string.Format("{0} {1}称重{2}", code, (handwork ? "手工" : "自动"), JsonConvert.SerializeObject(re));
                 logOpt.Write(msg, LogType.NORMAL, LogViewType.OnlyFile);
@@ -1119,12 +1119,12 @@ namespace yidascan {
                 logOpt.Write("!" + msg, LogType.NORMAL);
                 ShowWarning("重复扫码");
             } else {
-                Dictionary<string, string> str;
+                Dictionary<string, string> str = new Dictionary<string, string>();
                 try {
                     str = callErpApi.Post(clsSetting.GetLocation, new Dictionary<string, string>()
-                    { { "Bar_Code", code } });
-                    var res = JsonConvert.DeserializeObject<DataTable>(str["Data"].ToString());
+                    { { "Bar_Code", code } }, clsSetting.ErpTimeout);
                     if (str["ERPState"] == "OK") {
+                        var res = JsonConvert.DeserializeObject<DataTable>(str["Data"].ToString());
                         if (res.Rows.Count > 0 && res.Rows[0]["LOCATION"].ToString() != "Fail") {
                             re = res.Rows[0]["LOCATION"].ToString();
                             logOpt.Write(string.Format("{0}扫描{1}交地{2}。{3}",
@@ -1142,7 +1142,8 @@ namespace yidascan {
                             (handwork ? "手工" : "自动"), code, JsonConvert.SerializeObject(str)), LogType.NORMAL);
                     }
                 } catch (Exception ex) {
-                    logOpt.Write($"!来源: {nameof(GetLocationAndLength)}, {ex}", LogType.NORMAL);
+                    ShowWarning("取交地失败");
+                    logOpt.Write($"!来源: {nameof(GetLocationAndLength)}, {ex}, {JsonConvert.SerializeObject(str)}", LogType.NORMAL);
                 }
             }
             return re;
@@ -1574,7 +1575,7 @@ namespace yidascan {
         #endregion
 
         private void btnSetPriority_Click(object sender, EventArgs e) {
-            using(var w = new wpriority { locs = TaskQueues.lochelper}) {
+            using (var w = new wpriority { locs = TaskQueues.lochelper }) {
                 w.showVirtualLocations();
                 w.ShowDialog();
             }
