@@ -28,7 +28,7 @@ namespace yidascan {
 
         public static int DELAY = 1000;
 
-        private static System.Windows.Forms.Timer[] timers = new System.Windows.Forms.Timer[] { timerWeigh, timerCache, timerItemCatchA, timerItemCatchB, timerLabelUp };
+        private static System.Windows.Forms.Timer[] timers;
 
         public static void setdelay(int delay) {
             foreach (var item in timers) {
@@ -81,6 +81,8 @@ namespace yidascan {
             startTimerLabelUp();
             startTimerItemCatchA();
             startTimerItemCatchB();
+
+            timers = new System.Windows.Forms.Timer[] { timerWeigh, timerCache, timerItemCatchA, timerItemCatchB, timerLabelUp };
         }
 
         public static void startall() {

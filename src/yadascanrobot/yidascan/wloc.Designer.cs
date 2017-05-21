@@ -26,10 +26,7 @@
             this.components = new System.ComponentModel.Container();
             this.listView1 = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.miResetItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.miEnable = new System.Windows.Forms.ToolStripMenuItem();
             this.miDisable = new System.Windows.Forms.ToolStripMenuItem();
             this.btnReset = new System.Windows.Forms.Button();
@@ -44,6 +41,8 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.stMessage = new System.Windows.Forms.ToolStripStatusLabel();
             this.btnLoad = new System.Windows.Forms.Button();
+            this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader9 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.contextMenuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -52,8 +51,8 @@
             // 
             this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
-            this.columnHeader2});
-            this.listView1.ContextMenuStrip = this.contextMenuStrip1;
+            this.columnHeader8,
+            this.columnHeader9});
             this.listView1.FullRowSelect = true;
             this.listView1.GridLines = true;
             this.listView1.Location = new System.Drawing.Point(20, 19);
@@ -69,45 +68,29 @@
             // columnHeader1
             // 
             this.columnHeader1.Text = "名义交地";
-            this.columnHeader1.Width = 120;
-            // 
-            // columnHeader2
-            // 
-            this.columnHeader2.Text = "实际交地";
-            this.columnHeader2.Width = 120;
+            this.columnHeader1.Width = 100;
             // 
             // contextMenuStrip1
             // 
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.miResetItem,
-            this.toolStripMenuItem1,
             this.miEnable,
             this.miDisable});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(125, 76);
-            // 
-            // miResetItem
-            // 
-            this.miResetItem.Name = "miResetItem";
-            this.miResetItem.Size = new System.Drawing.Size(124, 22);
-            this.miResetItem.Text = "取消对应";
-            // 
-            // toolStripMenuItem1
-            // 
-            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(121, 6);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(101, 48);
             // 
             // miEnable
             // 
             this.miEnable.Name = "miEnable";
-            this.miEnable.Size = new System.Drawing.Size(124, 22);
+            this.miEnable.Size = new System.Drawing.Size(100, 22);
             this.miEnable.Text = "空闲";
+            this.miEnable.Click += new System.EventHandler(this.miEnable_Click);
             // 
             // miDisable
             // 
             this.miDisable.Name = "miDisable";
-            this.miDisable.Size = new System.Drawing.Size(124, 22);
+            this.miDisable.Size = new System.Drawing.Size(100, 22);
             this.miDisable.Text = "禁用";
+            this.miDisable.Click += new System.EventHandler(this.miDisable_Click);
             // 
             // btnReset
             // 
@@ -215,6 +198,16 @@
             this.btnLoad.UseVisualStyleBackColor = true;
             this.btnLoad.Click += new System.EventHandler(this.btnLoad_Click);
             // 
+            // columnHeader8
+            // 
+            this.columnHeader8.Text = "优先级";
+            this.columnHeader8.Width = 80;
+            // 
+            // columnHeader9
+            // 
+            this.columnHeader9.Text = "实际交地";
+            this.columnHeader9.Width = 100;
+            // 
             // wloc
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 19F);
@@ -249,7 +242,6 @@
         private System.Windows.Forms.Button btnReset;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.ColumnHeader columnHeader1;
-        private System.Windows.Forms.ColumnHeader columnHeader2;
         private System.Windows.Forms.ListView listView2;
         private System.Windows.Forms.ColumnHeader columnHeader5;
         private System.Windows.Forms.ColumnHeader columnHeader6;
@@ -260,10 +252,10 @@
         private System.Windows.Forms.ToolStripStatusLabel stMessage;
         private System.Windows.Forms.Button btnLoad;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
-        private System.Windows.Forms.ToolStripMenuItem miResetItem;
         private System.Windows.Forms.ToolStripMenuItem miEnable;
         private System.Windows.Forms.ToolStripMenuItem miDisable;
-        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
         private System.Windows.Forms.ColumnHeader columnHeader4;
+        private System.Windows.Forms.ColumnHeader columnHeader8;
+        private System.Windows.Forms.ColumnHeader columnHeader9;
     }
 }

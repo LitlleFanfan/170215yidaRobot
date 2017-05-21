@@ -37,13 +37,22 @@ namespace yidascan {
 
             foreach (var item in locs.LocMap) {
                 var viewitem1 = new ListViewItem {
+                    // 名义交地
                     Text = item.Key,
                 };
+
+                // 优先级
+                var p = locs.VirtualLocations.Where(x => x.virtualloc == item.Key)
+                    .Select(x => x.priority).First();
+                viewitem1.SubItems.Add(LocationHelper.priority_s(p));
+
+                // 实际交地
                 if (string.IsNullOrEmpty(item.Value)) {
                     viewitem1.SubItems.Add("-");
                 } else {
                     viewitem1.SubItems.Add(item.Value);
                 }
+
                 view.Items.Add(viewitem1);
             }
         }
@@ -59,6 +68,8 @@ namespace yidascan {
                 vi.SubItems.Add(LocationHelper.state_s(item.state));
                 vi.SubItems.Add(LocationHelper.priority_s(item.priority));
                 vi.SubItems.Add(item.panelno);
+                vi.Tag = item;
+
                 view.Items.Add(vi);
             }
         }
@@ -116,6 +127,29 @@ namespace yidascan {
             if (item.Count > 0) {
                 var selected = item[0];
 
+            }
+        }
+
+        private void miEnable_Click(object sender, EventArgs e) {
+            var items = listView2.SelectedItems;
+            if (items.Count > 0) {
+                var item = (RealLoc)items[0].Tag;
+                if (item.priority == Priority.DISABLE) {
+                    item.priority = Priority.MEDIUM;
+                    item.state = LocationState.IDLE;
+                }
+                ShowRealLocs();
+            }
+        }
+
+        private void miDisable_Click(object sender, EventArgs e) {
+            var items = listView2.SelectedItems;
+            if (items.Count > 0) {
+                var item = (RealLoc)items[0].Tag;
+                if (item.state == LocationState.IDLE) {
+                    item.priority = Priority.DISABLE;
+                }
+                ShowRealLocs();
             }
         }
     }

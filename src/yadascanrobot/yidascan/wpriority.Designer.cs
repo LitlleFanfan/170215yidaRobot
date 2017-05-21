@@ -29,11 +29,14 @@
             this.btnSet = new System.Windows.Forms.Button();
             this.rbHigh = new System.Windows.Forms.RadioButton();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.lbLocation = new System.Windows.Forms.Label();
             this.rbLow = new System.Windows.Forms.RadioButton();
             this.rbMedium = new System.Windows.Forms.RadioButton();
             this.btnSave = new System.Windows.Forms.Button();
-            this.lbLocation = new System.Windows.Forms.Label();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.stMsg = new System.Windows.Forms.ToolStripStatusLabel();
             this.groupBox1.SuspendLayout();
+            this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // listView1
@@ -47,7 +50,7 @@
             this.listView1.Location = new System.Drawing.Point(20, 19);
             this.listView1.Margin = new System.Windows.Forms.Padding(5);
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(387, 402);
+            this.listView1.Size = new System.Drawing.Size(387, 385);
             this.listView1.TabIndex = 0;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
@@ -97,6 +100,15 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "交地优先级";
             // 
+            // lbLocation
+            // 
+            this.lbLocation.AutoSize = true;
+            this.lbLocation.Location = new System.Drawing.Point(15, 44);
+            this.lbLocation.Name = "lbLocation";
+            this.lbLocation.Size = new System.Drawing.Size(19, 19);
+            this.lbLocation.TabIndex = 5;
+            this.lbLocation.Text = "-";
+            // 
             // rbLow
             // 
             this.rbLow.AutoSize = true;
@@ -129,20 +141,28 @@
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
-            // lbLocation
+            // statusStrip1
             // 
-            this.lbLocation.AutoSize = true;
-            this.lbLocation.Location = new System.Drawing.Point(15, 44);
-            this.lbLocation.Name = "lbLocation";
-            this.lbLocation.Size = new System.Drawing.Size(19, 19);
-            this.lbLocation.TabIndex = 5;
-            this.lbLocation.Text = "-";
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.stMsg});
+            this.statusStrip1.Location = new System.Drawing.Point(0, 413);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(589, 22);
+            this.statusStrip1.TabIndex = 5;
+            this.statusStrip1.Text = "statusStrip1";
+            // 
+            // stMsg
+            // 
+            this.stMsg.Name = "stMsg";
+            this.stMsg.Size = new System.Drawing.Size(41, 17);
+            this.stMsg.Text = "ready";
             // 
             // wpriority
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 19F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(589, 435);
+            this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.btnSet);
@@ -157,7 +177,10 @@
             this.Text = "设置交地优先级";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -173,5 +196,7 @@
         private System.Windows.Forms.ColumnHeader columnHeader1;
         private System.Windows.Forms.ColumnHeader columnHeader2;
         private System.Windows.Forms.Label lbLocation;
+        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.ToolStripStatusLabel stMsg;
     }
 }

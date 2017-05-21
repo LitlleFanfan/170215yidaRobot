@@ -183,6 +183,7 @@ namespace yidascan {
         /// <param name="cacheq">缓存队列</param>
         /// <returns>返回的是需要从缓存位取出的布卷。如果不需要取出，返回null。</returns>
         private static CalResult CalculateCache(PanelInfo pinfo, LableCode lc, List<LableCode> lcs) {
+            const int DIAMETER_THRESHOLD = 100;
             var cr = new CalResult(CacheState.Go, lc, null);
             var cachecount = (pinfo.OddStatus ? 0 : 1) + (pinfo.EvenStatus ? 0 : 1);
             var cachedRools = from s in lcs
@@ -191,7 +192,12 @@ namespace yidascan {
                               select s;
             switch (cachedRools.Count()) {
                 case 0://当前层已没有了缓存。//当前布卷直接缓存起来。
-                    cr.state = CacheState.Cache;
+                    if (lc.Diameter < DIAMETER_THRESHOLD) {
+                        // 直径太小，直接往下走。
+                        cr.state = CacheState.Go;
+                    } else {
+                        cr.state = CacheState.Cache;
+                    }
                     break;
                 case 1://当前层只有一卷缓存。
                 case 2://当前层有两卷缓存。
@@ -211,7 +217,12 @@ namespace yidascan {
                             cr.state = CacheState.GetThenCache;
                         }
                     } else {
-                        cr.state = CacheState.Cache;
+                        // 直径太小，直接往下走。
+                        if (lc.Diameter < DIAMETER_THRESHOLD) {
+                            cr.state = CacheState.Go;
+                        } else {
+                            cr.state = CacheState.Cache;
+                        }
                     }
                     break;
             }

@@ -604,13 +604,13 @@ namespace yidascan {
                             lc = LableCode.QueryByLCode(lc.LCode);
 
                             if (lc == null) {
-                                logOpt.Write($"!缓存队列没有标签", LogType.BUFFER);
+                                logOpt.Write($"!来源: {nameof(BeforCacheTask_new)}, 缓存队列没有标签", LogType.BUFFER);
                                 continue;
                             }
 
                             // 检查重复计算。???
                             if (!string.IsNullOrEmpty(lc.PanelNo)) {
-                                logOpt.Write($"!{lc.LCode} 标签重复。", LogType.BUFFER);
+                                logOpt.Write($"!来源: {nameof(BeforCacheTask_new)}, {lc.LCode} 标签重复。", LogType.BUFFER);
                                 continue;
                             }
 
@@ -656,6 +656,9 @@ namespace yidascan {
                         }
                     } catch (Exception ex) {
                         logOpt.Write($"!来源: {nameof(BeforCacheTask_new)}, {ex}", LogType.BUFFER);
+#if DEBUG
+                        throw;
+#endif           
                     }
                 }
                 OpcClientClose(CacheOpcClient, "缓存位");
@@ -1530,6 +1533,7 @@ namespace yidascan {
                             .ToList();
                         foreach (var item in keys) {
                             if (robot.PanelAvailable(item)) {
+                                logOpt.Write($"!来源: {nameof(StartPanelEndTask)}, 交地{item}板就位。");
                                 TaskQueues.lochelper.OnReady(item);
                             }
 
@@ -1575,8 +1579,7 @@ namespace yidascan {
         #endregion
 
         private void btnSetPriority_Click(object sender, EventArgs e) {
-            using (var w = new wpriority { locs = TaskQueues.lochelper }) {
-                w.showVirtualLocations();
+            using (var w = new wpriority()) {
                 w.ShowDialog();
             }
         }
