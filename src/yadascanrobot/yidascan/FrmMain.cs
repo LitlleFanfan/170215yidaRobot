@@ -453,26 +453,34 @@ namespace yidascan {
                         if (signal == TO_WEIGH) {
                             var code = taskQ.GetWeighQ();
 
-                            var codeFromPlc = GetLabelCodeWhenWeigh();
+                            var codeFromPlc = "";
+                            var t = TimeCount.TimeIt(() => {
+                                codeFromPlc = GetLabelCodeWhenWeigh();
+                            });
                             if (code != null) {
                                 if (codeFromPlc == code.LCode) {
                                     lastweighLable = code.LCode;
-                                    signal = NotifyWeigh(code.LCode, false) ? SUCCESS : FAIL;
+                                    var t1 = TimeCount.TimeIt(() => {
+                                        signal = NotifyWeigh(code.LCode, false) ? SUCCESS : FAIL;
+                                    });
 
                                     if (signal != SUCCESS) {
                                         logOpt.Write($"!通知称重到erp失败: {signal}");
                                     }
 
-                                    var wstate = opcWeigh.Set(opcParam.WeighParam.GetWeigh, signal);
-                                    logOpt.Write($"{code.LCode}称重API状态：{signal} 写OPC状态：{wstate}");
+                                    var wstate = false;
+                                    var t2 = TimeCount.TimeIt(() => {
+                                        wstate = opcWeigh.Set(opcParam.WeighParam.GetWeigh, signal);
+                                    });
+                                    logOpt.Write($"{code.LCode}称重API状态：{signal} 写OPC状态：{wstate} 读号码耗时{t}ms ERP称重耗时{t1}ms 复位信号耗时{t2}ms");
                                 } else {
 #if !DEBUG
                                     if (codeFromPlc == lastweighLable) {
                                         // 复位
                                         opcWeigh.Write(opcParam.WeighParam.GetWeigh, 0);
-                                        logOpt.Write($"称重复位, 原因: 重复称重。plc标签{codeFromPlc}", LogType.NORMAL, LogViewType.Both);
+                                        logOpt.Write($"称重复位, 原因: 重复称重。plc标签{codeFromPlc}  读号码耗时{t}ms");
                                     } else {
-                                        logOpt.Write($"!称重信号无对应的队列号码, opc称重标签{codeFromPlc} 最后称重标签{lastweighLable}");
+                                        logOpt.Write($"!称重信号无对应的队列号码, opc称重标签{codeFromPlc} 最后称重标签{lastweighLable}  读号码耗时{t}ms");
                                     }
 #endif
                                 }
@@ -482,12 +490,14 @@ namespace yidascan {
                                 }
                             }
 #if !DEBUG
-                            if (codeFromPlc == lastweighLable) {
-                                // 复位
-                                opcWeigh.Write(opcParam.WeighParam.GetWeigh, 0);
-                                logOpt.Write($"称重复位, 原因: 重复称重。plc标签{codeFromPlc}", LogType.NORMAL, LogViewType.Both);
-                            } else {
-                                logOpt.Write($"!称重信号无对应的队列号码, opc称重标签{codeFromPlc} 最后称重标签{lastweighLable}");
+                            else { 
+                                if (codeFromPlc == lastweighLable) {
+                                    // 复位
+                                    opcWeigh.Write(opcParam.WeighParam.GetWeigh, 0);
+                                    logOpt.Write($"称重复位, 原因: 重复称重。plc标签{codeFromPlc}  读号码耗时{t}ms");
+                                } else {
+                                    logOpt.Write($"!称重信号无对应的队列号码, opc称重标签{codeFromPlc} 最后称重标签{lastweighLable} 读号码耗时{t}ms");
+                                }
                             }
 #endif
                         }
