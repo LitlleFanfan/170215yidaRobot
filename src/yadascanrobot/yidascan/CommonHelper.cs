@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Diagnostics;
+using System.IO;
 
 namespace commonhelper {
     public static class CommonHelper {
@@ -69,6 +70,16 @@ namespace commonhelper {
                 } catch {}
             }
             return dic;
+        }
+
+        public static Int64 foldersize(string fullpath) {
+            try {
+                return new DirectoryInfo(fullpath)
+                    .GetFiles("*.*", SearchOption.AllDirectories)
+                    .Sum(file => file.Length);
+            } catch {
+                return 0;
+            }
         }
     }
 }

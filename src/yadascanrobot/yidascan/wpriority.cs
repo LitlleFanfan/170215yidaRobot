@@ -7,11 +7,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
+using System.Reflection;
 
 namespace yidascan {
     public partial class wpriority : Form {
         public wpriority() {
             InitializeComponent();
+
+            loadDefaultConf();
+            showVirtualLocations();
         }
 
         public LocationHelper locs;
@@ -26,6 +31,14 @@ namespace yidascan {
                 vi.Tag = item;
                 listView1.Items.Add(vi);
             }
+        }
+
+        private void loadDefaultConf() {
+            const string JSONFILE = "location_default.json";
+            var exe = Assembly.GetExecutingAssembly().Location;
+            var exepath = Path.GetDirectoryName(exe);
+            var fn = Path.Combine(exepath, JSONFILE);
+            locs = LocationHelper.LoadConf(fn);
         }
 
         private void resetChecks() {
@@ -69,8 +82,14 @@ namespace yidascan {
         }
 
         private void btnSave_Click(object sender, EventArgs e) {
-            const string fn = "location_default.json";
+            const string JSONFILE = "location_default.json";
+            var exe = Assembly.GetExecutingAssembly().Location;
+            var exepath = Path.GetDirectoryName(exe);
+            var fn = Path.Combine(exepath, JSONFILE);
             locs.SaveConf(fn);
+
+            var td = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
+            stMsg.Text = $"{ JSONFILE}保存完成, {td}";
         }
     }
 }

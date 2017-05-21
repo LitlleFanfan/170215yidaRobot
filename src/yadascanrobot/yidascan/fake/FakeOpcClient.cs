@@ -26,7 +26,15 @@ namespace yidascan {
         public static bool ITEMCATCH_A_SIGNAL = false;
         public static bool ITEMCATCH_B_SIGNAL = false;
 
-        private static int DELAY = 1000;
+        public static int DELAY = 1000;
+
+        private static System.Windows.Forms.Timer[] timers;
+
+        public static void setdelay(int delay) {
+            foreach (var item in timers) {
+                item.Interval = delay;
+            }
+        }
 
         public static void toggle(System.Windows.Forms.Timer t) {
             t.Enabled = !t.Enabled;
@@ -41,7 +49,7 @@ namespace yidascan {
 
         private static void startTimerCache() {
             timerCache = new System.Windows.Forms.Timer {
-                Interval = 2000
+                Interval = DELAY
             };
             timerCache.Tick += (s, e) => { CACHE_SIGNAL = true; };
         }
@@ -73,28 +81,22 @@ namespace yidascan {
             startTimerLabelUp();
             startTimerItemCatchA();
             startTimerItemCatchB();
+
+            timers = new System.Windows.Forms.Timer[] { timerWeigh, timerCache, timerItemCatchA, timerItemCatchB, timerLabelUp };
         }
 
         public static void startall() {
-            timerWeigh.Enabled = true;
-            Thread.Sleep(100);
-            timerCache.Enabled = true;
-            Thread.Sleep(100);
-            timerLabelUp.Enabled = true;
-            Thread.Sleep(100);
-            timerItemCatchA.Enabled = true;
-            Thread.Sleep(100);
-            timerItemCatchB.Enabled = true;
+            foreach (var item in timers) {
+                item.Enabled = true;
+                Thread.Sleep(100);
+            }
         }
 
         public static void stoptall() {
-            timerWeigh.Enabled = false;
-            timerCache.Enabled = false;
-            timerLabelUp.Enabled = false;
-            timerItemCatchA.Enabled = false;
-            timerItemCatchB.Enabled = false;
+            foreach (var item in timers) {
+                item.Enabled = false;
+            }
         }
-
     }
 
     /// <summary>

@@ -185,17 +185,31 @@ namespace yidascan {
         }
 
         // 找到最近的一个空板
-        private string FindAvailableRealLoc() {
+        private string FindAvailableRealLoc(Priority p) {
             // 如果有板闲置，返回该板号, 无则返回空字符串。
-            var locs = RealLocations.Where(x => x.state == LocationState.IDLE && x.priority != Priority.DISABLE)
-                .OrderByDescending(x => x.priority)
-                .FirstOrDefault();
-
-            if (locs == null) {
-                locs = RealLocations.Where(x => x.state == LocationState.FULL && x.priority != Priority.DISABLE)
-                    .OrderBy(x => x.priority)
+            RealLoc locs = null;
+            if (p == Priority.HIGH) {
+                locs = RealLocations.Where(x => x.state == LocationState.IDLE && x.priority != Priority.DISABLE)
+                    .OrderByDescending(x => x.priority)
                     .FirstOrDefault();
+            } else {
+                // 先从中低优先级较低中查找。
+                locs = RealLocations.Where(x => x.state == LocationState.IDLE && (x.priority == Priority.MEDIUM || x.priority == Priority.LOW))
+                    .OrderByDescending(x => x.priority)
+                    .FirstOrDefault();
+                // 中低优先级没有，再从高优先级中查找。
+                if (locs == null) {
+                    locs = RealLocations.Where(x => x.state == LocationState.IDLE && (x.priority != Priority.DISABLE))
+                    .OrderByDescending(x => x.priority)
+                    .FirstOrDefault();
+                }
             }
+
+            //if (locs == null) {
+            //    locs = RealLocations.Where(x => x.state == LocationState.FULL && x.priority != Priority.DISABLE)
+            //        .OrderBy(x => x.priority)
+            //        .FirstOrDefault();
+            //}
 
             if (locs != null) {
                 return locs.realloc;
@@ -210,7 +224,9 @@ namespace yidascan {
         }
 
         private bool automap(string virtualloc, string panelno) {
-            var realloc = FindAvailableRealLoc();
+            var p = VirtualLocations.Single(x => x.virtualloc == virtualloc)
+                .priority;
+            var realloc = FindAvailableRealLoc(p);
             if (!string.IsNullOrEmpty(realloc)) {
                 Map(virtualloc, realloc, panelno);
                 return true;
