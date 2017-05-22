@@ -241,7 +241,7 @@ namespace yidascan {
         // 根据erp所指的交地，换算出真实交地
         public string Convert(string virtualloc, string panelno) {
             var rt = string.Empty;
-            var trytimes = 3; // 尝试3次。
+            var trytimes = 120; // 尝试时间, 120s.
 
             while (true) {
                 var realoc1 = RealLocations.FirstOrDefault(x => x.panelno == panelno);

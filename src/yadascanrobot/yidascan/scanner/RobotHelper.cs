@@ -443,6 +443,7 @@ namespace yidascan {
                 if (robotRollQ == null) { return; }
 
                 var roll2 = robotRollQ.Peek();
+
                 if (roll2 != null && roll.LabelCode == roll2.LabelCode) {//如果取出来还是原来那一个，就删一下
                     robotRollQ.Dequeue();
                     FrmMain.showRobotQue(robotRollQ, lv);

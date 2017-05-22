@@ -320,13 +320,13 @@ namespace yidascan {
                             // 取名义交地
                             var virtuallocation = TaskQueues.lochelper.lookupVirtual(reallocation);
 
+                            logOpt.Write($"!实际交地{kv.Key} 收到人工完成信号。ERP交地：{virtuallocation}", LogType.ROBOT_STACK);
+
                             // 修改当前板号的属性。
                             var shiftno = createShiftNo();
 
                             var pf = LableCode.GetTolactionCurrPanelNo(virtuallocation, shiftno);
-                            LableCode.SetMaxFloorAndFull(virtuallocation);
-                            //LableCode.UserSetPanelLastRoll();
-                            logOpt.Write($"{kv.Key} 收到人工完成信号。ERP交地：{virtuallocation}", LogType.ROBOT_STACK, LogViewType.OnlyFile);
+                            LableCode.SetMaxFloorAndFull(virtuallocation);                                                       
 
                             // 创建新的板信息。
                             var newPanel = PanelGen.NewPanelNo();
@@ -1446,11 +1446,16 @@ namespace yidascan {
         }
 
         private void btnNewRun_Click(object sender, EventArgs e) {
-            logOpt.Write("启动新任务。");
-            LableCode.SetAllPanelsFinished();
-            ClearAllRunningData();
-            logOpt.Write("所有板设置为完成状态；清除所有队列。");//AC区无法设置完成。
-            btnRun_Click(sender, e);
+            if (CommonHelper.Confirm("启动新任务会清除缓存位数据和板位数据，请确认!")) {
+                logOpt.Write("启动新任务。");
+                LableCode.SetAllPanelsFinished();
+                ClearAllRunningData();
+                logOpt.Write("所有板设置为完成状态；清除所有队列。");//AC区无法设置完成。
+                btnRun_Click(sender, e);
+            } else
+            {
+                logOpt.Write("!放弃启动新任务。");
+            }
         }
 
         private void btnLoadTaskq_Click(object sender, EventArgs e) {
