@@ -47,7 +47,7 @@ namespace yidascan {
             lbx.Items.Insert(0, $"板号: {c.PanelNo}");
             lbx.Items.Insert(0, $"长度: {c.Length}mm 直径: {c.Diameter}mm");
             lbx.Items.Insert(0, $"号码: {c.LCode}");
-            lbx.Items.Insert(0, $"交地: {c.ToLocation}");
+            lbx.Items.Insert(0, $"名义交地: {c.ToLocation}  实际交地: {c.RealLocation}");
             lbx.Items.Insert(0, $"---------------------");
         }
 

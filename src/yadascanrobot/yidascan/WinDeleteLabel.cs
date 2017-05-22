@@ -142,7 +142,7 @@ namespace yidascan {
         private void checkInDb(string code) {
             var lc = LableCode.QueryByLCode(code);
             if (lc != null) {
-                lbxLog.Items.Insert(0, $"{lbxLog.Items.Count} 数据库: {lc.LCode} {lc.ToLocation} 板号: {lc.PanelNo}");
+                lbxLog.Items.Insert(0, $"{lbxLog.Items.Count} 数据库: {lc.LCode} {lc.ToLocation} 实际交地: {lc.RealLocation} 扫描时间: {lc.CreateDate} 板号: {lc.PanelNo}");
             } else {
                 lbxLog.Items.Insert(0, $"{lbxLog.Items.Count} {code}数据库中没有此号码。");
             }
