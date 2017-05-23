@@ -596,11 +596,9 @@ namespace yidascan {
         private void BeforCacheTask_new() {
             var CacheOpcClient = CreateOpcClient("缓存位");
             opcParam.CacheParam = new OPCBeforCacheParam(CacheOpcClient);
-
             Task.Factory.StartNew(() => {
                 while (isrun) {
                     Thread.Sleep(OPCClient.DELAY * 200);
-
                     try {
                         if (PlcHelper.ReadCacheSignal(CacheOpcClient, opcParam)) {
                             if (taskQ.CacheQ.Count == 0) continue;
