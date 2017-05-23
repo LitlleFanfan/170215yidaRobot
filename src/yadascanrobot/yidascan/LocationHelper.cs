@@ -358,7 +358,15 @@ namespace yidascan {
 
         public static LocationHelper LoadConf(string fn) {
             var jsonstr = File.ReadAllText(fn);
-            return JsonConvert.DeserializeObject<LocationHelper>(jsonstr);
+            var loc = JsonConvert.DeserializeObject<LocationHelper>(jsonstr);
+            if (loc.VirtualLocations.Count() != 10) {
+                throw new Exception("名义交地配置异常: {fn}");
+            }
+
+            if (loc.RealLocations.Count() != 11) {
+                throw new Exception("实际交地配置异常: {fn}");
+            }
+            return loc;
         }
 
         public void SaveConf(string fn) {
