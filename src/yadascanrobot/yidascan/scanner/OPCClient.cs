@@ -70,6 +70,70 @@ namespace ProduceComm.OPC {
                 return false;
             }
         }
+        /// <summary>
+        /// 添加订阅
+        /// </summary>
+        /// <param name="goupname">组名称</param>
+        /// <param name="codes">项目代码列表</param>
+        /// <param name="updateRate">刷新频率</param>
+        /// <returns></returns>
+        public bool AddSubscriptions(string goupname, List<string> codes, int updateRate = 500) {
+            try {
+                Opc.Da.SubscriptionState groupstate = new Opc.Da.SubscriptionState();//定义组（订阅者）状态，相当于OPC规范中组的参数
+                groupstate.Name = goupname;//组名
+                groupstate.ServerHandle = null;//服务器给该组分配的句柄。
+                groupstate.ClientHandle = Guid.NewGuid().ToString();//客户端给该组分配的句柄。
+                groupstate.Active = true;//激活该组。
+                groupstate.UpdateRate = updateRate;//刷新频率 单位毫秒。
+                groupstate.Deadband = 0;// 死区值，设为0时，服务器端该组内任何数据变化都通知组。
+                groupstate.Locale = null;//不设置地区值。  
+
+                Opc.Da.Subscription group = (Opc.Da.Subscription)m_server.CreateSubscription(groupstate);//创建组
+                List<Opc.Da.Item> items = new List<Opc.Da.Item>();
+                foreach (string tmp in codes) {
+                    Opc.Da.Item item = new Opc.Da.Item();
+                    item.ClientHandle = Guid.NewGuid().ToString();//客户端给该数据项分配的句柄。
+                    item.ItemPath = null; //该数据项在服务器中的路径。
+                    item.ItemName = tmp; //该数据项在服务器中的名字。
+                    items.Add(item);
+                }
+                group.AddItems(items.ToArray());
+                groups.Add(goupname, group);
+                return true;
+            } catch (Exception ex) {
+                clsSetting.loger.Error(string.Format("{0}添加订阅失败！{1}", goupname, ex));
+                OnError(new Exception(string.Format("{0}添加订阅失败！", goupname), ex));
+                return false;
+            }
+        }
+
+        public bool Write(string groupname, Dictionary<string, object> codeValue) {
+            if (string.IsNullOrEmpty(groupname)) {
+                yidascan.FrmMain.logOpt.Write($"!项目为空");
+                OnError(new Exception("项目为空！"));
+                return false;
+            }
+            try {
+                if (!groups.Keys.Contains(groupname)) {
+                    clsSetting.loger.Error(string.Format("{0}未添加订阅！", groupname));
+                    OnError(new Exception(string.Format("{0}未添加订阅！", groupname)));
+                    return false;
+                }
+                Opc.Da.Subscription group = groups[groupname];
+                List<Opc.Da.ItemValue> itemvalues = new List<Opc.Da.ItemValue>();
+                foreach (KeyValuePair<string, object> kv in codeValue) {
+                    Opc.Da.ItemValue iv = new Opc.Da.ItemValue(group.Items.First(item => item.ItemName == kv.Key));
+                    iv.Value = kv.Value;
+                    itemvalues.Add(iv);
+                }
+
+                var rt = group.Write(itemvalues.ToArray());
+                return ParseResult(rt, (x) => { FrmMain.logOpt.Write(x); });
+            } catch (Exception ex) {
+                yidascan.FrmMain.logOpt.Write(string.Format("!{0}写入失败！{1}", groupname, ex));
+                return false;
+            }
+        }
 
         public bool Write(string code, object value) {
             if (string.IsNullOrEmpty(code)) {
@@ -172,6 +236,31 @@ namespace ProduceComm.OPC {
             }
         }
 
+        public object Read(string groupname, string code) {
+            if (string.IsNullOrEmpty(groupname)) {
+                yidascan.FrmMain.logOpt.Write($"!项目为空");
+                OnError(new Exception("项目为空！"));
+                return null;
+            }
+            try {
+                if (!groups.Keys.Contains(groupname)) {
+                    clsSetting.loger.Error(string.Format("{0}未添加订阅！", code));
+                    OnError(new Exception(string.Format("{0}未添加订阅！", code)));
+                    return null;
+                }
+                Opc.Da.ItemValueResult[] values = groups[groupname].Read(new Opc.Da.Item[] { groups[groupname].Items.First(item => item.ItemName == code) });
+
+                if (values[0].Quality.Equals(Opc.Da.Quality.Good)) {
+                    return values[0].Value;
+                }
+                return null;
+            } catch (Exception ex) {
+                yidascan.FrmMain.logOpt.Write(string.Format("!{0}读取失败！{1}", code, ex));
+                OnError(new Exception("读取失败！", ex));
+                return null;
+            }
+        }
+
         public int ReadInt(string slot) {
             var val = Read(slot);
             try {
@@ -218,6 +307,46 @@ namespace ProduceComm.OPC {
             } catch (Exception ex) {
                 clsSetting.loger.Error("关闭连接失败！", ex);
                 OnError(new Exception("关闭连接失败！", ex));
+            }
+        }
+
+        public string ReadString(string groupname, string slot) {
+            var val = Read(groupname, slot);
+            try {
+                return val != null ? val.ToString() : string.Empty;
+            } catch (Exception ex) {
+                yidascan.FrmMain.logOpt.Write(string.Format("!{0}读取失败!{1} {2}", slot, val, ex));
+                return string.Empty;
+            }
+        }
+
+        public int ReadInt(string groupname, string slot) {
+            var val = Read(groupname, slot);
+            try {
+                return val != null ? int.Parse(val.ToString()) : 0;
+            } catch (Exception ex) {
+                yidascan.FrmMain.logOpt.Write(string.Format("!{0}读取失败!{1} {2}", slot, val, ex));
+                return 0;
+            }
+        }
+
+        public bool ReadBool(string groupname, string slot) {
+            var val = Read(groupname, slot);
+            try {
+                return val != null ? bool.Parse(val.ToString()) : false;
+            } catch (Exception ex) {
+                yidascan.FrmMain.logOpt.Write(string.Format("!{0}读取失败!{1} {2}", slot, val, ex));
+                return false;
+            }
+        }
+
+        public decimal ReadDecimal(string groupname, string slot) {
+            var val = Read(groupname, slot);
+            try {
+                return val != null ? decimal.Parse(val.ToString()) : 0;
+            } catch (Exception ex) {
+                yidascan.FrmMain.logOpt.Write(string.Format("!{0}读取失败!{1} {2}", slot, val, ex));
+                return 0;
             }
         }
     }

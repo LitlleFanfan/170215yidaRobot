@@ -251,6 +251,32 @@ namespace yidascan {
         public void Close() {
             return;
         }
+
+        public string ReadString(string groupname, string slot) {
+            return ReadString(slot);
+        }
+
+        public int ReadInt(string groupname, string slot) {
+            return ReadInt(slot);
+        }
+
+        public bool ReadBool(string groupname, string slot) {
+            return ReadBool(slot);
+        }
+
+        public decimal ReadDecimal(string groupname, string slot) {
+            return ReadDecimal(slot);
+        }
+
+        public bool Write(string groupname, Dictionary<string, object> codeValue) {
+            Thread.Sleep(100);
+            return true;
+        }
+
+        public bool AddSubscriptions(string goupname, List<string> codes, int updateRate = 500) {
+            Thread.Sleep(100);
+            return true;
+        }
     }
 #endif
 }

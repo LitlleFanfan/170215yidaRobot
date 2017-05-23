@@ -326,7 +326,7 @@ namespace yidascan {
                             var shiftno = createShiftNo();
 
                             var pf = LableCode.GetTolactionCurrPanelNo(virtuallocation, shiftno);
-                            LableCode.SetMaxFloorAndFull(virtuallocation);                                                       
+                            LableCode.SetMaxFloorAndFull(virtuallocation);
 
                             // 创建新的板信息。
                             var newPanel = PanelGen.NewPanelNo();
@@ -474,7 +474,6 @@ namespace yidascan {
                                     });
                                     logOpt.Write($"{code.LCode}称重API状态：{signal} 写OPC状态：{wstate} 读号码耗时{t}ms ERP称重耗时{t1}ms 复位信号耗时{t2}ms");
                                 } else {
-#if !DEBUG
                                     if (codeFromPlc == lastweighLable) {
                                         // 复位
                                         opcWeigh.Write(opcParam.WeighParam.GetWeigh, 0);
@@ -482,15 +481,12 @@ namespace yidascan {
                                     } else {
                                         logOpt.Write($"!称重信号无对应的队列号码, opc称重标签{codeFromPlc} 最后称重标签{lastweighLable}  读号码耗时{t}ms");
                                     }
-#endif
                                 }
                                 showLabelQue(taskQ.WeighQ, lsvWeigh);
                                 if (code.ToLocation.Substring(0, 1) == "B") {
                                     showLabelQue(taskQ.CacheQ, lsvCacheBefor);//加到缓存列表中显示
                                 }
-                            }
-#if !DEBUG
-                            else { 
+                            } else {
                                 if (codeFromPlc == lastweighLable) {
                                     // 复位
                                     opcWeigh.Write(opcParam.WeighParam.GetWeigh, 0);
@@ -499,7 +495,6 @@ namespace yidascan {
                                     logOpt.Write($"!称重信号无对应的队列号码, opc称重标签{codeFromPlc} 最后称重标签{lastweighLable} 读号码耗时{t}ms");
                                 }
                             }
-#endif
                         }
                     } catch (Exception ex) {
                         logOpt.Write($"!来源: {nameof(WeighTask)} {ex}", LogType.NORMAL);
@@ -1452,8 +1447,7 @@ namespace yidascan {
                 ClearAllRunningData();
                 logOpt.Write("所有板设置为完成状态；清除所有队列。");//AC区无法设置完成。
                 btnRun_Click(sender, e);
-            } else
-            {
+            } else {
                 logOpt.Write("!放弃启动新任务。");
             }
         }
