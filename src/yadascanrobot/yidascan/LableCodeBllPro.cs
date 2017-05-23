@@ -183,7 +183,6 @@ namespace yidascan {
         /// <param name="cacheq">缓存队列</param>
         /// <returns>返回的是需要从缓存位取出的布卷。如果不需要取出，返回null。</returns>
         private static CalResult CalculateCache(PanelInfo pinfo, LableCode lc, List<LableCode> lcs) {
-            const int DIAMETER_THRESHOLD = 100;
             var cr = new CalResult(CacheState.Go, lc, null);
             var cachecount = (pinfo.OddStatus ? 0 : 1) + (pinfo.EvenStatus ? 0 : 1);
             var cachedRools = from s in lcs
@@ -192,12 +191,6 @@ namespace yidascan {
                               select s;
             switch (cachedRools.Count()) {
                 case 0://当前层已没有了缓存。//当前布卷直接缓存起来。
-                    if (lc.Diameter < DIAMETER_THRESHOLD) {
-                        // 直径太小，直接往下走。
-                        cr.state = CacheState.Go;
-                    } else {
-                        cr.state = CacheState.Cache;
-                    }
                     break;
                 case 1://当前层只有一卷缓存。
                 case 2://当前层有两卷缓存。
@@ -216,14 +209,7 @@ namespace yidascan {
                             lc.GetOutLCode = cr.CodeFromCache.LCode;//换掉的标签---//当前布卷直接缓存起来。缓存的两卷中小的拿出来并计算位置。//当前布卷不需要缓存，计算位置。
                             cr.state = CacheState.GetThenCache;
                         }
-                    } else {
-                        // 直径太小，直接往下走。
-                        if (lc.Diameter < DIAMETER_THRESHOLD) {
-                            cr.state = CacheState.Go;
-                        } else {
-                            cr.state = CacheState.Cache;
-                        }
-                    }
+                    } 
                     break;
             }
             return cr;
@@ -394,6 +380,14 @@ namespace yidascan {
             return pf;
         }
 
+        private static bool isTooSmall(decimal dia) {
+            const int DIAMETER_THRESHOLD = 100;
+            // return dia < DIAMETER_THRESHOLD;
+
+            FrmMain.logOpt.Write("!小布卷直过未启用。");
+            return false;
+        }
+
         public static CalResult AreaBCalculate(IOpcClient client, LableCode lc, string dateShiftNo, IEnumerable<LableCode> cacheq, Action<string> onlog) {
             CacheResult cre = new CacheResult();
             cre.CResult = new CalResult(CacheState.Cache, lc, null);
@@ -441,7 +435,7 @@ namespace yidascan {
                                     orderby s.Diameter ascending
                                     select s).Count();
 
-                    var go = CanIgo(cacheq, cre.CResult, cancachesum - cachelcs);
+                    var go = isTooSmall(lc.Diameter) || CanIgo(cacheq, cre.CResult, cancachesum - cachelcs);
                     if (go) {
                         cre.CResult.state = CacheState.Go;
                         CalculatePosition(layerLabels, cre.CResult.CodeCome, cre.SideState == null ? SideFullState.NO_FULL : cre.SideState.state);
