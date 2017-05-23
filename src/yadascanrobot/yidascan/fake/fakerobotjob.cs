@@ -104,7 +104,9 @@ namespace yidascan {
             while (isrun) {
                 if (IsBusy()) {
                     FrmMain.logOpt.Write($"!机器人正忙", LogType.ROBOT_STACK);
+#if DEBUG
                     Thread.Sleep(FakeOpcClient.DELAY * 10);
+#endif
                 } else { break; }
             }
 
@@ -217,8 +219,8 @@ namespace yidascan {
                         FrmMain.logOpt.Write($"{roll.RealLocation}: 半满板信号发出。slot: ", LogType.ROBOT_STACK);
                         break;
                     case PanelState.Full:
-                       FrmMain.logOpt.Write($"{roll.RealLocation}: 满板信号发出。slot: ", LogType.ROBOT_STACK);
-                        
+                        FrmMain.logOpt.Write($"{roll.RealLocation}: 满板信号发出。slot: ", LogType.ROBOT_STACK);
+
                         LableCode.SetPanelFinished(roll.PanelNo);
 
                         TaskQueues.lochelper.OnFull(roll.RealLocation);
