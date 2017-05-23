@@ -106,6 +106,8 @@ namespace yidascan {
         OPCParam param;
         private Random rand = new Random();
 
+        public static int DELAY = 200;
+
         #region hand_panel_complete
         // 板完成信号
         private static string SIGNAL_PANEL_HAND_COMPLETE_B01 = "0";

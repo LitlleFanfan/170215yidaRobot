@@ -360,11 +360,11 @@ namespace yidascan {
             var jsonstr = File.ReadAllText(fn);
             var loc = JsonConvert.DeserializeObject<LocationHelper>(jsonstr);
             if (loc.VirtualLocations.Count() != 10) {
-                throw new Exception("名义交地配置异常: {fn}");
+                throw new Exception($"名义交地配置异常: {fn}");
             }
 
             if (loc.RealLocations.Count() != 11) {
-                throw new Exception("实际交地配置异常: {fn}");
+                throw new Exception($"实际交地配置异常: {fn}");
             }
             return loc;
         }

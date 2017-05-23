@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using yidascan.DataAccess;
+using yidascan.Properties;
 
 namespace yidascan {
     /// <summary>
@@ -15,8 +16,10 @@ namespace yidascan {
     class FakeRobotJob : IRobotJob, IDisposable {
         Action<string, string, LogViewType> loghandler;
         IOpcClient client;
+        private OPCParam param;
         string ip;
         string jobName;
+        private string JOB_NAME = "";
 
         public FakeRobotJob(string ip, string jobName) {
             this.ip = ip;
@@ -26,6 +29,7 @@ namespace yidascan {
         public void setup(Action<string, string, LogViewType> loghandler, IOpcClient client, OPCParam param) {
             this.loghandler = loghandler;
             this.client = client;
+            this.param = param;
             loghandler?.Invoke("!fake robot setup.", LogType.ROBOT_STACK, LogViewType.OnlyForm);
             loghandler?.Invoke($"!ip: {ip}, job name: {jobName}", "fake robot", LogViewType.OnlyFile);
         }
@@ -52,23 +56,125 @@ namespace yidascan {
             }
         }
 
+        private bool IsBusy() {
+            return false;
+        }
+
+        private void log(string s, string group, LogViewType ltype = LogViewType.Both) {
+            FrmMain.logOpt.Write(s, LogType.ROBOT_STACK);
+        }
+
+        private bool WritePositionPro(RollPosition rollPos) { return true; }
+
+        public bool TryWritePositionPro(RollPosition rollPos, int times = 5) {
+            const int DELAY = 100;
+            int counts = 0;
+            bool wstatus = false;
+            var t = TimeCount.TimeIt(() => {
+                while (times > 0) {
+                    counts++;
+                    wstatus = WritePositionPro(rollPos);
+                    if (wstatus) { break; }
+                    times--;
+                    Thread.Sleep(DELAY);
+                }
+            });
+            log($"机器人写坐标{(wstatus ? "成功" : "失败")}耗时{t}毫秒,尝试次数{counts}, {rollPos.LabelCode}, {rollPos.Pos_s()}。",
+                LogType.ROBOT_STACK);
+            return wstatus;
+        }
+
+        public bool IsRollOnPanel() { return true; }
+
+        public bool TryRunJob(string jobName, int times = 10) { return true; }
+
         public void JobLoopPro(ref bool isrunning, TaskQueues taskq, Action onupdate) { }
 
         public bool JobTask(ref bool isrun, bool isSideA, Queue<RollPosition> robotRollQ, RollPosition roll, ListView lv) {
-                       // 等待板可放料
+            // 等待板可放料
+            // 等待板可放料
             if (PanelAvailable(roll.RealLocation)) {
                 FrmMain.logOpt.Write($"{roll.RealLocation} PushInQueue收到可放料信号", LogType.ROBOT_STACK);
             } else {
                 FrmMain.logOpt.Write($"! {roll.RealLocation} PushInQueue未收到可放料信号，请检查板状态和是否有形状不规则报警。", LogType.ROBOT_STACK);
                 return false;
             }
-            LableCode.SetOnPanelState(roll.LabelCode);
 
-            // 告知OPC
-            NotifyOpcJobFinished(roll);
+            // 机器人正忙，等待。
+            while (isrun) {
+                if (IsBusy()) {
+                    FrmMain.logOpt.Write($"!机器人正忙", LogType.ROBOT_STACK);
+                    Thread.Sleep(FakeOpcClient.DELAY * 10);
+                } else { break; }
+            }
+
+            if (!TryWritePositionPro(roll)) {
+                return false;
+            }
+
+            if (TryRunJob(JOB_NAME)) {
+                log($"发出机器人示教器动作{JOB_NAME}命令成功。", LogType.ROBOT_STACK);
+                client.Write(param.RobotParam.RobotJobStart, true);
+            } else {
+                log($"!机器人示教器动作{JOB_NAME}发送失败。", LogType.ROBOT_STACK);
+                return false;
+            }
+            Thread.Sleep(RobotHelper.DELAY * 200);
+            log($"check roll is leaving from PLC: {roll.LabelCode}.", LogType.ROBOT_STACK, LogViewType.OnlyFile);
+            //删除对列布卷
+            var startTime = System.DateTime.Now;
+            var now = System.DateTime.Now;
+            var time = now - startTime;
+            while (isrun) {
+                var leaving = client.ReadBool(isSideA ? param.RobotParam.RobotStartA : param.RobotParam.RobotStartB);
+                if (leaving) {
+                    log($"roll is leaving: {roll.LabelCode}.", LogType.ROBOT_STACK, LogViewType.OnlyFile);
+                    DequeueRoll(robotRollQ, roll, lv);
+                    client.Write(isSideA ? param.RobotParam.RobotStartA : param.RobotParam.RobotStartB, false);
+                    break;
+                }
+                now = System.DateTime.Now;
+                time = now - startTime;
+                if (time.Milliseconds > RobotHelper.DELAY * 600) {//等leaving信号超时，等3秒
+                    break;
+                }
+                Thread.Sleep(RobotHelper.DELAY);
+            }
+
+            var sleeptime = RobotHelper.DELAY * 1000 - time.Milliseconds;
+            if (sleeptime > 0) {
+                Thread.Sleep(sleeptime);
+            }
+
+            // 等待布卷上垛信号
+            while (isrun) {
+                if (IsRollOnPanel()) {
+                    // 写数据库。
+                    LableCode.SetOnPanelState(roll.LabelCode);
+                    // 告知OPC
+                    NotifyOpcJobFinished(roll);
+                    log("布卷已上垛。", LogType.ROBOT_STACK, LogViewType.Both);
+
+                    break;
+                }
+                Thread.Sleep(RobotHelper.DELAY * 20);
+            }
+
+            Thread.Sleep(RobotHelper.DELAY * 500);
+
+            // 等待机器人结束码垛。
+            while (isrun && IsBusy()) {
+                Thread.Sleep(RobotHelper.DELAY * 20);
+            }
             DequeueRoll(robotRollQ, roll, lv);
-
-            FrmMain.logOpt.Write($"robot job done: {roll.LabelCode}.", LogType.ROBOT_STACK);
+            if (!isrun) {//解决压布，布卷未上垛问题
+                         // 写数据库。
+                LableCode.SetOnPanelState(roll.LabelCode);
+                // 告知OPC
+                NotifyOpcJobFinished(roll);
+                log("布卷已上垛。", LogType.ROBOT_STACK, LogViewType.Both);
+            }
+            log($"robot job done: {roll.LabelCode}.", LogType.ROBOT_STACK);
             return true;
         }
 
@@ -142,12 +248,14 @@ namespace yidascan {
 
         private void DequeueRoll(Queue<RollPosition> robotRollQ, RollPosition roll, ListView lv) {
             try {
-                if (robotRollQ == null) { return; }
+                lock (robotRollQ) {
+                    if (robotRollQ == null) { return; }
 
-                var roll2 = robotRollQ.Peek();
-                if (roll2 != null && roll.LabelCode == roll2.LabelCode) {//如果取出来还是原来那一个，就删一下
-                    robotRollQ.Dequeue();
-                    FrmMain.showRobotQue(robotRollQ, lv);
+                    var roll2 = robotRollQ.Peek();
+                    if (roll2 != null && roll.LabelCode == roll2.LabelCode) {//如果取出来还是原来那一个，就删一下
+                        robotRollQ.Dequeue();
+                        FrmMain.showRobotQue(robotRollQ, lv);
+                    }
                 }
             } catch (Exception ex) {
                 var msg = $"robot Dequeue roll: {roll.LabelCode}. {ex}";
