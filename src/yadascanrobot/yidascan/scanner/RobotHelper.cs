@@ -452,7 +452,7 @@ namespace yidascan {
                     }
                 }
             } catch (Exception ex) {
-                log($"来源: {nameof(DequeueRoll)}, robot Dequeue roll: {roll.LabelCode}. {ex}", LogType.ROBOT_STACK, LogViewType.OnlyFile);
+                log($"来源: {nameof(DequeueRoll)}, {roll.LabelCode}. {ex}", LogType.ROBOT_STACK, LogViewType.OnlyFile);
             }
         }
 
@@ -537,7 +537,7 @@ namespace yidascan {
                 LableCode.SetOnPanelState(roll.LabelCode);
                 // 告知OPC
                 NotifyOpcJobFinished(roll);
-                log("布卷已上垛。", LogType.ROBOT_STACK, LogViewType.Both);
+                log($"{roll.LabelCode}布卷已上垛。", LogType.ROBOT_STACK, LogViewType.Both);
             }
             log($"robot job done: {roll.LabelCode}.", LogType.ROBOT_STACK);
             return true;

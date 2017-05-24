@@ -116,7 +116,9 @@ namespace yidascan {
 
             if (loc.priority != Priority.DISABLE) {
                 loc.state = state;
-                loc.panelno = panelno;
+                if (!string.IsNullOrEmpty(panelno)) {
+                    loc.panelno = panelno;
+                }
             }
         }
         
@@ -260,6 +262,7 @@ namespace yidascan {
 
                     if (realoc.panelno == panelno) { return realoc.realloc; } else {
                         Unmap(realoc.realloc, "", "");
+                        // SetState(realoc.realloc, LocationState.FULL, "");
                         automap(virtualloc, panelno);
                     };
                 }

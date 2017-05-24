@@ -174,7 +174,7 @@ namespace yidascan {
                 LableCode.SetOnPanelState(roll.LabelCode);
                 // 告知OPC
                 NotifyOpcJobFinished(roll);
-                log("布卷已上垛。", LogType.ROBOT_STACK, LogViewType.Both);
+                log($"{roll.LabelCode}布卷已上垛。", LogType.ROBOT_STACK, LogViewType.Both);
             }
             log($"robot job done: {roll.LabelCode}.", LogType.ROBOT_STACK);
             return true;
@@ -260,8 +260,9 @@ namespace yidascan {
                     }
                 }
             } catch (Exception ex) {
-                var msg = $"robot Dequeue roll: {roll.LabelCode}. {ex}";
-                throw new Exception(msg);
+                var msg = $"{nameof(DequeueRoll)}: {roll.LabelCode}. {ex}";
+                log(msg, LogType.ROBOT_STACK);
+               //  throw new Exception(msg);
             }
         }
     }

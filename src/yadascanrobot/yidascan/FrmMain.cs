@@ -656,12 +656,15 @@ namespace yidascan {
                             }, 330, 30);
                             logOpt.Write($"缓存处来料信号状态:{str} " +
                                 $"{opcParam.CacheParam.BeforCacheStatus}", LogType.BUFFER);
+
+#if DEBUG
+                            if (Math.Abs(lc.Cx + lc.Cy) > 1000) {
+                                throw new Exception($"{lc.LCode}布卷坐标超界");
+                            }
+#endif
                         }
                     } catch (Exception ex) {
-                        logOpt.Write($"!来源: {nameof(BeforCacheTask_new)}, {ex}", LogType.BUFFER);
-#if DEBUG
-                        throw;
-#endif           
+                        logOpt.Write($"!来源: {nameof(BeforCacheTask_new)}, {ex}", LogType.BUFFER);          
                     }
                 }
                 OpcClientClose(CacheOpcClient, "缓存位");

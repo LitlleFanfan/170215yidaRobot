@@ -16,12 +16,20 @@ namespace yidascan {
         }
 
         private static void CalculatePosition(List<LableCode> lcs, LableCode lc, int state) {
+            if (lc == null) {
+                return;
+                // throw new Exception($"nameof(CalculatePosition), lc is null.");
+            }
             lc.FloorIndex = CalculateFloorIndex(lcs);
 
             OnlinCalculatePosition(lcs, lc, state);
         }
 
         private static void OnlinCalculatePosition(List<LableCode> lcs, LableCode lc, int state) {
+            if (lc == null) {
+                throw new Exception($"{nameof(OnlinCalculatePosition)}, lc is null.");
+            }
+
             var z = lc.Floor == 1 ? clsSetting.InitHeigh : LableCode.GetFloorMaxDiameter(lc.PanelNo, lc.Floor) - (lc.Floor * 5);
             var r = clsSetting.OddTurn ?
                 (lc.Floor % 2 == 1 ? 0 : 90) : //奇数层横放
@@ -118,6 +126,7 @@ namespace yidascan {
 
         private static void CalculatePositionEdgeExceed(List<LableCode> lcs, LableCode cur, LableCode fromcache, int state) {
             CalculatePosition(lcs, fromcache, SideFullState.NO_FULL);
+            // fromcache是空时，怎样处理？
             cur.FloorIndex = fromcache.FloorIndex + 1;
             OnlinCalculatePosition(lcs, cur, state);
         }
@@ -144,11 +153,11 @@ namespace yidascan {
             // 以下是新的做法。
             // 满则返回莫格缓存中的布卷
             // 不满则返回null
-            var cachedRolls = (from s in lcs where s.FloorIndex == 0 select s).ToList();
+            // var cachedRolls = (from s in lcs where s.FloorIndex == 0 select s).ToList();
             var MAX_WIDTH = FindMaxHalfWidth(lc);
             // 板上宽度
             var installedWidth = Math.Abs(CalculateXory(lcs));
-            return findSmallerFromCachedRollsPro(cachedRolls, lc, installedWidth, MAX_WIDTH);
+            return findSmallerFromCachedRollsPro(lcs, lc, installedWidth, MAX_WIDTH);
         }
 
         /// <summary>
@@ -191,6 +200,7 @@ namespace yidascan {
                               select s;
             switch (cachedRools.Count()) {
                 case 0://当前层已没有了缓存。//当前布卷直接缓存起来。
+                    cr.state = CacheState.Cache;
                     break;
                 case 1://当前层只有一卷缓存。
                 case 2://当前层有两卷缓存。
@@ -209,7 +219,10 @@ namespace yidascan {
                             lc.GetOutLCode = cr.CodeFromCache.LCode;//换掉的标签---//当前布卷直接缓存起来。缓存的两卷中小的拿出来并计算位置。//当前布卷不需要缓存，计算位置。
                             cr.state = CacheState.GetThenCache;
                         }
-                    } 
+                    }  else {
+                        cr.state = CacheState.Cache;
+                    }
+
                     break;
             }
             return cr;
@@ -240,7 +253,13 @@ namespace yidascan {
         // 
         private static decimal expectedWidthNoEdgeSpace(decimal installedWidth, LableCode l1, LableCode l2) {
             // 预期宽度
-            var expected = installedWidth + l1.Diameter + clsSetting.RollSep + l2.Diameter;
+            // l2可能是空值
+            if (l1 == null) {
+                throw new Exception($"{nameof(expectedWidthNoEdgeSpace)}, lablecode l1 is null");
+            }
+
+            var cachedRollDiameter = l2 != null ? l2.Diameter : 0;
+            var expected = installedWidth + l1.Diameter + clsSetting.RollSep + cachedRollDiameter;
             return expected;
         }
 
@@ -278,14 +297,28 @@ namespace yidascan {
             return rt;
         }
 
-        private static SideFullState findSmallerFromCachedRollsPro(List<LableCode> cachedRolls, LableCode current, decimal installedWidth, decimal max) {
+        private static SideFullState findSmallerFromCachedRollsPro(List<LableCode> layerLables, LableCode current, decimal installedWidth, decimal max) {
             // 预计宽度超出
             var e = GetEdgeSpace(FrmMain.taskQ.CacheSide, current.ToLocation, clsSetting.EdgeSpace);
+
+            var cachedRolls = (from s in layerLables where s.FloorIndex == 0 select s).ToList();
             var rt = cachedRolls.Where(x => (expectedWidthNoEdgeSpace(installedWidth, current, x) > max - e))
                 .OrderBy(x => x.Diameter)
                 .FirstOrDefault();
 
-            if (rt == null) {
+            // 增加条件cachedRolls.Count != 0， 在缓存位没有布卷的情况下，也要计算是否满或超出。
+            // 无此条件，则缓存位没有布卷时，总是NOT_FULL, 导致布卷一直放在同一层。
+            if (cachedRolls.Count == 0) {
+                var w = expectedWidthNoEdgeSpace(installedWidth, current, rt);
+                if (w >= max + clsSetting.WidthFix) {
+                    return new SideFullState(SideFullState.EXCEED, rt);
+                } else if (w > max - e) {
+                    return new SideFullState(SideFullState.FULL, rt);
+                } else {
+                    return new SideFullState(SideFullState.NO_FULL, null);
+                }
+
+            } else if (cachedRolls.Count != 0 && rt == null) {
                 return new SideFullState(SideFullState.NO_FULL, null);
             } else {
                 var w = expectedWidthNoEdgeSpace(installedWidth, current, rt);
@@ -382,10 +415,11 @@ namespace yidascan {
 
         private static bool isTooSmall(decimal dia) {
             const int DIAMETER_THRESHOLD = 100;
-            // return dia < DIAMETER_THRESHOLD;
+            FrmMain.logOpt.Write("!小布卷直过启用。");
+            return dia < DIAMETER_THRESHOLD;
 
-            FrmMain.logOpt.Write("!小布卷直过未启用。");
-            return false;
+            // FrmMain.logOpt.Write("!小布卷直过未启用。");
+            //return false;
         }
 
         public static CalResult AreaBCalculate(IOpcClient client, LableCode lc, string dateShiftNo, IEnumerable<LableCode> cacheq, Action<string> onlog) {
@@ -453,12 +487,22 @@ namespace yidascan {
 
             // 记录层最后一卷
             if (fp == FloorPerformance.BothFinish) {
-                if (cre.CResult.state == CacheState.GetThenGo) {
+                if (cre.CResult.state == CacheState.Go) {
+                    // 在没有缓存的情况下满板。
+                    cre.CResult.CodeCome.Status = (int)LableState.FloorLastRoll;
+                    cre.CResult.CodeCome.Remark = $"{cre.CResult.CodeCome.Remark} floor last roll";
+                }
+                else if (cre.CResult.state == CacheState.GetThenGo) {
                     cre.CResult.CodeCome.Status = (int)LableState.FloorLastRoll;
                     cre.CResult.CodeCome.Remark = $"{cre.CResult.CodeCome.Remark} floor last roll";
                 } else if (cre.SideState.state == SideFullState.EXCEED) {
-                    cre.CResult.CodeFromCache.Status = (int)LableState.FloorLastRoll;
-                    cre.CResult.CodeFromCache.Remark = $"{cre.CResult.CodeFromCache.Remark} floor last roll";
+                    if (cre.CResult.CodeFromCache != null) {
+                        cre.CResult.CodeFromCache.Status = (int)LableState.FloorLastRoll;
+                        cre.CResult.CodeFromCache.Remark = $"{cre.CResult.CodeFromCache.Remark} floor last roll";
+                    } else {
+                        cre.CResult.CodeCome.Status = (int)LableState.FloorLastRoll;
+                        cre.CResult.CodeCome.Remark = $"{cre.CResult.CodeCome.Remark} floor last roll";
+                    }
                 } else {
                     cre.CResult.CodeFromCache.Status = (int)LableState.FloorLastRoll;
                     cre.CResult.CodeFromCache.Remark = $"{cre.CResult.CodeFromCache.Remark} floor last roll";
@@ -497,7 +541,13 @@ namespace yidascan {
                 rt.CodeFromCache = cre.SideState.fromCache;
 
                 if (cre.SideState.state == SideFullState.FULL) {
-                    if (rt.CodeCome.Diameter > rt.CodeFromCache.Diameter + clsSetting.CacheIgnoredDiff) {
+                    // rt.CodeFromCache可能是null.
+                    var cachedRollDiameter = rt.CodeFromCache != null ? rt.CodeFromCache.Diameter : 0;
+                    if (rt.CodeFromCache == null) {
+                        // 未知行否。
+                        rt.state = CacheState.Go;
+                    }
+                    else if (rt.CodeCome.Diameter > cachedRollDiameter + clsSetting.CacheIgnoredDiff) {
                         rt.state = CacheState.GetThenGo;
                     } else {
                         rt.state = CacheState.GoThenGet;
@@ -507,7 +557,9 @@ namespace yidascan {
                     rt.CodeFromCache = cr.CodeFromCache;
                     rt.state = cr.state;
                 } else if (cre.SideState.state == SideFullState.EXCEED) {
-                    rt.state = CacheState.GetThenCache;
+                    if (rt.CodeFromCache != null) {
+                        rt.state = CacheState.GetThenCache;
+                    }
                     pinfo.HasExceed = true;
                 }
             }

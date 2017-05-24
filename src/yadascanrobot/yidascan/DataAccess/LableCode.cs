@@ -828,7 +828,7 @@ and Status<3 and FloorIndex<>0";
         /// </summary>
         /// <returns></returns>
         public string brief() {
-            return $"{LCode} {ToLocation}/{RealLocation} {diameter}";
+            return $"{LCode} {ToLocation}/{RealLocation} {diameter} F{floor}/{floorIndex}";
         }
 
         private static List<CommandParameter> CreateLableCodeInsertHistory(LableCode c) {
