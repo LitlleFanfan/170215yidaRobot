@@ -301,7 +301,11 @@ namespace yidascan {
             // 预计宽度超出
             var e = GetEdgeSpace(FrmMain.taskQ.CacheSide, current.ToLocation, clsSetting.EdgeSpace);
 
-            var cachedRolls = (from s in layerLables where s.FloorIndex == 0 select s).ToList();
+            // var cachedRolls = (from s in layerLables where s.FloorIndex == 0 select s).ToList();
+            var cachedRolls = FrmMain.taskQ.CacheSide.Where(x => x.labelcode != null && x.labelcode.ToLocation == current.ToLocation && x.labelcode.FloorIndex == 0)
+                .Select(x => x.labelcode)
+                .ToList();
+
             var rt = cachedRolls.Where(x => (expectedWidthNoEdgeSpace(installedWidth, current, x) > max - e))
                 .OrderBy(x => x.Diameter)
                 .FirstOrDefault();
@@ -415,11 +419,8 @@ namespace yidascan {
 
         private static bool isTooSmall(decimal dia) {
             const int DIAMETER_THRESHOLD = 100;
-            FrmMain.logOpt.Write("!小布卷直过启用。");
+            // FrmMain.logOpt.Write("!小布卷直过启用。");
             return dia < DIAMETER_THRESHOLD;
-
-            // FrmMain.logOpt.Write("!小布卷直过未启用。");
-            //return false;
         }
 
         public static CalResult AreaBCalculate(IOpcClient client, LableCode lc, string dateShiftNo, IEnumerable<LableCode> cacheq, Action<string> onlog) {

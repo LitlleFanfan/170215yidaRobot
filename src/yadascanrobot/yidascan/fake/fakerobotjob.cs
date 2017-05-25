@@ -135,18 +135,18 @@ namespace yidascan {
                     client.Write(isSideA ? param.RobotParam.RobotStartA : param.RobotParam.RobotStartB, false);
                     break;
                 }
-                now = System.DateTime.Now;
-                time = now - startTime;
-                if (time.Milliseconds > RobotHelper.DELAY * 600) {//等leaving信号超时，等3秒
-                    break;
-                }
+                //now = System.DateTime.Now;
+                //time = now - startTime;
+                //if (time.Milliseconds > RobotHelper.DELAY * 600) {//等leaving信号超时，等3秒
+                //    break;
+                //}
                 Thread.Sleep(RobotHelper.DELAY);
             }
 
-            var sleeptime = RobotHelper.DELAY * 1000 - time.Milliseconds;
-            if (sleeptime > 0) {
-                Thread.Sleep(sleeptime);
-            }
+            //var sleeptime = RobotHelper.DELAY * 1000 - time.Milliseconds;
+            //if (sleeptime > 0) {
+            //    Thread.Sleep(sleeptime);
+            //}
 
             // 等待布卷上垛信号
             while (isrun) {
@@ -162,7 +162,7 @@ namespace yidascan {
                 Thread.Sleep(RobotHelper.DELAY * 20);
             }
 
-            Thread.Sleep(RobotHelper.DELAY * 500);
+            // Thread.Sleep(RobotHelper.DELAY * 500);
 
             // 等待机器人结束码垛。
             while (isrun && IsBusy()) {
@@ -240,7 +240,7 @@ namespace yidascan {
         }
 
         private void BadShape(RollPosition roll) {
-            var layerLabels = LableCode.GetLableCodesOfRecentFloor(roll.RealLocation, roll.PanelNo, roll.Floor);
+            var layerLabels = LableCode.GetLableCodesOfRecentFloor(roll.ToLocation, roll.PanelNo, roll.Floor);
             if (LayerShape.IsSlope(layerLabels) || LayerShape.IsVshape(layerLabels)) {
                 FrmMain.logOpt.Write($"!{roll.RealLocation} 第{roll.Floor}层 形状不规则。板号{roll.PanelNo}", LogType.ROBOT_STACK);
             }
@@ -260,7 +260,7 @@ namespace yidascan {
                     }
                 }
             } catch (Exception ex) {
-                var msg = $"{nameof(DequeueRoll)}: {roll.LabelCode}. {ex}";
+                var msg = $"!{nameof(DequeueRoll)}: {roll.LabelCode}. {ex}";
                 log(msg, LogType.ROBOT_STACK);
                //  throw new Exception(msg);
             }

@@ -98,7 +98,7 @@ namespace yidascan.DataAccess {
                     return true;
                 } catch (SqlException ex) {
                     com.Transaction.Rollback();
-                    loger.Error(ex);
+                    loger.Error($"!来源: {nameof(NonQueryTran)}, 数据库操作失败: {ex}");
                     loger.Info(JsonConvert.SerializeObject(p));
                     return false;
                 }

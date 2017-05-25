@@ -659,7 +659,7 @@ namespace yidascan {
 
 #if DEBUG
                             if (Math.Abs(lc.Cx + lc.Cy) > 1000) {
-                                throw new Exception($"{lc.LCode}布卷坐标超界");
+                                throw new Exception($"!{lc.LCode}布卷坐标超界");
                             }
 #endif
                         }
@@ -684,7 +684,7 @@ namespace yidascan {
                         var r = LabelUpOpcClient.ReadBool(opcParam.LableUpParam.Signal);
 
                         if (r) {
-                            var code = taskQ.GetLableUpQ(); if (code != null) {
+                            var code = taskQ.GetLableUpQ(isrun); if (code != null) {
                                 logOpt.Write(string.Format("收到标签朝上来料信号。号码: {0}", code.LCode), LogType.ROLL_QUEUE);
 
                                 if (string.IsNullOrEmpty(code.RealLocation)) {

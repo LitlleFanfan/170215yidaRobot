@@ -152,7 +152,7 @@ namespace yidascan.DataAccess {
 
             var roll = new RollPosition(label, side, state, x, y, z, rz);
             onlog?.Invoke($"来源: {nameof(AddRobotRollQ)}, {side} {label.LCode} 名义交地: {label.ToLocation}, 真实交地: {label.RealLocation}, {Enum.GetName(typeof(PanelState), state)}", LogType.ROLL_QUEUE);
-            
+
             return roll;
         }
 
@@ -160,7 +160,7 @@ namespace yidascan.DataAccess {
         /// LableUpQ -> CatchAQ or CatchBQ
         /// </summary>
         /// <returns></returns>
-        public LableCode GetLableUpQ() {
+        public LableCode GetLableUpQ(bool isrun) {
             LableCode code = null;
             lock (LableUpQ) {
                 if (LableUpQ.Count > 0) {
@@ -168,14 +168,19 @@ namespace yidascan.DataAccess {
                 }
             }
             if (code != null) {
-                lock (lochelper) {
-                    code.RealLocation = lochelper.Convert(code.ToLocation, code.PanelNo);
-                }
+                code.RealLocation = "";
+                while (isrun ) {
+                    lock (lochelper) {
+                        code.RealLocation = lochelper.Convert(code.ToLocation, code.PanelNo);
+                    }
 
-                if (string.IsNullOrEmpty(code.RealLocation)) {
-                    var msg = $"!来源: {nameof(GetLableUpQ)}, 获取真实交地失败: {code.ToLocation}";
-                    onlog?.Invoke(msg, LogType.ROLL_QUEUE);
-                    throw new Exception(msg);
+                    if (string.IsNullOrEmpty(code.RealLocation)) {
+                        var msg = $"!来源: {nameof(GetLableUpQ)}, 获取真实交地失败: {code.ToLocation}";
+                        onlog?.Invoke(msg, LogType.ROLL_QUEUE);
+                        Thread.Sleep(1000);
+                    } else {
+                        break;
+                    }
                 }
 
                 var ok = LableCode.UpdateRealLocation(code);
@@ -246,7 +251,7 @@ namespace yidascan.DataAccess {
 
             // 检索标签朝上队列。
             lock (LableUpQ) {
-                lbup = LableUpQ.LastOrDefault(item => item.ToLocation == tolocation && item.PanelNo== panelNo);
+                lbup = LableUpQ.LastOrDefault(item => item.ToLocation == tolocation && item.PanelNo == panelNo);
             }
             if (lbup != null) {
                 lbup.Status = (int)LableState.FloorLastRoll;

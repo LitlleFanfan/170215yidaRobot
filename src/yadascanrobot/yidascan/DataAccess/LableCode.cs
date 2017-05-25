@@ -612,11 +612,11 @@ and Status<3 and FloorIndex<>0";
         /// <param name="tolocation">交地</param>
         /// <param name="pinfo">板信息</param>
         /// <returns></returns>
-        public static List<LableCode> GetLableCodesOfRecentFloor(string tolocation, string panelNo, int floor) {
-            var sql = @"select * from LableCode where ToLocation=@ToLocation and 
+        public static List<LableCode> GetLableCodesOfRecentFloor(string toLocation, string panelNo, int floor) {
+            var sql = @"select * from LableCode where ToLocation=@toLocation and 
                                     PanelNo=@PanelNo and Floor=@Floor";
             var sp = new SqlParameter[]{
-                new SqlParameter("@ToLocation",tolocation),
+                new SqlParameter("@ToLocation",toLocation),
                 new SqlParameter("@PanelNo",panelNo),
                 new SqlParameter("@Floor",floor)};
             var dt = DataAccess.CreateDataAccess.sa.Query(sql, sp);
@@ -627,6 +627,7 @@ and Status<3 and FloorIndex<>0";
         }
 
         public static PanelInfo GetTolactionCurrPanelNo(string tolocation, string dateShiftNo) {
+            // 这个判断批次号的做法非常不可靠。
             var sql = "select * from Panel where ToLocation=@ToLocation and PanelNo like @PanelDate+'%'  and Status=0 order by PanelNo desc";
             var sp = new SqlParameter[]{
                 new SqlParameter("@ToLocation",tolocation),
