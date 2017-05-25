@@ -67,8 +67,7 @@ namespace yidascan {
             Rz = rz;
             //
             if (robotChangeAngle.Contains(RealLocation)) {
-                ChangeAngle = x > 0 || y > 0;//3\4\5\9\10\11标签朝外
-
+                ChangeAngle = x < 0 || y > 0;//3\4\5\9\10\11标签朝外
             } else {
                 ChangeAngle = x > 0 || y < 0;
             }
@@ -253,7 +252,7 @@ namespace yidascan {
                     Thread.Sleep(DELAY);
                 }
             });
-            log($"机器人写坐标{(wstatus ? "成功" : "失败")}耗时{t}毫秒,尝试次数{counts}, {rollPos.LabelCode}, {rollPos.Pos_s()}。",
+            log($"机器人写坐标{(wstatus ? "成功" : "失败")}耗时{t}毫秒,尝试次数{counts}, {rollPos.LabelCode}, {rollPos.Pos_s()} ChangeAngle {rollPos.ChangeAngle}。",
                 LogType.ROBOT_STACK);
             return wstatus;
         }
