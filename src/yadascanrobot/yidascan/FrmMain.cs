@@ -964,9 +964,9 @@ namespace yidascan {
         }
 
         private void ScanLableCode(IOpcClient client, string code, int scanNo, bool handwork) {
+            var lc = new LableCode();
             try {
                 ShowWarning(code, false);
-
 #if !DEBUG
                 //PLC已将布卷勾走
                 if (client.ReadBool(opcParam.ScanParam.PlcPushAside)) {
@@ -975,7 +975,6 @@ namespace yidascan {
                     return;
                 }
 #endif
-
                 var tolocation = string.Empty;
 
                 var t = TimeCount.TimeIt(() => {
@@ -989,7 +988,7 @@ namespace yidascan {
                     return;
                 }
 
-                var lc = new LableCode(code, str[0], decimal.Parse(str[1]), handwork);
+                lc = new LableCode(code, str[0], decimal.Parse(str[1]), handwork);
                 var clothsize = new ClothRollSize();
 
                 t = TimeCount.TimeIt(() => {
@@ -1005,7 +1004,7 @@ namespace yidascan {
 
                 t = TimeCount.TimeIt(() => {
                     clothsize.getFromOPC(client, opcParam);
-                    client.Write(opcParam.ScanParam.SizeState, false);
+                    client.TryWrite(opcParam.ScanParam.SizeState, false);
                 });
 
                 const int MIN_DIAMETER = 30;
@@ -1021,24 +1020,28 @@ namespace yidascan {
 
                 while (isrun) {
                     // 等待可写信号为false。
-                    var f = client.ReadBool(opcParam.ScanParam.ScanState);
+                    var f = client.TryReadBool(opcParam.ScanParam.ScanState);
                     if (!f) { break; }
-
                     Thread.Sleep(OPCClient.DELAY);
                 }
 
                 var status = false;
                 t = TimeCount.TimeIt(() => {
                     // write area and locationno.
-                    client.Write(opcParam.ScanParam.ToLocationArea, clsSetting.AreaNo[lc.ParseLocationArea()]);
-                    client.Write(opcParam.ScanParam.ToLocationNo, lc.ParseLocationNo());
+                    client.TryWrite(opcParam.ScanParam.ToLocationArea, clsSetting.AreaNo[lc.ParseLocationArea()]);
+                    client.TryWrite(opcParam.ScanParam.ToLocationNo, lc.ParseLocationNo());
                     // write label.
-                    client.Write(opcParam.ScanParam.ScanLable1, lc.CodePart1());
-                    client.Write(opcParam.ScanParam.ScanLable2, lc.CodePart2());
+                    client.TryWrite(opcParam.ScanParam.ScanLable1, lc.CodePart1());
+                    client.TryWrite(opcParam.ScanParam.ScanLable2, lc.CodePart2());
                     // write camera no. and set state true.
-                    status = client.Write(opcParam.ScanParam.ScanState, true);
+                    status = client.TryWrite(opcParam.ScanParam.ScanState, true);
                 });
                 logOpt.Write($"写OPC耗时: {t}ms", LogType.NORMAL);
+
+                if (!status) {//来料信号复位失败
+                    PlcHelper.PushAside(client, opcParam);
+                    return;
+                }
 
 #if !DEBUG
                 //PLC已将布卷勾走
@@ -1048,23 +1051,23 @@ namespace yidascan {
                     return;
                 }
 #endif
-                if (status) {
-                    if (LableCode.Add(lc)) {
-                        ViewAddLable(lc);
-                        counter += 1;
-                        RefreshCounter();
-
-                        lock (taskQ.WeighQ) {
-                            taskQ.WeighQ.Enqueue(lc);
-                        }
-                        showLabelQue(taskQ.WeighQ, lsvWeigh);
-                    } else {
-                        logOpt.Write($"!扫描号码{lc.LCode}存数据库失败。");
-                        ShowWarning($"扫描号码{lc.LCode}存数据库失败。", true);
-                    }
-                }
             } catch (Exception ex) {
                 logOpt.Write($"!扫描号码{code}过程异常,来源: {nameof(ScanLableCode)}, {ex}");
+                PlcHelper.PushAside(client, opcParam);
+            }
+
+            if (LableCode.Add(lc)) {
+                ViewAddLable(lc);
+                counter += 1;
+                RefreshCounter();
+
+                lock (taskQ.WeighQ) {
+                    taskQ.WeighQ.Enqueue(lc);
+                }
+                showLabelQue(taskQ.WeighQ, lsvWeigh);
+            } else {
+                logOpt.Write($"!扫描号码{lc.LCode}存数据库失败。");
+                ShowWarning($"扫描号码{lc.LCode}存数据库失败。", true);
                 PlcHelper.PushAside(client, opcParam);
             }
         }
