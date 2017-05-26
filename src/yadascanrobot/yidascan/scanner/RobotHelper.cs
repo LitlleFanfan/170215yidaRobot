@@ -441,7 +441,7 @@ namespace yidascan {
         private void DequeueRoll(Queue<RollPosition> robotRollQ, RollPosition roll, ListView lv) {
             try {
                 lock (robotRollQ) {
-                    if (robotRollQ == null) { return; }
+                    if (robotRollQ == null || robotRollQ.Count == 0) { return; }
 
                     var roll2 = robotRollQ.Peek();
 

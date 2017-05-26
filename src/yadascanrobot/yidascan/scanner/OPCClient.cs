@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Newtonsoft.Json;
 using yidascan;
 
@@ -349,5 +350,64 @@ namespace ProduceComm.OPC {
                 return 0;
             }
         }
+
+        #region TRY_READ_AND_WRITE
+
+        public int TryReadInt(string slot, int delay = 10, int times = 10) {
+            while (times-- > 0) {
+                try {
+                    return ReadInt(slot);
+                } catch {
+                    Thread.Sleep(delay);
+                }
+            }
+            throw new Exception($"OPC读写失败： {nameof(TryReadInt)}, slot: {slot}");
+        }
+
+        public bool TryReadBool(string slot, int delay = 10, int times = 10) {
+            while (times-- > 0) {
+                try {
+                    return ReadBool(slot);
+                } catch {
+                    Thread.Sleep(delay);
+                }
+            }
+            throw new Exception($"OPC读写失败： {nameof(TryReadBool)}, slot: {slot}");
+        }
+
+        public string TryReadString(string slot, int delay = 10, int times = 10) {
+            while (times-- > 0) {
+                try {
+                    return ReadString(slot);
+                } catch {
+                    Thread.Sleep(delay);
+                }
+            }
+            throw new Exception($"OPC读写失败： {nameof(TryReadString)}, slot: {slot}");
+        }
+
+        public decimal TryReadDecimal(string slot, int delay = 10, int times = 10) {
+            while (times-- > 0) {
+                try {
+                    return ReadDecimal(slot);
+                } catch {
+                    Thread.Sleep(delay);
+                }
+            }
+            throw new Exception($"OPC读写失败： {nameof(TryReadDecimal)}, slot: {slot}");
+        }
+
+        public bool TryWrite(string slot, object value, int delay = 10, int times = 10) {
+            while (times-- > 0) {
+                try {
+                    return Write(slot, value);
+                } catch {
+                    Thread.Sleep(delay);
+                }
+            }
+            throw new Exception($"OPC读写失败： {nameof(TryWrite)}, slot: {slot}");
+        }
+
+        #endregion
     }
 }

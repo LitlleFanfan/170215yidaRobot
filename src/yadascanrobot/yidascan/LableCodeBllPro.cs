@@ -310,6 +310,12 @@ namespace yidascan {
                 .OrderBy(x => x.Diameter)
                 .FirstOrDefault();
 
+            // 缓存位的floor有时候不对。floor这个值是哪里算的？
+            if (rt != null && rt.Floor != current.Floor) {
+                rt.Floor = current.Floor;
+                FrmMain.logOpt.Write($"!src: {nameof(findSmallerFromCachedRollsPro)}, {rt.LCode}, {rt.Floor}; {current.LCode}, {current.Floor}");
+            }
+
             // 增加条件cachedRolls.Count != 0， 在缓存位没有布卷的情况下，也要计算是否满或超出。
             // 无此条件，则缓存位没有布卷时，总是NOT_FULL, 导致布卷一直放在同一层。
             if (cachedRolls.Count == 0) {

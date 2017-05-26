@@ -249,21 +249,21 @@ namespace yidascan {
         public bool PanelAvailable(string tolocation) { return true; }
 
         private void DequeueRoll(Queue<RollPosition> robotRollQ, RollPosition roll, ListView lv) {
-            try {
+            // try {
                 lock (robotRollQ) {
-                    if (robotRollQ == null) { return; }
-
+                    if (robotRollQ == null || robotRollQ.Count == 0) { return; }
+                    
                     var roll2 = robotRollQ.Peek();
                     if (roll2 != null && roll.LabelCode == roll2.LabelCode) {//如果取出来还是原来那一个，就删一下
                         robotRollQ.Dequeue();
                         FrmMain.showRobotQue(robotRollQ, lv);
                     }
                 }
-            } catch (Exception ex) {
-                var msg = $"!{nameof(DequeueRoll)}: {roll.LabelCode}. {ex}";
-                log(msg, LogType.ROBOT_STACK);
-               //  throw new Exception(msg);
-            }
+            //} catch (Exception ex) {
+            //    var msg = $"!{nameof(DequeueRoll)}: {roll.LabelCode}. {ex}";
+            //    log(msg, LogType.ROBOT_STACK);
+            //   //  throw new Exception(msg);
+            //}
         }
     }
 }
