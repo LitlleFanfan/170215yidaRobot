@@ -26,7 +26,7 @@ public class ClothRollSize
     /// </summary>
     public void getFromOPC(IOpcClient client, OPCParam param)
     {
-        diameter = client.ReadDecimal(param.ScanParam.Diameter);
-        length = client.ReadDecimal(param.ScanParam.Length);
+        diameter = client.TryReadDecimal(param.ScanParam.Diameter);
+        length = client.TryReadDecimal(param.ScanParam.Length);
     }
 }

@@ -218,23 +218,17 @@ namespace ProduceComm.OPC {
                 OnError(new Exception("项目为空！"));
                 return null;
             }
-            try {
-                if (!groups.Keys.Contains(code)) {
-                    clsSetting.loger.Error(string.Format("{0}未添加订阅！", code));
-                    OnError(new Exception(string.Format("{0}未添加订阅！", code)));
-                    return null;
-                }
-                Opc.Da.ItemValueResult[] values = groups[code].Read(groups[code].Items);
-
-                if (values[0].Quality.Equals(Opc.Da.Quality.Good)) {
-                    return values[0].Value;
-                }
-                return null;
-            } catch (Exception ex) {
-                yidascan.FrmMain.logOpt.Write(string.Format("!{0}读取失败！{1}", code, ex));
-                OnError(new Exception("读取失败！", ex));
+            if (!groups.Keys.Contains(code)) {
+                clsSetting.loger.Error(string.Format("{0}未添加订阅！", code));
+                OnError(new Exception(string.Format("{0}未添加订阅！", code)));
                 return null;
             }
+            Opc.Da.ItemValueResult[] values = groups[code].Read(groups[code].Items);
+
+            if (values[0].Quality.Equals(Opc.Da.Quality.Good)) {
+                return values[0].Value;
+            }
+            return null;
         }
 
         public object Read(string groupname, string code) {
@@ -263,41 +257,41 @@ namespace ProduceComm.OPC {
         }
 
         public int ReadInt(string slot) {
-            var val = Read(slot);
             try {
+                var val = Read(slot);
                 return val != null ? int.Parse(val.ToString().Trim()) : 0;
             } catch (Exception ex) {
-                yidascan.FrmMain.logOpt.Write(string.Format("!{0}读取失败!{1} {2}", slot, val, ex));
+                yidascan.FrmMain.logOpt.Write(string.Format("!{0}读取失败!{1}", slot, ex));
                 return 0;
             }
         }
 
         public string ReadString(string slot) {
-            var val = Read(slot);
             try {
+                var val = Read(slot);
                 return val != null ? val.ToString() : string.Empty;
             } catch (Exception ex) {
-                yidascan.FrmMain.logOpt.Write(string.Format("!{0}读取失败!{1} {2}", slot, val, ex));
+                yidascan.FrmMain.logOpt.Write(string.Format("!{0}读取失败!{1}", slot, ex));
                 return string.Empty;
             }
         }
 
         public bool ReadBool(string slot) {
-            var val = Read(slot);
             try {
+                var val = Read(slot);
                 return val != null ? bool.Parse(val.ToString().Trim()) : false;
             } catch (Exception ex) {
-                yidascan.FrmMain.logOpt.Write(string.Format("!{0}读取失败!{1} {2}", slot, val, ex));
+                yidascan.FrmMain.logOpt.Write(string.Format("!{0}读取失败!{1}", slot, ex));
                 return false;
             }
         }
 
         public decimal ReadDecimal(string slot) {
-            var val = Read(slot);
             try {
+                var val = Read(slot);
                 return val != null ? decimal.Parse(val.ToString().Trim()) : 0;
             } catch (Exception ex) {
-                yidascan.FrmMain.logOpt.Write(string.Format("!{0}读取失败!{1} {2}", slot, val, ex));
+                yidascan.FrmMain.logOpt.Write(string.Format("!{0}读取失败!{1}", slot, ex));
                 return 0;
             }
         }
@@ -356,56 +350,73 @@ namespace ProduceComm.OPC {
         public int TryReadInt(string slot, int delay = 10, int times = 10) {
             while (times-- > 0) {
                 try {
-                    return ReadInt(slot);
+                    var val = Read(slot);
+                    return val != null ? int.Parse(val.ToString().Trim()) : 0;
                 } catch {
                     Thread.Sleep(delay);
                 }
             }
-            throw new Exception($"OPC读写失败： {nameof(TryReadInt)}, slot: {slot}");
+            throw new Exception($"OPC读取失败： {nameof(TryReadInt)}, slot: {slot}");
         }
 
         public bool TryReadBool(string slot, int delay = 10, int times = 10) {
             while (times-- > 0) {
                 try {
-                    return ReadBool(slot);
+                    var val = Read(slot);
+                    return val != null ? bool.Parse(val.ToString().Trim()) : false;
                 } catch {
                     Thread.Sleep(delay);
                 }
             }
-            throw new Exception($"OPC读写失败： {nameof(TryReadBool)}, slot: {slot}");
+            throw new Exception($"OPC读取失败： {nameof(TryReadBool)}, slot: {slot}");
         }
 
         public string TryReadString(string slot, int delay = 10, int times = 10) {
             while (times-- > 0) {
                 try {
-                    return ReadString(slot);
+                    var val = Read(slot);
+                    return val != null ? val.ToString() : string.Empty;
                 } catch {
                     Thread.Sleep(delay);
                 }
             }
-            throw new Exception($"OPC读写失败： {nameof(TryReadString)}, slot: {slot}");
+            throw new Exception($"OPC读取失败： {nameof(TryReadString)}, slot: {slot}");
         }
 
         public decimal TryReadDecimal(string slot, int delay = 10, int times = 10) {
             while (times-- > 0) {
                 try {
-                    return ReadDecimal(slot);
+                    var val = Read(slot);
+                    return val != null ? decimal.Parse(val.ToString().Trim()) : 0;
                 } catch {
                     Thread.Sleep(delay);
                 }
             }
-            throw new Exception($"OPC读写失败： {nameof(TryReadDecimal)}, slot: {slot}");
+            throw new Exception($"OPC读取失败： {nameof(TryReadDecimal)}, slot: {slot}");
         }
 
         public bool TryWrite(string slot, object value, int delay = 10, int times = 10) {
             while (times-- > 0) {
                 try {
-                    return Write(slot, value);
+                    if (string.IsNullOrEmpty(slot)) {
+                        yidascan.FrmMain.logOpt.Write($"!项目为空");
+                        OnError(new Exception("项目为空！"));
+                        return false;
+                    }
+                    if (!groups.Keys.Contains(slot)) {
+                        clsSetting.loger.Error(string.Format("{0}未添加订阅！", slot));
+                        OnError(new Exception(string.Format("{0}未添加订阅！", slot)));
+                        return false;
+                    }
+                    Opc.Da.ItemValue iv = new Opc.Da.ItemValue((Opc.ItemIdentifier)groups[slot].Items[0]);
+                    iv.Value = value;
+                    groups[slot].Write(new Opc.Da.ItemValue[] { iv });
+                    return true;
                 } catch {
                     Thread.Sleep(delay);
                 }
             }
-            throw new Exception($"OPC读写失败： {nameof(TryWrite)}, slot: {slot}");
+            throw new Exception($"OPC写入失败： {nameof(TryWrite)}, slot: {slot}");
         }
 
         #endregion

@@ -322,7 +322,7 @@ namespace yidascan {
                 var pState = LableCode.IsAllRollOnPanel(panelNo) ? PanelState.Full : PanelState.HalfFull;
                 switch (pState) {
                     case PanelState.HalfFull:
-                        client.Write(param.BAreaFloorFinish[reallocation], true);
+                        client.TryWrite(param.BAreaFloorFinish[reallocation], true);
 
                         var lcode = FrmMain.taskQ.UFGetPanelLastRoll(tolocation, panelNo);
                         LableCode.UserSetPanelLastRoll(lcode);//设置板最后一卷布。
@@ -331,7 +331,7 @@ namespace yidascan {
                     case PanelState.Full:
                         string msg;
                         ErpHelper.NotifyPanelEnd(erpapi, panelNo, out msg);
-                        client.Write(param.BAreaPanelFinish[reallocation], true);
+                        client.TryWrite(param.BAreaPanelFinish[reallocation], true);
                         log($"{reallocation}: 满板信号发出。slot: {param.BAreaPanelFinish[reallocation]}", LogType.ROBOT_STACK);
                         log(msg, LogType.ROBOT_STACK);
 
@@ -339,7 +339,7 @@ namespace yidascan {
                         TaskQueues.lochelper.OnFull(reallocation);
 
                         const int SIGNAL_3 = 3;
-                        client.Write(param.BAreaPanelState[reallocation], SIGNAL_3);
+                        client.TryWrite(param.BAreaPanelState[reallocation], SIGNAL_3);
                         log($"{reallocation}: 板状态信号发出，状态值: {SIGNAL_3}。slot: {param.BAreaPanelState[reallocation]}", LogType.ROBOT_STACK);
                         break;
                     case PanelState.LessHalf:
@@ -357,13 +357,13 @@ namespace yidascan {
             try {
                 switch (roll.PnlState) {
                     case PanelState.HalfFull:
-                        client.Write(param.BAreaFloorFinish[roll.RealLocation], true);
+                        client.TryWrite(param.BAreaFloorFinish[roll.RealLocation], true);
                         log($"{roll.RealLocation}: 半板信号发出。slot: {param.BAreaFloorFinish[roll.RealLocation]}", LogType.ROBOT_STACK);
                         break;
                     case PanelState.Full:
                         string msg;
                         ErpHelper.NotifyPanelEnd(erpapi, roll.PanelNo, out msg);
-                        client.Write(param.BAreaPanelFinish[roll.RealLocation], true);
+                        client.TryWrite(param.BAreaPanelFinish[roll.RealLocation], true);
                         log($"{roll.RealLocation}: 满板信号发出。slot: {param.BAreaPanelFinish[roll.RealLocation]}", LogType.ROBOT_STACK);
                         log(msg, LogType.ROBOT_STACK);
                         LableCode.SetPanelFinished(roll.PanelNo);
@@ -371,7 +371,7 @@ namespace yidascan {
                         TaskQueues.lochelper.OnFull(roll.RealLocation);
 
                         const int SIGNAL_3 = 3;
-                        client.Write(param.BAreaPanelState[roll.RealLocation], SIGNAL_3);
+                        client.TryWrite(param.BAreaPanelState[roll.RealLocation], SIGNAL_3);
                         log($"{roll.RealLocation}: 板状态信号发出，状态值: {SIGNAL_3}。slot: {param.BAreaPanelState[roll.RealLocation]}", LogType.ROBOT_STACK);
                         break;
                     case PanelState.LessHalf:

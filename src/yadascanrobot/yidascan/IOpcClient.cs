@@ -17,5 +17,10 @@ public interface IOpcClient {
     void AddSubscription(System.Data.DataTable p);
     bool AddSubscription(string slot);
     bool AddSubscriptions(string goupname, List<string> codes, int updateRate = 500);
+    int TryReadInt(string slot, int delay = 10, int times = 10);
+    bool TryReadBool(string slot, int delay = 10, int times = 10);
+    string TryReadString(string slot, int delay = 10, int times = 10);
+    decimal TryReadDecimal(string slot, int delay = 10, int times = 10);
+    bool TryWrite(string slot, object value, int delay = 10, int times = 10);
 }
 

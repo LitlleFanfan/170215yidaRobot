@@ -310,7 +310,7 @@ namespace yidascan {
                     while (isrun) {
                         var signal = "";
                         lock (opcBUFL) {
-                            signal = opcBUFL.ReadString(kv.Value);
+                            signal = opcBUFL.TryReadString(kv.Value);
                         }
 
                         if (signal == SIGNAL_ON) {
@@ -339,7 +339,7 @@ namespace yidascan {
 
                             // plc复位信号。
                             lock (opcBUFL) {
-                                opcBUFL.Write(kv.Value, SIGNAL_OFF);
+                                opcBUFL.TryWrite(kv.Value, SIGNAL_OFF);
                             }
                         }
                         Thread.Sleep(OPCClient.DELAY * 200);
@@ -514,10 +514,10 @@ namespace yidascan {
                         try {
                             var signal = false;
                             lock (opcACF) {
-                                signal = opcACF.ReadBool(kv.Value.Signal);
+                                signal = opcACF.TryReadBool(kv.Value.Signal);
                                 if (signal) {
                                     var fullLable = PlcHelper.ReadCompleteLable(opcACF, kv.Value);
-                                    opcACF.Write(kv.Value.Signal, 0);
+                                    opcACF.TryWrite(kv.Value.Signal, 1);
 
                                     logOpt.Write($"{kv.Key} 收到完成信号。标签:{fullLable} 执行状态:{AreaAAndCFinish(fullLable)}", LogType.NORMAL);
                                 }
@@ -664,7 +664,7 @@ namespace yidascan {
 #endif
                         }
                     } catch (Exception ex) {
-                        logOpt.Write($"!来源: {nameof(BeforCacheTask_new)}, {ex}", LogType.BUFFER);          
+                        logOpt.Write($"!来源: {nameof(BeforCacheTask_new)}, {ex}", LogType.BUFFER);
                     }
                 }
                 OpcClientClose(CacheOpcClient, "缓存位");
@@ -964,91 +964,90 @@ namespace yidascan {
         }
 
         private void ScanLableCode(IOpcClient client, string code, int scanNo, bool handwork) {
-            ShowWarning(code, false);
+            try {
+                ShowWarning(code, false);
 
 #if !DEBUG
-            //PLC已将布卷勾走
-            if (client.ReadBool(opcParam.ScanParam.PlcPushAside)) {
-                client.Write(opcParam.ScanParam.PlcPushAside, 0);
-                logOpt.Write($"采集超时，号码{code}被勾走。");
-                return;
-            }
+                //PLC已将布卷勾走
+                if (client.ReadBool(opcParam.ScanParam.PlcPushAside)) {
+                    client.Write(opcParam.ScanParam.PlcPushAside, 0);
+                    logOpt.Write($"采集超时，号码{code}被勾走。");
+                    return;
+                }
 #endif
 
-            var tolocation = string.Empty;
+                var tolocation = string.Empty;
 
-            var t = TimeCount.TimeIt(() => {
-                tolocation = GetLocationAndLength(code, handwork);
-            });
-            logOpt.Write($"取交地耗时:　{t}ms");
+                var t = TimeCount.TimeIt(() => {
+                    tolocation = GetLocationAndLength(code, handwork);
+                });
+                logOpt.Write($"取交地耗时:　{t}ms");
 
-            var str = tolocation.Split('|');
-            if (string.IsNullOrEmpty(tolocation) || string.IsNullOrEmpty(str[0])) {
-                PlcHelper.PushAside(client, opcParam);
-                return;
-            }
+                var str = tolocation.Split('|');
+                if (string.IsNullOrEmpty(tolocation) || string.IsNullOrEmpty(str[0])) {
+                    PlcHelper.PushAside(client, opcParam);
+                    return;
+                }
 
-            var lc = new LableCode(code, str[0], decimal.Parse(str[1]), handwork);
-            var clothsize = new ClothRollSize();
+                var lc = new LableCode(code, str[0], decimal.Parse(str[1]), handwork);
+                var clothsize = new ClothRollSize();
 
-            t = TimeCount.TimeIt(() => {
+                t = TimeCount.TimeIt(() => {
+                    while (isrun) {
+                        var f = client.TryReadBool(opcParam.ScanParam.SizeState);
+                        if (f) { break; }
+
+                        logOpt.Write("等待SizeState信号。");
+                        Thread.Sleep(OPCClient.DELAY);
+                    }
+                });
+                logOpt.Write($"等尺寸信号耗时:{t}ms", LogType.NORMAL);
+
+                t = TimeCount.TimeIt(() => {
+                    clothsize.getFromOPC(client, opcParam);
+                    client.Write(opcParam.ScanParam.SizeState, false);
+                });
+
+                const int MIN_DIAMETER = 30;
+                if (clothsize.diameter < MIN_DIAMETER) {
+                    // 小于30mm的布卷，则勾走。
+                    PlcHelper.PushAside(client, opcParam);
+                    logOpt.Write($"布卷直径{clothsize.diameter}, 小于{MIN_DIAMETER}mm, 勾走。");
+                    return;
+                }
+
+                lc.SetSize(clothsize.diameter, clothsize.length);
+                logOpt.Write($"{lc.Size_s()}, 耗时: {t}ms");
+
                 while (isrun) {
-                    var f = client.ReadBool(opcParam.ScanParam.SizeState);
-                    if (f) { break; }
+                    // 等待可写信号为false。
+                    var f = client.ReadBool(opcParam.ScanParam.ScanState);
+                    if (!f) { break; }
 
-                    logOpt.Write("等待SizeState信号。");
                     Thread.Sleep(OPCClient.DELAY);
                 }
-            });
-            logOpt.Write($"等尺寸信号耗时:{t}ms", LogType.NORMAL);
 
-            t = TimeCount.TimeIt(() => {
-                clothsize.getFromOPC(client, opcParam);
-                client.Write(opcParam.ScanParam.SizeState, false);
-            });
-
-            const int MIN_DIAMETER = 30;
-            if (clothsize.diameter < MIN_DIAMETER) {
-                // 小于30mm的布卷，则勾走。
-                PlcHelper.PushAside(client, opcParam);
-                logOpt.Write($"布卷直径{clothsize.diameter}, 小于{MIN_DIAMETER}mm, 勾走。");
-                return;
-            }
-
-            lc.SetSize(clothsize.diameter, clothsize.length);
-            logOpt.Write($"{lc.Size_s()}, 耗时: {t}ms");
-
-            while (isrun) {
-                // 等待可写信号为false。
-                var f = client.ReadBool(opcParam.ScanParam.ScanState);
-                if (!f) { break; }
-
-                Thread.Sleep(OPCClient.DELAY);
-            }
-
-            var status = false;
-            t = TimeCount.TimeIt(() => {
-                // write area and locationno.
-                client.Write(opcParam.ScanParam.ToLocationArea, clsSetting.AreaNo[lc.ParseLocationArea()]);
-                client.Write(opcParam.ScanParam.ToLocationNo, lc.ParseLocationNo());
-                // write label.
-                client.Write(opcParam.ScanParam.ScanLable1, lc.CodePart1());
-                client.Write(opcParam.ScanParam.ScanLable2, lc.CodePart2());
-                // write camera no. and set state true.
-                status = client.Write(opcParam.ScanParam.ScanState, true);
-            });
-            logOpt.Write($"写OPC耗时: {t}ms", LogType.NORMAL);
+                var status = false;
+                t = TimeCount.TimeIt(() => {
+                    // write area and locationno.
+                    client.Write(opcParam.ScanParam.ToLocationArea, clsSetting.AreaNo[lc.ParseLocationArea()]);
+                    client.Write(opcParam.ScanParam.ToLocationNo, lc.ParseLocationNo());
+                    // write label.
+                    client.Write(opcParam.ScanParam.ScanLable1, lc.CodePart1());
+                    client.Write(opcParam.ScanParam.ScanLable2, lc.CodePart2());
+                    // write camera no. and set state true.
+                    status = client.Write(opcParam.ScanParam.ScanState, true);
+                });
+                logOpt.Write($"写OPC耗时: {t}ms", LogType.NORMAL);
 
 #if !DEBUG
-            //PLC已将布卷勾走
-            if (client.ReadBool(opcParam.ScanParam.PlcPushAside)) {
-                client.Write(opcParam.ScanParam.PlcPushAside, 0);
-                logOpt.Write($"采集超时，号码{code}被勾走。");
-                return;
-            }
+                //PLC已将布卷勾走
+                if (client.ReadBool(opcParam.ScanParam.PlcPushAside)) {
+                    client.Write(opcParam.ScanParam.PlcPushAside, 0);
+                    logOpt.Write($"采集超时，号码{code}被勾走。");
+                    return;
+                }
 #endif
-
-            try {
                 if (status) {
                     if (LableCode.Add(lc)) {
                         ViewAddLable(lc);
@@ -1065,7 +1064,8 @@ namespace yidascan {
                     }
                 }
             } catch (Exception ex) {
-                logOpt.Write($"!来源: {nameof(ScanLableCode)}, 扫描号码过程异常: {ex}");
+                logOpt.Write($"!扫描号码{code}过程异常,来源: {nameof(ScanLableCode)}, {ex}");
+                PlcHelper.PushAside(client, opcParam);
             }
         }
 

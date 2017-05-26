@@ -277,6 +277,26 @@ namespace yidascan {
             Thread.Sleep(100);
             return true;
         }
+
+        public int TryReadInt(string slot, int delay = 10, int times = 10) {
+            return ReadInt(slot);
+        }
+
+        public bool TryReadBool(string slot, int delay = 10, int times = 10) {
+            return ReadBool(slot);
+        }
+
+        public string TryReadString(string slot, int delay = 10, int times = 10) {
+            return ReadString(slot);
+        }
+
+        public decimal TryReadDecimal(string slot, int delay = 10, int times = 10) {
+            return ReadDecimal(slot);
+        }
+
+        public bool TryWrite(string slot, object value, int delay = 10, int times = 10) {
+            return Write(slot, value);
+        }
     }
 #endif
 }

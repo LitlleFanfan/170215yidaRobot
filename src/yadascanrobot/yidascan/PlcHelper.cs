@@ -24,11 +24,11 @@ namespace yidascan {
         /// <param name="client"></param>
         /// <returns></returns>
         public static bool ReadCacheSignal(IOpcClient client, OPCParam param) {
-            return client.ReadBool(param.CacheParam.BeforCacheStatus);
+            return client.TryReadBool(param.CacheParam.BeforCacheStatus);
         }
         public static string ReadCacheLabble(IOpcClient client, OPCParam param) {
-            return client.ReadString(param.CacheParam.BeforCacheLable1).PadLeft(6, '0') +
-                client.ReadString(param.CacheParam.BeforCacheLable2).PadLeft(6, '0');
+            return client.TryReadString(param.CacheParam.BeforCacheLable1).PadLeft(6, '0') +
+                client.TryReadString(param.CacheParam.BeforCacheLable2).PadLeft(6, '0');
         }
 
         /// <summary>
@@ -39,14 +39,14 @@ namespace yidascan {
         /// /// <param name="posSave">动作编号。</param>
         /// /// <param name="posGet">动作编号。</param>
         public static void WriteCacheJob(IOpcClient client, OPCParam param, CacheState job, int posSave, int posGet, string lcode) {
-            client.Set(param.CacheParam.BeforCacheLable1, lcode.Substring(0, 6));
-            client.Set(param.CacheParam.BeforCacheLable2, lcode.Substring(6, 6));
-            client.Set(param.CacheParam.CacheStatus, job);
-            client.Set(param.CacheParam.CachePoint, posSave);
-            client.Set(param.CacheParam.GetPoint, posGet);
+            client.TryWrite(param.CacheParam.BeforCacheLable1, lcode.Substring(0, 6));
+            client.TryWrite(param.CacheParam.BeforCacheLable2, lcode.Substring(6, 6));
+            client.TryWrite(param.CacheParam.CacheStatus, job);
+            client.TryWrite(param.CacheParam.CachePoint, posSave);
+            client.TryWrite(param.CacheParam.GetPoint, posGet);
             Thread.Sleep(DELAY);
             // 复位来料信号。
-            client.Set(param.CacheParam.BeforCacheStatus, 0);
+            client.TryWrite(param.CacheParam.BeforCacheStatus, 0);
         }
 
         /// <summary>
@@ -57,11 +57,11 @@ namespace yidascan {
         /// <param name="channel">去向, 1 or 2.</param>
         public static void WriteLabelUpData(IOpcClient client, OPCParam param, decimal diameter, RollCatchChannel channel) {
             // diameter单位是毫米。
-            client.Set(param.LableUpParam.Diameter, diameter);
-            client.Set(param.LableUpParam.Goto, channel);
+            client.TryWrite(param.LableUpParam.Diameter, diameter);
+            client.TryWrite(param.LableUpParam.Goto, channel);
             Thread.Sleep(DELAY);
             // 复位标签采集处来料信号。
-            client.Set(param.LableUpParam.Signal, 0);
+            client.TryWrite(param.LableUpParam.Signal, 0);
         }
 
         /// <summary>
@@ -138,19 +138,19 @@ namespace yidascan {
         /// <returns></returns>
         public static string ReadCompleteLable(IOpcClient client, LCodeSignal slot) {
             const int MAX_LEN = 6;
-            var lable1 = client.ReadString(slot.LCode1);
-            var lable2 = client.ReadString(slot.LCode2);
+            var lable1 = client.TryReadString(slot.LCode1);
+            var lable2 = client.TryReadString(slot.LCode2);
             return lable1.PadLeft(MAX_LEN, '0') + lable2.PadLeft(MAX_LEN, '0');
         }
 
         public static void PushAside(IOpcClient client, OPCParam param) {
             const int PUSH_ASIDE = 1;
-            client.Write(param.ScanParam.PushAside, PUSH_ASIDE);
+            client.TryWrite(param.ScanParam.PushAside, PUSH_ASIDE);
         }
 
         public static void NotifyBadLayerShape(IOpcClient client, OPCParam param, string tolocation) {
             const int BAD_SHAPE = 1;
-            client.Write(param.BadShapeLocations[tolocation], BAD_SHAPE);
+            client.TryWrite(param.BadShapeLocations[tolocation], BAD_SHAPE);
         }
     }
 }
