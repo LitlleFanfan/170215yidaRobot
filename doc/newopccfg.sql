@@ -1,11 +1,11 @@
 ﻿
-create table NewOPCParam(
-SequenceNo Integer identity PRIMARY KEY,
-Name varchar(64) not null,
-Code varchar(64) not null,
-Class varchar(64) not null default 'None',
-Remark varchar(255)
-);
+--create table NewOPCParam(
+--SequenceNo Integer identity PRIMARY KEY,
+--Name varchar(64) not null,
+--Code varchar(64) not null,
+--Class varchar(64) not null default 'None',
+--Remark varchar(255)
+--);
 
 
 
@@ -43,12 +43,18 @@ INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('GetPoint','MicroWin.S7-1200-3
 
 
 INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('Signal','MicroWin.S7-1200-3.NewItem113','LableUp','标签朝上采集（读完写好结果后置空）')
+INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('ReadSignal','MicroWin.S7-1200-3.NewItem0113','LableUp','标签朝上采集（来料报告）')
+INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('WriteSignal','MicroWin.S7-1200-3.NewItem1130','LableUp','标签朝上采集（来料报告复位）')
 INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('Diameter','MicroWin.S7-1200-3.NewItem51','LableUp','直径 （单位毫米）')
 INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('Goto','MicroWin.S7-1200-3.NewItem52','LableUp','去哪道（1-2）')
 
 
 INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('RobotCarryA','MicroWin.S7-1200-3.NewItem109','RobotCarry','开关信号（PC读到1读标签，读完写0)');
+INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('ReadSignalA','MicroWin.S7-1200-3.NewItem0109','RobotCarry','开关信号（来料报告)');
+INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('WriteSignalA','MicroWin.S7-1200-3.NewItem1090','RobotCarry','开关信号（来料报告复位)');
 INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('RobotCarryB','MicroWin.S7-1200-3.NewItem110','RobotCarry','开关信号（PC读到1读标签，读完写0)');
+INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('ReadSignalB','MicroWin.S7-1200-3.NewItem0110','RobotCarry','开关信号（来料报告)');
+INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('WriteSignalB','MicroWin.S7-1200-3.NewItem1100','RobotCarry','开关信号（来料报告复位)');
 
 INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('RobotStartA','MicroWin.S7-1200-3.NewItem124','Robot','布卷被抓走 开关信号（PC读到1读标签，读完写0)');
 INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('RobotStartB','MicroWin.S7-1200-3.NewItem125','Robot','布卷被抓走 开关信号（PC读到1读标签，读完写0)');

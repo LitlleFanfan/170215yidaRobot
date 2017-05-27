@@ -16,6 +16,72 @@ namespace yidascan.DataAccess {
         // 取交地失败
         TO_LOCATION_ERROR = 2
     }
+
+    public class PlcSignal {
+        int maxCount = 2000;
+        int readCount;
+        int writeCount;
+        string groupName;
+        public string ReadSignal { get; set; }
+        public string WriteSignal { get; set; }
+
+        public void LoadSN(IOpcClient opc, string readSignal, string writeSignal, string _groupName = "") {
+            groupName = _groupName;
+            if (string.IsNullOrEmpty(groupName)) {
+                readCount = opc.ReadInt(readSignal);
+                writeCount = opc.ReadInt(writeSignal);
+            } else {
+                readCount = opc.ReadInt(groupName, readSignal);
+                writeCount = opc.ReadInt(groupName, writeSignal);
+            }
+        }
+
+        public bool ReadSN(IOpcClient opc) {
+            int currReadSn = 0;
+            if (string.IsNullOrEmpty(groupName)) {
+                currReadSn = opc.ReadInt(ReadSignal);
+            } else {
+                currReadSn = opc.ReadInt(groupName, ReadSignal);
+            }
+
+#if DEBUG
+            return true;
+#endif
+
+            if (currReadSn > readCount || (readCount != 1 && currReadSn == 1)) {
+                readCount = currReadSn;
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        public bool WriteSN(IOpcClient opc) {
+            bool wstate = false;
+            int currWriteSn = writeCount >= maxCount ? 1 : (writeCount + 1);
+            try {
+                if (string.IsNullOrEmpty(groupName)) {
+                    wstate = opc.TryWrite(WriteSignal, currWriteSn);
+                } else {
+                    wstate = opc.TryWrite(groupName, WriteSignal, currWriteSn);
+                }
+            }catch(Exception ex) {
+                FrmMain.logOpt.Write($"!{WriteSignal}写失败！");
+            }
+
+#if DEBUG
+            return true;
+#endif
+
+            if (wstate) {
+                writeCount = currWriteSn;
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
     public class LCodeSignal {
         public string LCode1 { get; set; }
         public string LCode2 { get; set; }
@@ -123,7 +189,7 @@ namespace yidascan.DataAccess {
         public OPCWeighParam(IOpcClient opc) {
             DataTable dt = OPCParam.Query($"where Class='{CFG}'");
 
-           FrmMain.logOpt.Write(JsonConvert.SerializeObject(dt), LogType.NORMAL, LogViewType.OnlyFile);
+            FrmMain.logOpt.Write(JsonConvert.SerializeObject(dt), LogType.NORMAL, LogViewType.OnlyFile);
             if (dt == null || dt.Rows.Count < 1) {
                 return;
             }
@@ -201,6 +267,11 @@ namespace yidascan.DataAccess {
         /// </summary>
         public string Goto { get; set; }
 
+        public string ReadSignal { get; set; }
+        public string WriteSignal { get; set; }
+
+        public PlcSignal PlcSn { get; set; }
+
         public const string CFG = "LableUp";
         /// <summary>
         /// 初始化参数同时添加订阅
@@ -219,6 +290,9 @@ namespace yidascan.DataAccess {
                     }
                 }
             }
+
+            PlcSn = new PlcSignal();
+            PlcSn.LoadSN(opc, ReadSignal, WriteSignal);
         }
     }
 
@@ -226,6 +300,16 @@ namespace yidascan.DataAccess {
         public string RobotCarryA { get; set; }
 
         public string RobotCarryB { get; set; }
+
+        public string ReadSignalA { get; set; }
+        public string WriteSignalA { get; set; }
+
+        public PlcSignal PlcSnA { get; set; }
+
+        public string ReadSignalB { get; set; }
+        public string WriteSignalB { get; set; }
+
+        public PlcSignal PlcSnB { get; set; }
 
         public const string CFG = "RobotCarry";
         /// <summary>
@@ -245,6 +329,12 @@ namespace yidascan.DataAccess {
                     }
                 }
             }
+
+            PlcSnA = new PlcSignal();
+            PlcSnA.LoadSN(opc, ReadSignalA, WriteSignalA);
+
+            PlcSnB = new PlcSignal();
+            PlcSnB.LoadSN(opc, ReadSignalB, WriteSignalB);
         }
     }
 
@@ -332,7 +422,7 @@ namespace yidascan.DataAccess {
             string sql = $"select Name,Code,Class,Remark from NewOPCParam {where}";
             return DataAccess.CreateDataAccess.sa.Query(sql);
         }
-        
+
         public bool InitBAreaPanelFinish(IOpcClient opc) {
             BAreaPanelFinish = new Dictionary<string, string>();
             DataTable dt = Query(string.Format("where Class='BAreaPanelFinish'"));
