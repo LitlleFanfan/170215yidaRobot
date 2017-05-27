@@ -48,17 +48,15 @@ namespace yidascan.DataAccess {
         /// <returns></returns>
         public LableCode GetCatchBQ() {
             LableCode code = null;
-            lock (CatchBQ) {
-                if (CatchBQ.Count > 0) {
-                    code = CatchBQ.Dequeue();
-                }
+
+            if (CatchBQ.Count > 0) {
+                code = CatchBQ.Dequeue();
             }
+
             if (code != null) {
                 var roll = AddRobotRollQ(code.LCode, "B");
                 if (roll != null) {
-                    lock (RobotRollBQ) {
-                        RobotRollBQ.Enqueue(roll);
-                    }
+                    RobotRollBQ.Enqueue(roll);
                 }
             }
             return code;
@@ -86,17 +84,15 @@ namespace yidascan.DataAccess {
         /// <returns></returns>
         public LableCode GetCatchAQ() {
             LableCode code = null;
-            lock (CatchAQ) {
-                if (CatchAQ.Count > 0) {
-                    code = CatchAQ.Dequeue();
-                }
+
+            if (CatchAQ.Count > 0) {
+                code = CatchAQ.Dequeue();
             }
+
             if (code != null) {
                 var roll = AddRobotRollQ(code.LCode, "A");
                 if (roll != null) {
-                    lock (RobotRollAQ) {
-                        RobotRollAQ.Enqueue(roll);
-                    }
+                    RobotRollAQ.Enqueue(roll);
                 }
             }
             return code;
@@ -160,25 +156,27 @@ namespace yidascan.DataAccess {
         /// <summary>
         /// LableUpQ -> CatchAQ or CatchBQ
         /// </summary>
+        /// <param name="isrun"></param>
         /// <returns></returns>
         public LableCode GetLableUpQ(bool isrun) {
             LableCode code = null;
-            lock (LableUpQ) {
-                if (LableUpQ.Count > 0) {
-                    code = LableUpQ.Dequeue();
-                }
+
+            if (LableUpQ.Count > 0) {
+                code = LableUpQ.Dequeue();
             }
+
             if (code != null) {
                 code.RealLocation = "";
-                while (isrun ) {
-                    lock (LOCK_LOCHELPER) {
-                        code.RealLocation = lochelper.Convert(code.ToLocation, code.PanelNo);
-                    }
+                while (isrun) {
+                    code.RealLocation = lochelper.Convert(code.ToLocation, code.PanelNo);
 
                     if (string.IsNullOrEmpty(code.RealLocation)) {
                         var msg = $"!来源: {nameof(GetLableUpQ)}, 获取真实交地失败: {code.ToLocation}";
                         onlog?.Invoke(msg, LogType.ROLL_QUEUE);
-                        Thread.Sleep(1000);
+
+                        onlog?.Invoke("请查看交地状态。", LogType.ROLL_QUEUE);
+
+                        Thread.Sleep(3000);
                     } else {
                         break;
                     }
@@ -188,13 +186,9 @@ namespace yidascan.DataAccess {
                 if (!ok) { throw new Exception($"保存标签的实际交地失败"); }
 
                 if (int.Parse(LableCode.ParseRealLocationNo(code.RealLocation)) < 6) {
-                    lock (CatchAQ) {
-                        CatchAQ.Enqueue(code);
-                    }
+                    CatchAQ.Enqueue(code);
                 } else {
-                    lock (CatchBQ) {
-                        CatchBQ.Enqueue(code);
-                    }
+                    CatchBQ.Enqueue(code);
                 }
             }
             return code;
@@ -206,11 +200,11 @@ namespace yidascan.DataAccess {
         /// <returns></returns>
         public LableCode GetCacheQ() {
             LableCode code = null;
-            lock (CacheQ) {
-                if (CacheQ.Count > 0) {
-                    code = CacheQ.Dequeue();
-                }
+
+            if (CacheQ.Count > 0) {
+                code = CacheQ.Dequeue();
             }
+
             return code;
         }
 
@@ -220,24 +214,18 @@ namespace yidascan.DataAccess {
         /// <returns></returns>
         public LableCode GetWeighQ() {
             LableCode code = null;
-            lock (WeighQ) {
-                if (WeighQ.Count > 0) {
-                    code = WeighQ.Dequeue();
-                }
+            if (WeighQ.Count > 0) {
+                code = WeighQ.Dequeue();
             }
+
             if (code != null && code.ToLocation.Substring(0, 1) == "B") {
-                lock (CacheQ) {
-                    CacheQ.Enqueue(code);
-                }
+                CacheQ.Enqueue(code);
             }
             return code;
         }
 
         private RollPosition FindodeFromRobotQue(Queue<RollPosition> qu, string tolocation, string panelNo) {
-            RollPosition lb;
-            lock (qu) {
-                lb = RobotRollAQ.LastOrDefault(item => item.RealLocation == tolocation && item.PanelNo == panelNo);
-            }
+            var lb = RobotRollAQ.LastOrDefault(item => item.RealLocation == tolocation && item.PanelNo == panelNo);
             return lb;
         }
 
@@ -245,15 +233,15 @@ namespace yidascan.DataAccess {
         /// 人工满板,找板最后一卷.
         /// </summary>
         /// <param name="tolocation"></param>
+        /// <param name="panelNo"></param>
         /// <returns></returns>
         public string UFGetPanelLastRoll(string tolocation, string panelNo) {
             string lcode = string.Empty;
             LableCode lbup;
 
-            // 检索标签朝上队列。
-            lock (LableUpQ) {
-                lbup = LableUpQ.LastOrDefault(item => item.ToLocation == tolocation && item.PanelNo == panelNo);
-            }
+            // 检索标签朝上队列。            
+            lbup = LableUpQ.LastOrDefault(item => item.ToLocation == tolocation && item.PanelNo == panelNo);
+
             if (lbup != null) {
                 lbup.Status = (int)LableState.FloorLastRoll;
                 return lbup.LCode;
@@ -262,9 +250,8 @@ namespace yidascan.DataAccess {
             int tolocationareaNo = int.Parse(tolocation.Substring(1, 2));
 
             if (tolocationareaNo < 6) {
-                lock (CatchAQ) {
-                    lbup = CatchAQ.LastOrDefault(item => item.ToLocation == tolocation && item.PanelNo == panelNo);
-                }
+                lbup = CatchAQ.LastOrDefault(item => item.ToLocation == tolocation && item.PanelNo == panelNo);
+
                 if (lbup != null) {
                     lbup.Status = (int)LableState.FloorLastRoll;
                     return lbup.LCode;
@@ -277,9 +264,8 @@ namespace yidascan.DataAccess {
                     return rp.LabelCode;
                 }
             } else {
-                lock (CatchBQ) {
-                    lbup = CatchBQ.LastOrDefault(item => item.ToLocation == tolocation && item.PanelNo == panelNo);
-                }
+                lbup = CatchBQ.LastOrDefault(item => item.ToLocation == tolocation && item.PanelNo == panelNo);
+                
                 if (lbup != null) {
                     lbup.Status = (int)LableState.FloorLastRoll;
                     return lbup.LCode;
