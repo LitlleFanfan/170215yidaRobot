@@ -50,7 +50,7 @@ namespace yidascan.DataAccess {
             return true;
 #endif
 
-            if (readCount != writeCount) {
+            if (currReadSn != writeCount) {
                 readCount = currReadSn;
                 return true;
             } else {
