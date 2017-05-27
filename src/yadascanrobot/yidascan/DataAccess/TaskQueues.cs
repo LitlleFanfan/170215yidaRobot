@@ -12,6 +12,7 @@ namespace yidascan.DataAccess {
 
         // 交地映射类。
         public static LocationHelper lochelper;
+        public static object LOCK_LOCHELPER = new object();
 
         /// <summary>
         /// 用于访问锁定。
@@ -170,7 +171,7 @@ namespace yidascan.DataAccess {
             if (code != null) {
                 code.RealLocation = "";
                 while (isrun ) {
-                    lock (lochelper) {
+                    lock (LOCK_LOCHELPER) {
                         code.RealLocation = lochelper.Convert(code.ToLocation, code.PanelNo);
                     }
 

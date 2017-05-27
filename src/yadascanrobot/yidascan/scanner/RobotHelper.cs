@@ -336,7 +336,9 @@ namespace yidascan {
                         log(msg, LogType.ROBOT_STACK);
 
                         // 满板时设置自由板位标志。
-                        TaskQueues.lochelper.OnFull(reallocation);
+                        lock (TaskQueues.LOCK_LOCHELPER) {
+                            TaskQueues.lochelper.OnFull(reallocation);
+                        }
 
                         const int SIGNAL_3 = 3;
                         client.TryWrite(param.BAreaPanelState[reallocation], SIGNAL_3);
@@ -364,11 +366,15 @@ namespace yidascan {
                         string msg;
                         ErpHelper.NotifyPanelEnd(erpapi, roll.PanelNo, out msg);
                         client.TryWrite(param.BAreaPanelFinish[roll.RealLocation], true);
+
                         log($"{roll.RealLocation}: 满板信号发出。slot: {param.BAreaPanelFinish[roll.RealLocation]}", LogType.ROBOT_STACK);
                         log(msg, LogType.ROBOT_STACK);
+
                         LableCode.SetPanelFinished(roll.PanelNo);
 
-                        TaskQueues.lochelper.OnFull(roll.RealLocation);
+                        lock (TaskQueues.LOCK_LOCHELPER) {
+                            TaskQueues.lochelper.OnFull(roll.RealLocation);
+                        }
 
                         const int SIGNAL_3 = 3;
                         client.TryWrite(param.BAreaPanelState[roll.RealLocation], SIGNAL_3);
