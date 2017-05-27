@@ -18,7 +18,6 @@ namespace yidascan.DataAccess {
     }
 
     public class PlcSignal {
-        int maxCount = 2000;
         int readCount;
         int writeCount;
         string groupName;
@@ -29,33 +28,29 @@ namespace yidascan.DataAccess {
             groupName = _groupName;
             ReadSignal = readSignal;
             WriteSignal = writeSignal;
-            if (string.IsNullOrEmpty(groupName)) {
-                readCount = opc.ReadInt(readSignal);
-                writeCount = opc.ReadInt(writeSignal);
-            } else {
-                readCount = opc.ReadInt(groupName, readSignal);
-                writeCount = opc.ReadInt(groupName, writeSignal);
-            }
         }
 
         public bool ReadSN(IOpcClient opc) {
-            int currReadSn = 0;
             if (string.IsNullOrEmpty(groupName)) {
-                currReadSn = opc.ReadInt(ReadSignal);
+                readCount = opc.ReadInt(ReadSignal);
+                writeCount = opc.ReadInt(WriteSignal);
             } else {
-                currReadSn = opc.ReadInt(groupName, ReadSignal);
+                readCount = opc.ReadInt(groupName, ReadSignal);
+                writeCount = opc.ReadInt(groupName, WriteSignal);
             }
 
 #if DEBUG
             return true;
 #endif
-
-            if (currReadSn != writeCount) {
-                readCount = currReadSn;
-                return true;
-            } else {
+            if (readCount == 0) {
+                if (string.IsNullOrEmpty(groupName)) {
+                    opc.TryWrite(WriteSignal, readCount);
+                } else {
+                    opc.TryWrite(groupName, WriteSignal, readCount);
+                }
                 return false;
             }
+            return readCount != writeCount;
         }
 
         public bool WriteSN(IOpcClient opc) {
@@ -73,13 +68,7 @@ namespace yidascan.DataAccess {
 #if DEBUG
             return true;
 #endif
-
-            if (wstate) {
-                writeCount = readCount;
-                return true;
-            } else {
-                return false;
-            }
+            return wstate;
         }
     }
 
