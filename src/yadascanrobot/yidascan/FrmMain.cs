@@ -322,7 +322,10 @@ namespace yidascan {
                             var reallocation = kv.Key;
 
                             // 取名义交地
-                            var virtuallocation = TaskQueues.lochelper.lookupVirtual(reallocation);
+                            var virtuallocation = "";
+                            lock (TaskQueues.LOCK_LOCHELPER) {
+                                virtuallocation = TaskQueues.lochelper.lookupVirtual(reallocation);
+                            }
 
                             logOpt.Write($"!实际交地{kv.Key} 收到人工完成信号。ERP交地：{virtuallocation}", LogType.ROBOT_STACK);
 
@@ -1437,7 +1440,7 @@ namespace yidascan {
                 taskQ.PanelNoFrefix = DateTime.Now;
                 dtpDate.Value = taskQ.PanelNoFrefix;
 
-                lock (TaskQueues.lochelper) {
+                lock (TaskQueues.LOCK_LOCHELPER) {
                     logOpt.Write("!使用默认板位");
                     TaskQueues.lochelper = LocationHelper.LoadRealDefaultPriority();
                 }
@@ -1524,11 +1527,10 @@ namespace yidascan {
 
         private void openLocationWin() {
             using (var w = new wloc()) {
-                var loc = TaskQueues.lochelper;
                 w.setRunState(isrun);
 
-                lock (loc) {
-                    w.setdata(loc);
+                lock (TaskQueues.LOCK_LOCHELPER) {
+                    w.setdata(TaskQueues.lochelper);
                     w.ShowMap();
                     w.ShowRealLocs();
                 }
@@ -1550,8 +1552,11 @@ namespace yidascan {
                             .ToList();
                         foreach (var item in keys) {
                             if (robot.PanelAvailable(item)) {
-                                logOpt.Write($"!来源: {nameof(StartPanelEndTask)}, 交地{item}板就位。");
-                                TaskQueues.lochelper.OnReady(item);
+                                logOpt.Write($"交地{item}板就位。");
+
+                                lock (TaskQueues.LOCK_LOCHELPER) {
+                                    TaskQueues.lochelper.OnReady(item);
+                                }
                             }
 
                             Thread.Sleep(50);

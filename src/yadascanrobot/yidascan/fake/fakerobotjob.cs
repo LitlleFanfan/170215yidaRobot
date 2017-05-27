@@ -199,7 +199,10 @@ namespace yidascan {
                         LableCode.SetPanelFinished(panelNo);
 
                         // 满板时设置自由板位标志。
-                        TaskQueues.lochelper.OnFull(reallocation);
+
+                        lock (TaskQueues.LOCK_LOCHELPER) {
+                            TaskQueues.lochelper.OnFull(reallocation);
+                        }
                         break;
                     case PanelState.LessHalf:
                         break;
@@ -223,7 +226,9 @@ namespace yidascan {
 
                         LableCode.SetPanelFinished(roll.PanelNo);
 
-                        TaskQueues.lochelper.OnFull(roll.RealLocation);
+                        lock (TaskQueues.LOCK_LOCHELPER) {
+                            TaskQueues.lochelper.OnFull(roll.RealLocation);
+                        }
                         break;
                     case PanelState.LessHalf:
                         break;

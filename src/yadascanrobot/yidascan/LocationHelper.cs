@@ -116,9 +116,7 @@ namespace yidascan {
 
             if (loc.priority != Priority.DISABLE) {
                 loc.state = state;
-                if (!string.IsNullOrEmpty(panelno)) {
-                    loc.panelno = panelno;
-                }
+                loc.panelno = panelno;
             }
         }
         
@@ -207,17 +205,7 @@ namespace yidascan {
                 }
             }
 
-            //if (locs == null) {
-            //    locs = RealLocations.Where(x => x.state == LocationState.FULL && x.priority != Priority.DISABLE)
-            //        .OrderBy(x => x.priority)
-            //        .FirstOrDefault();
-            //}
-
-            if (locs != null) {
-                return locs.realloc;
-            } else {
-                return "";
-            }
+            return locs != null ? locs.realloc : "";
         }
 
         private string FindInMapByRealLoc(string realloc) {
@@ -375,6 +363,10 @@ namespace yidascan {
         public void SaveConf(string fn) {
             var jsonstr = JsonConvert.SerializeObject(this, Formatting.Indented);
             File.WriteAllText(fn, jsonstr);
+        }
+
+        public bool isMapped(string realloc) {
+            return LocMap.Count(x => x.Value == realloc) > 0;
         }
         #endregion
 
