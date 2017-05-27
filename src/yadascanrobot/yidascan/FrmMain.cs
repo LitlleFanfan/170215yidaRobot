@@ -197,12 +197,14 @@ namespace yidascan {
             Task.Factory.StartNew(() => {
                 while (isrun) {
                     // 等待布卷
-                    var r = RobotOpcClient.ReadBool(opcParam.RobotCarryParam.RobotCarryA);
+                    //var r = RobotOpcClient.ReadBool(opcParam.RobotCarryParam.RobotCarryA);
+                    var r = opcParam.RobotCarryParam.PlcSnA.ReadSN(RobotOpcClient);
                     if (r) {
                         // 加入机器人布卷队列。
                         var code = taskQ.GetCatchAQ();
                         if (code != null) {
                             RobotOpcClient.Write(opcParam.RobotCarryParam.RobotCarryA, false);
+                            opcParam.RobotCarryParam.PlcSnA.WriteSN(RobotOpcClient);
 
                             showLabelQue(taskQ.CatchAQ, lsvCatch1);
                             showRobotQue(taskQ.RobotRollAQ, lsvRobotA);
@@ -216,12 +218,14 @@ namespace yidascan {
                     }
                     Thread.Sleep(1000);
 
-                    r = RobotOpcClient.ReadBool(opcParam.RobotCarryParam.RobotCarryB);
+                    //r = RobotOpcClient.ReadBool(opcParam.RobotCarryParam.RobotCarryB);
+                    r = opcParam.RobotCarryParam.PlcSnB.ReadSN(RobotOpcClient);
                     if (r) {
                         // 加入机器人布卷队列。
                         var code = taskQ.GetCatchBQ();
                         if (code != null) {
                             RobotOpcClient.Write(opcParam.RobotCarryParam.RobotCarryB, false);
+                            opcParam.RobotCarryParam.PlcSnB.WriteSN(RobotOpcClient);
 
                             showLabelQue(taskQ.CatchBQ, lsvCatch2);
                             showRobotQue(taskQ.RobotRollBQ, lsvRobotB);
@@ -684,8 +688,8 @@ namespace yidascan {
             Task.Factory.StartNew(() => {
                 while (isrun) {
                     try {
-                        var r = LabelUpOpcClient.ReadBool(opcParam.LableUpParam.Signal);
-
+                        //var r = LabelUpOpcClient.ReadBool(opcParam.LableUpParam.Signal);
+                        var r = opcParam.LableUpParam.PlcSn.ReadSN(LabelUpOpcClient);
                         if (r) {
                             var code = taskQ.GetLableUpQ(isrun); if (code != null) {
                                 logOpt.Write(string.Format("收到标签朝上来料信号。号码: {0}", code.LCode), LogType.ROLL_QUEUE);

@@ -62,6 +62,7 @@ namespace yidascan {
             Thread.Sleep(DELAY);
             // 复位标签采集处来料信号。
             client.TryWrite(param.LableUpParam.Signal, 0);
+            param.LableUpParam.PlcSn.WriteSN(client);
         }
 
         /// <summary>
