@@ -364,6 +364,10 @@ namespace yidascan {
             var jsonstr = JsonConvert.SerializeObject(this, Formatting.Indented);
             File.WriteAllText(fn, jsonstr);
         }
+
+        public bool isMapped(string realloc) {
+            return LocMap.Count(x => x.Value == realloc) > 0;
+        }
         #endregion
 
         #region event_handler

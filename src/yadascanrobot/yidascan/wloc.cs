@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using commonhelper;
+using yidascan.DataAccess;
 
 namespace yidascan {
     public partial class wloc : Form {
@@ -76,7 +77,7 @@ namespace yidascan {
 
         private void btnReset_Click(object sender, EventArgs e) {
             if (commonhelper.CommonHelper.Confirm("确定要设置默认板位吗?")) {
-                lock (locs) {
+                lock (TaskQueues.LOCK_LOCHELPER) {
                     locs = LocationHelper.LoadRealDefaultPriority();
                     ShowMap();
                     ShowRealLocs();
@@ -85,7 +86,7 @@ namespace yidascan {
         }
 
         private void btnRefresh_Click(object sender, EventArgs e) {
-            lock (locs) {
+            lock (TaskQueues.LOCK_LOCHELPER) {
                 ShowMap();
                 ShowRealLocs();
             }
@@ -94,7 +95,7 @@ namespace yidascan {
         private void timer1_Tick(object sender, EventArgs e) {
             try {
                 if (isrunning) {
-                    lock (locs) {
+                    lock (TaskQueues.LOCK_LOCHELPER) {
                         ShowMap();
                         ShowRealLocs();
                     }
@@ -114,10 +115,13 @@ namespace yidascan {
             using (var dlg = new OpenFileDialog()) {
                 dlg.Filter = "Json Files(*.json) | *.json";
                 var rt = dlg.ShowDialog();
-                if (rt == DialogResult.Yes || rt == DialogResult.OK) {
-                    locs = LocationHelper.LoadConf(dlg.FileName);
-                    ShowMap();
-                    ShowRealLocs();
+
+                lock (TaskQueues.LOCK_LOCHELPER) {
+                    if (rt == DialogResult.Yes || rt == DialogResult.OK) {
+                        locs = LocationHelper.LoadConf(dlg.FileName);
+                        ShowMap();
+                        ShowRealLocs();
+                    }
                 }
             }
         }
@@ -126,19 +130,23 @@ namespace yidascan {
             var item = listView1.SelectedItems;
             if (item.Count > 0) {
                 var selected = item[0];
-
             }
         }
 
         private void miEnable_Click(object sender, EventArgs e) {
-            var items = listView2.SelectedItems;
-            if (items.Count > 0) {
-                var item = (RealLoc)items[0].Tag;
-                if (item.priority == Priority.DISABLE) {
-                    item.priority = Priority.MEDIUM;
-                    item.state = LocationState.IDLE;
+            lock (TaskQueues.LOCK_LOCHELPER) {
+                var items = listView2.SelectedItems;
+                if (items.Count > 0) {
+                    var item = (RealLoc)items[0].Tag;
+                    if (item.priority == Priority.DISABLE || !locs.isMapped(item.realloc)) {
+                        item.priority = Priority.MEDIUM;
+                        item.state = LocationState.IDLE;
+
+                        ShowRealLocs();
+                    } else {
+                        CommonHelper.Warn($"{item.realloc}有名义交地对应，不能修改状态。");
+                    }
                 }
-                ShowRealLocs();
             }
         }
 
