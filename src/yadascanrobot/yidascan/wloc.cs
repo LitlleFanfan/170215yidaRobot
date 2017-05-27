@@ -151,13 +151,15 @@ namespace yidascan {
         }
 
         private void miDisable_Click(object sender, EventArgs e) {
-            var items = listView2.SelectedItems;
-            if (items.Count > 0) {
-                var item = (RealLoc)items[0].Tag;
-                if (item.state == LocationState.IDLE) {
-                    item.priority = Priority.DISABLE;
+            lock (TaskQueues.LOCK_LOCHELPER) {
+                var items = listView2.SelectedItems;
+                if (items.Count > 0) {
+                    var item = (RealLoc)items[0].Tag;
+                    if (item.state == LocationState.IDLE) {
+                        item.priority = Priority.DISABLE;
+                    }
+                    ShowRealLocs();
                 }
-                ShowRealLocs();
             }
         }
     }
