@@ -27,6 +27,8 @@ namespace yidascan.DataAccess {
 
         public void LoadSN(IOpcClient opc, string readSignal, string writeSignal, string _groupName = "") {
             groupName = _groupName;
+            ReadSignal = readSignal;
+            WriteSignal = writeSignal;
             if (string.IsNullOrEmpty(groupName)) {
                 readCount = opc.ReadInt(readSignal);
                 writeCount = opc.ReadInt(writeSignal);
@@ -48,7 +50,7 @@ namespace yidascan.DataAccess {
             return true;
 #endif
 
-            if (currReadSn > readCount || (readCount != 1 && currReadSn == 1)) {
+            if (readCount != writeCount) {
                 readCount = currReadSn;
                 return true;
             } else {
@@ -58,14 +60,13 @@ namespace yidascan.DataAccess {
 
         public bool WriteSN(IOpcClient opc) {
             bool wstate = false;
-            int currWriteSn = writeCount >= maxCount ? 1 : (writeCount + 1);
             try {
                 if (string.IsNullOrEmpty(groupName)) {
-                    wstate = opc.TryWrite(WriteSignal, currWriteSn);
+                    wstate = opc.TryWrite(WriteSignal, readCount);
                 } else {
-                    wstate = opc.TryWrite(groupName, WriteSignal, currWriteSn);
+                    wstate = opc.TryWrite(groupName, WriteSignal, readCount);
                 }
-            }catch(Exception ex) {
+            } catch (Exception ex) {
                 FrmMain.logOpt.Write($"!{WriteSignal}写失败！");
             }
 
@@ -74,7 +75,7 @@ namespace yidascan.DataAccess {
 #endif
 
             if (wstate) {
-                writeCount = currWriteSn;
+                writeCount = readCount;
                 return true;
             } else {
                 return false;
