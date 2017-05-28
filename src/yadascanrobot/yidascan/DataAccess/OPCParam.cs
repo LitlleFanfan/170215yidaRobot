@@ -18,6 +18,7 @@ namespace yidascan.DataAccess {
     }
 
     public class PlcSignal {
+        string guid = string.Empty;
         int readCount;
         int writeCount;
         string groupName;
@@ -50,7 +51,14 @@ namespace yidascan.DataAccess {
                 }
                 return false;
             }
-            return readCount != writeCount;
+
+            if (readCount == (writeCount + 1)) {
+                guid = Guid.NewGuid().ToString();
+                FrmMain.logOpt.Write($"来料 R {ReadSignal}: {readCount} W {WriteSignal}: {writeCount}！{guid}");
+                return true;
+            } else {
+                return false;
+            }
         }
 
         public bool WriteSN(IOpcClient opc) {
@@ -64,7 +72,7 @@ namespace yidascan.DataAccess {
             } catch (Exception ex) {
                 FrmMain.logOpt.Write($"!{WriteSignal}写失败！");
             }
-
+            FrmMain.logOpt.Write($"来料复位 R {ReadSignal}: {readCount} W {WriteSignal}: {writeCount}！{guid}");
 #if DEBUG
             return true;
 #endif
