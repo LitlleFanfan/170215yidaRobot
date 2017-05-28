@@ -18,7 +18,7 @@ namespace yidascan.DataAccess {
     }
 
     public class PlcSignal {
-        int maxCount = 2000;
+        string guid = string.Empty;
         int readCount;
         int writeCount;
         string groupName;
@@ -29,29 +29,32 @@ namespace yidascan.DataAccess {
             groupName = _groupName;
             ReadSignal = readSignal;
             WriteSignal = writeSignal;
-            if (string.IsNullOrEmpty(groupName)) {
-                readCount = opc.ReadInt(readSignal);
-                writeCount = opc.ReadInt(writeSignal);
-            } else {
-                readCount = opc.ReadInt(groupName, readSignal);
-                writeCount = opc.ReadInt(groupName, writeSignal);
-            }
         }
 
         public bool ReadSN(IOpcClient opc) {
-            int currReadSn = 0;
             if (string.IsNullOrEmpty(groupName)) {
-                currReadSn = opc.ReadInt(ReadSignal);
+                readCount = opc.ReadInt(ReadSignal);
+                writeCount = opc.ReadInt(WriteSignal);
             } else {
-                currReadSn = opc.ReadInt(groupName, ReadSignal);
+                readCount = opc.ReadInt(groupName, ReadSignal);
+                writeCount = opc.ReadInt(groupName, WriteSignal);
             }
 
 #if DEBUG
             return true;
 #endif
+            if (readCount == 0) {
+                if (string.IsNullOrEmpty(groupName)) {
+                    opc.TryWrite(WriteSignal, readCount);
+                } else {
+                    opc.TryWrite(groupName, WriteSignal, readCount);
+                }
+                return false;
+            }
 
-            if (readCount != writeCount) {
-                readCount = currReadSn;
+            if (readCount == (writeCount + 1)) {
+                guid = Guid.NewGuid().ToString();
+                FrmMain.logOpt.Write($"来料 R {ReadSignal}: {readCount} W {WriteSignal}: {writeCount}！{guid}");
                 return true;
             } else {
                 return false;
@@ -69,17 +72,11 @@ namespace yidascan.DataAccess {
             } catch (Exception ex) {
                 FrmMain.logOpt.Write($"!{WriteSignal}写失败！");
             }
-
+            FrmMain.logOpt.Write($"来料复位 R {ReadSignal}: {readCount} W {WriteSignal}: {writeCount}！{guid}");
 #if DEBUG
             return true;
 #endif
-
-            if (wstate) {
-                writeCount = readCount;
-                return true;
-            } else {
-                return false;
-            }
+            return wstate;
         }
     }
 
