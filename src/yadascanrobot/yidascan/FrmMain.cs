@@ -691,7 +691,8 @@ namespace yidascan {
                         //var r = LabelUpOpcClient.ReadBool(opcParam.LableUpParam.Signal);
                         var r = opcParam.LableUpParam.PlcSn.ReadSN(LabelUpOpcClient);
                         if (r) {
-                            var code = taskQ.GetLableUpQ(isrun); if (code != null) {
+                            var code = taskQ.GetLableUpQ(isrun);
+                            if (code != null) {
                                 logOpt.Write(string.Format("收到标签朝上来料信号。号码: {0}", code.LCode), LogType.ROLL_QUEUE);
 
                                 if (string.IsNullOrEmpty(code.RealLocation)) {

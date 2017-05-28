@@ -29,6 +29,30 @@ namespace yidascan.DataAccess {
         CacheAndGet = 6
     }
 
+    public static class CacheStateDesc {
+        public static string describe(CacheState state) {
+            switch (state) {
+                case CacheState.Error:
+                    return $"{state}: error";
+                case CacheState.Go:
+                    return $"{state}: go";
+                case CacheState.Cache:
+                    return $"{state}: cache";
+                case CacheState.GetThenCache:
+                    return $"{state}: get then cache";
+                case CacheState.GoThenGet:
+                    return $"{state}: go then get";
+                case CacheState.GetThenGo:
+                    return $"{state}: get then go";
+                case CacheState.CacheAndGet:
+                    return $"{state}: cache and get";
+                default:
+                    return $"{state}: unknown cache state";
+            }
+
+        }
+    }
+
     public class LableCode {
         public int SequenceNo { get; set; }
         public string LCode { get; set; }

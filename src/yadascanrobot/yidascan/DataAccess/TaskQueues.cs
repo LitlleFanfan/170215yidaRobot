@@ -162,26 +162,26 @@ namespace yidascan.DataAccess {
             LableCode code = null;
 
             if (LableUpQ.Count > 0) {
-                code = LableUpQ.Dequeue();
+                code = LableUpQ.Peek();
             }
 
             if (code != null) {
                 code.RealLocation = "";
-                while (isrun) {
-                    code.RealLocation = lochelper.Convert(code.ToLocation, code.PanelNo);
 
-                    if (string.IsNullOrEmpty(code.RealLocation)) {
-                        var msg = $"!来源: {nameof(GetLableUpQ)}, 获取真实交地失败: {code.ToLocation}";
-                        onlog?.Invoke(msg, LogType.ROLL_QUEUE);
+                code.RealLocation = lochelper.Convert(code.ToLocation, code.PanelNo);
 
-                        onlog?.Invoke("请查看交地状态。", LogType.ROLL_QUEUE);
+                if (string.IsNullOrEmpty(code.RealLocation)) {
+                    var msg = $"!来源: {nameof(GetLableUpQ)}, 获取真实交地失败: {code.ToLocation}";
+                    onlog?.Invoke(msg, LogType.ROLL_QUEUE);
 
-                        Thread.Sleep(3000);
-                    } else {
-                        break;
-                    }
+                    onlog?.Invoke("请查看交地状态。", LogType.ROLL_QUEUE);
+
+                    Thread.Sleep(3000);
+                } else {
+                    return null;
                 }
 
+                code = LableUpQ.Dequeue();
                 var ok = LableCode.UpdateRealLocation(code);
                 if (!ok) { throw new Exception($"保存标签的实际交地失败"); }
 
@@ -265,7 +265,7 @@ namespace yidascan.DataAccess {
                 }
             } else {
                 lbup = CatchBQ.LastOrDefault(item => item.ToLocation == tolocation && item.PanelNo == panelNo);
-                
+
                 if (lbup != null) {
                     lbup.Status = (int)LableState.FloorLastRoll;
                     return lbup.LCode;
