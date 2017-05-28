@@ -7,10 +7,6 @@ using yidascan;
 
 namespace ProduceComm.OPC {
     public class OPCClient : IOpcClient {
-        public delegate void ErrEventHandler(Exception ex);
-
-        public event ErrEventHandler OnError;
-
         Opc.Server[] servers;
         Opc.Da.Server m_server = null;//定义数据存取服务器
         Dictionary<string, Opc.Da.Subscription> groups = new Dictionary<string, Opc.Da.Subscription>();//定义组对象（订阅者）
@@ -32,7 +28,6 @@ namespace ProduceComm.OPC {
                 return true;
             } else {
                 clsSetting.loger.Error("没有有效的OPC服务！");
-                OnError(new Exception("没有有效的OPC服务！"));
             }
             return false;
         }
@@ -67,7 +62,6 @@ namespace ProduceComm.OPC {
                 return true;
             } catch (Exception ex) {
                 clsSetting.loger.Error(string.Format("{0}添加订阅失败！{1}", code, ex));
-                OnError(new Exception(string.Format("{0}添加订阅失败！", code), ex));
                 return false;
             }
         }
@@ -103,7 +97,6 @@ namespace ProduceComm.OPC {
                 return true;
             } catch (Exception ex) {
                 clsSetting.loger.Error(string.Format("{0}添加订阅失败！{1}", goupname, ex));
-                OnError(new Exception(string.Format("{0}添加订阅失败！", goupname), ex));
                 return false;
             }
         }
@@ -111,13 +104,11 @@ namespace ProduceComm.OPC {
         public bool Write(string groupname, Dictionary<string, object> codeValue) {
             if (string.IsNullOrEmpty(groupname)) {
                 yidascan.FrmMain.logOpt.Write($"!项目为空");
-                OnError(new Exception("项目为空！"));
                 return false;
             }
             try {
                 if (!groups.Keys.Contains(groupname)) {
                     clsSetting.loger.Error(string.Format("{0}未添加订阅！", groupname));
-                    OnError(new Exception(string.Format("{0}未添加订阅！", groupname)));
                     return false;
                 }
                 Opc.Da.Subscription group = groups[groupname];
@@ -139,13 +130,11 @@ namespace ProduceComm.OPC {
         public bool Write(string code, object value) {
             if (string.IsNullOrEmpty(code)) {
                 yidascan.FrmMain.logOpt.Write($"!项目为空");
-                OnError(new Exception("项目为空！"));
                 return false;
             }
             try {
                 if (!groups.Keys.Contains(code)) {
                     clsSetting.loger.Error(string.Format("{0}未添加订阅！", code));
-                    OnError(new Exception(string.Format("{0}未添加订阅！", code)));
                     return false;
                 }
                 Opc.Da.ItemValue iv = new Opc.Da.ItemValue((Opc.ItemIdentifier)groups[code].Items[0]);
@@ -214,33 +203,28 @@ namespace ProduceComm.OPC {
 
         public object Read(string code) {
             if (string.IsNullOrEmpty(code)) {
-                yidascan.FrmMain.logOpt.Write($"!项目为空");
-                OnError(new Exception("项目为空！"));
+                FrmMain.logOpt.Write($"!{code}项目为空");
                 return null;
             }
-            if (!groups.Keys.Contains(code)) {
-                clsSetting.loger.Error(string.Format("{0}未添加订阅！", code));
-                OnError(new Exception(string.Format("{0}未添加订阅！", code)));
-                return null;
-            }
-            Opc.Da.ItemValueResult[] values = groups[code].Read(groups[code].Items);
 
-            if (values[0].Quality.Equals(Opc.Da.Quality.Good)) {
-                return values[0].Value;
+            if (!groups.Keys.Contains(code)) {
+                FrmMain.logOpt.Write($"{code}未添加订阅！", code);
+                return null;
             }
-            return null;
+
+            var values = groups[code].Read(groups[code].Items);
+            var ok = values.Count() > 0 && values[0].Quality.Equals(Opc.Da.Quality.Good);
+            return ok ? values[0].Value : null;
         }
 
         public object Read(string groupname, string code) {
             if (string.IsNullOrEmpty(groupname)) {
                 yidascan.FrmMain.logOpt.Write($"!项目为空");
-                OnError(new Exception("项目为空！"));
                 return null;
             }
             try {
                 if (!groups.Keys.Contains(groupname)) {
                     clsSetting.loger.Error(string.Format("{0}未添加订阅！", code));
-                    OnError(new Exception(string.Format("{0}未添加订阅！", code)));
                     return null;
                 }
                 Opc.Da.ItemValueResult[] values = groups[groupname].Read(new Opc.Da.Item[] { groups[groupname].Items.First(item => item.ItemName == code) });
@@ -251,7 +235,6 @@ namespace ProduceComm.OPC {
                 return null;
             } catch (Exception ex) {
                 yidascan.FrmMain.logOpt.Write(string.Format("!{0}读取失败！{1}", code, ex));
-                OnError(new Exception("读取失败！", ex));
                 return null;
             }
         }
@@ -269,6 +252,11 @@ namespace ProduceComm.OPC {
         public string ReadString(string slot) {
             try {
                 var val = Read(slot);
+
+                if (val == null) {
+                    throw new Exception($"{slot}读到null。");
+                }
+
                 return val != null ? val.ToString() : string.Empty;
             } catch (Exception ex) {
                 yidascan.FrmMain.logOpt.Write(string.Format("!{0}读取失败!{1}", slot, ex));
@@ -279,9 +267,14 @@ namespace ProduceComm.OPC {
         public bool ReadBool(string slot) {
             try {
                 var val = Read(slot);
+
+                if (val == null) {
+                    throw new Exception($"{slot}读到null。");
+                }
+
                 return val != null ? bool.Parse(val.ToString().Trim()) : false;
             } catch (Exception ex) {
-                yidascan.FrmMain.logOpt.Write(string.Format("!{0}读取失败!{1}", slot, ex));
+                FrmMain.logOpt.Write($"!{slot}读取失败, {ex}");
                 return false;
             }
         }
@@ -301,7 +294,6 @@ namespace ProduceComm.OPC {
                 m_server.Disconnect();
             } catch (Exception ex) {
                 clsSetting.loger.Error("关闭连接失败！", ex);
-                OnError(new Exception("关闭连接失败！", ex));
             }
         }
 
@@ -347,7 +339,7 @@ namespace ProduceComm.OPC {
 
         #region TRY_READ_AND_WRITE
 
-        public int TryReadInt(string slot, int delay = 10, int times = 10) {
+        public int TryReadInt(string slot, int delay = 20, int times = 10) {
             while (times-- > 0) {
                 try {
                     var val = Read(slot);
@@ -359,7 +351,7 @@ namespace ProduceComm.OPC {
             throw new Exception($"OPC读取失败： {nameof(TryReadInt)}, slot: {slot}");
         }
 
-        public bool TryReadBool(string slot, int delay = 10, int times = 10) {
+        public bool TryReadBool(string slot, int delay = 20, int times = 10) {
             while (times-- > 0) {
                 try {
                     var val = Read(slot);
@@ -371,7 +363,7 @@ namespace ProduceComm.OPC {
             throw new Exception($"OPC读取失败： {nameof(TryReadBool)}, slot: {slot}");
         }
 
-        public string TryReadString(string slot, int delay = 10, int times = 10) {
+        public string TryReadString(string slot, int delay = 20, int times = 10) {
             while (times-- > 0) {
                 try {
                     var val = Read(slot);
@@ -383,7 +375,7 @@ namespace ProduceComm.OPC {
             throw new Exception($"OPC读取失败： {nameof(TryReadString)}, slot: {slot}");
         }
 
-        public decimal TryReadDecimal(string slot, int delay = 10, int times = 10) {
+        public decimal TryReadDecimal(string slot, int delay = 20, int times = 10) {
             while (times-- > 0) {
                 try {
                     var val = Read(slot);
@@ -395,17 +387,15 @@ namespace ProduceComm.OPC {
             throw new Exception($"OPC读取失败： {nameof(TryReadDecimal)}, slot: {slot}");
         }
 
-        public bool TryWrite(string slot, object value, int delay = 10, int times = 10) {
+        public bool TryWrite(string slot, object value, int delay = 20, int times = 10) {
             while (times-- > 0) {
                 try {
                     if (string.IsNullOrEmpty(slot)) {
                         yidascan.FrmMain.logOpt.Write($"!项目为空");
-                        OnError(new Exception("项目为空！"));
                         return false;
                     }
                     if (!groups.Keys.Contains(slot)) {
                         clsSetting.loger.Error(string.Format("{0}未添加订阅！", slot));
-                        OnError(new Exception(string.Format("{0}未添加订阅！", slot)));
                         return false;
                     }
                     Opc.Da.ItemValue iv = new Opc.Da.ItemValue((Opc.ItemIdentifier)groups[slot].Items[0]);
