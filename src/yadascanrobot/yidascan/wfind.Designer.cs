@@ -32,7 +32,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(24, 38);
+            this.label1.Location = new System.Drawing.Point(11, 24);
             this.label1.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(47, 19);
@@ -41,7 +41,7 @@
             // 
             // btnSearch
             // 
-            this.btnSearch.Location = new System.Drawing.Point(349, 32);
+            this.btnSearch.Location = new System.Drawing.Point(314, 21);
             this.btnSearch.Name = "btnSearch";
             this.btnSearch.Size = new System.Drawing.Size(75, 30);
             this.btnSearch.TabIndex = 2;
@@ -56,14 +56,14 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lbx.FormattingEnabled = true;
             this.lbx.ItemHeight = 19;
-            this.lbx.Location = new System.Drawing.Point(12, 90);
+            this.lbx.Location = new System.Drawing.Point(12, 68);
             this.lbx.Name = "lbx";
-            this.lbx.Size = new System.Drawing.Size(617, 688);
+            this.lbx.Size = new System.Drawing.Size(617, 441);
             this.lbx.TabIndex = 3;
             // 
             // mtxCode
             // 
-            this.mtxCode.Location = new System.Drawing.Point(79, 33);
+            this.mtxCode.Location = new System.Drawing.Point(66, 21);
             this.mtxCode.Name = "mtxCode";
             this.mtxCode.Size = new System.Drawing.Size(232, 29);
             this.mtxCode.TabIndex = 0;
@@ -73,12 +73,12 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 19F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(641, 790);
+            this.ClientSize = new System.Drawing.Size(641, 517);
             this.Controls.Add(this.mtxCode);
             this.Controls.Add(this.lbx);
             this.Controls.Add(this.btnSearch);
             this.Controls.Add(this.label1);
-            this.Font = new System.Drawing.Font("宋体", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.Font = new System.Drawing.Font("SimSun", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Margin = new System.Windows.Forms.Padding(5);
             this.MaximizeBox = false;

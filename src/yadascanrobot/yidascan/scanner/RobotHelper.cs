@@ -555,7 +555,7 @@ namespace yidascan {
                 var b5 = rCtrl.GetVariables(VariableType.B, 5, 1);
                 return (b5 != null && b5.ContainsKey(KEY) && b5[KEY] == V_ON_PANEL);
             } catch (Exception ex) {
-                log($"!来源: nameof(IsRollOnPanel): {ex}", LogType.ROBOT_STACK, LogViewType.OnlyFile);
+                log($"!来源: {nameof(IsRollOnPanel)}: {ex}", LogType.ROBOT_STACK, LogViewType.OnlyFile);
                 return false;
             }
         }

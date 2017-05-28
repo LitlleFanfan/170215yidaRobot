@@ -108,6 +108,8 @@ namespace yidascan {
 
         public static int DELAY = 200;
 
+        public int counter = 0;
+
         #region hand_panel_complete
         // 板完成信号
         private static string SIGNAL_PANEL_HAND_COMPLETE_B01 = "0";
@@ -159,9 +161,9 @@ namespace yidascan {
             // 称重处信号
             if (slot == param.WeighParam.GetWeigh) {
                 return getIntSignal(ref SignalGen.WEIGTH_SIGNAL);
-            }
+            } 
 
-            return 1;
+            return counter++;
         }
 
         private static int getIntSignal(ref int signal) {

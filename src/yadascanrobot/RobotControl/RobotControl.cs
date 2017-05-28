@@ -274,33 +274,37 @@ namespace RobotControl {
         /// <param name="qtyToSet">读变量个数</param>
         /// <returns></returns>
         public Dictionary<string, string> GetVariables(VariableType vt, int varIndex, int qtyToSet) {
-            int cmdID = (int)vt > 4 ? Commands.CMD_MpGetPosVarData : Commands.CMD_MpGetVarData;
-            string cmd = string.Format("cmd={0};a1={1};a2={2};a3={3};a4=0;a5=0;",
-                cmdID, (int)vt, varIndex, qtyToSet);
+            var cmdID = (int)vt > 4 ? Commands.CMD_MpGetPosVarData : Commands.CMD_MpGetVarData;
+            var cmd = $"cmd={cmdID};a1={(int)vt};a2={varIndex};a3={qtyToSet};a4=0;a5=0;";
+
             Send(cmd);
 
-            List<string> re = GetRobotResult();
-            Dictionary<string, string> ret = new Dictionary<string, string>();
-            if (re.Count > 0) {
-                foreach (string reitem in re) {
-                    if (reitem.Contains("OK")) {
-                        continue;
-                    }
-                    string[] tmp = reitem.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-                    if (cmdID == Commands.CMD_MpGetVarData) {
-                        foreach (string str in tmp) {
-                            string[] stmp = str.Split(new string[] { "= " }, StringSplitOptions.RemoveEmptyEntries);
-                            if (ret.ContainsKey(stmp[0])) {
-                                ret[stmp[0]] = stmp[1];
-                            } else {
-                                ret.Add(stmp[0], stmp[1]);
-                            }
+            var re = GetRobotResult();
+            var ret = new Dictionary<string, string>();
+
+            foreach (string reitem in re) {
+                if (reitem.Contains("OK")) {
+                    continue;
+                }
+
+                var tmp = reitem.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+                if (cmdID == Commands.CMD_MpGetVarData) {
+                    foreach (var str in tmp) {
+                        var stmp = str.Split(new string[] { "= " }, StringSplitOptions.RemoveEmptyEntries);
+
+                        if (stmp.Count() < 2) { continue; }
+
+                        if (ret.ContainsKey(stmp[0])) {
+                            ret[stmp[0]] = stmp[1];
+                        } else {
+                            ret.Add(stmp[0], stmp[1]);
                         }
-                    } else {
-                        ret = GetVal(tmp);
                     }
+                } else {
+                    ret = GetVal(tmp);
                 }
             }
+
             return ret;
         }
 
