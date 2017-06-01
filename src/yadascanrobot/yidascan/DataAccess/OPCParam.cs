@@ -44,11 +44,13 @@ namespace yidascan.DataAccess {
             return true;
 #endif
             if (readCount == 0) {
-                if (string.IsNullOrEmpty(groupName)) {
-                    opc.TryWrite(WriteSignal, readCount);
-                } else {
-                    opc.TryWrite(groupName, WriteSignal, readCount);
-                }
+                //改成独立复位
+                //if (string.IsNullOrEmpty(groupName)) {       && writeCount != readCount
+                //    opc.TryWrite(WriteSignal, readCount);
+                //} else {
+                //    opc.TryWrite(groupName, WriteSignal, readCount);
+                //}
+                //FrmMain.logOpt.Write($"来料读到0复位 R {ReadSignal}: {readCount} W {WriteSignal}: {writeCount}！{guid}");
                 return false;
             }
 
@@ -77,6 +79,15 @@ namespace yidascan.DataAccess {
             return true;
 #endif
             return wstate;
+        }
+
+        public void ResetSN(IOpcClient opc) {
+            if (string.IsNullOrEmpty(groupName)) { 
+                opc.TryWrite(WriteSignal, 0);
+            } else {
+                opc.TryWrite(groupName, WriteSignal, 0);
+            }
+            FrmMain.logOpt.Write($"来料读到0复位,原来的值 R {ReadSignal}: {readCount} W {WriteSignal}: {writeCount}！");
         }
     }
 

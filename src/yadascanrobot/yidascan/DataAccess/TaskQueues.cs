@@ -171,20 +171,18 @@ namespace yidascan.DataAccess {
                 code.RealLocation = lochelper.Convert(code.ToLocation, code.PanelNo);
 
                 if (string.IsNullOrEmpty(code.RealLocation)) {
-                    var msg = $"!来源: {nameof(GetLableUpQ)}, 获取真实交地失败: {code.ToLocation}";
+                    var msg = $"!来源: {nameof(GetLableUpQ)},{code.LCode} 获取真实交地失败: {code.ToLocation}";
                     onlog?.Invoke(msg, LogType.ROLL_QUEUE);
 
                     onlog?.Invoke("请查看交地状态。", LogType.ROLL_QUEUE);
 
-                    Thread.Sleep(3000);
-                } else {
                     return null;
                 }
 
-                code = LableUpQ.Dequeue();
                 var ok = LableCode.UpdateRealLocation(code);
                 if (!ok) { throw new Exception($"保存标签的实际交地失败"); }
 
+                code = LableUpQ.Dequeue();
                 if (int.Parse(LableCode.ParseRealLocationNo(code.RealLocation)) < 6) {
                     CatchAQ.Enqueue(code);
                 } else {

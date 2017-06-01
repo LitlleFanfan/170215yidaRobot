@@ -33,7 +33,9 @@ namespace yidascan {
         public static IOpcClient opcWeigh;
         public static IOpcClient opcBUFL;
         public static IOpcClient opcACF;
+        public static IOpcClient CacheOpcClient;
         public static IOpcClient RobotOpcClient;
+        public static IOpcClient LabelUpOpcClient;
 
         #endregion
         IRobotJob robot;
@@ -191,7 +193,7 @@ namespace yidascan {
         /// 启动机器人布卷队列等待。
         /// </summary>
         private void StartRobotJobTask() {
-            var RobotOpcClient = CreateOpcClient("机器人抓料队列");
+            RobotOpcClient = CreateOpcClient("机器人抓料队列");
             opcParam.RobotCarryParam = new OPCRobotCarryParam(RobotOpcClient);
 
             Task.Factory.StartNew(() => {
@@ -601,7 +603,7 @@ namespace yidascan {
         }
 
         private void BeforCacheTask_new() {
-            var CacheOpcClient = CreateOpcClient("缓存位");
+            CacheOpcClient = CreateOpcClient("缓存位");
             opcParam.CacheParam = new OPCBeforCacheParam(CacheOpcClient);
             Task.Factory.StartNew(() => {
                 while (isrun) {
@@ -682,7 +684,7 @@ namespace yidascan {
         /// 2期代码。
         /// </summary>
         private void LableUpTask() {
-            var LabelUpOpcClient = CreateOpcClient("标签朝上");
+            LabelUpOpcClient = CreateOpcClient("标签朝上");
             opcParam.LableUpParam = new OPCLableUpParam(LabelUpOpcClient);
 
             Task.Factory.StartNew(() => {
@@ -721,6 +723,8 @@ namespace yidascan {
                                 }, 330, 30);
                                 logOpt.Write($"标签朝上处来料信号状态:{str} " +
                                     $"{opcParam.LableUpParam.Signal}", LogType.ROLL_QUEUE);
+                            } else {
+                                logOpt.Write($"!标签朝上处来料信号无对应数据，忽略", LogType.ROLL_QUEUE);
                             }
                         }
                     } catch (Exception ex) {
@@ -1331,15 +1335,19 @@ namespace yidascan {
         }
 
         private void btnWeighReset_Click(object sender, EventArgs e) {
-            const int TO_WEIGH = 1;
-            // 称重复位。
-            var signal = opcWeigh.ReadInt(opcParam.WeighParam.GetWeigh);
-            if (signal == TO_WEIGH) {
-                opcWeigh.Write(opcParam.WeighParam.GetWeigh, 0);
-                logOpt.Write("手动称重复位", LogType.NORMAL, LogViewType.Both);
-            } else {
-                logOpt.Write("手动称重复位 状态正确无需复位", LogType.NORMAL, LogViewType.Both);
-            }
+            opcParam.LableUpParam.PlcSn.ResetSN(LabelUpOpcClient);
+            opcParam.RobotCarryParam.PlcSnA.ResetSN(RobotOpcClient);
+            opcParam.RobotCarryParam.PlcSnB.ResetSN(RobotOpcClient);
+
+            //const int TO_WEIGH = 1;
+            //// 称重复位。
+            //var signal = opcWeigh.ReadInt(opcParam.WeighParam.GetWeigh);
+            //if (signal == TO_WEIGH) {
+            //    opcWeigh.Write(opcParam.WeighParam.GetWeigh, 0);
+            //    logOpt.Write("手动称重复位", LogType.NORMAL, LogViewType.Both);
+            //} else {
+            //    logOpt.Write("手动称重复位 状态正确无需复位", LogType.NORMAL, LogViewType.Both);
+            //}
         }
 
         private void btnBrowsePanels_Click(object sender, EventArgs e) {
