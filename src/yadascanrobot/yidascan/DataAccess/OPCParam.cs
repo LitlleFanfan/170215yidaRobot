@@ -8,6 +8,7 @@ using System.Data.SqlClient;
 using System.Data;
 using System.Reflection;
 using Newtonsoft.Json;
+using System.Threading;
 
 namespace yidascan.DataAccess {
     public enum ERPAlarmNo {
@@ -32,26 +33,17 @@ namespace yidascan.DataAccess {
         }
 
         public bool ReadSN(IOpcClient opc) {
-            if (string.IsNullOrEmpty(groupName)) {
-                readCount = opc.ReadInt(ReadSignal);
-                writeCount = opc.ReadInt(WriteSignal);
-            } else {
-                readCount = opc.ReadInt(groupName, ReadSignal);
-                writeCount = opc.ReadInt(groupName, WriteSignal);
-            }
+            GetSignal(opc);
 
 #if DEBUG
             return true;
 #endif
-            if (readCount == 0) {
-                //改成独立复位
-                //if (string.IsNullOrEmpty(groupName)) {       && writeCount != readCount
-                //    opc.TryWrite(WriteSignal, readCount);
-                //} else {
-                //    opc.TryWrite(groupName, WriteSignal, readCount);
-                //}
-                //FrmMain.logOpt.Write($"来料读到0复位 R {ReadSignal}: {readCount} W {WriteSignal}: {writeCount}！{guid}");
-                return false;
+            if (readCount == 0 && writeCount != readCount) {
+                ResetReadCount(opc);
+                if (readCount == 0 && writeCount != readCount) {
+                    ResetSN(opc);
+                    return false;
+                }
             }
 
             if (readCount == (writeCount + 1)) {
@@ -60,6 +52,31 @@ namespace yidascan.DataAccess {
                 return true;
             } else {
                 return false;
+            }
+        }
+
+        /// <summary>
+        /// 复位校正
+        /// </summary>
+        /// <param name="opc"></param>
+        private void ResetReadCount(IOpcClient opc) {
+            var count = 3;
+            while (count-- > 0) {
+                Thread.Sleep(100);
+                GetSignal(opc);
+                if (readCount != 0) {
+                    break;
+                }
+            }
+        }
+
+        private void GetSignal(IOpcClient opc) {
+            if (string.IsNullOrEmpty(groupName)) {
+                readCount = opc.ReadInt(ReadSignal);
+                writeCount = opc.ReadInt(WriteSignal);
+            } else {
+                readCount = opc.ReadInt(groupName, ReadSignal);
+                writeCount = opc.ReadInt(groupName, WriteSignal);
             }
         }
 
@@ -82,7 +99,7 @@ namespace yidascan.DataAccess {
         }
 
         public void ResetSN(IOpcClient opc) {
-            if (string.IsNullOrEmpty(groupName)) { 
+            if (string.IsNullOrEmpty(groupName)) {
                 opc.TryWrite(WriteSignal, 0);
             } else {
                 opc.TryWrite(groupName, WriteSignal, 0);

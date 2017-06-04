@@ -437,9 +437,9 @@ namespace yidascan.DataAccess {
                 new SqlParameter[]{}),
                 new CommandParameter(
                     "insert into LableCodeHis([LCode],[ToLocation],[PanelNo],[Status],[Floor],[FloorIndex],[Diameter],[Length]," +
-                    "[Coordinates],[Cx],[Cy],[Cz],[Crz],[GetOutLCode],[CreateDate],[UpdateDate],[Remark]) " +
+                    "[Coordinates],[Cx],[Cy],[Cz],[Crz],[GetOutLCode],[CreateDate],[UpdateDate],[Remark],[RealLocation]) " +
                     "select [LCode],[ToLocation],[PanelNo],[Status],[Floor],[FloorIndex],[Diameter],[Length],[Coordinates]," +
-                    "[Cx],[Cy],[Cz],[Crz],[GetOutLCode],[CreateDate],[UpdateDate],[Remark] from LableCode",
+                    "[Cx],[Cy],[Cz],[Crz],[GetOutLCode],[CreateDate],[UpdateDate],[Remark],[RealLocation] from LableCode",
                 new SqlParameter[]{}),
                 new CommandParameter("delete from LableCode",
                 new SqlParameter[]{}),
@@ -581,9 +581,9 @@ namespace yidascan.DataAccess {
                 new SqlParameter[]{new SqlParameter("@PanelNo",panelNo)}),
                 new CommandParameter(
                     "insert into LableCodeHis([LCode],[ToLocation],[PanelNo],[Status],[Floor],[FloorIndex],[Diameter],[Length]," +
-                    "[Coordinates],[Cx],[Cy],[Cz],[Crz],[GetOutLCode],[CreateDate],[UpdateDate],[Remark]) " +
+                    "[Coordinates],[Cx],[Cy],[Cz],[Crz],[GetOutLCode],[CreateDate],[UpdateDate],[Remark],[RealLocation]) " +
                     "select [LCode],[ToLocation],[PanelNo],[Status],[Floor],[FloorIndex],[Diameter],[Length]," +
-                    "[Coordinates],[Cx],[Cy],[Cz],[Crz],[GetOutLCode],[CreateDate],[UpdateDate],[Remark] " +
+                    "[Coordinates],[Cx],[Cy],[Cz],[Crz],[GetOutLCode],[CreateDate],[UpdateDate],[Remark],[RealLocation] " +
                     "from LableCode where PanelNo=@PanelNo",
                 new SqlParameter[]{new SqlParameter("@PanelNo",panelNo)}),
                 new CommandParameter("delete from LableCode where PanelNo=@PanelNo",
@@ -677,12 +677,10 @@ and Status<3 and FloorIndex<>0";
             var cps = new List<CommandParameter>() {
             new CommandParameter(
                     @"insert into LableCodeHis([LCode],[ToLocation],[PanelNo],[Status],[Floor],[FloorIndex],[Diameter],[Length],
-                [Coordinates],[Cx],[Cy],[Cz],[Crz],[GetOutLCode],[CreateDate],[UpdateDate],[Remark])
+                [Coordinates],[Cx],[Cy],[Cz],[Crz],[GetOutLCode],[CreateDate],[UpdateDate],[Remark],[RealLocation])
                 select [LCode],[ToLocation],[PanelNo],[Status],[Floor],[FloorIndex],[Diameter],[Length],
-                [Coordinates],[Cx],[Cy],[Cz],[Crz],[GetOutLCode],[CreateDate],[UpdateDate],[Remark]
+                [Coordinates],[Cx],[Cy],[Cz],[Crz],[GetOutLCode],[CreateDate],[UpdateDate],[Remark],[RealLocation]
                 from LableCode where PanelNo=(select PanelNo from lablecode where LCode=@lCode)",
-                new SqlParameter[]{new SqlParameter("@lCode", lCode) }),
-                new CommandParameter("delete from LableCode where PanelNo=(select PanelNo from lablecode where LCode=@lCode)",
                 new SqlParameter[]{new SqlParameter("@lCode", lCode) }),
                 new CommandParameter("insert into PanelHis([PanelNo],[Status],[CurrFloor],[MaxFloor],[OddStatus]," +
                 "[EvenStatus],[CreateDate],[UpdateDate],[ToLocation],[Remark])" +
@@ -691,6 +689,8 @@ and Status<3 and FloorIndex<>0";
                 "from Panel where PanelNo=(select PanelNo from lablecode where LCode=@lCode)",
                 new SqlParameter[]{new SqlParameter("@lCode", lCode) }),
                 new CommandParameter("delete from Panel where PanelNo=(select PanelNo from lablecode where LCode=@lCode)",
+                new SqlParameter[]{new SqlParameter("@lCode", lCode) }),
+                new CommandParameter("delete from LableCode where PanelNo=(select PanelNo from lablecode where LCode=@lCode)",
                 new SqlParameter[]{new SqlParameter("@lCode", lCode) }) };
             return DataAccess.CreateDataAccess.sa.NonQueryTran(cps);
         }
@@ -858,8 +858,8 @@ and Status<3 and FloorIndex<>0";
 
         private static List<CommandParameter> CreateLableCodeInsertHistory(LableCode c) {
             return new List<CommandParameter>() { new CommandParameter(
-                                "insert into LableCodeHis(LCode,ToLocation,PanelNo,Floor,FloorIndex,Diameter,Length,Coordinates,Cx,Cy,Cz,Crz,GetOutLCode,Remark) " +
-                            "values(@LCode,@ToLocation,@PanelNo,@Floor,@FloorIndex,@Diameter,@Length,@Coordinates,@Cx,@Cy,@Cz,@Crz,@GetOutLCode,@Remark)",
+                                "insert into LableCodeHis(LCode,ToLocation,PanelNo,Floor,FloorIndex,Diameter,Length,Coordinates,Cx,Cy,Cz,Crz,GetOutLCode,Remark,[RealLocation]) " +
+                            "values(@LCode,@ToLocation,@PanelNo,@Floor,@FloorIndex,@Diameter,@Length,@Coordinates,@Cx,@Cy,@Cz,@Crz,@GetOutLCode,@Remark,@RealLocation)",
                                 new SqlParameter[]{
                         new SqlParameter("@LCode",c.LCode),
                         new SqlParameter("@ToLocation",c.ToLocation),
@@ -875,7 +875,8 @@ and Status<3 and FloorIndex<>0";
                         new SqlParameter("@Cz",c.cz),
                         new SqlParameter("@Crz",c.crz),
                         c.getOutLCode==null?new SqlParameter("@GetOutLCode",DBNull.Value):new SqlParameter("@GetOutLCode",c.getOutLCode),
-                        c.Remark==null?new SqlParameter("@Remark",DBNull.Value):new SqlParameter("@Remark",c.Remark)}) };
+                        c.Remark==null?new SqlParameter("@Remark",DBNull.Value):new SqlParameter("@Remark",c.Remark),
+                        c.RealLocation==null?new SqlParameter("@RealLocation",DBNull.Value):new SqlParameter("@RealLocation",c.RealLocation)}) };
         }
 
         public static bool SaveToHistory(LableCode c) {
