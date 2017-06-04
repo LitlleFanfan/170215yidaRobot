@@ -78,58 +78,52 @@ namespace yidascan.DataAccess {
         public bool NonQueryTran(List<CommandParameter> p) {
             using (var con = new SqlConnection(CONNECTION_S))
             using (var com = new SqlCommand()) {
-                try {
-                    con.Open();
-                    com.Connection = con;
-                    com.Transaction = con.BeginTransaction();
+                con.Open();
+                com.Connection = con;
+                com.Transaction = con.BeginTransaction();
 
-                    foreach (CommandParameter cp in p) {
-                        com.CommandText = cp.Sql;
-                        com.Parameters.Clear();
-                        foreach (SqlParameter par in cp.P) {
-                            com.Parameters.Add(par);
-                        }
-                        if (com.ExecuteNonQuery() < 0) {
-                            com.Transaction.Rollback();
-                            return false;
-                        }
-                    }
-                    com.Transaction.Commit();
-                    return true;
-                } catch (SqlException ex) {
-                    com.Transaction.Rollback();
-                    loger.Error($"!来源: {nameof(NonQueryTran)}, 数据库操作失败: {ex}");
-                    loger.Info(JsonConvert.SerializeObject(p));
-                    return false;
-                }
-            }
-        }
-
-        /// <summary>
-        /// 返回 单行单列
-        /// </summary>
-        /// <param name="sql">sql</param>
-        /// <param name="p">todo: describe p parameter on ExecuteScalars</param>
-        /// <returns></returns>
-        public object ExecuteScalars(string sql, params SqlParameter[] p) {
-            using (var con = new SqlConnection(CONNECTION_S))
-            using (var com = new SqlCommand(sql, con)) {
-                try {
-                    foreach (SqlParameter par in p) {
+                foreach (CommandParameter cp in p) {
+                    com.CommandText = cp.Sql;
+                    com.Parameters.Clear();
+                    foreach (SqlParameter par in cp.P) {
                         com.Parameters.Add(par);
                     }
-
-                    con.Open();
-                    return com.ExecuteScalar();
-                } catch (SqlException ex) {
-                    loger.Error(ex.ToString() + ", " + sql);
-                    return null;
+                    if (com.ExecuteNonQuery() < 0) {
+                        com.Transaction.Rollback();
+                        return false;
+                    }
                 }
+                com.Transaction.Commit();
+                return true;
             }
         }
-        public class CreateDataAccess {
-            public static DataAccess sa = new DataAccess();
+    
+
+    /// <summary>
+    /// 返回 单行单列
+    /// </summary>
+    /// <param name="sql">sql</param>
+    /// <param name="p">todo: describe p parameter on ExecuteScalars</param>
+    /// <returns></returns>
+    public object ExecuteScalars(string sql, params SqlParameter[] p) {
+        using (var con = new SqlConnection(CONNECTION_S))
+        using (var com = new SqlCommand(sql, con)) {
+            try {
+                foreach (SqlParameter par in p) {
+                    com.Parameters.Add(par);
+                }
+
+                con.Open();
+                return com.ExecuteScalar();
+            } catch (SqlException ex) {
+                loger.Error(ex.ToString() + ", " + sql);
+                return null;
+            }
         }
     }
+    public class CreateDataAccess {
+        public static DataAccess sa = new DataAccess();
+    }
+}
 
 }

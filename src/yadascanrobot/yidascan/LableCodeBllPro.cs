@@ -503,7 +503,9 @@ namespace yidascan {
                 }
             }
 
-            LableCode.Update(cre.CResult.CodeCome);
+            if (!PanelGen.HasPanelNo(pinfo.PanelNo)) {
+                LableCode.Update(cre.CResult.CodeCome);
+            }
 
             //if (pinfo == null) {
             //    // 产生新板号赋予当前标签。

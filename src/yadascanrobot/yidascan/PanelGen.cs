@@ -28,17 +28,14 @@ namespace yidascan {
             lastPanelNo = InitPanelNo(dtime);
         }
 
-        private static string GetLastPanelNo(string shiftNo) {
-            var sql = "select top 1 PanelNo from LableCode where PanelNo like @shiftNo+'%' group by PanelNo order by PanelNo desc";
+        public static bool HasPanelNo(string panelno) {
+            var sql = "select count(PanelNo) PanelNo from Panel where PanelNo = @panelno";
 
             var sp = new SqlParameter[]{
-                new SqlParameter("@shiftNo",shiftNo)};
+                new SqlParameter("@panelno",panelno)};
 
-            var dt = DataAccess.DataAccess.CreateDataAccess.sa.Query(sql, sp);
-            if (dt == null || dt.Rows.Count < 1) {
-                return string.Empty;
-            }
-            return dt.Rows[0][0].ToString();
+            var dt = (int)DataAccess.DataAccess.CreateDataAccess.sa.ExecuteScalars(sql, sp);
+            return dt > 0;
         }
 
         private static string InitPanelNo(DateTime dtime) {
@@ -58,7 +55,7 @@ namespace yidascan {
             lock (foo) {
                 while (counter-- > 0) {
                     lastPanelNo = (decimal.Parse(lastPanelNo) + 1).ToString();
-                    if (validatePanelNo(lastPanelNo)) {
+                    if (!HasPanelNo(lastPanelNo)) {
                         found = true;
                         break;
                     }
@@ -67,16 +64,6 @@ namespace yidascan {
             }
             if (!found) { throw new Exception($"创建新板号失败。"); }
             return lastPanelNo;
-        }
-
-        public static bool validatePanelNo(string panelno) {
-            var sql = "select count(PanelNo) PanelNo from Panel where PanelNo = @panelno";
-
-            var sp = new SqlParameter[]{
-                new SqlParameter("@panelno",panelno)};
-
-            var dt = (int)DataAccess.DataAccess.CreateDataAccess.sa.ExecuteScalars(sql, sp);
-            return dt == 0;
         }
     }
 
