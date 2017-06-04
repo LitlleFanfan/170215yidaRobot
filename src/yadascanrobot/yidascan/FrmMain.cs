@@ -331,7 +331,9 @@ namespace yidascan {
                             var newPanel = PanelGen.NewPanelNo();
 
                             // 重新计算缓存区的布卷的坐标。
-                            cacheher.ReCalculateCoordinate(newPanel, virtuallocation);
+                            lock (TaskQueues.LOCK_LOCHELPER) {
+                                cacheher.ReCalculateCoordinate(newPanel, virtuallocation);
+                            }
 
                             //处理满板信号
                             robot.NotifyOpcJobFinished(pf.PanelNo, virtuallocation, reallocation);
@@ -680,7 +682,7 @@ namespace yidascan {
                         //var r = LabelUpOpcClient.ReadBool(opcParam.LableUpParam.Signal);
                         var r = opcParam.LableUpParam.PlcSn.ReadSN(LabelUpOpcClient);
                         if (r) {
-                            var code = taskQ.GetLableUpQ(isrun);
+                            var code = taskQ.GetLableUpQ();
                             if (code != null) {
                                 logOpt.Write(string.Format("收到标签朝上来料信号。号码: {0}", code.LCode), LogType.ROLL_QUEUE);
 
@@ -959,7 +961,7 @@ namespace yidascan {
         }
 
         private void ScanLableCode(IOpcClient client, string code, int scanNo, bool handwork) {
-            var lc = new LableCode();
+            LableCode lc = null;
             try {
                 ShowWarning(code, false);
 #if !DEBUG

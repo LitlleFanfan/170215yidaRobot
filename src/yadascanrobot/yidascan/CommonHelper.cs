@@ -81,6 +81,11 @@ namespace commonhelper {
                 return 0;
             }
         }
+
+        // 显示枚举变量的名称。
+        public static string describeEnum<T>(T obj) {
+            return Enum.GetName(typeof(T), obj);
+        }
     }
 }
 

@@ -158,7 +158,7 @@ namespace yidascan.DataAccess {
         /// </summary>
         /// <param name="isrun"></param>
         /// <returns></returns>
-        public LableCode GetLableUpQ(bool isrun) {
+        public LableCode GetLableUpQ() {
             LableCode code = null;
 
             if (LableUpQ.Count > 0) {
@@ -175,7 +175,6 @@ namespace yidascan.DataAccess {
                     onlog?.Invoke(msg, LogType.ROLL_QUEUE);
 
                     onlog?.Invoke("请查看交地状态。", LogType.ROLL_QUEUE);
-
                     return null;
                 }
 
