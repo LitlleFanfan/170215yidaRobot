@@ -5,6 +5,7 @@ create table LableCode(
 SequenceNo Integer identity PRIMARY KEY,--
 LCode varchar(64) not null unique,
 ToLocation varchar(64) null,
+Reallocation varchar(64) null,
 PanelNo varchar(64) null,
 Status int not null default 0,
 Floor int null,
@@ -26,6 +27,7 @@ create table LableCodeHis(
 SequenceNo Integer identity PRIMARY KEY,--
 LCode varchar(64) not null,
 ToLocation varchar(64) null,
+Reallocation varchar(64) null,
 PanelNo varchar(64) null,
 Status int not null default 0,
 Floor int null,

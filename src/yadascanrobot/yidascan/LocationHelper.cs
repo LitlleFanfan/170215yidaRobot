@@ -120,7 +120,7 @@ namespace yidascan {
                 loc.panelno = panelno;
             }
         }
-        
+
         private void Unmap(string realloc, string includePanelno, string excludePanelno) {
             var real = RealLocations.Single(x => x.realloc == realloc);
 
@@ -388,6 +388,7 @@ namespace yidascan {
 
             if (real.state == LocationState.FULL) {
                 SetState(realloc, LocationState.IDLE, "");
+                FrmMain.SetReallocationState(realloc, PanelState.LessHalf, true);
             }
         }
         #endregion

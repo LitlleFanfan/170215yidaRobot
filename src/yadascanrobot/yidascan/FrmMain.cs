@@ -33,7 +33,9 @@ namespace yidascan {
         public static IOpcClient opcWeigh;
         public static IOpcClient opcBUFL;
         public static IOpcClient opcACF;
+        public static IOpcClient CacheOpcClient;
         public static IOpcClient RobotOpcClient;
+        public static IOpcClient LabelUpOpcClient;
 
         #endregion
         IRobotJob robot;
@@ -56,6 +58,8 @@ namespace yidascan {
             logOpt = new ProduceComm.LogOpreate();
 
             try {
+                locationLbls = new Dictionary<string, Label> { { "B01", lbl1 }, { "B02", lbl2 }, { "B03", lbl3 }, { "B04", lbl4 },
+                    { "B05", lbl5 }, {"B06",lbl6 },{"B07",lbl7 }, {"B08",lbl8 }, {"B09",lbl9 }, {"B10",lbl10 },{"B11", lbl11 } };
                 // 显示效果不对，以后再说。
                 InitListBoxes();
 
@@ -191,7 +195,7 @@ namespace yidascan {
         /// 启动机器人布卷队列等待。
         /// </summary>
         private void StartRobotJobTask() {
-            var RobotOpcClient = CreateOpcClient("机器人抓料队列");
+            RobotOpcClient = CreateOpcClient("机器人抓料队列");
             opcParam.RobotCarryParam = new OPCRobotCarryParam(RobotOpcClient);
 
             Task.Factory.StartNew(() => {
@@ -488,7 +492,9 @@ namespace yidascan {
                                         opcWeigh.Write(opcParam.WeighParam.GetWeigh, 0);
                                         logOpt.Write($"称重复位, 原因: 重复称重。plc标签{codeFromPlc}  读号码耗时{t}ms");
                                     } else {
+#if !DEBUG
                                         logOpt.Write($"!称重信号无对应的队列号码, opc称重标签{codeFromPlc} 最后称重标签{lastweighLable}  读号码耗时{t}ms");
+#endif
                                     }
                                 }
                                 showLabelQue(taskQ.WeighQ, lsvWeigh);
@@ -496,6 +502,7 @@ namespace yidascan {
                                     showLabelQue(taskQ.CacheQ, lsvCacheBefor);//加到缓存列表中显示
                                 }
                             } else {
+#if !DEBUG
                                 if (codeFromPlc == lastweighLable) {
                                     // 复位
                                     opcWeigh.Write(opcParam.WeighParam.GetWeigh, 0);
@@ -503,6 +510,7 @@ namespace yidascan {
                                 } else {
                                     logOpt.Write($"!称重信号无对应的队列号码, opc称重标签{codeFromPlc} 最后称重标签{lastweighLable} 读号码耗时{t}ms");
                                 }
+#endif
                             }
                         }
                     } catch (Exception ex) {
@@ -603,7 +611,7 @@ namespace yidascan {
         }
 
         private void BeforCacheTask_new() {
-            var CacheOpcClient = CreateOpcClient("缓存位");
+            CacheOpcClient = CreateOpcClient("缓存位");
             opcParam.CacheParam = new OPCBeforCacheParam(CacheOpcClient);
             Task.Factory.StartNew(() => {
                 while (isrun) {
@@ -684,7 +692,7 @@ namespace yidascan {
         /// 2期代码。
         /// </summary>
         private void LableUpTask() {
-            var LabelUpOpcClient = CreateOpcClient("标签朝上");
+            LabelUpOpcClient = CreateOpcClient("标签朝上");
             opcParam.LableUpParam = new OPCLableUpParam(LabelUpOpcClient);
 
             Task.Factory.StartNew(() => {
@@ -693,7 +701,7 @@ namespace yidascan {
                         //var r = LabelUpOpcClient.ReadBool(opcParam.LableUpParam.Signal);
                         var r = opcParam.LableUpParam.PlcSn.ReadSN(LabelUpOpcClient);
                         if (r) {
-                            var code = taskQ.GetLableUpQ(isrun);
+                            var code = taskQ.GetLableUpQ();
                             if (code != null) {
                                 logOpt.Write(string.Format("收到标签朝上来料信号。号码: {0}", code.LCode), LogType.ROLL_QUEUE);
 
@@ -723,6 +731,10 @@ namespace yidascan {
                                 }, 330, 30);
                                 logOpt.Write($"标签朝上处来料信号状态:{str} " +
                                     $"{opcParam.LableUpParam.Signal}", LogType.ROLL_QUEUE);
+                            } else {
+#if !DEBUG
+                                logOpt.Write($"!标签朝上处来料信号无对应数据，忽略", LogType.ROLL_QUEUE);
+#endif
                             }
                         }
                     } catch (Exception ex) {
@@ -1285,6 +1297,30 @@ namespace yidascan {
             showWarningMessages(lsvWarn, warnmsgs);
         }
 
+        #region reallocation State
+        static Dictionary<string, Label> locationLbls = new Dictionary<string, Label>();
+        public static void SetReallocationState(string locationNo, PanelState pstate, bool noPanel = false) {
+            if (noPanel) {
+                locationLbls[locationNo].BackColor = Color.LightGreen;
+            } else {
+                switch (pstate) {
+                    case PanelState.Full:
+                        locationLbls[locationNo].BackColor = Color.Red;
+                        break;
+                    case PanelState.HalfFull:
+                        locationLbls[locationNo].BackColor = Color.Orange;
+                        break;
+                    case PanelState.LessHalf:
+                        locationLbls[locationNo].BackColor = Color.Green;
+                        break;
+                    default:
+                        locationLbls[locationNo].BackColor = Color.LightGreen;
+                        break;
+                }
+            }
+        }
+        #endregion
+
         private void btnHelp_Click(object sender, EventArgs e) {
             var path = Path.Combine(Application.StartupPath, @"help\index.html");
             Process.Start(path);
@@ -1494,20 +1530,33 @@ namespace yidascan {
         }
 
         private void btnSelfTest_Click(object sender, EventArgs e) {
-            const string GROUP = "SELF TEST";
-            logOpt.Write("!--- 自检开始 ---", GROUP);
-            var t = new SelfTest(FrmSet.pcfgScan1, (s) => {
-                logOpt.Write(s, GROUP);
-                Application.DoEvents();
-            });
-            try {
-                this.Cursor = Cursors.WaitCursor;
-                t.run();
-            } finally {
-                t.close();
-                this.Cursor = Cursors.Default;
-                logOpt.Write("!--- 自检结束 ---", GROUP);
+            //const string GROUP = "SELF TEST";
+            //logOpt.Write("!--- 自检开始 ---", GROUP);
+            //var t = new SelfTest(FrmSet.pcfgScan1, (s) => {
+            //    logOpt.Write(s, GROUP);
+            //    Application.DoEvents();
+            //});
+            //try {
+            //    this.Cursor = Cursors.WaitCursor;
+            //    t.run();
+            //} finally {
+            //    t.close();
+            //    this.Cursor = Cursors.Default;
+            //    logOpt.Write("!--- 自检结束 ---", GROUP);
+            //}
+            PanelGen.Init(DateTime.Now);
+            Dictionary<string, int> lst = new Dictionary<string, int>();
+            int count = 5000;
+            while (count-- > 0) {
+                var tmp = PanelGen.NewPanelNo();
+                if (lst.Keys.Contains(tmp)) {
+                    lst[tmp]++;
+                } else {
+                    lst.Add(tmp, 1);
+                }
+                Thread.Sleep(500);
             }
+
         }
 
         private void btnSearch_Click(object sender, EventArgs e) {
