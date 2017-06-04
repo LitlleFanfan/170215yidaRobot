@@ -163,8 +163,6 @@ namespace ProduceComm.OPC {
                 foreach (var item in rt) {
                     r = r && item.ResultID.Succeeded();
                     var s = JsonConvert.SerializeObject(item.ResultID);
-
-                    FrmMain.logOpt.Write($"{item.ItemName} {item.ResultID.Succeeded()} {s}", "normal", LogViewType.OnlyFile);
                 }
                 return r;
             }

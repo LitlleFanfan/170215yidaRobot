@@ -212,12 +212,6 @@ namespace yidascan {
 
                             showLabelQue(taskQ.CatchAQ, lsvCatch1);
                             showRobotQue(taskQ.RobotRollAQ, lsvRobotA);
-
-                            var str = ProduceComm.Helper.retryTime(() => {
-                                return RobotOpcClient.ReadBool(opcParam.RobotCarryParam.RobotCarryA);
-                            }, 330, 30);
-                            logOpt.Write($"抓料A处来料信号状态:{str} " +
-                                $"{opcParam.RobotCarryParam.RobotCarryA}", LogType.ROLL_QUEUE);
                         }
                     }
                     Thread.Sleep(1000);
@@ -233,12 +227,6 @@ namespace yidascan {
 
                             showLabelQue(taskQ.CatchBQ, lsvCatch2);
                             showRobotQue(taskQ.RobotRollBQ, lsvRobotB);
-
-                            var str = ProduceComm.Helper.retryTime(() => {
-                                return RobotOpcClient.ReadBool(opcParam.RobotCarryParam.RobotCarryB);
-                            }, 330, 30);
-                            logOpt.Write($"抓料A处来料信号状态:{str} " +
-                                $"{opcParam.RobotCarryParam.RobotCarryB}", LogType.ROLL_QUEUE);
                         }
                     }
                     Thread.Sleep(1000);
@@ -665,13 +653,6 @@ namespace yidascan {
 
                             // 发出机械手缓存动作指令
                             PlcHelper.WriteCacheJob(CacheOpcClient, opcParam, cacheJobState.state, cacheJobState.savepos, cacheJobState.getpos, lc.LCode);
-
-                            var str = ProduceComm.Helper.retryTime(() => {
-                                return CacheOpcClient.ReadBool(opcParam.CacheParam.BeforCacheStatus);
-                            }, 330, 30);
-                            logOpt.Write($"缓存处来料信号状态:{str} " +
-                                $"{opcParam.CacheParam.BeforCacheStatus}", LogType.BUFFER);
-
 #if DEBUG
                             if (Math.Abs(lc.Cx + lc.Cy) > 1000) {
                                 throw new Exception($"!{lc.LCode}布卷坐标超界");
@@ -723,12 +704,6 @@ namespace yidascan {
                                 } else {
                                     showLabelQue(taskQ.CatchBQ, lsvCatch2);
                                 }
-
-                                var str = ProduceComm.Helper.retryTime(() => {
-                                    return LabelUpOpcClient.ReadBool(opcParam.LableUpParam.Signal);
-                                }, 330, 30);
-                                logOpt.Write($"标签朝上处来料信号状态:{str} " +
-                                    $"{opcParam.LableUpParam.Signal}", LogType.ROLL_QUEUE);
                             } else {
 #if !DEBUG
                                 logOpt.Write($"!标签朝上处来料信号无对应数据，忽略", LogType.ROLL_QUEUE);
