@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data.SqlClient;
+using System.Threading;
 using yidascan.DataAccess;
 using ProduceComm;
 
@@ -52,10 +53,36 @@ namespace yidascan {
         }
 
         public static string NewPanelNo() {
+            var counter = 10;
+            var found = false;
             lock (foo) {
-                lastPanelNo = (decimal.Parse(lastPanelNo) + 1).ToString();
-                return lastPanelNo;
+                while (counter-- > 0) {
+                    lastPanelNo = (decimal.Parse(lastPanelNo) + 1).ToString();
+                    if (validatePanelNo(lastPanelNo)) {
+                        found = true;
+                        break;
+                    }
+                    Thread.Sleep(10);
+                }
             }
+            if (!found) { throw new Exception($"创建新板号失败。"); }
+            return lastPanelNo;
         }
+
+        public static bool validatePanelNo(string panelno) {
+            var sql = "select count(PanelNo) PanelNo from Panel where PanelNo = @panelno";
+
+            var sp = new SqlParameter[]{
+                new SqlParameter("@panelno",panelno)};
+
+            var dt = (int)DataAccess.DataAccess.CreateDataAccess.sa.ExecuteScalars(sql, sp);
+            return dt == 0;
+        }
+    }
+
+    public static class Area {
+        public static string A = "A";
+        public static string B = "B";
+        public static string C = "C";
     }
 }

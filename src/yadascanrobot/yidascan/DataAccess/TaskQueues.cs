@@ -177,8 +177,7 @@ namespace yidascan.DataAccess {
                     onlog?.Invoke("请查看交地状态。", LogType.ROLL_QUEUE);
 
                     Thread.Sleep(3000);
-                } else {
-                    return null;
+                    return code;
                 }
 
                 code = LableUpQ.Dequeue();

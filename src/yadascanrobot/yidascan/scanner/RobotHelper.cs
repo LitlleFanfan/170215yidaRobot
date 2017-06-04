@@ -335,6 +335,8 @@ namespace yidascan {
                         log($"{reallocation}: 满板信号发出。slot: {param.BAreaPanelFinish[reallocation]}", LogType.ROBOT_STACK);
                         log(msg, LogType.ROBOT_STACK);
 
+                        LableCode.SetPanelFinished(panelNo);
+
                         // 满板时设置自由板位标志。
                         lock (TaskQueues.LOCK_LOCHELPER) {
                             TaskQueues.lochelper.OnFull(reallocation);
@@ -386,6 +388,7 @@ namespace yidascan {
                         log($"!板状态不明，不发信号, {roll.PnlState}", LogType.ROBOT_STACK);
                         break;
                 }
+
                 if (roll.Status == (int)LableState.FloorLastRoll && roll.PnlState != PanelState.Full) {
                     BadShape(roll);
                 }

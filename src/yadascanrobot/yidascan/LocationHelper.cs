@@ -108,12 +108,13 @@ namespace yidascan {
 
         #region private_func
         private void SetState(string realloc, LocationState state, string panelno) {
-            if (!IsRealLocExists(realloc)) {
+            var loc = RealLocations.First(x => x.realloc == realloc);
+
+            if (loc == null) {
                 throw new Exception($"函数: {nameof(SetState)}, 交地错误： {realloc}");
             }
 
-            var loc = RealLocations.First(x => x.realloc == realloc);
-
+            // 非禁用的实际交地，修改状态。
             if (loc.priority != Priority.DISABLE) {
                 loc.state = state;
                 loc.panelno = panelno;
@@ -132,19 +133,6 @@ namespace yidascan {
                     cond = cond && real.panelno != excludePanelno;
                 }
                 if (LocMap[k] == realloc && cond) {
-                    LocMap[k] = "";
-                }
-            }
-
-            // 检查结果的正确性
-            if (LocMap.Any(x => x.Value == realloc)) {
-                throw new Exception($"来源: {nameof(Unmap)}, 未能解除交地对应: {realloc}");
-            }
-        }
-
-        private void Unmap(string realloc) {
-            foreach (var k in LocMap.Keys.ToList()) {
-                if (LocMap[k] == realloc) {
                     LocMap[k] = "";
                 }
             }
@@ -399,10 +387,6 @@ namespace yidascan {
             }
 
             if (real.state == LocationState.FULL) {
-#if DEBUG
-                Thread.Sleep(1000 * 30); // 调试用，等半分钟
-#endif
-                //Unmap(realloc);
                 SetState(realloc, LocationState.IDLE, "");
             }
         }

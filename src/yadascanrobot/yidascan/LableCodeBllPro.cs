@@ -219,7 +219,7 @@ namespace yidascan {
                             lc.GetOutLCode = cr.CodeFromCache.LCode;//换掉的标签---//当前布卷直接缓存起来。缓存的两卷中小的拿出来并计算位置。//当前布卷不需要缓存，计算位置。
                             cr.state = CacheState.GetThenCache;
                         }
-                    }  else {
+                    } else {
                         cr.state = CacheState.Cache;
                     }
 
@@ -306,6 +306,7 @@ namespace yidascan {
                 .Select(x => x.labelcode)
                 .ToList();
 
+            // 缓存位中，会导致满板或超出的布卷，取第一个。
             var rt = cachedRolls.Where(x => (expectedWidthNoEdgeSpace(installedWidth, current, x) > max - e))
                 .OrderBy(x => x.Diameter)
                 .FirstOrDefault();
@@ -313,33 +314,18 @@ namespace yidascan {
             // 缓存位的floor有时候不对。floor这个值是哪里算的？
             if (rt != null && rt.Floor != current.Floor) {
                 rt.Floor = current.Floor;
-#if DEBUG
-                FrmMain.logOpt.Write($"!src: {nameof(findSmallerFromCachedRollsPro)}, {rt.LCode}, {rt.Floor}; {current.LCode}, {current.Floor}");
-#endif
             }
 
             // 增加条件cachedRolls.Count != 0， 在缓存位没有布卷的情况下，也要计算是否满或超出。
             // 无此条件，则缓存位没有布卷时，总是NOT_FULL, 导致布卷一直放在同一层。
-            if (cachedRolls.Count == 0) {
-                var w = expectedWidthNoEdgeSpace(installedWidth, current, rt);
-                if (w >= max + clsSetting.WidthFix) {
-                    return new SideFullState(SideFullState.EXCEED, rt);
-                } else if (w > max - e) {
-                    return new SideFullState(SideFullState.FULL, rt);
-                } else {
-                    return new SideFullState(SideFullState.NO_FULL, null);
-                }
-
-            } else if (cachedRolls.Count != 0 && rt == null) {
-                return new SideFullState(SideFullState.NO_FULL, null);
+            //if (cachedRolls.Count == 0) {
+            var w = expectedWidthNoEdgeSpace(installedWidth, current, rt);
+            if (w >= max + clsSetting.WidthFix) {
+                return new SideFullState(SideFullState.EXCEED, rt);
+            } else if (w > max - e) {
+                return new SideFullState(SideFullState.FULL, rt);
             } else {
-                var w = expectedWidthNoEdgeSpace(installedWidth, current, rt);
-
-                if (w >= max + clsSetting.WidthFix) {
-                    return new SideFullState(SideFullState.EXCEED, rt);
-                } else {
-                    return new SideFullState(SideFullState.FULL, rt);
-                }
+                return new SideFullState(SideFullState.NO_FULL, rt);
             }
         }
 
@@ -437,21 +423,24 @@ namespace yidascan {
             var pinfo = GetPanelNo(cre.CResult.CodeCome, dateShiftNo);
 
             var fp = FloorPerformance.None;
-            var layerLabels = new List<LableCode>();
+            List<LableCode> layerLabels;
 
             // 解决在缓存位，同一交地出现多个不同板号的情况.
-            if (pinfo == null) { LableCode.Update(fp, new PanelInfo(cre.CResult.CodeCome.PanelNo), cre.CResult.CodeCome, null); }
+            if (pinfo == null) {
+                pinfo = new PanelInfo(cre.CResult.CodeCome.PanelNo);
+                LableCode.Update(fp, pinfo, cre.CResult.CodeCome, null);
+                if (pinfo == null) { throw new Exception($"生成板号失败: 交地 {lc.ToLocation}。"); }
+            }
 
-            if (pinfo != null) {
+            // if (pinfo != null) {
                 // 取当前交地、当前板、当前层所有标签。
                 layerLabels = LableCode.GetLableCodesOfRecentFloor(cre.CResult.CodeCome.ToLocation, pinfo.PanelNo, pinfo.CurrFloor);
-
                 cre = CalculateCacheState(cre.CResult, pinfo, layerLabels, onlog);
 
                 if (cre.SideState.state == SideFullState.FULL || cre.SideState.state == SideFullState.EXCEED) {
                     fp = SetFullFlag(CalculateFloorIndex(layerLabels), pinfo);
                 }
-            }
+            //}
 
             var msg = $"";
             switch (cre.CResult.state) {
@@ -473,10 +462,7 @@ namespace yidascan {
                     break;
                 case CacheState.Cache:
                     var cancachesum = pinfo == null ? 2 : (pinfo.OddStatus ? 0 : 1) + (pinfo.EvenStatus ? 0 : 1);
-                    var cachelcs = (from s in layerLabels
-                                    where s.FloorIndex == 0
-                                    orderby s.Diameter ascending
-                                    select s).Count();
+                    var cachelcs = FrmMain.taskQ.CacheSide.Count(x => x.labelcode != null && x.labelcode.ToLocation == lc.ToLocation);
 
                     var go = isTooSmall(lc.Diameter) || CanIgo(cacheq, cre.CResult, cancachesum - cachelcs);
                     if (go) {
@@ -500,8 +486,7 @@ namespace yidascan {
                     // 在没有缓存的情况下满板。
                     cre.CResult.CodeCome.Status = (int)LableState.FloorLastRoll;
                     cre.CResult.CodeCome.Remark = $"{cre.CResult.CodeCome.Remark} floor last roll";
-                }
-                else if (cre.CResult.state == CacheState.GetThenGo) {
+                } else if (cre.CResult.state == CacheState.GetThenGo) {
                     cre.CResult.CodeCome.Status = (int)LableState.FloorLastRoll;
                     cre.CResult.CodeCome.Remark = $"{cre.CResult.CodeCome.Remark} floor last roll";
                 } else if (cre.SideState.state == SideFullState.EXCEED) {
@@ -518,11 +503,13 @@ namespace yidascan {
                 }
             }
 
-            if (pinfo == null) {
-                // 产生新板号赋予当前标签。
-                //板第一卷
-                LableCode.Update(cre.CResult.CodeCome);
-            } else {
+            LableCode.Update(cre.CResult.CodeCome);
+
+            //if (pinfo == null) {
+            //    // 产生新板号赋予当前标签。
+            //    //板第一卷
+            //    LableCode.Update(cre.CResult.CodeCome);
+            //} else {
                 if (cre.SideState.state == SideFullState.EXCEED) {
                     msg = $"{msg} EXCEED";
                     pinfo.HasExceed = true;
@@ -536,7 +523,7 @@ namespace yidascan {
                 } else {
                     LableCode.Update(fp, pinfo, cre.CResult.CodeCome);
                 }
-            }
+            //}
             cre.CResult.message = msg;
             return cre.CResult;
         }
@@ -555,8 +542,7 @@ namespace yidascan {
                     if (rt.CodeFromCache == null) {
                         // 未知行否。
                         rt.state = CacheState.Go;
-                    }
-                    else if (rt.CodeCome.Diameter > cachedRollDiameter + clsSetting.CacheIgnoredDiff) {
+                    } else if (rt.CodeCome.Diameter > cachedRollDiameter + clsSetting.CacheIgnoredDiff) {
                         rt.state = CacheState.GetThenGo;
                     } else {
                         rt.state = CacheState.GoThenGet;

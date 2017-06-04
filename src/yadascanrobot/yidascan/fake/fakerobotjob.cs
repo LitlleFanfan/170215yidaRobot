@@ -239,6 +239,19 @@ namespace yidascan {
                 if (roll.Status == (int)LableState.FloorLastRoll && roll.PnlState != PanelState.Full) {
                     BadShape(roll);
                 }
+
+#if DEBUG
+                var panel = LableCode.GetPanel(roll.PanelNo);
+                if (roll.Status == (int)LableState.FloorLastRoll && roll.PnlState != PanelState.Full && roll.Floor == panel.MaxFloor) {
+                    throw new Exception($"板满状态不一致。{roll.LabelCode}, {roll.ToLocation}/{roll.RealLocation}");
+                    roll.PnlState = PanelState.Full;
+                    LableCode.SetPanelFinished(roll.PanelNo);
+
+                    lock (TaskQueues.LOCK_LOCHELPER) {
+                        TaskQueues.lochelper.OnFull(roll.RealLocation);
+                    }
+                }
+#endif
             } catch (Exception ex) {
                 FrmMain.logOpt.Write($"!来源: {nameof(NotifyOpcJobFinished)}, {ex}", LogType.ROBOT_STACK);
             }
