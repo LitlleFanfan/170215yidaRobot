@@ -11,13 +11,6 @@ using Newtonsoft.Json;
 using System.Threading;
 
 namespace yidascan.DataAccess {
-    public enum ERPAlarmNo {
-        // ERP通信故障
-        COMMUNICATION_ERROR = 1,
-        // 取交地失败
-        TO_LOCATION_ERROR = 2
-    }
-
     public class PlcSignal {
         string guid = string.Empty;
         int readCount;

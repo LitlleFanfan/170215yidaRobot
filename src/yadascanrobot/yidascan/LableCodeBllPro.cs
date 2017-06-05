@@ -591,9 +591,7 @@ namespace yidascan {
                             JsonConvert.SerializeObject(erpParam), re["Data"]);
                         return true;
                     }
-                } else {
-                    FrmMain.ERPAlarm(FrmMain.opcNone, FrmMain.opcParam, ERPAlarmNo.COMMUNICATION_ERROR);
-                }
+                } 
             }
             msg = "!板号完成失败，板号为空。";
             return false;
