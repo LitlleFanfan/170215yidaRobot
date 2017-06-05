@@ -624,8 +624,7 @@ namespace yidascan {
                             }
 
                             // 计算位置, lc和cache队列里比较。
-                            var calResult = LableCodeBllPro.AreaBCalculate(CacheOpcClient,
-                                lc,
+                            var calResult = LableCodeBllPro.AreaBCalculate(lc,
                                 createShiftNo(),
                                 taskQ.GetBeforCacheLables(lc),
                                 x => { logOpt.Write(x, LogType.BUFFER); }
@@ -656,6 +655,10 @@ namespace yidascan {
 
                             // 发出机械手缓存动作指令
                             PlcHelper.WriteCacheJob(CacheOpcClient, opcParam, cacheJobState.state, cacheJobState.savepos, cacheJobState.getpos, lc.LCode);
+
+                            // 检查缓存位状况
+                            logCache(lc.ToLocation);
+
 #if DEBUG
                             if (Math.Abs(lc.Cx + lc.Cy) > 1000) {
                                 throw new Exception($"!{lc.LCode}布卷坐标超界");
@@ -670,6 +673,25 @@ namespace yidascan {
             });
         }
 
+        private void logCache(string loc) {
+            IEnumerable<string> morelocs;
+            lock (TaskQueues.LOCK_LOCHELPER) {
+                // 超出正常数量的交地清单。
+                morelocs = taskQ.ValidateCacheSide();
+            }
+
+            if (morelocs != null && morelocs.Count() > 0) {
+                var loclist = string.Join(",", morelocs);
+                logOpt.Write($"!缓存位数据异常，同一交地有多余物料: {loclist}。", LogType.BUFFER);
+                lock (TaskQueues.LOCK_LOCHELPER) {
+                    var q = taskQ.CacheSide.Where(x => x.labelcode != null && x.labelcode.ToLocation == loc);
+                    foreach (var item in q) {
+                        logOpt.Write($"!{item.id}: {item.labelcode.LCode}, {item.labelcode.ToLocation}, {item.labelcode.PanelNo}");
+                    }
+                }
+            }
+        }
+
         /// <summary>
         /// 2期代码。
         /// </summary>
@@ -680,7 +702,6 @@ namespace yidascan {
             Task.Factory.StartNew(() => {
                 while (isrun) {
                     try {
-                        //var r = LabelUpOpcClient.ReadBool(opcParam.LableUpParam.Signal);
                         var r = opcParam.LableUpParam.PlcSn.ReadSN(LabelUpOpcClient);
                         if (r) {
                             var code = taskQ.GetLableUpQ();
@@ -688,7 +709,7 @@ namespace yidascan {
                                 logOpt.Write(string.Format("收到标签朝上来料信号。号码: {0}", code.LCode), LogType.ROLL_QUEUE);
 
                                 if (string.IsNullOrEmpty(code.RealLocation)) {
-                                    var msg = $"!来源: {nameof(LableUpTask)}, 真实交地是空值: {code.LCode} / {code.ToLocation}";
+                                    var msg = $"!来源: {nameof(LableUpTask)}, 真实交地是空值: {code.LCode}/{code.ToLocation}";
                                     logOpt.Write(msg, LogType.ROLL_QUEUE);
                                     throw new Exception(msg);
                                 }
@@ -699,8 +720,6 @@ namespace yidascan {
 
                                 showLabelQue(taskQ.LableUpQ, lsvLableUp);
                                 showCachePosQue(taskQ.CacheSide);
-
-                                // if (int.Parse(code.ParseLocationNo()) < 6) {
 
                                 if (int.Parse(LableCode.ParseRealLocationNo(code.RealLocation)) < 6) {
                                     showLabelQue(taskQ.CatchAQ, lsvCatch1);
@@ -1503,6 +1522,7 @@ namespace yidascan {
         }
 
         private void btnSelfTest_Click(object sender, EventArgs e) {
+#if DEBUG
             //const string GROUP = "SELF TEST";
             //logOpt.Write("!--- 自检开始 ---", GROUP);
             //var t = new SelfTest(FrmSet.pcfgScan1, (s) => {
@@ -1517,19 +1537,20 @@ namespace yidascan {
             //    this.Cursor = Cursors.Default;
             //    logOpt.Write("!--- 自检结束 ---", GROUP);
             //}
-            PanelGen.Init(DateTime.Now);
-            Dictionary<string, int> lst = new Dictionary<string, int>();
-            int count = 5000;
-            while (count-- > 0) {
-                var tmp = PanelGen.NewPanelNo();
-                if (lst.Keys.Contains(tmp)) {
-                    lst[tmp]++;
-                } else {
-                    lst.Add(tmp, 1);
-                }
-                Thread.Sleep(500);
-            }
 
+            //PanelGen.Init(DateTime.Now);
+            //Dictionary<string, int> lst = new Dictionary<string, int>();
+            //int count = 5000;
+            //while (count-- > 0) {
+            //    var tmp = PanelGen.NewPanelNo();
+            //    if (lst.Keys.Contains(tmp)) {
+            //        lst[tmp]++;
+            //    } else {
+            //        lst.Add(tmp, 1);
+            //    }
+            //    Thread.Sleep(500);
+            //}
+#endif
         }
 
         private void btnSearch_Click(object sender, EventArgs e) {
