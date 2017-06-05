@@ -244,7 +244,7 @@ namespace yidascan.DataAccess {
                 return lbup.LCode;
             }
 
-            int tolocationareaNo = int.Parse(tolocation.Substring(1, 2));
+            var tolocationareaNo = int.Parse(tolocation.Substring(1, 2));
 
             if (tolocationareaNo < 6) {
                 lbup = CatchAQ.LastOrDefault(item => item.ToLocation == tolocation && item.PanelNo == panelNo);
@@ -254,7 +254,7 @@ namespace yidascan.DataAccess {
                     return lbup.LCode;
                 }
 
-                RollPosition rp = FindodeFromRobotQue(RobotRollAQ, tolocation, panelNo);
+                var rp = FindodeFromRobotQue(RobotRollAQ, tolocation, panelNo);
                 if (rp != null) {
                     rp.Status = (int)LableState.FloorLastRoll;
                     rp.PnlState = PanelState.Full;
@@ -268,7 +268,7 @@ namespace yidascan.DataAccess {
                     return lbup.LCode;
                 }
 
-                RollPosition rp = FindodeFromRobotQue(RobotRollBQ, tolocation, panelNo);
+                var rp = FindodeFromRobotQue(RobotRollBQ, tolocation, panelNo);
                 if (rp != null) {
                     rp.Status = (int)LableState.FloorLastRoll;
                     rp.PnlState = PanelState.Full;
@@ -276,6 +276,20 @@ namespace yidascan.DataAccess {
                 }
             }
             return lcode;
+        }
+
+        /// <summary>
+        /// 返回多出额定值(2)的交地列表。
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<string> ValidateCacheSide() {
+            const int max = 2;
+            var q = CacheSide.Where(x => x.labelcode != null)
+                .Select(x => x.labelcode.ToLocation)
+                .GroupBy(x => x)
+                .Where(x => x.Count() > max)
+                .Select(x => x.Key);
+            return q;
         }
     }
 }

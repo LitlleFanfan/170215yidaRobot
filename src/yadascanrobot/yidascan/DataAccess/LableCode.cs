@@ -621,15 +621,6 @@ and Status<3 and FloorIndex<>0";
             return !(dt != null && dt.Rows.Count > 0);
         }
 
-        public static bool PanelNoHas(string panelNo) {
-            var sql = "select * from LableCode where PanelNo=@PanelNo";
-            var dt = DataAccess.CreateDataAccess.sa.Query(sql,
-                new System.Data.SqlClient.SqlParameter[] {
-                    new System.Data.SqlClient.SqlParameter("@PanelNo",panelNo)
-            });
-            return dt != null && dt.Rows.Count > 0;
-        }
-
         /// <summary>
         /// 从数据库读取指定交地和板的当前层的所有标签。
         /// </summary>
