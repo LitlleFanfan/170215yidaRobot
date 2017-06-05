@@ -35,6 +35,7 @@ namespace yidascan {
         public static IOpcClient opcACF;
         public static IOpcClient CacheOpcClient;
         public static IOpcClient RobotOpcClient;
+        public static IOpcClient RobotCarryOpcClient;
         public static IOpcClient LabelUpOpcClient;
 
         #endregion
@@ -195,20 +196,20 @@ namespace yidascan {
         /// 启动机器人布卷队列等待。
         /// </summary>
         private void StartRobotJobTask() {
-            RobotOpcClient = CreateOpcClient("机器人抓料队列");
-            opcParam.RobotCarryParam = new OPCRobotCarryParam(RobotOpcClient);
+            RobotCarryOpcClient = CreateOpcClient("机器人抓料队列");
+            opcParam.RobotCarryParam = new OPCRobotCarryParam(RobotCarryOpcClient);
 
             Task.Factory.StartNew(() => {
                 while (isrun) {
                     // 等待布卷
                     //var r = RobotOpcClient.ReadBool(opcParam.RobotCarryParam.RobotCarryA);
-                    var r = opcParam.RobotCarryParam.PlcSnA.ReadSN(RobotOpcClient);
+                    var r = opcParam.RobotCarryParam.PlcSnA.ReadSN(RobotCarryOpcClient);
                     if (r) {
                         // 加入机器人布卷队列。
                         var code = taskQ.GetCatchAQ();
                         if (code != null) {
-                            RobotOpcClient.Write(opcParam.RobotCarryParam.RobotCarryA, false);
-                            opcParam.RobotCarryParam.PlcSnA.WriteSN(RobotOpcClient);
+                            RobotCarryOpcClient.Write(opcParam.RobotCarryParam.RobotCarryA, false);
+                            opcParam.RobotCarryParam.PlcSnA.WriteSN(RobotCarryOpcClient);
 
                             showLabelQue(taskQ.CatchAQ, lsvCatch1);
                             showRobotQue(taskQ.RobotRollAQ, lsvRobotA);
@@ -217,13 +218,13 @@ namespace yidascan {
                     Thread.Sleep(1000);
 
                     //r = RobotOpcClient.ReadBool(opcParam.RobotCarryParam.RobotCarryB);
-                    r = opcParam.RobotCarryParam.PlcSnB.ReadSN(RobotOpcClient);
+                    r = opcParam.RobotCarryParam.PlcSnB.ReadSN(RobotCarryOpcClient);
                     if (r) {
                         // 加入机器人布卷队列。
                         var code = taskQ.GetCatchBQ();
                         if (code != null) {
-                            RobotOpcClient.Write(opcParam.RobotCarryParam.RobotCarryB, false);
-                            opcParam.RobotCarryParam.PlcSnB.WriteSN(RobotOpcClient);
+                            RobotCarryOpcClient.Write(opcParam.RobotCarryParam.RobotCarryB, false);
+                            opcParam.RobotCarryParam.PlcSnB.WriteSN(RobotCarryOpcClient);
 
                             showLabelQue(taskQ.CatchBQ, lsvCatch2);
                             showRobotQue(taskQ.RobotRollBQ, lsvRobotB);
@@ -927,7 +928,6 @@ namespace yidascan {
                     var re1 = JsonConvert.DeserializeObject<DataTable>(re["Data"]);
                     return (re1.Rows[0]["result"].ToString().ToUpper() != "FAIL");
                 } else {
-                    ERPAlarm(opcNone, opcParam, ERPAlarmNo.COMMUNICATION_ERROR);
                     return false;
                 }
             } catch (Exception ex) {
@@ -1170,13 +1170,11 @@ namespace yidascan {
                                 (handwork ? "手工" : "自动"), code, re, str["Data"]), LogType.NORMAL);
                         } else {
                             ShowWarning("取交地失败");
-                            ERPAlarm(opcNone, opcParam, ERPAlarmNo.TO_LOCATION_ERROR);
                             logOpt.Write(string.Format("!{0}{1}获取交地失败。{2}",
                                 (handwork ? "手工" : "自动"), code, JsonConvert.SerializeObject(str)), LogType.NORMAL);
                         }
                     } else {
                         ShowWarning("取交地失败");
-                        ERPAlarm(opcNone, opcParam, ERPAlarmNo.COMMUNICATION_ERROR);
                         logOpt.Write(string.Format("!{0}{1}获取交地失败。{2}",
                             (handwork ? "手工" : "自动"), code, JsonConvert.SerializeObject(str)), LogType.NORMAL);
                     }

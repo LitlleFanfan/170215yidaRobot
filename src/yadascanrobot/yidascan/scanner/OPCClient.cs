@@ -207,6 +207,7 @@ namespace ProduceComm.OPC {
 
             if (!groups.Keys.Contains(code)) {
                 FrmMain.logOpt.Write($"{code}未添加订阅！", code);
+                clsSetting.loger.Info(JsonConvert.SerializeObject(groups));
                 return null;
             }
 

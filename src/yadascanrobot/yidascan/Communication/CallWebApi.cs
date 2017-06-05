@@ -8,8 +8,15 @@ using System.Net.Http;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using yidascan;
 
 namespace ProduceComm {
+    public enum ERPAlarmNo {
+        // ERP通信故障
+        COMMUNICATION_ERROR = 1,
+        // ERP通信正常
+        COMMUNICATION_OK = 0
+    }
     public class CallWebApi : IErpApi {
         public bool CheckValidationResult(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors errors) {
             //直接确认，否则打不开    
@@ -57,8 +64,10 @@ namespace ProduceComm {
                     var readStream = new StreamReader(myWebResponse.GetResponseStream(), Encoding.UTF8);
                     result = JsonConvert.DeserializeObject<Dictionary<string, string>>(readStream.ReadToEnd());
                     result.Add("ERPState", "OK");
+                    FrmMain.ERPAlarm(FrmMain.opcNone, FrmMain.opcParam, ERPAlarmNo.COMMUNICATION_OK);
                 }
             } catch (Exception ex) {
+                FrmMain.ERPAlarm(FrmMain.opcNone, FrmMain.opcParam, ERPAlarmNo.COMMUNICATION_ERROR);
                 result = new Dictionary<string, string>() { { "ERPState", "Fail" }, { "ERR", "请求接口信息出错 " + ex } };
             }
             return result;
