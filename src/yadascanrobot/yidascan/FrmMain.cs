@@ -606,10 +606,21 @@ namespace yidascan {
                     Thread.Sleep(OPCClient.DELAY * 200);
                     try {
                         if (PlcHelper.ReadCacheSignal(CacheOpcClient, opcParam)) {
-                            if (taskQ.CacheQ.Count == 0) continue;
+                            lock (TaskQueues.LOCK_LOCHELPER) {
+                                if (taskQ.CacheQ.Count == 0) continue;
+                            }
 
-                            var lc = taskQ.CacheQ.Peek();
-                            lc = LableCode.QueryByLCode(lc.LCode);
+                            var peek = string.Empty;
+                            lock (TaskQueues.LOCK_LOCHELPER) {
+                                try {
+                                    var foo = taskQ.CacheQ.Peek();
+                                    peek = foo.LCode;
+                                } catch (InvalidOperationException) { }
+                            }
+
+                            if (string.IsNullOrEmpty(peek)) { continue; }
+
+                            var lc = LableCode.QueryByLCode(peek);
 
                             if (lc == null) {
                                 logOpt.Write($"!来源: {nameof(BeforCacheTask_new)}, 缓存队列没有标签", LogType.BUFFER);
@@ -1454,7 +1465,7 @@ namespace yidascan {
 
         private void showLabelQue(Queue<LableCode> que, ListView view) {
             List<string> lst;
-            lock (que) {
+            lock (TaskQueues.LOCK_LOCHELPER) {
                 lst = que.Select(x => x.brief()).Reverse().ToList();
             }
             showListInView(lst, view);
@@ -1462,7 +1473,7 @@ namespace yidascan {
 
         public static void showRobotQue(Queue<RollPosition> que, ListView view) {
             List<string> lst;
-            lock (que) {
+            lock (TaskQueues.LOCK_LOCHELPER) {
                 lst = que.Select(x => x.brief()).Reverse().ToList();
             }
             showListInView(lst, view);
@@ -1489,6 +1500,7 @@ namespace yidascan {
                 logOpt.Write("启动新任务。");
                 LableCode.SetAllPanelsFinished();
                 ClearAllRunningData();
+                resetLocationIcons();
                 logOpt.Write("所有板设置为完成状态；清除所有队列。");//AC区无法设置完成。
                 btnRun_Click(sender, e);
             } else {
@@ -1657,6 +1669,12 @@ namespace yidascan {
         private void btnSignalGen_Click(object sender, EventArgs e) {
             using (var w = new wtestpanel()) {
                 w.ShowDialog();
+            }
+        }
+
+        private void resetLocationIcons() {
+            foreach (var item in locationLbls) {
+                item.Value.BackColor = Color.LightGreen;
             }
         }
     }
