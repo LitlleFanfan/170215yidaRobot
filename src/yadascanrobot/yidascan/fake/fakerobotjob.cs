@@ -40,14 +40,29 @@ namespace yidascan {
 
         public void JobLoop(ref bool isrunning, ListView la, ListView lb) {
             while (isrunning) {
-                if (FrmMain.taskQ.RobotRollAQ.Count > 0) {
-                    var roll = FrmMain.taskQ.RobotRollAQ.Peek();
+                RollPosition roll = null;
+                var counta = 0;
+                var countb = 0;
+
+                lock (TaskQueues.LOCK_LOCHELPER) {
+                    counta = FrmMain.taskQ.RobotRollAQ.Count;
+                    countb = FrmMain.taskQ.RobotRollBQ.Count;
+                }
+
+                if (counta > 0) {
+                    lock (TaskQueues.LOCK_LOCHELPER) {
+                        roll = FrmMain.taskQ.RobotRollAQ.Peek();
+                    }
+
                     if (roll != null) {
                         JobTask(ref isrunning, true, FrmMain.taskQ.RobotRollAQ, roll, la);
                     }
                 }
-                if (FrmMain.taskQ.RobotRollBQ.Count > 0) {
-                    var roll = FrmMain.taskQ.RobotRollBQ.Peek();
+                if (countb > 0) {
+                    lock (TaskQueues.LOCK_LOCHELPER) {
+                        roll = FrmMain.taskQ.RobotRollBQ.Peek();
+                    }
+
                     if (roll != null) {
                         JobTask(ref isrunning, false, FrmMain.taskQ.RobotRollBQ, roll, lb);
                     }
@@ -269,21 +284,15 @@ namespace yidascan {
         public bool PanelAvailable(string tolocation) { return true; }
 
         private void DequeueRoll(Queue<RollPosition> robotRollQ, RollPosition roll, ListView lv) {
-            // try {
-                lock (robotRollQ) {
-                    if (robotRollQ == null || robotRollQ.Count == 0) { return; }
-                    
-                    var roll2 = robotRollQ.Peek();
-                    if (roll2 != null && roll.LabelCode == roll2.LabelCode) {//如果取出来还是原来那一个，就删一下
-                        robotRollQ.Dequeue();
-                        FrmMain.showRobotQue(robotRollQ, lv);
-                    }
+            lock (TaskQueues.LOCK_LOCHELPER) {
+                if (robotRollQ == null || robotRollQ.Count == 0) { return; }
+
+                var roll2 = robotRollQ.Peek();
+                if (roll2 != null && roll.LabelCode == roll2.LabelCode) {//如果取出来还是原来那一个，就删一下
+                    robotRollQ.Dequeue();
+                    FrmMain.showRobotQue(robotRollQ, lv);
                 }
-            //} catch (Exception ex) {
-            //    var msg = $"!{nameof(DequeueRoll)}: {roll.LabelCode}. {ex}";
-            //    log(msg, LogType.ROBOT_STACK);
-            //   //  throw new Exception(msg);
-            //}
+            }
         }
     }
 }

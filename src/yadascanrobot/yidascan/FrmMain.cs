@@ -544,7 +544,7 @@ namespace yidascan {
             try {
                 switch (cr.state) {
                     case CacheState.Go:
-                        lock (taskQ.LableUpQ) {
+                        lock (TaskQueues.LOCK_LOCHELPER) {
                             taskQ.LableUpQ.Enqueue(code);
                         }
 
@@ -557,7 +557,7 @@ namespace yidascan {
                         break;
                     case CacheState.CacheAndGet:
                     case CacheState.GetThenCache:
-                        lock (taskQ.LableUpQ) {
+                        lock (TaskQueues.LOCK_LOCHELPER) {
                             taskQ.LableUpQ.Enqueue(outCacheLable);
                         }
 
@@ -566,7 +566,7 @@ namespace yidascan {
                         showCachePosQue(taskQ.CacheSide);
                         break;
                     case CacheState.GoThenGet:
-                        lock (taskQ.LableUpQ) {
+                        lock (TaskQueues.LOCK_LOCHELPER) {
                             taskQ.LableUpQ.Enqueue(code);
                             taskQ.LableUpQ.Enqueue(outCacheLable);
                         }
@@ -576,7 +576,7 @@ namespace yidascan {
                         showCachePosQue(taskQ.CacheSide);
                         break;
                     case CacheState.GetThenGo:
-                        lock (taskQ.LableUpQ) {
+                        lock (TaskQueues.LOCK_LOCHELPER) {
                             taskQ.LableUpQ.Enqueue(outCacheLable);
                             taskQ.LableUpQ.Enqueue(code);
                         }
@@ -657,7 +657,7 @@ namespace yidascan {
                                 $"取出标签：{calResult.CodeFromCache?.LCode} {calResult.CodeFromCache?.Diameter}  " +
                                 $"{calResult.message}", LogType.BUFFER);
 
-                            lock (taskQ.CacheQ) {
+                            lock (TaskQueues.LOCK_LOCHELPER) {
                                 taskQ.CacheQ.Dequeue();
                             }
 
