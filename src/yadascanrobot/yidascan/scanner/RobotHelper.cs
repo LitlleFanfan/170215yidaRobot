@@ -396,15 +396,26 @@ namespace yidascan {
                     BadShape(roll);
                 }
 
-                log("!---异常板满状态处理---", LogType.ROBOT_STACK);
                 var panel = LableCode.GetPanel(roll.PanelNo);
                 if (roll.Status == (int)LableState.FloorLastRoll && roll.PnlState != PanelState.Full && roll.Floor == panel.MaxFloor) {
+                    log("!---异常板满状态处理---", LogType.ROBOT_STACK);
                     roll.PnlState = PanelState.Full;
+                    string msg;
+                    ErpHelper.NotifyPanelEnd(erpapi, roll.PanelNo, out msg);
+                    client.TryWrite(param.BAreaPanelFinish[roll.RealLocation], true);
+
+                    log($"{roll.RealLocation}: 满板信号发出。slot: {param.BAreaPanelFinish[roll.RealLocation]}", LogType.ROBOT_STACK);
+                    log(msg, LogType.ROBOT_STACK);
+
                     LableCode.SetPanelFinished(roll.PanelNo);
 
                     lock (TaskQueues.LOCK_LOCHELPER) {
                         TaskQueues.lochelper.OnFull(roll.RealLocation);
                     }
+
+                    const int SIGNAL_3 = 3;
+                    client.TryWrite(param.BAreaPanelState[roll.RealLocation], SIGNAL_3);
+                    log($"{roll.RealLocation}: 板状态信号发出，状态值: {SIGNAL_3}。slot: {param.BAreaPanelState[roll.RealLocation]}", LogType.ROBOT_STACK);
                 }
 
             } catch (Exception ex) {
