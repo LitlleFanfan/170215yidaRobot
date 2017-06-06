@@ -736,7 +736,8 @@ and Status<3 and FloorIndex<>0";
             if (dt == null || dt.Rows.Count < 1) {
                 return 0;
             }
-            return (decimal)dt.Rows[0][0];
+            var elem = dt.Rows[0][0];
+            return elem != null ? (decimal)elem : 0;
         }
 
         /// <summary>

@@ -21,7 +21,6 @@ namespace yidascan {
                 // throw new Exception($"nameof(CalculatePosition), lc is null.");
             }
             lc.FloorIndex = CalculateFloorIndex(lcs);
-
             OnlinCalculatePosition(lcs, lc, state);
         }
 
@@ -194,9 +193,10 @@ namespace yidascan {
                         } else {
                             cr.state = CacheState.Go;
                         }
-                    } else {
+                    } else if (cachedRolls.Count() < cachecount) {
                         cr.state = CacheState.Cache;
-                        // throw new Exception($"交地: {lc.ToLocation}/{lc.RealLocation}, {lc.LCode}, 可缓存: {cachecount}, 已缓存: {cachedRolls.Count()}");
+                    } else {
+                        cr.state = CacheState.Go;
                     }
                     break;
             }
@@ -370,6 +370,7 @@ namespace yidascan {
                 CResult = new CalResult(CacheState.Cache, lc, null)
             };
 
+            // 创建新板号
             var pinfo = GetPanelNo(cre.CResult.CodeCome, dateShiftNo);
 
             var fp = FloorPerformance.None;
@@ -378,10 +379,7 @@ namespace yidascan {
             // 解决在缓存位，同一交地出现多个不同板号的情况.
             if (pinfo == null) {
                 pinfo = new PanelInfo(cre.CResult.CodeCome.PanelNo);
-                LableCode.Update(fp, pinfo, cre.CResult.CodeCome, null);
-                if (pinfo == null) {
-                    throw new Exception($"生成板号失败: 交地 {lc.ToLocation}。");
-                }
+                cre.CResult.CodeCome.PanelNo = pinfo.PanelNo;
             }
 
             // 取当前交地、当前板、当前层所有标签。
@@ -414,7 +412,7 @@ namespace yidascan {
                     var cancachesum = pinfo == null ? 2 : (pinfo.OddStatus ? 0 : 1) + (pinfo.EvenStatus ? 0 : 1);
                     var cachelcs = FrmMain.taskQ.CacheSide.Count(x => x.labelcode != null && x.labelcode.ToLocation == lc.ToLocation);
 
-                    var go = isTooSmall(lc.Diameter) || CanIgo(cacheq, cre.CResult, cancachesum - cachelcs);
+                    var go = isTooSmall(lc.Diameter) && cre.SideState.state == SideFullState.NO_FULL || CanIgo(cacheq, cre.CResult, cancachesum - cachelcs);
                     if (go) {
                         cre.CResult.state = CacheState.Go;
                         CalculatePosition(layerLabels, cre.CResult.CodeCome, cre.SideState == null ? SideFullState.NO_FULL : cre.SideState.state);
@@ -507,6 +505,11 @@ namespace yidascan {
                 }
             }
             cre.CResult = rt;
+
+            if (cre.CResult.CodeFromCache != null && cre.CResult.CodeCome.PanelNo != cre.CResult.CodeFromCache.PanelNo) {
+                cre.CResult.CodeFromCache.PanelNo = cre.CResult.CodeCome.PanelNo;
+            }
+
             return cre;
         }
 
