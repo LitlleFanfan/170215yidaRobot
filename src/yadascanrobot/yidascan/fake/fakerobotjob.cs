@@ -38,35 +38,23 @@ namespace yidascan {
             return true;
         }
 
+        private void runtask(Queue<RollPosition> que, bool sideA, ref bool isrunning, ListView view) {
+            RollPosition roll = null;
+            lock (TaskQueues.LOCK_LOCHELPER) {
+                if (que.Count > 0) { 
+                    roll = que.Peek();
+                }
+            }
+
+            if (roll != null) {
+                JobTask(ref isrunning, sideA, que, roll, view);
+            }
+        }
+
         public void JobLoop(ref bool isrunning, ListView la, ListView lb) {
             while (isrunning) {
-                RollPosition roll = null;
-                var counta = 0;
-                var countb = 0;
-
-                lock (TaskQueues.LOCK_LOCHELPER) {
-                    counta = FrmMain.taskQ.RobotRollAQ.Count;
-                    countb = FrmMain.taskQ.RobotRollBQ.Count;
-                }
-
-                if (counta > 0) {
-                    lock (TaskQueues.LOCK_LOCHELPER) {
-                        roll = FrmMain.taskQ.RobotRollAQ.Peek();
-                    }
-
-                    if (roll != null) {
-                        JobTask(ref isrunning, true, FrmMain.taskQ.RobotRollAQ, roll, la);
-                    }
-                }
-                if (countb > 0) {
-                    lock (TaskQueues.LOCK_LOCHELPER) {
-                        roll = FrmMain.taskQ.RobotRollBQ.Peek();
-                    }
-
-                    if (roll != null) {
-                        JobTask(ref isrunning, false, FrmMain.taskQ.RobotRollBQ, roll, lb);
-                    }
-                }
+                runtask(FrmMain.taskQ.RobotRollAQ, true, ref isrunning, la);
+                runtask(FrmMain.taskQ.RobotRollBQ, false, ref isrunning, lb);
                 Thread.Sleep(RobotHelper.DELAY * 40);
             }
         }

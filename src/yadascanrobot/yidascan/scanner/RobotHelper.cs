@@ -430,45 +430,26 @@ namespace yidascan {
                 log($"!{roll.RealLocation} 第{roll.Floor}层 形状不规则。板号{roll.PanelNo}", LogType.ROBOT_STACK);
             }
         }
-
-        public void JobLoopPro(ref bool isrunning, TaskQueues taskq, Action onupdate) {
-            _log.Invoke($"enter loop. isrunning: {isrunning}", LogType.ROBOT_STACK, LogViewType.OnlyForm);
-
-            while (isrunning) {
-                _log.Invoke("move queue.", LogType.ROBOT_STACK, LogViewType.OnlyForm);
-
-                var ques = new List<Queue<RollPosition>> { taskq.RobotRollAQ, taskq.RobotRollBQ };
-
-                foreach (var qu in ques) {
-                    if (qu.Count() > 0) {
-                        var item = qu.Peek();
-                        //if (item != null && JobTask(ref isrunning, item)) {
-                        //    qu.Dequeue();
-                        //}
-                    }
+        
+        private void runtask(Queue<RollPosition> que, bool sideA, ref bool isrunning, ListView view) {
+            RollPosition roll = null;
+            lock (TaskQueues.LOCK_LOCHELPER) {
+                if (que.Count > 0) {
+                    roll = que.Peek();
                 }
-                onupdate();
+            }
 
-                Thread.Sleep(500);
+            if (roll != null) {
+                JobTask(ref isrunning, sideA, que, roll, view);
             }
         }
 
-        [Obsolete("use JobLoopPro instead.")]
-        public void JobLoop(ref bool isrun, ListView la, ListView lb) {
-            while (isrun) {
-                if (FrmMain.taskQ.RobotRollAQ.Count > 0) {
-                    var roll = FrmMain.taskQ.RobotRollAQ.Peek();
-                    if (roll != null) {
-                        JobTask(ref isrun, true, FrmMain.taskQ.RobotRollAQ, roll, la);
-                    }
-                }
-                if (FrmMain.taskQ.RobotRollBQ.Count > 0) {
-                    var roll = FrmMain.taskQ.RobotRollBQ.Peek();
-                    if (roll != null) {
-                        JobTask(ref isrun, false, FrmMain.taskQ.RobotRollBQ, roll, lb);
-                    }
-                }
-                Thread.Sleep(RobotHelper.DELAY * 20);//提高机器人响应速度
+        public void JobLoop(ref bool isrunning, ListView la, ListView lb) {
+            while (isrunning) {
+                var toSidea = true;
+                runtask(FrmMain.taskQ.RobotRollAQ, toSidea, ref isrunning, la);
+                runtask(FrmMain.taskQ.RobotRollBQ, !toSidea, ref isrunning, lb);
+                Thread.Sleep(RobotHelper.DELAY * 40);
             }
         }
 
