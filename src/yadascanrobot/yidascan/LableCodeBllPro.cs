@@ -380,6 +380,7 @@ namespace yidascan {
             if (pinfo == null) {
                 pinfo = new PanelInfo(cre.CResult.CodeCome.PanelNo);
                 cre.CResult.CodeCome.PanelNo = pinfo.PanelNo;
+                cre.CResult.CodeCome.Floor = pinfo.CurrFloor;
             }
 
             // 取当前交地、当前板、当前层所有标签。
