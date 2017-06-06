@@ -509,6 +509,7 @@ namespace yidascan {
 
             if (cre.CResult.CodeFromCache != null && cre.CResult.CodeCome.PanelNo != cre.CResult.CodeFromCache.PanelNo) {
                 cre.CResult.CodeFromCache.PanelNo = cre.CResult.CodeCome.PanelNo;
+                cre.CResult.CodeFromCache.Floor = cre.CResult.CodeCome.Floor;
             }
 
             return cre;
