@@ -613,7 +613,7 @@ order by floorindex desc;";
 
         public static bool IsAllRollOnPanel(string panelNo) {
             var sql = @"select * from LableCode where PanelNo=@PanelNo 
-and exists (select 1 from Panel where Panel.PanelNo=LableCode.PanelNo and LableCode.Floor=Panel.CurrFloor) 
+and exists (select 1 from Panel where Panel.PanelNo=LableCode.PanelNo and (LableCode.Floor=Panel.CurrFloor or LableCode.Floor=Panel.CurrFloor-1)) 
 and Status<3 and FloorIndex<>0";
             var sp = new SqlParameter[]{
                 new SqlParameter("@PanelNo",panelNo)};

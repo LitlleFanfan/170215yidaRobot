@@ -185,7 +185,6 @@
             this.lbl5 = new System.Windows.Forms.Label();
             this.lbl4 = new System.Windows.Forms.Label();
             this.lbl3 = new System.Windows.Forms.Label();
-            this.lbl2 = new System.Windows.Forms.Label();
             this.label22 = new System.Windows.Forms.Label();
             this.label21 = new System.Windows.Forms.Label();
             this.label20 = new System.Windows.Forms.Label();
@@ -198,6 +197,8 @@
             this.label15 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
             this.lbl1 = new System.Windows.Forms.Label();
+            this.lbl2 = new System.Windows.Forms.Label();
+            this.tRefreshRealLocState = new System.Windows.Forms.Timer(this.components);
             this.toolStrip1.SuspendLayout();
             this.grbHandwork.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -1430,7 +1431,7 @@
             this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 48F));
             this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 48F));
             this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 48F));
-            this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 48F));
+            this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 49F));
             this.tableLayoutPanel5.Controls.Add(this.lbl11, 10, 1);
             this.tableLayoutPanel5.Controls.Add(this.lbl10, 9, 1);
             this.tableLayoutPanel5.Controls.Add(this.lbl9, 8, 1);
@@ -1466,110 +1467,117 @@
             this.lbl11.AutoSize = true;
             this.lbl11.BackColor = System.Drawing.Color.LightGreen;
             this.lbl11.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbl11.Location = new System.Drawing.Point(506, 65);
-            this.lbl11.Margin = new System.Windows.Forms.Padding(15);
+            this.lbl11.Font = new System.Drawing.Font("微软雅黑", 20F, System.Drawing.FontStyle.Bold);
+            this.lbl11.Location = new System.Drawing.Point(496, 55);
+            this.lbl11.Margin = new System.Windows.Forms.Padding(5);
             this.lbl11.Name = "lbl11";
-            this.lbl11.Size = new System.Drawing.Size(18, 19);
+            this.lbl11.Size = new System.Drawing.Size(39, 39);
             this.lbl11.TabIndex = 23;
+            this.lbl11.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // lbl10
             // 
             this.lbl10.AutoSize = true;
             this.lbl10.BackColor = System.Drawing.Color.LightGreen;
             this.lbl10.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbl10.Location = new System.Drawing.Point(457, 65);
-            this.lbl10.Margin = new System.Windows.Forms.Padding(15);
+            this.lbl10.Font = new System.Drawing.Font("微软雅黑", 20F, System.Drawing.FontStyle.Bold);
+            this.lbl10.Location = new System.Drawing.Point(447, 55);
+            this.lbl10.Margin = new System.Windows.Forms.Padding(5);
             this.lbl10.Name = "lbl10";
-            this.lbl10.Size = new System.Drawing.Size(18, 19);
+            this.lbl10.Size = new System.Drawing.Size(38, 39);
             this.lbl10.TabIndex = 22;
+            this.lbl10.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // lbl9
             // 
             this.lbl9.AutoSize = true;
             this.lbl9.BackColor = System.Drawing.Color.LightGreen;
             this.lbl9.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbl9.Location = new System.Drawing.Point(408, 65);
-            this.lbl9.Margin = new System.Windows.Forms.Padding(15);
+            this.lbl9.Font = new System.Drawing.Font("微软雅黑", 20F, System.Drawing.FontStyle.Bold);
+            this.lbl9.Location = new System.Drawing.Point(398, 55);
+            this.lbl9.Margin = new System.Windows.Forms.Padding(5);
             this.lbl9.Name = "lbl9";
-            this.lbl9.Size = new System.Drawing.Size(18, 19);
+            this.lbl9.Size = new System.Drawing.Size(38, 39);
             this.lbl9.TabIndex = 21;
+            this.lbl9.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // lbl8
             // 
             this.lbl8.AutoSize = true;
             this.lbl8.BackColor = System.Drawing.Color.LightGreen;
             this.lbl8.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbl8.Location = new System.Drawing.Point(359, 65);
-            this.lbl8.Margin = new System.Windows.Forms.Padding(15);
+            this.lbl8.Font = new System.Drawing.Font("微软雅黑", 20F, System.Drawing.FontStyle.Bold);
+            this.lbl8.Location = new System.Drawing.Point(349, 55);
+            this.lbl8.Margin = new System.Windows.Forms.Padding(5);
             this.lbl8.Name = "lbl8";
-            this.lbl8.Size = new System.Drawing.Size(18, 19);
+            this.lbl8.Size = new System.Drawing.Size(38, 39);
             this.lbl8.TabIndex = 20;
+            this.lbl8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // lbl7
             // 
             this.lbl7.AutoSize = true;
             this.lbl7.BackColor = System.Drawing.Color.LightGreen;
             this.lbl7.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbl7.Location = new System.Drawing.Point(310, 65);
-            this.lbl7.Margin = new System.Windows.Forms.Padding(15);
+            this.lbl7.Font = new System.Drawing.Font("微软雅黑", 20F, System.Drawing.FontStyle.Bold);
+            this.lbl7.Location = new System.Drawing.Point(300, 55);
+            this.lbl7.Margin = new System.Windows.Forms.Padding(5);
             this.lbl7.Name = "lbl7";
-            this.lbl7.Size = new System.Drawing.Size(18, 19);
+            this.lbl7.Size = new System.Drawing.Size(38, 39);
             this.lbl7.TabIndex = 19;
+            this.lbl7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // lbl6
             // 
             this.lbl6.AutoSize = true;
             this.lbl6.BackColor = System.Drawing.Color.LightGreen;
             this.lbl6.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbl6.Location = new System.Drawing.Point(261, 65);
-            this.lbl6.Margin = new System.Windows.Forms.Padding(15);
+            this.lbl6.Font = new System.Drawing.Font("微软雅黑", 20F, System.Drawing.FontStyle.Bold);
+            this.lbl6.Location = new System.Drawing.Point(251, 55);
+            this.lbl6.Margin = new System.Windows.Forms.Padding(5);
             this.lbl6.Name = "lbl6";
-            this.lbl6.Size = new System.Drawing.Size(18, 19);
+            this.lbl6.Size = new System.Drawing.Size(38, 39);
             this.lbl6.TabIndex = 18;
+            this.lbl6.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // lbl5
             // 
             this.lbl5.AutoSize = true;
             this.lbl5.BackColor = System.Drawing.Color.LightGreen;
             this.lbl5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbl5.Location = new System.Drawing.Point(212, 65);
-            this.lbl5.Margin = new System.Windows.Forms.Padding(15);
+            this.lbl5.Font = new System.Drawing.Font("微软雅黑", 20F, System.Drawing.FontStyle.Bold);
+            this.lbl5.Location = new System.Drawing.Point(202, 55);
+            this.lbl5.Margin = new System.Windows.Forms.Padding(5);
             this.lbl5.Name = "lbl5";
-            this.lbl5.Size = new System.Drawing.Size(18, 19);
+            this.lbl5.Size = new System.Drawing.Size(38, 39);
             this.lbl5.TabIndex = 17;
+            this.lbl5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // lbl4
             // 
             this.lbl4.AutoSize = true;
             this.lbl4.BackColor = System.Drawing.Color.LightGreen;
             this.lbl4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbl4.Location = new System.Drawing.Point(163, 65);
-            this.lbl4.Margin = new System.Windows.Forms.Padding(15);
+            this.lbl4.Font = new System.Drawing.Font("微软雅黑", 20F, System.Drawing.FontStyle.Bold);
+            this.lbl4.Location = new System.Drawing.Point(153, 55);
+            this.lbl4.Margin = new System.Windows.Forms.Padding(5);
             this.lbl4.Name = "lbl4";
-            this.lbl4.Size = new System.Drawing.Size(18, 19);
+            this.lbl4.Size = new System.Drawing.Size(38, 39);
             this.lbl4.TabIndex = 16;
+            this.lbl4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // lbl3
             // 
             this.lbl3.AutoSize = true;
             this.lbl3.BackColor = System.Drawing.Color.LightGreen;
             this.lbl3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbl3.Location = new System.Drawing.Point(114, 65);
-            this.lbl3.Margin = new System.Windows.Forms.Padding(15);
+            this.lbl3.Font = new System.Drawing.Font("微软雅黑", 20F, System.Drawing.FontStyle.Bold);
+            this.lbl3.Location = new System.Drawing.Point(104, 55);
+            this.lbl3.Margin = new System.Windows.Forms.Padding(5);
             this.lbl3.Name = "lbl3";
-            this.lbl3.Size = new System.Drawing.Size(18, 19);
+            this.lbl3.Size = new System.Drawing.Size(38, 39);
             this.lbl3.TabIndex = 15;
-            // 
-            // lbl2
-            // 
-            this.lbl2.AutoSize = true;
-            this.lbl2.BackColor = System.Drawing.Color.LightGreen;
-            this.lbl2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbl2.Location = new System.Drawing.Point(65, 65);
-            this.lbl2.Margin = new System.Windows.Forms.Padding(15);
-            this.lbl2.Name = "lbl2";
-            this.lbl2.Size = new System.Drawing.Size(18, 19);
-            this.lbl2.TabIndex = 14;
+            this.lbl3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // label22
             // 
@@ -1578,7 +1586,7 @@
             this.label22.Location = new System.Drawing.Point(492, 2);
             this.label22.Margin = new System.Windows.Forms.Padding(1);
             this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(46, 46);
+            this.label22.Size = new System.Drawing.Size(47, 46);
             this.label22.TabIndex = 12;
             this.label22.Text = "B11";
             this.label22.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -1708,11 +1716,32 @@
             this.lbl1.AutoSize = true;
             this.lbl1.BackColor = System.Drawing.Color.LightGreen;
             this.lbl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbl1.Location = new System.Drawing.Point(16, 65);
-            this.lbl1.Margin = new System.Windows.Forms.Padding(15);
+            this.lbl1.Font = new System.Drawing.Font("微软雅黑", 20F, System.Drawing.FontStyle.Bold);
+            this.lbl1.Location = new System.Drawing.Point(6, 55);
+            this.lbl1.Margin = new System.Windows.Forms.Padding(5);
             this.lbl1.Name = "lbl1";
-            this.lbl1.Size = new System.Drawing.Size(18, 19);
+            this.lbl1.Size = new System.Drawing.Size(38, 39);
             this.lbl1.TabIndex = 13;
+            this.lbl1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // lbl2
+            // 
+            this.lbl2.AutoSize = true;
+            this.lbl2.BackColor = System.Drawing.Color.LightGreen;
+            this.lbl2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lbl2.Font = new System.Drawing.Font("微软雅黑", 20F, System.Drawing.FontStyle.Bold);
+            this.lbl2.Location = new System.Drawing.Point(55, 55);
+            this.lbl2.Margin = new System.Windows.Forms.Padding(5);
+            this.lbl2.Name = "lbl2";
+            this.lbl2.Size = new System.Drawing.Size(38, 39);
+            this.lbl2.TabIndex = 14;
+            this.lbl2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // tRefreshRealLocState
+            // 
+            this.tRefreshRealLocState.Enabled = true;
+            this.tRefreshRealLocState.Interval = 5000;
+            this.tRefreshRealLocState.Tick += new System.EventHandler(this.tRefreshRealLocState_Tick);
             // 
             // FrmMain
             // 
@@ -1897,7 +1926,6 @@
         private System.Windows.Forms.Label lbl5;
         private System.Windows.Forms.Label lbl4;
         private System.Windows.Forms.Label lbl3;
-        private System.Windows.Forms.Label lbl2;
         private System.Windows.Forms.Label label22;
         private System.Windows.Forms.Label label21;
         private System.Windows.Forms.Label label20;
@@ -1910,6 +1938,8 @@
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Label lbl1;
+        private System.Windows.Forms.Label lbl2;
+        private System.Windows.Forms.Timer tRefreshRealLocState;
     }
 }
 

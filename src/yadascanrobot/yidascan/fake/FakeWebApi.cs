@@ -18,7 +18,7 @@ namespace yidascan {
         }
         private Random rand = new Random();
 
-        readonly List<string> location = new List<string> { "B01", "B02" };
+        readonly List<string> location = new List<string> { "B01", "B02", "B03", "B04", "B05", "B06", "B07", "B08", "B09", "B10" };
 
         // readonly List<string> location = new List<string> { "B01", "B02", "B03", "B04", "B05", "B06", "B07", "B08", "B09", "B10", "A01", "A02", "A03", "C01", "C02", "C03" };
         

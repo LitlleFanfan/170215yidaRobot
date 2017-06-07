@@ -313,11 +313,11 @@ namespace yidascan {
         }
 
         public string lookupVirtual(string reallocation) {
-            var v = LocMap.Where(x => x.Value == reallocation);
+            var v = RealLocations.Where(x => x.realloc == reallocation);
             if (v.Count() == 1) {
-                return v.First().Key;
+                return v.First().panelno;
             } else {
-                throw new Exception($"来源: {nameof(lookupVirtual)}, 查找不到{reallocation}对应的虚拟交地。");
+                throw new Exception($"来源: {nameof(lookupVirtual)}, 查找不到{reallocation}对应的板。");
             }
         }
 
@@ -388,7 +388,6 @@ namespace yidascan {
 
             if (real.state == LocationState.FULL) {
                 SetState(realloc, LocationState.IDLE, "");
-                FrmMain.SetReallocationState(realloc, PanelState.LessHalf, true);
             }
         }
         #endregion
