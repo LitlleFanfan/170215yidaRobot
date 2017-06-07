@@ -1675,5 +1675,24 @@ namespace yidascan {
                 item.Value.BackColor = Color.LightGreen;
             }
         }
+
+        private void mnuContextCopy_Click(object sender, EventArgs e) {
+            ListView view = null;
+
+            var views = new List<ListView> { lsvLableCode, lsvWeigh, lsvCacheBefor, lsvCacheQ1, lsvCacheQ2,
+            lsvCacheQ3, lsvCacheQ4, lsvLableUp, lsvCatch1, lsvCatch2, lsvRobotA, lsvRobotB};
+
+            view = views.FirstOrDefault(x => x.Focused);
+
+            if (view == null) { return; }
+
+            if (view.SelectedItems.Count > 0) {
+                var item = view.SelectedItems[0].Text.Trim();
+
+                var s = item.Split(new char[] { ' ' });
+
+                Clipboard.SetText(item);
+            }
+        }
     }
 }

@@ -28,26 +28,14 @@ namespace yidascan {
                 return;
             }
 
-            if (IsInCacheQue(FrmMain.taskQ.CacheSide, code)) {
-                log($"号码{code}在缓存位，不能删除");
-                return;
-            }
-
             Cursor = Cursors.WaitCursor;
 
-            var rt = DeleteCodeFromQueAndDb(code);
-            wmain.ShowTaskQ();
-
-            if (rt) {
-                var msg = $"{code}已经删除";
-                FrmMain.logOpt.Write(msg, LogType.NORMAL);
-            } else {
-                var msg = $"数据库中没有这个号码: {code}";
-                log(msg);
-                FrmMain.logOpt.Write(msg, LogType.NORMAL);
+            try {
+                DeleteCodeFromQueAndDb(code);
+            } finally {
+                wmain.ShowTaskQ();
+                Cursor = Cursors.Default;
             }
-
-            Cursor = Cursors.Default;
         }
 
         private void btnCancel_Click(object sender, EventArgs e) {
@@ -55,27 +43,30 @@ namespace yidascan {
         }
 
         #region DELETE_B_CODE
-        public bool DeleteCodeFromQueAndDb(string code) {
+        public void DeleteCodeFromQueAndDb(string code) {
+            lock (TaskQueues.LOCK_LOCHELPER) {
+                deleteFromTaskq(FrmMain.taskQ, code);
+            }
+            log($"号码{code}已从队列中删除");
+
             var label = LableCode.QueryByLCode(code);            
             if (label != null) {
                 label.Remark += ";delete";
-                // delete
-                deleteFromTaskq(FrmMain.taskQ, label.LCode);
-                log($"号码{code}已从队列中删除");
 
                 // 只有没计算过位置的布卷才可以从数据库中删除。
-                if (!string.IsNullOrEmpty(label.PanelNo) && label.FloorIndex != 0) {
+                if (string.IsNullOrEmpty(label.PanelNo) || label.FloorIndex == 0) {
                     LableCode.Delete(label.LCode);
                     LableCode.SaveToHistory(label);
                     log($"号码{label.LCode}已经从数据库中删除");
+                } else {
+                    log($"号码{label.LCode}不能从数据库删除，板号: {label.PanelNo}, 层位置: {label.FloorIndex}");
                 }
 
                 // tell plc.
                 notifyOpc(label.LCode);
-                
-                return true;
-            } else {               
-                return false;
+            } else {
+                var msg = $"数据库中没有这个号码: {code}";
+                log(msg);
             }
         }
 
@@ -94,6 +85,15 @@ namespace yidascan {
                 q.Enqueue(item);
             }
 
+            return true;
+        }
+
+        private static bool deleteFromCache(IEnumerable<CachePos> q, string s) {
+            foreach (var item in q) {
+                if (item.labelcode != null && item.labelcode.LCode == s) {
+                    item.labelcode = null;
+                }
+            }
             return true;
         }
 
@@ -139,6 +139,7 @@ namespace yidascan {
             var e = deleteFromque(ques.CatchBQ, code);
             var f = deleteFromque(ques.RobotRollAQ, code);
             var g = deleteFromque(ques.RobotRollBQ, code);
+            var h = deleteFromCache(ques.CacheSide, code);
             return a || b || c || d || e || f || g;
         }
 

@@ -850,25 +850,25 @@ and Status<3 and FloorIndex<>0";
 
         private static List<CommandParameter> CreateLableCodeInsertHistory(LableCode c) {
             return new List<CommandParameter>() { new CommandParameter(
-                                "insert into LableCodeHis(LCode,ToLocation,PanelNo,Floor,FloorIndex,Diameter,Length,Coordinates,Cx,Cy,Cz,Crz,GetOutLCode,Remark,[RealLocation]) " +
-                            "values(@LCode,@ToLocation,@PanelNo,@Floor,@FloorIndex,@Diameter,@Length,@Coordinates,@Cx,@Cy,@Cz,@Crz,@GetOutLCode,@Remark,@RealLocation)",
+                                "insert into LableCodeHis(LCode,ToLocation,PanelNo,Status,Floor,FloorIndex,Diameter,Length,Coordinates,Cx,Cy,Cz,Crz,GetOutLCode,Remark,[RealLocation]) " +
+                            "values(@LCode,@ToLocation,@PanelNo,@Status,@Floor,@FloorIndex,@Diameter,@Length,@Coordinates,@Cx,@Cy,@Cz,@Crz,@GetOutLCode,@Remark,@RealLocation)",
                                 new SqlParameter[]{
                         new SqlParameter("@LCode",c.LCode),
-                        new SqlParameter("@ToLocation",c.ToLocation),
-                        c.PanelNo==null?new SqlParameter("@PanelNo",DBNull.Value):new SqlParameter("@PanelNo",c.PanelNo),
+                        new SqlParameter("@ToLocation",c.ToLocation ?? ""),
+                        new SqlParameter("@PanelNo",c.PanelNo ?? ""),
                         new SqlParameter("@Status", c.Status),
                         new SqlParameter("@Floor",c.floor),
                         new SqlParameter("@FloorIndex",c.floorIndex),
                         new SqlParameter("@Diameter",c.diameter),
                         new SqlParameter("@Length",c.length),
-                        new SqlParameter("@Coordinates",c.Coordinates),
+                        new SqlParameter("@Coordinates",c.Coordinates ?? ""),
                         new SqlParameter("@Cx",c.cx),
                         new SqlParameter("@Cy",c.cy),
                         new SqlParameter("@Cz",c.cz),
                         new SqlParameter("@Crz",c.crz),
-                        c.getOutLCode==null?new SqlParameter("@GetOutLCode",DBNull.Value):new SqlParameter("@GetOutLCode",c.getOutLCode),
-                        c.Remark==null?new SqlParameter("@Remark",DBNull.Value):new SqlParameter("@Remark",c.Remark),
-                        c.RealLocation==null?new SqlParameter("@RealLocation",DBNull.Value):new SqlParameter("@RealLocation",c.RealLocation)}) };
+                        new SqlParameter("@GetOutLCode",c.getOutLCode ?? ""),
+                        new SqlParameter("@Remark",c.Remark ?? ""),
+                        new SqlParameter("@RealLocation",c.RealLocation ?? "")}) };
         }
 
         public static bool SaveToHistory(LableCode c) {
