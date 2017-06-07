@@ -265,6 +265,7 @@ namespace yidascan {
 
             // 缓存位的floor有时候不对。floor这个值是哪里算的？
             if (rt != null && rt.Floor != current.Floor) {
+                rt.Remark = $"{rt.Remark}@{rt.Floor}";
                 rt.Floor = current.Floor;
             }
 
@@ -382,6 +383,15 @@ namespace yidascan {
                 cre.CResult.CodeCome.PanelNo = pinfo.PanelNo;
                 cre.CResult.CodeCome.Floor = pinfo.CurrFloor;
             }
+            #region 缓存布卷板号和层号的修正
+            var cachedRolls = FrmMain.taskQ.CacheSide.Where(x => x.labelcode != null && x.labelcode.ToLocation == lc.ToLocation)
+                .Select(x => x.labelcode)
+                .ToList();
+            foreach (LableCode tmp in cachedRolls) {
+                tmp.PanelNo = pinfo.PanelNo;
+                tmp.Floor = pinfo.CurrFloor;
+            }
+            #endregion
 
             // 取当前交地、当前板、当前层所有标签。
             layerLabels = LableCode.GetLableCodesOfRecentFloor(cre.CResult.CodeCome.ToLocation, pinfo.PanelNo, pinfo.CurrFloor);
@@ -444,7 +454,7 @@ namespace yidascan {
                         cre.CResult.CodeFromCache.Remark = $"{cre.CResult.CodeFromCache.Remark} floor last roll";
                     } else {
                         cre.CResult.CodeCome.Status = (int)LableState.FloorLastRoll;
-                        cre.CResult.CodeCome.Remark = $"{cre.CResult.CodeCome.Remark} floor last roll";
+                        cre.CResult.CodeCome.Remark = $"{cre.CResult.CodeCome.Remark} floor last roll*{cre.CResult.state}";
                     }
                 } else {
                     cre.CResult.CodeFromCache.Status = (int)LableState.FloorLastRoll;
@@ -546,7 +556,7 @@ namespace yidascan {
                             JsonConvert.SerializeObject(erpParam), re["Data"]);
                         return true;
                     }
-                } 
+                }
             }
             msg = "!板号完成失败，板号为空。";
             return false;
