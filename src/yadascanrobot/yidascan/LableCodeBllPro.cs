@@ -512,6 +512,10 @@ namespace yidascan {
                 cre.CResult.CodeFromCache.Floor = cre.CResult.CodeCome.Floor;
             }
 
+            if (cre.CResult.CodeFromCache != null && cre.CResult.CodeFromCache.Floor != cre.CResult.CodeCome.Floor) {
+                cre.CResult.CodeFromCache.Floor = cre.CResult.CodeCome.Floor;
+            }
+
             return cre;
         }
 
