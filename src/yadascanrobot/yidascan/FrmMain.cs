@@ -335,7 +335,7 @@ namespace yidascan {
                                 break;
                             }
                             logOpt.Write($"!实际交地{kv.Key} 收到人工完成信号。板号：{panelNo} ERP交地：{pf.ToLocation}", LogType.ROBOT_STACK);
-                            
+
                             LableCode.SetMaxFloorAndFull(panelNo);
 
                             // 创建新的板信息。
@@ -533,9 +533,12 @@ namespace yidascan {
                                 signal = opcACF.TryReadBool(kv.Value.Signal);
                                 if (signal) {
                                     var fullLable = PlcHelper.ReadCompleteLable(opcACF, kv.Value);
-                                    opcACF.TryWrite(kv.Value.Signal, 1);
+                                    bool ok = AreaAAndCFinish(fullLable);
+                                    if (ok) {
+                                        opcACF.TryWrite(kv.Value.Signal, 0);
+                                    }
 
-                                    logOpt.Write($"{kv.Key} 收到完成信号。标签:{fullLable} 执行状态:{AreaAAndCFinish(fullLable)}", LogType.NORMAL);
+                                    logOpt.Write($"{kv.Key} 收到完成信号。标签:{fullLable} 执行状态:{ok}", LogType.NORMAL);
                                 }
                             }
                         } catch (Exception ex) {
@@ -717,7 +720,7 @@ namespace yidascan {
         /// 2期代码。
         /// </summary>
         private void LableUpTask() {
-           var LabelUpOpcClient = CreateOpcClient("标签朝上");
+            var LabelUpOpcClient = CreateOpcClient("标签朝上");
             opcParam.LableUpParam = new OPCLableUpParam(LabelUpOpcClient);
 
             Task.Factory.StartNew(() => {
