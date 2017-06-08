@@ -33,10 +33,7 @@ namespace yidascan {
         public static IOpcClient opcWeigh;
         public static IOpcClient opcBUFL;
         public static IOpcClient opcACF;
-        public static IOpcClient CacheOpcClient;
         public static IOpcClient RobotOpcClient;
-        public static IOpcClient RobotCarryOpcClient;
-        public static IOpcClient LabelUpOpcClient;
 
         #endregion
         IRobotJob robot;
@@ -196,7 +193,7 @@ namespace yidascan {
         /// 启动机器人布卷队列等待。
         /// </summary>
         private void StartRobotJobTask() {
-            RobotCarryOpcClient = CreateOpcClient("机器人抓料队列");
+            var RobotCarryOpcClient = CreateOpcClient("机器人抓料队列");
             opcParam.RobotCarryParam = new OPCRobotCarryParam(RobotCarryOpcClient);
 
             Task.Factory.StartNew(() => {
@@ -613,7 +610,7 @@ namespace yidascan {
         }
 
         private void BeforCacheTask_new() {
-            CacheOpcClient = CreateOpcClient("缓存位");
+            var CacheOpcClient = CreateOpcClient("缓存位");
             opcParam.CacheParam = new OPCBeforCacheParam(CacheOpcClient);
             Task.Factory.StartNew(() => {
                 while (isrun) {
@@ -720,7 +717,7 @@ namespace yidascan {
         /// 2期代码。
         /// </summary>
         private void LableUpTask() {
-            LabelUpOpcClient = CreateOpcClient("标签朝上");
+           var LabelUpOpcClient = CreateOpcClient("标签朝上");
             opcParam.LableUpParam = new OPCLableUpParam(LabelUpOpcClient);
 
             Task.Factory.StartNew(() => {

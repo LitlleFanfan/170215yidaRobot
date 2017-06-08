@@ -423,12 +423,13 @@ namespace yidascan {
                     var cancachesum = pinfo == null ? 2 : (pinfo.OddStatus ? 0 : 1) + (pinfo.EvenStatus ? 0 : 1);
                     var cachelcs = FrmMain.taskQ.CacheSide.Count(x => x.labelcode != null && x.labelcode.ToLocation == lc.ToLocation);
 
-                    var go = isTooSmall(lc.Diameter) && cre.SideState.state == SideFullState.NO_FULL || CanIgo(cacheq, cre.CResult, cancachesum - cachelcs);
+                    var go = CanIgo(cacheq, cre.CResult, cancachesum - cachelcs);
                     if (go) {
                         cre.CResult.state = CacheState.Go;
-                        CalculatePosition(layerLabels, cre.CResult.CodeCome, cre.SideState == null ? SideFullState.NO_FULL : cre.SideState.state);
+                        bool isfull = IsPanelFull(cre.CResult.CodeCome);
+                        CalculatePosition(layerLabels, cre.CResult.CodeCome, isfull ? SideFullState.NO_FULL : SideFullState.FULL);
 
-                        if (IsPanelFull(cre.CResult.CodeCome)) {
+                        if (isfull) {
                             fp = SetFullFlag(cre.CResult.CodeCome.FloorIndex, pinfo);
                         }
 
