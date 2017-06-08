@@ -320,7 +320,6 @@ namespace yidascan {
         public void NotifyOpcJobFinished(string panelNo, string tolocation, string reallocation) {
             try {
                 var pState = LableCode.IsAllRollOnPanel(panelNo) ? PanelState.Full : PanelState.HalfFull;
-                FrmMain.SetReallocationState(reallocation, pState);
                 switch (pState) {
                     case PanelState.HalfFull:
                         client.TryWrite(param.BAreaFloorFinish[reallocation], true);
@@ -360,12 +359,10 @@ namespace yidascan {
 
         public void NotifyOpcJobFinished(RollPosition roll) {
             try {
-                FrmMain.SetReallocationState(roll.RealLocation, roll.PnlState);
                 switch (roll.PnlState) {
                     case PanelState.HalfFull:
                         client.TryWrite(param.BAreaFloorFinish[roll.RealLocation], true);
                         log($"{roll.RealLocation}: 半板信号发出。slot: {param.BAreaFloorFinish[roll.RealLocation]}", LogType.ROBOT_STACK);
-                        FrmMain.SetReallocationState(roll.RealLocation, roll.PnlState);
                         break;
                     case PanelState.Full:
                         string msg;

@@ -33,10 +33,7 @@ namespace yidascan {
         public static IOpcClient opcWeigh;
         public static IOpcClient opcBUFL;
         public static IOpcClient opcACF;
-        public static IOpcClient CacheOpcClient;
         public static IOpcClient RobotOpcClient;
-        public static IOpcClient RobotCarryOpcClient;
-        public static IOpcClient LabelUpOpcClient;
 
         #endregion
         IRobotJob robot;
@@ -196,7 +193,7 @@ namespace yidascan {
         /// 启动机器人布卷队列等待。
         /// </summary>
         private void StartRobotJobTask() {
-            RobotCarryOpcClient = CreateOpcClient("机器人抓料队列");
+            var RobotCarryOpcClient = CreateOpcClient("机器人抓料队列");
             opcParam.RobotCarryParam = new OPCRobotCarryParam(RobotCarryOpcClient);
 
             Task.Factory.StartNew(() => {
@@ -314,30 +311,43 @@ namespace yidascan {
                             // kv.Key是交地。
                             var reallocation = kv.Key;
 
-                            // 取名义交地
-                            var virtuallocation = "";
+                            // 取实际交地对应板号
+                            var panelNo = "";
                             lock (TaskQueues.LOCK_LOCHELPER) {
-                                virtuallocation = TaskQueues.lochelper.lookupVirtual(reallocation);
+                                panelNo = TaskQueues.lochelper.lookupVirtual(reallocation);
                             }
 
-                            logOpt.Write($"!实际交地{kv.Key} 收到人工完成信号。ERP交地：{virtuallocation}", LogType.ROBOT_STACK);
+                            if (string.IsNullOrEmpty(panelNo)) {// plc复位信号。
+                                logOpt.Write($"!实际交地{kv.Key} 收到人工完成信号，人工满板失败。交地无对应板号。", LogType.ROBOT_STACK);
+                                lock (opcBUFL) {
+                                    opcBUFL.TryWrite(kv.Value, SIGNAL_OFF);
+                                }
+                                break;
+                            }
 
-                            // 修改当前板号的属性。
-                            var shiftno = createShiftNo();
+                            var pf = LableCode.GetPanel(panelNo);
 
-                            var pf = LableCode.GetTolactionCurrPanelNo(virtuallocation, shiftno);
-                            LableCode.SetMaxFloorAndFull(virtuallocation);
+                            if (pf == null) {
+                                logOpt.Write($"!实际交地{kv.Key} 收到人工完成信号，人工满板失败。板号：{panelNo}  数据库中无对应板号。", LogType.ROBOT_STACK);
+                                lock (opcBUFL) {
+                                    opcBUFL.TryWrite(kv.Value, SIGNAL_OFF);
+                                }
+                                break;
+                            }
+                            logOpt.Write($"!实际交地{kv.Key} 收到人工完成信号。板号：{panelNo} ERP交地：{pf.ToLocation}", LogType.ROBOT_STACK);
+                            
+                            LableCode.SetMaxFloorAndFull(panelNo);
 
                             // 创建新的板信息。
                             var newPanel = PanelGen.NewPanelNo();
 
                             // 重新计算缓存区的布卷的坐标。
                             lock (TaskQueues.LOCK_LOCHELPER) {
-                                cacheher.ReCalculateCoordinate(newPanel, virtuallocation);
+                                cacheher.ReCalculateCoordinate(newPanel, panelNo);
                             }
 
                             //处理满板信号
-                            robot.NotifyOpcJobFinished(pf.PanelNo, virtuallocation, reallocation);
+                            robot.NotifyOpcJobFinished(pf.PanelNo, panelNo, reallocation);
 
                             // plc复位信号。
                             lock (opcBUFL) {
@@ -600,7 +610,7 @@ namespace yidascan {
         }
 
         private void BeforCacheTask_new() {
-            CacheOpcClient = CreateOpcClient("缓存位");
+            var CacheOpcClient = CreateOpcClient("缓存位");
             opcParam.CacheParam = new OPCBeforCacheParam(CacheOpcClient);
             Task.Factory.StartNew(() => {
                 while (isrun) {
@@ -707,7 +717,7 @@ namespace yidascan {
         /// 2期代码。
         /// </summary>
         private void LableUpTask() {
-            LabelUpOpcClient = CreateOpcClient("标签朝上");
+           var LabelUpOpcClient = CreateOpcClient("标签朝上");
             opcParam.LableUpParam = new OPCLableUpParam(LabelUpOpcClient);
 
             Task.Factory.StartNew(() => {
@@ -1302,22 +1312,26 @@ namespace yidascan {
 
         #region reallocation State
         static Dictionary<string, Label> locationLbls = new Dictionary<string, Label>();
-        public static void SetReallocationState(string locationNo, PanelState pstate, bool noPanel = false) {
-            if (noPanel) {
-                locationLbls[locationNo].BackColor = Color.LightGreen;
+        public static void SetReallocationState(string locationNo, LocationState pstate, Priority p, string panelNo) {
+            if (p == Priority.DISABLE) {
+                locationLbls[locationNo].BackColor = Color.Gray;
             } else {
                 switch (pstate) {
-                    case PanelState.Full:
+                    case LocationState.FULL:
                         locationLbls[locationNo].BackColor = Color.Red;
                         break;
-                    case PanelState.HalfFull:
+                    case LocationState.BUSY:
                         locationLbls[locationNo].BackColor = Color.Orange;
-                        break;
-                    case PanelState.LessHalf:
-                        locationLbls[locationNo].BackColor = Color.Green;
+                        PanelInfo pi = LableCode.GetPanel(panelNo);
+                        if (pi != null) {
+                            locationLbls[locationNo].Text = pi.CurrFloor.ToString();
+                        } else {
+                            locationLbls[locationNo].Text = "?";
+                        }
                         break;
                     default:
                         locationLbls[locationNo].BackColor = Color.LightGreen;
+                        locationLbls[locationNo].Text = string.Empty;
                         break;
                 }
             }
@@ -1692,6 +1706,12 @@ namespace yidascan {
                 var s = item.Split(new char[] { ' ' });
 
                 Clipboard.SetText(item);
+            }
+        }
+
+        private void tRefreshRealLocState_Tick(object sender, EventArgs e) {
+            foreach (var item in TaskQueues.lochelper.RealLocations) {
+                SetReallocationState(item.realloc, item.state, item.priority, item.panelno);
             }
         }
     }

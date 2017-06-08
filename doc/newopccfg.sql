@@ -10,20 +10,22 @@
 
 
 TRUNCATE  TABLE  NewOPCParam
-INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('SizeState','MicroWin.S7-1200.NewItem112','Scan','size与PLC数据交换状态(读到0开始写，写完写1）')
-INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('Diameter','MicroWin.S7-1200.NewItem10','Scan','直径')
-INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('Length','MicroWin.S7-1200.NewItem11','Scan','长度')
+INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('SizeState','MicroWin.S7-1200.NewItem112','Scan','size与PLC数据交换状态(读到0开始写，写完写1）');
+INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('Diameter','MicroWin.S7-1200.NewItem10','Scan','直径');
+INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('Length','MicroWin.S7-1200.NewItem11','Scan','长度');
 
-INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('ScanState','MicroWin.S7-1200.NewItem1','Scan','采集处与PLC数据交换状态(读到0开始写，写完写1）')
-INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('ToLocationArea','MicroWin.S7-1200.NewItem12','Scan','交地区')
-INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('ToLocationNo','MicroWin.S7-1200.NewItem14','Scan','交地编号')
-INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('ScanLable1','MicroWin.S7-1200.NewItem21','Scan','采集到的标签号01')
-INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('ScanLable2','MicroWin.S7-1200.NewItem22','Scan','采集到的标签号01')
-INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('PushAside','MicroWin.S7-1200.NewItem15','Scan','通知PLC勾料信号')
-INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('PlcPushAside','MicroWin.S7-1200.NewItem2','Scan','PLC勾料信号（扫描超时）')
+INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('ScanState','MicroWin.S7-1200.NewItem1','Scan','采集处与PLC数据交换状态(读到0开始写，写完写1）');
+INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('ToLocationArea','MicroWin.S7-1200.NewItem12','Scan','交地区');
+INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('ToLocationNo','MicroWin.S7-1200.NewItem14','Scan','交地编号');
+INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('ScanLable1','MicroWin.S7-1200.NewItem21','Scan','采集到的标签号01');
+INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('ScanLable2','MicroWin.S7-1200.NewItem22','Scan','采集到的标签号01');
+INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('PushAside','MicroWin.S7-1200.NewItem15','Scan','通知PLC勾料信号');
+INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('PlcPushAside','MicroWin.S7-1200.NewItem2','Scan','PLC勾料信号（扫描超时）');
 
 
-INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('GetWeigh','MicroWin.S7-1200.NewItem16','Weigh','称重(1称重，称完置0，称重失败2）')
+INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('GetWeigh','MicroWin.S7-1200.NewItem16','Weigh','称重(1称重，称完置0，称重失败2）');
+INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('ReadSignal','MicroWin.S7-1200.NewItem016','Weigh','称重（来料报告）');
+INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('WriteSignal','MicroWin.S7-1200.NewItem160','Weigh','称重（来料报告复位）');
 -- added at 2017-03-23.
 INSERT INTO NEWOPCPARAM (NAME, CODE, CLASS, REMARK) VALUES('LabelPart1', 'MicroWin.S7-1200.NewItem44', 'Weigh', '标签号码前6位');
 INSERT INTO NEWOPCPARAM (NAME, CODE, CLASS, REMARK) VALUES('LabelPart2', 'MicroWin.S7-1200.NewItem45', 'Weigh', '标签号码后6位');
@@ -34,19 +36,23 @@ INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('LCode1','MicroWin.S7-1200.New
 INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('LCode2','MicroWin.S7-1200.NewItem28','DeleteLCode','删除布卷标签2');
 
 --start2期维护
-INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('BeforCacheStatus','MicroWin.S7-1200-3.NewItem108','Cache','缓存前标签（读完写好结果后置空）')
-INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('BeforCacheLable1','MicroWin.S7-1200-3.NewItem136','Cache','缓存前标签1')
-INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('BeforCacheLable2','MicroWin.S7-1200-3.NewItem137','Cache','缓存前标签2')
-INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('CacheStatus','MicroWin.S7-1200-3.NewItem50','Cache','缓存状态（1走；2存；3取存，同抓子；4走取；5取走；6存取，异抓子）')
-INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('CachePoint','MicroWin.S7-1200-3.NewItem46','Cache','存入缓存区的位置')
-INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('GetPoint','MicroWin.S7-1200-3.NewItem47','Cache','从缓存区取出的位置')
+INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('BeforCacheStatus','MicroWin.S7-1200-3.NewItem108','Cache','缓存前标签（读完写好结果后置空）');
+INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('ReadSignal','MicroWin.S7-1200-3.NewItem0108','Cache','缓存前标签（来料报告）');
+INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('WriteSignal','MicroWin.S7-1200-3.NewItem1080','Cache','缓存前标签（来料报告复位）');
+INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('BeforCacheLable1','MicroWin.S7-1200-3.NewItem136','Cache','缓存前标签1');
+INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('BeforCacheLable2','MicroWin.S7-1200-3.NewItem137','Cache','缓存前标签2');
+INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('CacheStatus','MicroWin.S7-1200-3.NewItem50','Cache','缓存状态（1走；2存；3取存，同抓子；4走取；5取走；6存取，异抓子）');
+INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('ReadSignal','MicroWin.S7-1200-3.NewItem050','Cache','缓存状态（来料报告）');
+INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('WriteSignal','MicroWin.S7-1200-3.NewItem500','Cache','缓存状态（来料报告复位）');
+INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('CachePoint','MicroWin.S7-1200-3.NewItem46','Cache','存入缓存区的位置');
+INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('GetPoint','MicroWin.S7-1200-3.NewItem47','Cache','从缓存区取出的位置');
 
 
-INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('Signal','MicroWin.S7-1200-3.NewItem113','LableUp','标签朝上采集（读完写好结果后置空）')
-INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('ReadSignal','MicroWin.S7-1200-3.NewItem0113','LableUp','标签朝上采集（来料报告）')
-INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('WriteSignal','MicroWin.S7-1200-3.NewItem1130','LableUp','标签朝上采集（来料报告复位）')
-INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('Diameter','MicroWin.S7-1200-3.NewItem51','LableUp','直径 （单位毫米）')
-INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('Goto','MicroWin.S7-1200-3.NewItem52','LableUp','去哪道（1-2）')
+INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('Signal','MicroWin.S7-1200-3.NewItem113','LableUp','标签朝上采集（读完写好结果后置空）');
+INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('ReadSignal','MicroWin.S7-1200-3.NewItem0113','LableUp','标签朝上采集（来料报告）');
+INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('WriteSignal','MicroWin.S7-1200-3.NewItem1130','LableUp','标签朝上采集（来料报告复位）');
+INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('Diameter','MicroWin.S7-1200-3.NewItem51','LableUp','直径 （单位毫米）');
+INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('Goto','MicroWin.S7-1200-3.NewItem52','LableUp','去哪道（1-2）');
 
 
 INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('RobotCarryA','MicroWin.S7-1200-3.NewItem109','RobotCarry','开关信号（PC读到1读标签，读完写0)');
@@ -57,7 +63,11 @@ INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('ReadSignalB','MicroWin.S7-120
 INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('WriteSignalB','MicroWin.S7-1200-3.NewItem1100','RobotCarry','开关信号（来料报告复位)');
 
 INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('RobotStartA','MicroWin.S7-1200-3.NewItem124','Robot','布卷被抓走 开关信号（PC读到1读标签，读完写0)');
+INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('ReadSignalA','MicroWin.S7-1200-3.NewItem0124','Robot','布卷被抓走（来料报告）');
+INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('WriteSignalA','MicroWin.S7-1200-3.NewItem1240','Robot','布卷被抓走（来料报告复位）');
 INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('RobotStartB','MicroWin.S7-1200-3.NewItem125','Robot','布卷被抓走 开关信号（PC读到1读标签，读完写0)');
+INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('ReadSignalB','MicroWin.S7-1200-3.NewItem0125','Robot','布卷被抓走（来料报告）');
+INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('WriteSignalB','MicroWin.S7-1200-3.NewItem1250','Robot','布卷被抓走（来料报告复位）');
 INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('RobotJobStart','MicroWin.S7-1200-3.NewItem126','Robot','机器人Job启动信号 开关信号（PC写1)');
 
 --end2期维护
@@ -193,8 +203,7 @@ INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('B10','MicroWin.S7-1200.NewIte
 INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('B11','MicroWin.S7-1200.NewItem123','BadShapeLocations','B区层不规则形状报警信号板号11');
 
 --故障和报警
-INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('ERPAlarm','MicroWin.S7-1200.NewItem165','None','ERP:1=ERP通讯失败，2=ERP没有交地标签错误？');
+INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('ERPAlarm','MicroWin.S7-1200.NewItem165','None','ERP:1=ERP通讯失败，0=ERP通讯正常。PC自复位');
+INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('CacheStateAlarm','MicroWin.S7-1200.NewItem166','None','缓存区域故障 1:取缓存位异常;2:缓存没有空位.0:正常。PC自复位');
 
----机器人状态可以直接从机器人电柜里接信号
---INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('RobotWorkState','MicroWin.S7-1200.NewItem70','None','工作状态（运行：１；空闲：０；）');
---INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('RobotRunState','MicroWin.S7-1200.NewItem72','None','运行状态是否在安全位置（安全：１；危险：０；）');
+

@@ -35,6 +35,7 @@ namespace yidascan.DataAccess {
         public int SequenceNo { get; set; }
         public int MaxFloor { get; set; }
         public bool HasExceed { get; set; }
+        public string ToLocation{get;set;}
 
         public static string QueryLastPanelNo(string location) {
             var sql = "select top 1 panelno from panel where tolocation=@location order by sequenceno desc";

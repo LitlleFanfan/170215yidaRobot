@@ -24,7 +24,8 @@ namespace yidascan {
         /// <param name="client"></param>
         /// <returns></returns>
         public static bool ReadCacheSignal(IOpcClient client, OPCParam param) {
-            return client.TryReadBool(param.CacheParam.BeforCacheStatus);
+            var r = param.CacheParam.PlcSn.ReadSN(client);
+            return r;
         }
         public static string ReadCacheLabble(IOpcClient client, OPCParam param) {
             return client.TryReadString(param.CacheParam.BeforCacheLable1).PadLeft(6, '0') +
@@ -46,6 +47,7 @@ namespace yidascan {
             client.TryWrite(param.CacheParam.GetPoint, posGet);
             Thread.Sleep(DELAY);
             // 复位来料信号。
+            param.CacheParam.PlcSn.WriteSN(client);
             client.TryWrite(param.CacheParam.BeforCacheStatus, 0);
         }
 

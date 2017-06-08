@@ -26,24 +26,35 @@ namespace yidascan.DataAccess {
         }
 
         public bool ReadSN(IOpcClient opc) {
-            GetSignal(opc);
+            int[] rw = GetSignal(opc);
 
 #if DEBUG
             return true;
 #endif
-            if (readCount == 0 && writeCount != readCount) {
-                ResetReadCount(opc);
-                if (readCount == 0 && writeCount != readCount) {
+            if (rw[0] == 0 && rw[1] != rw[0]) {
+                rw = ResetReadCount(opc);
+                if (rw[0] == 0 && rw[1] != rw[0]) {
                     ResetSN(opc);
+                    FrmMain.logOpt.Write($"来料归零 R {ReadSignal}: {rw[0]} W {WriteSignal}: {rw[1] }Err,{writeCount} ！{guid}");
                     return false;
                 }
             }
 
-            if (readCount == (writeCount + 1)) {
+            if (rw[0] == (rw[1] + 1)) {
                 guid = Guid.NewGuid().ToString();
-                FrmMain.logOpt.Write($"来料 R {ReadSignal}: {readCount} W {WriteSignal}: {writeCount}！{guid}");
+                readCount = rw[0];
+                writeCount = rw[1];
+                FrmMain.logOpt.Write($"来料 R {ReadSignal}: {rw[0]} W {WriteSignal}: {rw[1] }！{guid}");
                 return true;
             } else {
+                if (rw[0] != rw[1] && rw[1] != writeCount) {//异常信号修正
+                    if (string.IsNullOrEmpty(groupName)) {
+                        opc.TryWrite(WriteSignal, writeCount);
+                    } else {
+                        opc.TryWrite(groupName, WriteSignal, writeCount);
+                    }
+                    FrmMain.logOpt.Write($"ERR来料 R {ReadSignal}: {rw[0]} W {WriteSignal}: {rw[1] }Err,{writeCount} ！{guid}");
+                }
                 return false;
             }
         }
@@ -52,25 +63,29 @@ namespace yidascan.DataAccess {
         /// 复位校正
         /// </summary>
         /// <param name="opc"></param>
-        private void ResetReadCount(IOpcClient opc) {
+        private int[] ResetReadCount(IOpcClient opc) {
+            int[] rw = new int[2];
             var count = 3;
             while (count-- > 0) {
                 Thread.Sleep(100);
-                GetSignal(opc);
-                if (readCount != 0) {
+                rw = GetSignal(opc);
+                if (rw[0] != 0) {
                     break;
                 }
             }
+            return rw;
         }
 
-        private void GetSignal(IOpcClient opc) {
+        private int[] GetSignal(IOpcClient opc) {
+            int[] rw = new int[2];
             if (string.IsNullOrEmpty(groupName)) {
-                readCount = opc.ReadInt(ReadSignal);
-                writeCount = opc.ReadInt(WriteSignal);
+                rw[0] = opc.ReadInt(ReadSignal);
+                rw[1] = opc.ReadInt(WriteSignal);
             } else {
-                readCount = opc.ReadInt(groupName, ReadSignal);
-                writeCount = opc.ReadInt(groupName, WriteSignal);
+                rw[0] = opc.ReadInt(groupName, ReadSignal);
+                rw[1] = opc.ReadInt(groupName, WriteSignal);
             }
+            return rw;
         }
 
         public bool WriteSN(IOpcClient opc) {
@@ -200,6 +215,11 @@ namespace yidascan.DataAccess {
         public string LabelPart1 { get; set; }
         public string LabelPart2 { get; set; }
 
+        public string ReadSignal { get; set; }
+        public string WriteSignal { get; set; }
+
+        public PlcSignal PlcSn { get; set; }
+
         public const string CFG = "Weigh";
         /// <summary>
         /// 初始化参数同时添加订阅
@@ -220,6 +240,9 @@ namespace yidascan.DataAccess {
                     }
                 }
             }
+
+            PlcSn = new PlcSignal();
+            PlcSn.LoadSN(opc, ReadSignal, WriteSignal);
         }
     }
 
@@ -250,6 +273,11 @@ namespace yidascan.DataAccess {
         /// </summary>
         public string GetPoint { get; set; }
 
+        public string ReadSignal { get; set; }
+        public string WriteSignal { get; set; }
+
+        public PlcSignal PlcSn { get; set; }
+
         public const string CFG = "Cache";
         /// <summary>
         /// 初始化参数同时添加订阅
@@ -268,6 +296,9 @@ namespace yidascan.DataAccess {
                     }
                 }
             }
+
+            PlcSn = new PlcSignal();
+            PlcSn.LoadSN(opc, ReadSignal, WriteSignal);
         }
 
     }
@@ -364,6 +395,16 @@ namespace yidascan.DataAccess {
 
         public string RobotJobStart { get; set; }
 
+        public string ReadSignalA { get; set; }
+        public string WriteSignalA { get; set; }
+
+        public PlcSignal PlcSnA { get; set; }
+
+        public string ReadSignalB { get; set; }
+        public string WriteSignalB { get; set; }
+
+        public PlcSignal PlcSnB { get; set; }
+
         public const string CFG = "Robot";
         /// <summary>
         /// 初始化参数同时添加订阅
@@ -382,10 +423,23 @@ namespace yidascan.DataAccess {
                     }
                 }
             }
+
+            PlcSnA = new PlcSignal();
+            PlcSnA.LoadSN(opc, ReadSignalA, WriteSignalA);
+
+            PlcSnB = new PlcSignal();
+            PlcSnB.LoadSN(opc, ReadSignalB, WriteSignalB);
         }
     }
 
     public class NoneOpcParame {
+        /// <summary>
+        /// ERP故障
+        /// </summary>
+        public string ERPAlarm { get; set; }
+
+        public string CacheStateAlarm { get; set; }
+
         public const string CFG = "None";
         /// <summary>
         /// 初始化参数同时添加订阅
@@ -405,11 +459,6 @@ namespace yidascan.DataAccess {
                 }
             }
         }
-
-        /// <summary>
-        /// ERP故障
-        /// </summary>
-        public string ERPAlarm { get; set; }
     }
 
     public class OPCParam {
