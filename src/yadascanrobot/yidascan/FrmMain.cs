@@ -534,9 +534,7 @@ namespace yidascan {
                                 if (signal) {
                                     var fullLable = PlcHelper.ReadCompleteLable(opcACF, kv.Value);
                                     bool ok = AreaAAndCFinish(fullLable);
-                                    if (ok) {
-                                        opcACF.TryWrite(kv.Value.Signal, 0);
-                                    }
+                                    opcACF.TryWrite(kv.Value.Signal, 0);
 
                                     logOpt.Write($"{kv.Key} 收到完成信号。标签:{fullLable} 执行状态:{ok}", LogType.NORMAL);
                                 }
@@ -619,7 +617,8 @@ namespace yidascan {
                 while (isrun) {
                     Thread.Sleep(OPCClient.DELAY * 200);
                     try {
-                        if (PlcHelper.ReadCacheSignal(CacheOpcClient, opcParam)) {
+                        var r = opcParam.CacheParam.PlcSn.ReadSN(CacheOpcClient);
+                        if (r) {
                             lock (TaskQueues.LOCK_LOCHELPER) {
                                 if (taskQ.CacheQ.Count == 0) continue;
                             }

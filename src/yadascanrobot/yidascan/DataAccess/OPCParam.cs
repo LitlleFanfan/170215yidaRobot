@@ -278,6 +278,11 @@ namespace yidascan.DataAccess {
 
         public PlcSignal PlcSn { get; set; }
 
+        //public string ReadSignalS { get; set; }
+        //public string WriteSignalS { get; set; }
+
+        //public PlcSignal PlcSnS { get; set; }
+
         public const string CFG = "Cache";
         /// <summary>
         /// 初始化参数同时添加订阅
@@ -299,6 +304,9 @@ namespace yidascan.DataAccess {
 
             PlcSn = new PlcSignal();
             PlcSn.LoadSN(opc, ReadSignal, WriteSignal);
+
+            //PlcSnS = new PlcSignal();
+            //PlcSnS.LoadSN(opc, ReadSignalS, WriteSignalS);
         }
 
     }
