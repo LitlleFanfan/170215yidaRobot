@@ -427,7 +427,7 @@ namespace yidascan {
                     if (go) {
                         cre.CResult.state = CacheState.Go;
                         bool isfull = IsPanelFull(cre.CResult.CodeCome);
-                        CalculatePosition(layerLabels, cre.CResult.CodeCome, isfull ? SideFullState.NO_FULL : SideFullState.FULL);
+                        CalculatePosition(layerLabels, cre.CResult.CodeCome, isfull ? SideFullState.FULL : SideFullState.NO_FULL);
 
                         if (isfull) {
                             fp = SetFullFlag(cre.CResult.CodeCome.FloorIndex, pinfo);
