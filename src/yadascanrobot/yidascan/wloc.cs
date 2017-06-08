@@ -134,33 +134,53 @@ namespace yidascan {
         }
 
         private void miEnable_Click(object sender, EventArgs e) {
-            lock (TaskQueues.LOCK_LOCHELPER) {
-                var items = listView2.SelectedItems;
-                if (items.Count > 0) {
-                    var item = (RealLoc)items[0].Tag;
-                    if (item.priority == Priority.DISABLE || !locs.isMapped(item.realloc)) {
-                        item.priority = Priority.MEDIUM;
-                        item.state = LocationState.IDLE;
+            var items = listView2.SelectedItems;
+            var item = items.Count > 0 ? (RealLoc)items[0].Tag : null;
 
-                        ShowRealLocs();
-                    } else {
-                        CommonHelper.Warn($"{item.realloc}有名义交地对应，不能修改状态。");
-                    }
+            if (item == null) {
+                MessageBox.Show("没有选中交地。");
+                return;
+            }
+
+            if (!CommonHelper.Confirm($"要设实际交地{item.realloc}为空闲状态吗？")) {
+                return;
+            }
+
+            lock (TaskQueues.LOCK_LOCHELPER) {
+                if (!locs.isMapped(item.realloc)) {
+                    item.priority = Priority.MEDIUM;
+                    item.state = LocationState.IDLE;
+
+                    ShowRealLocs();
+                } else {
+                    CommonHelper.Warn($"交地正在使用中，不能修改状态。");
                 }
             }
         }
 
         private void miDisable_Click(object sender, EventArgs e) {
+            var items = listView2.SelectedItems;
+
+            var item = items.Count > 0 ? (RealLoc)items[0].Tag : null;
+
+            if (item == null) {
+                MessageBox.Show("没有选中交地。");
+                return;
+            }
+
+            if (!CommonHelper.Confirm($"要设实际交地{item.realloc}为禁止状态吗？")) {
+                return;
+            }
+
             lock (TaskQueues.LOCK_LOCHELPER) {
-                var items = listView2.SelectedItems;
-                if (items.Count > 0) {
-                    var item = (RealLoc)items[0].Tag;
-                    if (item.state == LocationState.IDLE) {
-                        item.priority = Priority.DISABLE;
-                    }
+                if (!locs.isMapped(item.realloc)) {
+                    item.priority = Priority.DISABLE;
                     ShowRealLocs();
+                } else {
+                    MessageBox.Show("交地正在使用中，不能修改状态。");
                 }
             }
         }
     }
 }
+
