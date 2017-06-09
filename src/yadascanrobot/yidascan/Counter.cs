@@ -48,14 +48,15 @@ namespace yidascan {
                 return -1;
             }
 
-            var limit = (int)Math.Floor(counter.Count(x => x.Key.StartsWith(Area.B)) * .33);
+            var limit = (int)Math.Ceiling(counter.Count(x => x.Key.StartsWith(Area.B)) * .33);
             
-            var q = counter.OrderBy(x => x.Value)
+            var q = counter.Where(x => x.Key.StartsWith(Area.B))
+                .OrderBy(x => x.Value)
                 .Select(x => x.Key);
-            var qhigh = q.Take(limit);
+            var qlow = q.Take(limit);
             var qmedium = q.Skip(limit).Take(limit);
 
-            if (qhigh.Contains(loc)) { return LOW; }
+            if (qlow.Contains(loc)) { return LOW; }
             else if (qmedium.Contains(loc)) { return MEDIUM; }
             else { return HIGH; }
         }

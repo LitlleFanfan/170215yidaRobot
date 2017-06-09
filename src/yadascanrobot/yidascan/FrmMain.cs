@@ -1096,22 +1096,8 @@ namespace yidascan {
             if (LableCode.Add(lc)) {
                 ViewAddLable(lc);
 
-                if (lc.ToLocation.StartsWith("B")) {
-                    var hot = Counter.LOW;
-                    lock (counter) {
-                        counter.inc(lc.ToLocation);
-                        hot = counter.hotareab(lc.ToLocation);
-                    }
-                    lock (TaskQueues.LOCK_LOCHELPER) {
-                        if (hot == Counter.LOW) {
-                            TaskQueues.lochelper.setPriority(lc.ToLocation, Priority.LOW);
-                        } else if (hot == Counter.MEDIUM) {
-                            TaskQueues.lochelper.setPriority(lc.ToLocation, Priority.MEDIUM);
-                        } else if (hot == Counter.HIGH) {
-                            TaskQueues.lochelper.setPriority(lc.ToLocation, Priority.HIGH);
-                        }
-                    }
-                }
+                updateCounter(lc.ToLocation);
+                udpatePriority(lc.ToLocation);
 
                 RefreshCounter();
 
@@ -1123,6 +1109,30 @@ namespace yidascan {
                 logOpt.Write($"!扫描号码{lc.LCode}存数据库失败。");
                 ShowWarning($"扫描号码{lc.LCode}存数据库失败。", true);
                 PlcHelper.PushAside(client, opcParam);
+            }
+        }
+
+        private void updateCounter(string location) {
+            lock (counter) {
+                counter.inc(location);
+            }
+        }
+
+        private void udpatePriority(string location) {
+            if (location.StartsWith("B")) {
+                var hot = Counter.LOW;
+                lock (counter) {
+                    hot = counter.hotareab(location);
+                }
+                lock (TaskQueues.LOCK_LOCHELPER) {
+                    if (hot == Counter.LOW) {
+                        TaskQueues.lochelper.setPriority(location, Priority.LOW);
+                    } else if (hot == Counter.MEDIUM) {
+                        TaskQueues.lochelper.setPriority(location, Priority.MEDIUM);
+                    } else if (hot == Counter.HIGH) {
+                        TaskQueues.lochelper.setPriority(location, Priority.HIGH);
+                    }
+                }
             }
         }
 
@@ -1522,6 +1532,7 @@ namespace yidascan {
                 lock (TaskQueues.LOCK_LOCHELPER) {
                     logOpt.Write("!使用默认板位");
                     TaskQueues.lochelper = LocationHelper.LoadRealDefaultPriority();
+                    TaskQueues.lochelper.ResetVirtualPriority();
                 }
 
                 taskQ.clearAll();

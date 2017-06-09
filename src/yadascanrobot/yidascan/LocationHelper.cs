@@ -348,6 +348,12 @@ namespace yidascan {
             return loc;
         }
 
+        public void ResetVirtualPriority() {
+            foreach (var k in VirtualLocations) {
+                k.priority = Priority.MEDIUM;
+            }
+        }
+
         public void SaveConf(string fn) {
             var jsonstr = JsonConvert.SerializeObject(this, Formatting.Indented);
             File.WriteAllText(fn, jsonstr);
