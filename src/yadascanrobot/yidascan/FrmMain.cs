@@ -420,7 +420,6 @@ namespace yidascan {
             LableUpTask();
             StartRobotJobTask();
             BAreaUserFinalLayerTask();
-            StartLocStateToRobot();
 
             if (chkUseRobot.Checked) {
                 StartAllRobotTasks();
