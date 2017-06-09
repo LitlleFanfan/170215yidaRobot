@@ -276,6 +276,7 @@ namespace yidascan {
                         logOpt.Write("开始机器人线程。", LogType.NORMAL);
 
                         robot.JobLoop(ref robotRun, lsvRobotA, lsvRobotB);
+                        StartLocStateToRobot();
 
                         logOpt.Write("机器人启动正常。", LogType.NORMAL);
                     } else {
@@ -341,11 +342,11 @@ namespace yidascan {
 
                             // 重新计算缓存区的布卷的坐标。
                             lock (TaskQueues.LOCK_LOCHELPER) {
-                                cacheher.ReCalculateCoordinate(newPanel, panelNo);
+                                cacheher.ReCalculateCoordinate(newPanel, pf.ToLocation);
                             }
 
                             //处理满板信号
-                            robot.NotifyOpcJobFinished(pf.PanelNo, panelNo, reallocation);
+                            robot.NotifyOpcJobFinished(pf.PanelNo, pf.ToLocation, reallocation);
 
                             // plc复位信号。
                             lock (opcBUFL) {
@@ -1732,7 +1733,7 @@ namespace yidascan {
 
         private void StartLocStateToRobot() {
             Task.Run(() => {
-                while (isrun) {
+                while (robotRun) {
                     Thread.Sleep(1000);
                     if (robot != null && robot.IsConnected()) {
                         robot.WriteLocationState(RobotOpcClient, opcParam);

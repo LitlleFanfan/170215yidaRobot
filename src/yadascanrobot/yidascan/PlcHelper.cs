@@ -156,11 +156,8 @@ namespace yidascan {
             client.TryWrite(param.BadShapeLocations[tolocation], BAD_SHAPE);
         }
 
-        public static int ReadPanelState(IOpcClient client, OPCParam param, string realloc) {
-            if (param.BAreaPanelState.ContainsKey(realloc)) {
-                throw new Exception($"来源: {nameof(ReadPanelState)}, {realloc}参数不在列表中。");
-            }
-            var val = client.TryReadInt(param.BAreaPanelState[realloc]);
+        public static int ReadPanelState(IOpcClient client, OPCParam param, string itemname) {
+            var val = client.TryReadInt(itemname);
             return val == 1 ? 1 : 0;
         }
     }

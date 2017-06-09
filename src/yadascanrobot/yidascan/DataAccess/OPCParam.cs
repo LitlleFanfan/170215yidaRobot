@@ -35,7 +35,7 @@ namespace yidascan.DataAccess {
                 rw = ResetReadCount(opc);
                 if (rw[0] == 0 && rw[1] != rw[0]) {
                     ResetSN(opc);
-                    FrmMain.logOpt.Write($"来料归零 R {ReadSignal}: {rw[0]} W {WriteSignal}: {rw[1] }Err,{writeCount} ！{guid}");
+                    FrmMain.logOpt.Write($"来料归零 R {ReadSignal}: {rw[0]} W {WriteSignal}: {rw[1] },上次正常读到R:{readCount} W:{writeCount} ！{guid}");
                     return false;
                 }
             }
@@ -53,7 +53,7 @@ namespace yidascan.DataAccess {
                     } else {
                         opc.TryWrite(groupName, WriteSignal, writeCount);
                     }
-                    FrmMain.logOpt.Write($"ERR来料 R {ReadSignal}: {rw[0]} W {WriteSignal}: {rw[1] }Err,{writeCount} ！{guid}");
+                    FrmMain.logOpt.Write($"ERR来料 R {ReadSignal}: {rw[0]} W {WriteSignal}: {rw[1] },上次正常读到R:{readCount} W:{writeCount} ！{guid}");
                 }
                 return false;
             }
@@ -90,11 +90,12 @@ namespace yidascan.DataAccess {
 
         public bool WriteSN(IOpcClient opc) {
             bool wstate = false;
+            writeCount = readCount;
             try {
                 if (string.IsNullOrEmpty(groupName)) {
-                    wstate = opc.TryWrite(WriteSignal, readCount);
+                    wstate = opc.TryWrite(WriteSignal, writeCount);
                 } else {
-                    wstate = opc.TryWrite(groupName, WriteSignal, readCount);
+                    wstate = opc.TryWrite(groupName, WriteSignal, writeCount);
                 }
             } catch (Exception ex) {
                 FrmMain.logOpt.Write($"!{WriteSignal}写失败！");
@@ -112,7 +113,6 @@ namespace yidascan.DataAccess {
             } else {
                 opc.TryWrite(groupName, WriteSignal, 0);
             }
-            FrmMain.logOpt.Write($"来料读到0复位,原来的值 R {ReadSignal}: {readCount} W {WriteSignal}: {writeCount}！");
         }
     }
 
