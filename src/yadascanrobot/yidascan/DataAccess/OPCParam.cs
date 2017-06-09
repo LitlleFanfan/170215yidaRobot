@@ -90,11 +90,12 @@ namespace yidascan.DataAccess {
 
         public bool WriteSN(IOpcClient opc) {
             bool wstate = false;
+            writeCount = readCount;
             try {
                 if (string.IsNullOrEmpty(groupName)) {
-                    wstate = opc.TryWrite(WriteSignal, readCount);
+                    wstate = opc.TryWrite(WriteSignal, writeCount);
                 } else {
-                    wstate = opc.TryWrite(groupName, WriteSignal, readCount);
+                    wstate = opc.TryWrite(groupName, WriteSignal, writeCount);
                 }
             } catch (Exception ex) {
                 FrmMain.logOpt.Write($"!{WriteSignal}写失败！");
@@ -112,7 +113,6 @@ namespace yidascan.DataAccess {
             } else {
                 opc.TryWrite(groupName, WriteSignal, 0);
             }
-            FrmMain.logOpt.Write($"来料读到0复位,原来的值 R {ReadSignal}: {readCount} W {WriteSignal}: {writeCount}！");
         }
     }
 

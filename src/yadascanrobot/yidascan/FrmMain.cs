@@ -276,6 +276,7 @@ namespace yidascan {
                         logOpt.Write("开始机器人线程。", LogType.NORMAL);
 
                         robot.JobLoop(ref robotRun, lsvRobotA, lsvRobotB);
+                        StartLocStateToRobot();
 
                         logOpt.Write("机器人启动正常。", LogType.NORMAL);
                     } else {
@@ -1713,7 +1714,7 @@ namespace yidascan {
 
         private void StartLocStateToRobot() {
             Task.Run(() => {
-                while (isrun) {
+                while (robotRun) {
                     Thread.Sleep(1000);
                     if (robot != null) {
                         robot.WriteLocationState(RobotOpcClient, opcParam);
