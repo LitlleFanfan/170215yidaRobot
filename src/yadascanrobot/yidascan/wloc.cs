@@ -181,6 +181,14 @@ namespace yidascan {
                 }
             }
         }
+
+        private void wloc_Load(object sender, EventArgs e) {
+            lock(TaskQueues.LOCK_LOCHELPER) {
+                ShowMap();
+                ShowRealLocs();
+            }
+        }
     }
 }
+
 

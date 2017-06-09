@@ -102,11 +102,6 @@ namespace yidascan {
             Target = new PostionVar(X, Y, Z, origin.Rx, origin.Ry, origin.Rz + rz);
         }
 
-        // 获取交地序号。
-        //public int GetLocationNo() {
-        //    return int.Parse(ToLocation.Substring(1, 2));
-        //}
-
         public int GetRealLocationNo() {
             return int.Parse(RealLocation.Substring(1, 2));
         }
@@ -123,8 +118,7 @@ namespace yidascan {
                 return xory - toolLen;
             }
         }
-
-
+        
         public static List<string> robotRSidePanel = new List<string> { "B03", "B04", "B05", "B06", "B07", "B08" };
         public static List<string> robotChangeAngle = new List<string> { "B03", "B04", "B05", "B09", "B10", "B11" };
         private static int CalculateBaseIndex(string tolocation, decimal x, decimal y) {
@@ -582,27 +576,30 @@ namespace yidascan {
                 return false;//临时
             }
         }
-
-        [Obsolete]
-        public Dictionary<string, string> AlarmTask() {
-            try {
-                var s = rCtrl.GetAlarmStatus();
-                if (s != null && s.Count != 0) {
-                    if (s["Error"] || s["Alarm"]) {
-                        return rCtrl.GetAlarmCode();
-                    }
-                }
-            } catch (Exception ex) {
-                log($"!{ex}", LogType.ROBOT_STACK);
-            }
-            return new Dictionary<string, string>();
-        }
-
+        
         public void Dispose() {
             rCtrl.ServoPower(false);
             Thread.Sleep(1000);
             rCtrl.Close();
             GC.SuppressFinalize(this);
         }
+
+        private static int LocOrder(string loc) {
+            return 30 + int.Parse(loc.Substring(1));
+        }
+        
+        public void WriteLocationState(IOpcClient client, OPCParam param) {
+            foreach (var k in param.BAreaPanelState) {
+                try {
+                    var state = PlcHelper.ReadPanelState(client, param, k.Value);
+                    // 写入机器人
+                    rCtrl.SetVariables(RobotControl.VariableType.B, LocOrder(k.Key), 1, state.ToString());
+                    _log?.Invoke($"刷新交地状态到机器人: {k.Key}, {state}", LogType.ROBOT_STACK, LogViewType.OnlyFile);
+                } catch (Exception ex) {
+                    _log?.Invoke($"来源: {nameof(WriteLocationState)}, {ex}", LogType.ROBOT_STACK, LogViewType.Both);
+                }
+            }
+            }
+        }
     }
-}
+

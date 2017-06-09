@@ -199,7 +199,6 @@ namespace yidascan {
             Task.Factory.StartNew(() => {
                 while (isrun) {
                     // 等待布卷
-                    //var r = RobotOpcClient.ReadBool(opcParam.RobotCarryParam.RobotCarryA);
                     var r = opcParam.RobotCarryParam.PlcSnA.ReadSN(RobotCarryOpcClient);
                     if (r) {
                         // 加入机器人布卷队列。
@@ -214,7 +213,6 @@ namespace yidascan {
                     }
                     Thread.Sleep(1000);
 
-                    //r = RobotOpcClient.ReadBool(opcParam.RobotCarryParam.RobotCarryB);
                     r = opcParam.RobotCarryParam.PlcSnB.ReadSN(RobotCarryOpcClient);
                     if (r) {
                         // 加入机器人布卷队列。
@@ -335,7 +333,7 @@ namespace yidascan {
                                 break;
                             }
                             logOpt.Write($"!实际交地{kv.Key} 收到人工完成信号。板号：{panelNo} ERP交地：{pf.ToLocation}", LogType.ROBOT_STACK);
-                            
+
                             LableCode.SetMaxFloorAndFull(panelNo);
 
                             // 创建新的板信息。
@@ -421,7 +419,7 @@ namespace yidascan {
             LableUpTask();
             StartRobotJobTask();
             BAreaUserFinalLayerTask();
-
+            StartLocStateToRobot();
 
             if (chkUseRobot.Checked) {
                 StartAllRobotTasks();
@@ -717,7 +715,7 @@ namespace yidascan {
         /// 2期代码。
         /// </summary>
         private void LableUpTask() {
-           var LabelUpOpcClient = CreateOpcClient("标签朝上");
+            var LabelUpOpcClient = CreateOpcClient("标签朝上");
             opcParam.LableUpParam = new OPCLableUpParam(LabelUpOpcClient);
 
             Task.Factory.StartNew(() => {
@@ -1476,19 +1474,23 @@ namespace yidascan {
         }
 
         private void showLabelQue(Queue<LableCode> que, ListView view) {
-            List<string> lst;
-            lock (TaskQueues.LOCK_LOCHELPER) {
-                lst = que.Select(x => x.brief()).Reverse().ToList();
-            }
-            showListInView(lst, view);
+            try {
+                List<string> lst;
+                lock (TaskQueues.LOCK_LOCHELPER) {
+                    lst = que.Select(x => x.brief()).Reverse().ToList();
+                }
+                showListInView(lst, view);
+            } catch (Exception ex) { }
         }
 
         public static void showRobotQue(Queue<RollPosition> que, ListView view) {
-            List<string> lst;
-            lock (TaskQueues.LOCK_LOCHELPER) {
-                lst = que.Select(x => x.brief()).Reverse().ToList();
-            }
-            showListInView(lst, view);
+            try {
+                List<string> lst;
+                lock (TaskQueues.LOCK_LOCHELPER) {
+                    lst = que.Select(x => x.brief()).Reverse().ToList();
+                }
+                showListInView(lst, view);
+            } catch (Exception ex) { }
         }
 
         private void ClearAllRunningData() {
@@ -1600,17 +1602,9 @@ namespace yidascan {
         private void openLocationWin() {
             using (var w = new wloc()) {
                 w.setRunState(isrun);
-
-                lock (TaskQueues.LOCK_LOCHELPER) {
-                    w.setdata(TaskQueues.lochelper);
-                    w.ShowMap();
-                    w.ShowRealLocs();
-                }
-
+                w.setdata(TaskQueues.lochelper);
                 w.ShowDialog();
-                TaskQueues.lochelper = w.getdata();
             }
-
         }
 
         // 监听板准备好信号
@@ -1713,6 +1707,17 @@ namespace yidascan {
             foreach (var item in TaskQueues.lochelper.RealLocations) {
                 SetReallocationState(item.realloc, item.state, item.priority, item.panelno);
             }
+        }
+
+        private void StartLocStateToRobot() {
+            Task.Run(() => {
+                while (isrun) {
+                    Thread.Sleep(1000);
+                    if (robot != null) {
+                        robot.WriteLocationState(RobotOpcClient, opcParam);
+                    }
+                }
+            });
         }
     }
 }

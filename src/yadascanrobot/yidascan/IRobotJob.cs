@@ -16,6 +16,7 @@ namespace yidascan {
         void NotifyOpcJobFinished(string panelNo, string tolocation, string reallocation);
         void NotifyOpcJobFinished(RollPosition roll);
         bool PanelAvailable(string tolocation);
+        void WriteLocationState(IOpcClient client, OPCParam param);
         void Dispose();
     }
 }
