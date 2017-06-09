@@ -97,6 +97,7 @@
     <Compile Include="Communication\ICommunication.cs" />
     <Compile Include="Communication\SerialPortManage.cs" />
     <Compile Include="Communication\TcpIpManage.cs" />
+    <Compile Include="Counter.cs" />
     <Compile Include="DataAccess\CacheEngine.cs" />
     <Compile Include="DataAccess\CommandParameter.cs" />
     <Compile Include="DataAccess\DataAccess.cs" />

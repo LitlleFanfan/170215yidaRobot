@@ -46,9 +46,9 @@ namespace yidascan {
         // 用于锁定手动和自动扫描标签的处理工程。
         public object LOCK_CAMERA_PROCESS = new object();
 
-        private int counter = 0;
-
         private IErpApi callErpApi;
+
+        private Counter counter = new Counter();
 
         public FrmMain() {
             InitializeComponent();
@@ -1095,7 +1095,24 @@ namespace yidascan {
 
             if (LableCode.Add(lc)) {
                 ViewAddLable(lc);
-                counter += 1;
+
+                if (lc.ToLocation.StartsWith("B")) {
+                    var hot = Counter.LOW;
+                    lock (counter) {
+                        counter.inc(lc.ToLocation);
+                        hot = counter.hotareab(lc.ToLocation);
+                    }
+                    lock (TaskQueues.LOCK_LOCHELPER) {
+                        if (hot == Counter.LOW) {
+                            TaskQueues.lochelper.setPriority(lc.ToLocation, Priority.LOW);
+                        } else if (hot == Counter.MEDIUM) {
+                            TaskQueues.lochelper.setPriority(lc.ToLocation, Priority.MEDIUM);
+                        } else if (hot == Counter.HIGH) {
+                            TaskQueues.lochelper.setPriority(lc.ToLocation, Priority.HIGH);
+                        }
+                    }
+                }
+
                 RefreshCounter();
 
                 lock (taskQ.WeighQ) {
@@ -1150,7 +1167,9 @@ namespace yidascan {
         /// </summary>
         public void RefreshCounter() {
             this.Invoke((Action)(() => {
-                lblCount.Text = counter.ToString();
+                lock (counter) {
+                    lblCount.Text = counter.total(string.Empty).ToString();
+                }
             }));
         }
 
@@ -1715,7 +1734,7 @@ namespace yidascan {
             Task.Run(() => {
                 while (isrun) {
                     Thread.Sleep(1000);
-                    if (robot != null) {
+                    if (robot != null && robot.IsConnected()) {
                         robot.WriteLocationState(RobotOpcClient, opcParam);
                     }
                 }

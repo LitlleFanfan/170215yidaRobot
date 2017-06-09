@@ -356,6 +356,13 @@ namespace yidascan {
         public bool isMapped(string realloc) {
             return LocMap.Count(x => x.Value == realloc) > 0;
         }
+
+        public void setPriority(string loc, Priority p) {
+            var v = VirtualLocations.FirstOrDefault(x => x.virtualloc == loc);
+            if (v != null) {
+                v.priority = p;
+            }
+        }
         #endregion
 
         #region event_handler
