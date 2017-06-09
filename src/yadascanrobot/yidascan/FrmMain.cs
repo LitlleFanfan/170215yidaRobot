@@ -341,11 +341,11 @@ namespace yidascan {
 
                             // 重新计算缓存区的布卷的坐标。
                             lock (TaskQueues.LOCK_LOCHELPER) {
-                                cacheher.ReCalculateCoordinate(newPanel, panelNo);
+                                cacheher.ReCalculateCoordinate(newPanel, pf.ToLocation);
                             }
 
                             //处理满板信号
-                            robot.NotifyOpcJobFinished(pf.PanelNo, panelNo, reallocation);
+                            robot.NotifyOpcJobFinished(pf.PanelNo, pf.ToLocation, reallocation);
 
                             // plc复位信号。
                             lock (opcBUFL) {
