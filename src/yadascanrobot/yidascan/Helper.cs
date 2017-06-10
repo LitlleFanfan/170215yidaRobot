@@ -189,7 +189,9 @@ public static class DataTableExtensions {
     private static T CreateItemFromRow<T>(DataRow row, IList<PropertyInfo> properties) where T : new() {
         var item = new T();
         foreach (var property in properties) {
-            property.SetValue(item, row[property.Name], null);
+            try {
+                property.SetValue(item, row[property.Name], null);
+            } catch { }
         }
         return item;
     }

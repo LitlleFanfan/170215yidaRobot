@@ -156,7 +156,7 @@ namespace yidascan {
             client.TryWrite(param.BadShapeLocations[tolocation], BAD_SHAPE);
         }
 
-        public static int ReadPanelState(IOpcClient client, OPCParam param, string itemname) {
+        public static int ReadPanelState(IOpcClient client, string itemname) {
             var val = client.TryReadInt(itemname);
             return val == 1 ? 1 : 0;
         }
