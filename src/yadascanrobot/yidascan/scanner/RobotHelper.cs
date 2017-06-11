@@ -436,11 +436,14 @@ namespace yidascan {
         }
 
         public void JobLoop(ref bool isrunning, ListView la, ListView lb) {
+            WriteLocationState(ref isrunning, client, param);
+
             while (isrunning) {
                 var toSidea = true;
                 runtask(FrmMain.taskQ.RobotRollAQ, toSidea, ref isrunning, la);
+                Thread.Sleep(RobotHelper.DELAY * 20);
                 runtask(FrmMain.taskQ.RobotRollBQ, !toSidea, ref isrunning, lb);
-                Thread.Sleep(RobotHelper.DELAY * 40);
+                Thread.Sleep(RobotHelper.DELAY * 20);
             }
         }
 
@@ -588,16 +591,19 @@ namespace yidascan {
             return 30 + int.Parse(loc.Substring(1));
         }
 
-        public void WriteLocationState(IOpcClient client, OPCParam param) {
-            foreach (var k in param.BAreaPanelState) {
-                try {
-                    // 读取交地状态
-                    var state = PlcHelper.ReadPanelState(client, k.Value);
-                    // 写入机器人
-                    rCtrl.SetVariables(RobotControl.VariableType.B, LocOrder(k.Key), 1, state.ToString());
-                    _log?.Invoke($"刷新交地状态到机器人: {k.Key}, {state}", LogType.ROBOT_STACK, LogViewType.OnlyFile);
-                } catch (Exception ex) {
-                    _log?.Invoke($"!来源: {nameof(WriteLocationState)}, {ex}", LogType.ROBOT_STACK, LogViewType.Both);
+        public void WriteLocationState(ref bool isrunning, IOpcClient client, OPCParam param) {
+            while (isrunning) {
+                Thread.Sleep(1500);
+                foreach (var k in param.BAreaPanelState) {
+                    try {
+                        // 读取交地状态
+                        var state = PlcHelper.ReadPanelState(client, k.Value);
+                        // 写入机器人
+                        rCtrl.SetVariables(RobotControl.VariableType.B, LocOrder(k.Key), 1, state.ToString());
+                        _log?.Invoke($"刷新交地状态到机器人: {k.Key}, {state}", LogType.ROBOT_STACK, LogViewType.OnlyFile);
+                    } catch (Exception ex) {
+                        _log?.Invoke($"!来源: {nameof(WriteLocationState)}, {ex}", LogType.ROBOT_STACK, LogViewType.Both);
+                    }
                 }
             }
         }
