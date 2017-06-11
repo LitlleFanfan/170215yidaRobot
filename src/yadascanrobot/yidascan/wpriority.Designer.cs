@@ -58,7 +58,7 @@
             // 
             // columnHeader1
             // 
-            this.columnHeader1.Text = "名义交地";
+            this.columnHeader1.Text = "交地";
             this.columnHeader1.Width = 120;
             // 
             // columnHeader2

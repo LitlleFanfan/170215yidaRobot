@@ -31,7 +31,6 @@
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.miEnable = new System.Windows.Forms.ToolStripMenuItem();
             this.miDisable = new System.Windows.Forms.ToolStripMenuItem();
-            this.btnReset = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.listView2 = new System.Windows.Forms.ListView();
             this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -42,7 +41,6 @@
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.stMessage = new System.Windows.Forms.ToolStripStatusLabel();
-            this.btnLoad = new System.Windows.Forms.Button();
             this.contextMenuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -101,19 +99,6 @@
             this.miDisable.Size = new System.Drawing.Size(100, 22);
             this.miDisable.Text = "禁用";
             this.miDisable.Click += new System.EventHandler(this.miDisable_Click);
-            // 
-            // btnReset
-            // 
-            this.btnReset.BackColor = System.Drawing.SystemColors.Control;
-            this.btnReset.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.btnReset.Location = new System.Drawing.Point(166, 476);
-            this.btnReset.Margin = new System.Windows.Forms.Padding(5);
-            this.btnReset.Name = "btnReset";
-            this.btnReset.Size = new System.Drawing.Size(142, 36);
-            this.btnReset.TabIndex = 1;
-            this.btnReset.Text = "设置默认板位";
-            this.btnReset.UseVisualStyleBackColor = false;
-            this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
             // 
             // button2
             // 
@@ -198,27 +183,15 @@
             this.stMessage.Size = new System.Drawing.Size(32, 17);
             this.stMessage.Text = "状态";
             // 
-            // btnLoad
-            // 
-            this.btnLoad.Location = new System.Drawing.Point(316, 476);
-            this.btnLoad.Name = "btnLoad";
-            this.btnLoad.Size = new System.Drawing.Size(142, 36);
-            this.btnLoad.TabIndex = 19;
-            this.btnLoad.Text = "加载";
-            this.btnLoad.UseVisualStyleBackColor = true;
-            this.btnLoad.Click += new System.EventHandler(this.btnLoad_Click);
-            // 
             // wloc
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 19F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(849, 543);
-            this.Controls.Add(this.btnLoad);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.btnRefresh);
             this.Controls.Add(this.listView2);
             this.Controls.Add(this.button2);
-            this.Controls.Add(this.btnReset);
             this.Controls.Add(this.listView1);
             this.Font = new System.Drawing.Font("SimSun", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -240,7 +213,6 @@
         #endregion
 
         private System.Windows.Forms.ListView listView1;
-        private System.Windows.Forms.Button btnReset;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.ColumnHeader columnHeader1;
         private System.Windows.Forms.ListView listView2;
@@ -251,7 +223,6 @@
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel stMessage;
-        private System.Windows.Forms.Button btnLoad;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem miEnable;
         private System.Windows.Forms.ToolStripMenuItem miDisable;

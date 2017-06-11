@@ -18,14 +18,14 @@ namespace yidascan {
             loadDefaultConf();
             showVirtualLocations();
         }
-
+        const string JSONFILE = "location_default.json";
         public LocationHelper locs;
 
         public void showVirtualLocations() {
             listView1.Items.Clear();
-            foreach (var item in locs.VirtualLocations) {
+            foreach (var item in locs.RealLocations) {
                 var vi = new ListViewItem {
-                    Text = item.virtualloc
+                    Text = item.realloc
                 };
                 vi.SubItems.Add(LocationHelper.priority_s(item.priority));
                 vi.Tag = item;
@@ -34,7 +34,6 @@ namespace yidascan {
         }
 
         private void loadDefaultConf() {
-            const string JSONFILE = "location_default.json";
             var exe = Assembly.GetExecutingAssembly().Location;
             var exepath = Path.GetDirectoryName(exe);
             var fn = Path.Combine(exepath, JSONFILE);
@@ -52,7 +51,7 @@ namespace yidascan {
             if (c > 0) {
                 resetChecks();
 
-                var item = (VirtualLoc)listView1.SelectedItems[0].Tag;
+                var item = (RealLoc)listView1.SelectedItems[0].Tag;
                 switch (item.priority) {
                     case Priority.HIGH:
                         rbHigh.Checked = true;
@@ -64,12 +63,12 @@ namespace yidascan {
                         rbLow.Checked = true;
                         break;
                 }
-                lbLocation.Text = item.virtualloc;
+                lbLocation.Text = item.realloc;
             }
         }
 
         private void btnSet_Click(object sender, EventArgs e) {
-            var selected = (VirtualLoc)listView1.SelectedItems[0].Tag;
+            var selected = (RealLoc)listView1.SelectedItems[0].Tag;
             if (rbHigh.Checked) {
                 selected.priority = Priority.HIGH;
             } else if (rbMedium.Checked) {
@@ -82,7 +81,6 @@ namespace yidascan {
         }
 
         private void btnSave_Click(object sender, EventArgs e) {
-            const string JSONFILE = "location_default.json";
             var exe = Assembly.GetExecutingAssembly().Location;
             var exepath = Path.GetDirectoryName(exe);
             var fn = Path.Combine(exepath, JSONFILE);

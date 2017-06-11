@@ -1728,9 +1728,6 @@ namespace yidascan {
 
             if (view.SelectedItems.Count > 0) {
                 var item = view.SelectedItems[0].Text.Trim();
-
-                var s = item.Split(new char[] { ' ' });
-
                 Clipboard.SetText(item);
             }
         }
