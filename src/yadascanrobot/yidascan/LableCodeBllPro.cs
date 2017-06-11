@@ -510,7 +510,7 @@ namespace yidascan {
                     rt.CodeFromCache = cr.CodeFromCache;
                     rt.state = cr.state;
                 } else if (cre.SideState.state == SideFullState.EXCEED) {
-                    if (rt.CodeCome.Diameter > rt.CodeFromCache.Diameter) {
+                    if (rt.CodeCome.Diameter + clsSetting.CacheIgnoredDiff > rt.CodeFromCache.Diameter) {
                         rt.CodeFromCache = null;
                         rt.state = CacheState.Go;
                     } else {

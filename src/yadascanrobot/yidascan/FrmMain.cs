@@ -1743,11 +1743,11 @@ namespace yidascan {
             Task.Run(() => {
                 while (robotRun) {
                     Thread.Sleep(1000);
-                    if (robot != null && robot.IsConnected()) {
-                        robot.WriteLocationState(RobotOpcClient, opcParam);
-                    }
+
+                    robot.WriteLocationState(RobotOpcClient, opcParam);
                 }
             });
+            logOpt.Write($"刷新交地状态到机器人任务启动。", LogType.ROBOT_STACK, LogViewType.OnlyFile);
         }
     }
 }
