@@ -803,6 +803,16 @@ and Status<3 and FloorIndex<>0";
             return Helper.DataTableToObjList<LableCode>(dt)[0];
         }
 
+        public static IList<LableCode> QueryByLCodeFromHis(string lcode) {
+            var sql = $"select top 100 * from LableCodeHis where lcode like @lcode order by createdate desc";
+            var sp = new SqlParameter[]{
+                new SqlParameter("@lcode",$"%{lcode}%")};
+            var dt = DataAccess.CreateDataAccess.sa.Query(sql, sp);
+
+            if (dt == null) { return null; }
+            return dt.ToList<LableCode>();
+        }
+
         public static List<string> QueryLabelcodeByPanelNo(string panelno) {
             var sql = "select lcode from LableCode where panelno=@panelno";
             var sp = new SqlParameter[]{

@@ -118,7 +118,7 @@ namespace yidascan {
                 return xory - toolLen;
             }
         }
-        
+
         public static List<string> robotRSidePanel = new List<string> { "B03", "B04", "B05", "B06", "B07", "B08" };
         public static List<string> robotChangeAngle = new List<string> { "B03", "B04", "B05", "B09", "B10", "B11" };
         private static int CalculateBaseIndex(string tolocation, decimal x, decimal y) {
@@ -421,7 +421,7 @@ namespace yidascan {
                 log($"!{roll.RealLocation} 第{roll.Floor}层 形状不规则。板号{roll.PanelNo}", LogType.ROBOT_STACK);
             }
         }
-        
+
         private void runtask(Queue<RollPosition> que, bool sideA, ref bool isrunning, ListView view) {
             RollPosition roll = null;
             lock (TaskQueues.LOCK_LOCHELPER) {
@@ -576,7 +576,7 @@ namespace yidascan {
                 return false;//临时
             }
         }
-        
+
         public void Dispose() {
             rCtrl.ServoPower(false);
             Thread.Sleep(1000);
@@ -587,11 +587,12 @@ namespace yidascan {
         private static int LocOrder(string loc) {
             return 30 + int.Parse(loc.Substring(1));
         }
-        
+
         public void WriteLocationState(IOpcClient client, OPCParam param) {
             foreach (var k in param.BAreaPanelState) {
                 try {
-                    var state = PlcHelper.ReadPanelState(client, param, k.Value);
+                    // 读取交地状态
+                    var state = PlcHelper.ReadPanelState(client, k.Value);
                     // 写入机器人
                     rCtrl.SetVariables(RobotControl.VariableType.B, LocOrder(k.Key), 1, state.ToString());
                     _log?.Invoke($"刷新交地状态到机器人: {k.Key}, {state}", LogType.ROBOT_STACK, LogViewType.OnlyFile);
@@ -599,7 +600,7 @@ namespace yidascan {
                     _log?.Invoke($"!来源: {nameof(WriteLocationState)}, {ex}", LogType.ROBOT_STACK, LogViewType.Both);
                 }
             }
-            }
         }
     }
+}
 
