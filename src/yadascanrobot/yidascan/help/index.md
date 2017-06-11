@@ -288,7 +288,7 @@ OPC地址总是127.0.0.1。
 ** ** **
 项目开发：广州恒微机电设备有限公司
 
-软件开发： Guangzhou Golden Beaver software workshop.a
+软件开发： Guangzhou Golden Beaver software workshop
 
 林工 &lt;jine_gz@139.com&gt; 手机：13544376094
 
