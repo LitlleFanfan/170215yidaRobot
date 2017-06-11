@@ -165,7 +165,6 @@ namespace yidascan {
         /// 运行时，写程序主要参数。
         /// </summary>
         private void LogParam() {
-            logOpt.Write(JsonConvert.SerializeObject(opcParam), LogType.NORMAL, LogViewType.OnlyFile);
             logOpt.Write($"板宽：{clsSetting.SplintWidth}间隙：{clsSetting.RollSep}边缘预留：{clsSetting.EdgeSpace}" +
                 $"忽略偏差：{clsSetting.CacheIgnoredDiff}奇数层横放：{clsSetting.OddTurn}第一层放布Z：{clsSetting.InitHeigh}",
                 LogType.NORMAL);
@@ -276,7 +275,6 @@ namespace yidascan {
                         logOpt.Write("开始机器人线程。", LogType.NORMAL);
 
                         robot.JobLoop(ref robotRun, lsvRobotA, lsvRobotB);
-                        StartLocStateToRobot();
 
                         logOpt.Write("机器人启动正常。", LogType.NORMAL);
                     } else {
@@ -452,8 +450,7 @@ namespace yidascan {
 
             opcWeigh = CreateOpcClient("称重");
             opcParam.WeighParam = new OPCWeighParam(opcWeigh);
-
-            logOpt.Write(JsonConvert.SerializeObject(opcParam.WeighParam), LogType.NORMAL, LogViewType.OnlyFile);
+            
             Task.Factory.StartNew(() => {
                 while (isrun) {
                     Thread.Sleep(OPCClient.DELAY * 200);
@@ -487,10 +484,10 @@ namespace yidascan {
                                     if (codeFromPlc == lastweighLable) {
                                         // 复位
                                         opcWeigh.Write(opcParam.WeighParam.GetWeigh, 0);
-                                        logOpt.Write($"称重复位, 原因: 重复称重。plc标签{codeFromPlc}  读号码耗时{t}ms");
+                                        logOpt.Write($"称重复位, 原因: 重复称重。plc标签{codeFromPlc}");
                                     } else {
 #if !DEBUG
-                                        logOpt.Write($"!称重信号无对应的队列号码, opc称重标签{codeFromPlc} 最后称重标签{lastweighLable}  读号码耗时{t}ms");
+                                        logOpt.Write($"!称重信号无对应的队列号码, opc称重标签{codeFromPlc} 最后称重标签{lastweighLable}");
 #endif
                                     }
                                 }
@@ -503,9 +500,9 @@ namespace yidascan {
                                 if (codeFromPlc == lastweighLable) {
                                     // 复位
                                     opcWeigh.Write(opcParam.WeighParam.GetWeigh, 0);
-                                    logOpt.Write($"称重复位, 原因: 重复称重。plc标签{codeFromPlc}  读号码耗时{t}ms");
+                                    logOpt.Write($"称重复位, 原因: 重复称重。plc标签{codeFromPlc}");
                                 } else {
-                                    logOpt.Write($"!称重信号无对应的队列号码, opc称重标签{codeFromPlc} 最后称重标签{lastweighLable} 读号码耗时{t}ms");
+                                    logOpt.Write($"!称重信号无对应的队列号码, opc称重标签{codeFromPlc} 最后称重标签{lastweighLable}");
                                 }
 #endif
                             }
@@ -1736,17 +1733,6 @@ namespace yidascan {
             foreach (var item in TaskQueues.lochelper.RealLocations) {
                 SetReallocationState(item.realloc, item.state, item.priority, item.panelno);
             }
-        }
-
-        private void StartLocStateToRobot() {
-            Task.Run(() => {
-                while (robotRun) {
-                    Thread.Sleep(1000);
-                    if (robot != null && robot.IsConnected()) {
-                        robot.WriteLocationState(RobotOpcClient, opcParam);
-                    }
-                }
-            });
         }
     }
 }

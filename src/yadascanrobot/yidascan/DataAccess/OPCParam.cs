@@ -35,7 +35,8 @@ namespace yidascan.DataAccess {
                 rw = ResetReadCount(opc);
                 if (rw[0] == 0 && rw[1] != rw[0]) {
                     ResetSN(opc);
-                    FrmMain.logOpt.Write($"来料归零 R {ReadSignal}: {rw[0]} W {WriteSignal}: {rw[1] },上次正常读到R:{readCount} W:{writeCount} ！{guid}");
+                    FrmMain.logOpt.Write($"来料归零 R {ReadSignal}: {rw[0]} W {WriteSignal}: {rw[1] },上次正常读到R:{readCount} W:{writeCount} ！{guid}",
+                        LogType.SIGNAL, LogViewType.OnlyFile);
                     return false;
                 }
             }
@@ -44,7 +45,7 @@ namespace yidascan.DataAccess {
                 guid = Guid.NewGuid().ToString();
                 readCount = rw[0];
                 writeCount = rw[1];
-                FrmMain.logOpt.Write($"来料 R {ReadSignal}: {rw[0]} W {WriteSignal}: {rw[1] }！{guid}");
+                FrmMain.logOpt.Write($"来料 R {ReadSignal}: {rw[0]} W {WriteSignal}: {rw[1] }！{guid}", LogType.SIGNAL, LogViewType.OnlyFile);
                 return true;
             } else {
                 if (rw[0] != rw[1] && rw[1] != writeCount) {//异常信号修正
@@ -53,7 +54,8 @@ namespace yidascan.DataAccess {
                     } else {
                         opc.TryWrite(groupName, WriteSignal, writeCount);
                     }
-                    FrmMain.logOpt.Write($"ERR来料 R {ReadSignal}: {rw[0]} W {WriteSignal}: {rw[1] },上次正常读到R:{readCount} W:{writeCount} ！{guid}");
+                    FrmMain.logOpt.Write($"ERR来料 R {ReadSignal}: {rw[0]} W {WriteSignal}: {rw[1] },上次正常读到R:{readCount} W:{writeCount} ！{guid}", 
+                        LogType.SIGNAL, LogViewType.OnlyFile);
                 }
                 return false;
             }
@@ -98,9 +100,9 @@ namespace yidascan.DataAccess {
                     wstate = opc.TryWrite(groupName, WriteSignal, writeCount);
                 }
             } catch (Exception ex) {
-                FrmMain.logOpt.Write($"!{WriteSignal}写失败！");
+                FrmMain.logOpt.Write($"!{WriteSignal}写失败！",LogType.SIGNAL,LogViewType.OnlyFile);
             }
-            FrmMain.logOpt.Write($"来料复位 R {ReadSignal}: {readCount} W {WriteSignal}: {writeCount}！{guid}");
+            FrmMain.logOpt.Write($"来料复位 R {ReadSignal}: {readCount} W {WriteSignal}: {writeCount}！{guid}", LogType.SIGNAL, LogViewType.OnlyFile);
 #if DEBUG
             return true;
 #endif
