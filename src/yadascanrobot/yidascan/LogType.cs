@@ -10,5 +10,6 @@ namespace yidascan {
         public static readonly string ROLL_QUEUE = "roll queue";
         public static readonly string BUFFER = "buffer";
         public static readonly string ROBOT_STACK = "robot stack";
+        public static readonly string SIGNAL = "Signal";
     }
 }

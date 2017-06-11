@@ -420,7 +420,7 @@ namespace yidascan {
                     CalculatePosition(layerLabels, cre.CResult.CodeFromCache, cre.CResult.CodeCome, cre.SideState == null ? SideFullState.NO_FULL : cre.SideState.state);
                     break;
                 case CacheState.Cache:
-                    var cancachesum = pinfo == null ? 2 : (pinfo.OddStatus ? 0 : 1) + (pinfo.EvenStatus ? 0 : 1);
+                    var cancachesum = (pinfo.OddStatus ? 0 : 1) + (pinfo.EvenStatus ? 0 : 1);
                     var cachelcs = FrmMain.taskQ.CacheSide.Count(x => x.labelcode != null && x.labelcode.ToLocation == lc.ToLocation);
 
                     var go = CanIgo(cacheq, cre.CResult, cancachesum - cachelcs);
@@ -510,9 +510,12 @@ namespace yidascan {
                     rt.CodeFromCache = cr.CodeFromCache;
                     rt.state = cr.state;
                 } else if (cre.SideState.state == SideFullState.EXCEED) {
-                    var cr = CalculateCache(pinfo, rt.CodeCome);
-                    rt.CodeFromCache = cr.CodeFromCache;
-                    rt.state = cr.state;
+                    if (rt.CodeCome.Diameter > rt.CodeFromCache.Diameter) {
+                        rt.CodeFromCache = null;
+                        rt.state = CacheState.Go;
+                    } else {
+                        rt.state = CacheState.GetThenCache;
+                    }
                     pinfo.HasExceed = true;
                 }
             }

@@ -596,7 +596,7 @@ namespace yidascan {
                     rCtrl.SetVariables(RobotControl.VariableType.B, LocOrder(k.Key), 1, state.ToString());
                     _log?.Invoke($"刷新交地状态到机器人: {k.Key}, {state}", LogType.ROBOT_STACK, LogViewType.OnlyFile);
                 } catch (Exception ex) {
-                    _log?.Invoke($"来源: {nameof(WriteLocationState)}, {ex}", LogType.ROBOT_STACK, LogViewType.Both);
+                    _log?.Invoke($"!来源: {nameof(WriteLocationState)}, {ex}", LogType.ROBOT_STACK, LogViewType.Both);
                 }
             }
             }

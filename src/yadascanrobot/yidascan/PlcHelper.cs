@@ -158,7 +158,7 @@ namespace yidascan {
 
         public static int ReadPanelState(IOpcClient client, OPCParam param, string itemname) {
             var val = client.TryReadInt(itemname);
-            return val == 1 ? 1 : 0;
+            return val;// == 1 ? 1 : 0
         }
     }
 }
