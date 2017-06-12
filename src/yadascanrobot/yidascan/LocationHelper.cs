@@ -141,6 +141,13 @@ namespace yidascan {
             if (LocMap.Any(x => x.Value == realloc)) {
                 throw new Exception($"来源: {nameof(Unmap)}, 未能解除交地对应: {realloc}");
             }
+
+#if DEBUG
+            var p = DataAccess.LableCode.GetPanel(real.panelno);
+            if (p != null && p.CurrFloor < p.MaxFloor) {
+                throw new Exception($"交地没满即取消了对应，{realloc}, {p.PanelNo}");
+            }
+#endif
         }
 
         private bool IsRealLocExists(string loc) {
@@ -237,7 +244,7 @@ namespace yidascan {
                     var realoc = RealLocations.Single(x => x.realloc == LocMap[virtualloc]);
 
                     if (realoc.panelno == panelno) { return realoc.realloc; } else {
-                        Unmap(realoc.realloc, "", "");
+                        // Unmap(realoc.realloc, "", "");
                         // SetState(realoc.realloc, LocationState.FULL, "");
                         automap(virtualloc, panelno);
                     };
@@ -400,6 +407,7 @@ namespace yidascan {
             }
 
             if (real.state == LocationState.FULL) {
+                Unmap(real.realloc, real.panelno, "");
                 SetState(realloc, LocationState.IDLE, "");
             }
         }

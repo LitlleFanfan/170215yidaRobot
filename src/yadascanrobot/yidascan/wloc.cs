@@ -21,6 +21,8 @@ namespace yidascan {
 
         public void setRunState(bool isrunning) {
             this.isrunning = isrunning;
+            // 许可/禁止右键菜单。
+            contextMenuStrip1.Enabled = !isrunning;
         }
 
         public void setdata(LocationHelper locs_) {
@@ -65,6 +67,10 @@ namespace yidascan {
                 var vi = new ListViewItem {
                     Text = item.realloc,
                 };
+                // 给已经对应的实际交地加个星标。
+                if (locs.isMapped(item.realloc)) {
+                    vi.Text += "*";
+                }
                 vi.SubItems.Add(LocationHelper.state_s(item.state));
                 vi.SubItems.Add(LocationHelper.priority_s(item.priority));
                 vi.SubItems.Add(item.panelno);
