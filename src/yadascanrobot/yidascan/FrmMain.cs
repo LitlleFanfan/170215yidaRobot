@@ -641,6 +641,9 @@ namespace yidascan {
                                 continue;
                             }
 
+                            // 显示缓存位状态
+                            logCachedlables(lc.ToLocation);
+
                             // 计算位置, lc和cache队列里比较。
                             var calResult = LableCodeBllPro.AreaBCalculate(lc,
                                 createShiftNo(),
@@ -675,7 +678,7 @@ namespace yidascan {
                             PlcHelper.WriteCacheJob(CacheOpcClient, opcParam, cacheJobState.state, cacheJobState.savepos, cacheJobState.getpos, lc.LCode);
 
                             // 检查缓存位状况
-                            logCache(lc.ToLocation);
+                            logCache(lc.ToLocation);                            
 
 #if DEBUG
                             if (Math.Abs(lc.Cx + lc.Cy) > 1000) {
@@ -1732,6 +1735,16 @@ namespace yidascan {
         private void tRefreshRealLocState_Tick(object sender, EventArgs e) {
             foreach (var item in TaskQueues.lochelper.RealLocations) {
                 SetReallocationState(item.realloc, item.state, item.priority, item.panelno);
+            }
+        }
+
+        private void logCachedlables(string loc) {
+            logOpt.Write("-----cached lables-----");
+            lock(TaskQueues.LOCK_LOCHELPER) {
+                var q = taskQ.CacheSide.Where(x => x.labelcode != null && x.labelcode.ToLocation == loc);
+                foreach (var item in q) {
+                    logOpt.Write($"id: {item.id}, lable: {item.labelcode.brief()}", LogType.BUFFER);
+                }
             }
         }
     }
