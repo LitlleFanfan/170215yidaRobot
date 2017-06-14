@@ -316,17 +316,15 @@ namespace yidascan {
                 var pState = LableCode.IsAllRollOnPanel(panelNo) ? PanelState.Full : PanelState.HalfFull;
                 switch (pState) {
                     case PanelState.HalfFull:
-                        client.TryWrite(param.BAreaFloorFinish[reallocation], true);
-
                         var lcode = FrmMain.taskQ.UFGetPanelLastRoll(tolocation, panelNo);
                         LableCode.UserSetPanelLastRoll(lcode);//设置板最后一卷布。
+
                         log($"{reallocation} 半板信号发出,最后一卷布标签{lcode}。slot: {param.BAreaFloorFinish[reallocation]}", LogType.ROBOT_STACK);
+                        client.TryWrite(param.BAreaFloorFinish[reallocation], true);
                         break;
                     case PanelState.Full:
                         string msg;
                         ErpHelper.NotifyPanelEnd(erpapi, panelNo, out msg);
-                        client.TryWrite(param.BAreaPanelFinish[reallocation], true);
-                        log($"{reallocation}: 满板信号发出。slot: {param.BAreaPanelFinish[reallocation]}", LogType.ROBOT_STACK);
                         log(msg, LogType.ROBOT_STACK);
 
                         LableCode.SetPanelFinished(panelNo);
@@ -336,6 +334,8 @@ namespace yidascan {
                             TaskQueues.lochelper.OnFull(reallocation);
                         }
 
+                        client.TryWrite(param.BAreaPanelFinish[reallocation], true);
+                        log($"{reallocation}: 满板信号发出。slot: {param.BAreaPanelFinish[reallocation]}", LogType.ROBOT_STACK);
                         const int SIGNAL_3 = 3;
                         client.TryWrite(param.BAreaPanelState[reallocation], SIGNAL_3);
                         log($"{reallocation}: 板状态信号发出，状态值: {SIGNAL_3}。slot: {param.BAreaPanelState[reallocation]}", LogType.ROBOT_STACK);
@@ -361,9 +361,6 @@ namespace yidascan {
                     case PanelState.Full:
                         string msg;
                         ErpHelper.NotifyPanelEnd(erpapi, roll.PanelNo, out msg);
-                        client.TryWrite(param.BAreaPanelFinish[roll.RealLocation], true);
-
-                        log($"{roll.RealLocation}: 满板信号发出。slot: {param.BAreaPanelFinish[roll.RealLocation]}", LogType.ROBOT_STACK);
                         log(msg, LogType.ROBOT_STACK);
 
                         LableCode.SetPanelFinished(roll.PanelNo);
@@ -372,6 +369,8 @@ namespace yidascan {
                             TaskQueues.lochelper.OnFull(roll.RealLocation);
                         }
 
+                        client.TryWrite(param.BAreaPanelFinish[roll.RealLocation], true);
+                        log($"{roll.RealLocation}: 满板信号发出。slot: {param.BAreaPanelFinish[roll.RealLocation]}", LogType.ROBOT_STACK);
                         const int SIGNAL_3 = 3;
                         client.TryWrite(param.BAreaPanelState[roll.RealLocation], SIGNAL_3);
                         log($"{roll.RealLocation}: 板状态信号发出，状态值: {SIGNAL_3}。slot: {param.BAreaPanelState[roll.RealLocation]}", LogType.ROBOT_STACK);
@@ -436,7 +435,7 @@ namespace yidascan {
         }
 
         public void JobLoop(ref bool isrunning, ListView la, ListView lb) {
-            WriteLocationState(ref isrunning, client, param);
+            WriteLocationState(client, param);
 
             while (isrunning) {
                 var toSidea = true;
@@ -505,6 +504,7 @@ namespace yidascan {
                     log($"roll is leaving: {roll.LabelCode}.", LogType.ROBOT_STACK, LogViewType.OnlyFile);
                     DequeueRoll(robotRollQ, roll, lv);
                     client.Write(isSideA ? param.RobotParam.RobotStartA : param.RobotParam.RobotStartB, false);
+                    //var s = isSideA ? param.RobotParam.PlcSnA.WriteSN(client) : param.RobotParam.PlcSnB.WriteSN(client);
                     break;
                 }
                 now = System.DateTime.Now;
@@ -591,21 +591,23 @@ namespace yidascan {
             return 30 + int.Parse(loc.Substring(1));
         }
 
-        public void WriteLocationState(ref bool isrunning, IOpcClient client, OPCParam param) {
-            while (isrunning) {
-                Thread.Sleep(1500);
-                foreach (var k in param.BAreaPanelState) {
-                    try {
-                        // 读取交地状态
-                        var state = PlcHelper.ReadPanelState(client, k.Value);
-                        // 写入机器人
-                        rCtrl.SetVariables(RobotControl.VariableType.B, LocOrder(k.Key), 1, state.ToString());
-                        _log?.Invoke($"刷新交地状态到机器人: {k.Key}, {state}", LogType.ROBOT_STACK, LogViewType.OnlyFile);
-                    } catch (Exception ex) {
-                        _log?.Invoke($"!来源: {nameof(WriteLocationState)}, {ex}", LogType.ROBOT_STACK, LogViewType.Both);
+        public void WriteLocationState(IOpcClient client, OPCParam param) {
+            Task.Run(() => {
+                while (FrmMain.robotRun) {
+                    Thread.Sleep(1500);
+                    foreach (var k in param.BAreaPanelState) {
+                        try {
+                            // 读取交地状态
+                            var state = PlcHelper.ReadPanelState(client, k.Value);
+                            // 写入机器人
+                            rCtrl.SetVariables(RobotControl.VariableType.B, LocOrder(k.Key), 1, state.ToString());
+                            _log?.Invoke($"刷新交地状态到机器人: {k.Key}, {state}", LogType.ROBOT_STACK, LogViewType.OnlyFile);
+                        } catch (Exception ex) {
+                            _log?.Invoke($"!来源: {nameof(WriteLocationState)}, {ex}", LogType.ROBOT_STACK, LogViewType.Both);
+                        }
                     }
                 }
-            }
+            });
         }
     }
 }
