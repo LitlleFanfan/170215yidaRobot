@@ -499,12 +499,12 @@ namespace yidascan {
             var now = System.DateTime.Now;
             var time = now - startTime;
             while (isrun) {
-                var leaving = client.ReadBool(isSideA ? param.RobotParam.RobotStartA : param.RobotParam.RobotStartB);
+                var leaving = isSideA ? param.RobotParam.PlcSnA.ReadSN(client) : param.RobotParam.PlcSnB.ReadSN(client);
                 if (leaving) {
                     log($"roll is leaving: {roll.LabelCode}.", LogType.ROBOT_STACK, LogViewType.OnlyFile);
                     DequeueRoll(robotRollQ, roll, lv);
                     client.Write(isSideA ? param.RobotParam.RobotStartA : param.RobotParam.RobotStartB, false);
-                    //var s = isSideA ? param.RobotParam.PlcSnA.WriteSN(client) : param.RobotParam.PlcSnB.WriteSN(client);
+                    var s = isSideA ? param.RobotParam.PlcSnA.WriteSN(client) : param.RobotParam.PlcSnB.WriteSN(client);
                     break;
                 }
                 now = System.DateTime.Now;
