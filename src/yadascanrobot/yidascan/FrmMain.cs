@@ -467,7 +467,7 @@ namespace yidascan {
                                 opcWeigh.Write(opcParam.WeighParam.GetWeigh, 0);
                                 opcParam.WeighParam.PlcSn.WriteSN(opcWeigh);
                                 logOpt.Write($"称重复位, 原因: 重复称重。plc标签{codeFromPlc}");
-                                break;
+                                continue;
                             }
                             if (code != null) {
                                 lastweighLable = codeFromPlc;
