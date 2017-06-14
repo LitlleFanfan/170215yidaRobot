@@ -281,6 +281,6 @@ namespace yidascan {
             }
         }
 
-        public void WriteLocationState(ref bool isrunning, IOpcClient client, OPCParam param) { }
+        public void WriteLocationState(IOpcClient client, OPCParam param) { }
     }
 }

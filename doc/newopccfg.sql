@@ -24,8 +24,8 @@ INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('PlcPushAside','MicroWin.S7-12
 
 
 INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('GetWeigh','MicroWin.S7-1200.NewItem16','Weigh','称重(1称重，称完置0，称重失败2）');
-INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('ReadSignal','MicroWin.S7-1200.NewItem016','Weigh','称重（来料报告）');
-INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('WriteSignal','MicroWin.S7-1200.NewItem160','Weigh','称重（来料报告复位）');
+INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('ReadSignal','MicroWin.S7-1200.NewItem169','Weigh','称重（来料报告）');
+INSERT NewOPCParam(Name,Code,Class,Remark) VALUES('WriteSignal','MicroWin.S7-1200.NewItem170','Weigh','称重（来料报告复位）');
 -- added at 2017-03-23.
 INSERT INTO NEWOPCPARAM (NAME, CODE, CLASS, REMARK) VALUES('LabelPart1', 'MicroWin.S7-1200.NewItem44', 'Weigh', '标签号码前6位');
 INSERT INTO NEWOPCPARAM (NAME, CODE, CLASS, REMARK) VALUES('LabelPart2', 'MicroWin.S7-1200.NewItem45', 'Weigh', '标签号码后6位');

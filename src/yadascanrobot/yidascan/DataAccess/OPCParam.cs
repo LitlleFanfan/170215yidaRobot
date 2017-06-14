@@ -40,8 +40,8 @@ namespace yidascan.DataAccess {
                     return false;
                 }
             }
-
-            if (rw[0] == (rw[1] + 1)) {
+            var tmp = rw[1] == 2000 ? 0 : rw[1];
+            if (rw[0] == (tmp + 1)) {
                 guid = Guid.NewGuid().ToString();
                 readCount = rw[0];
                 writeCount = rw[1];
