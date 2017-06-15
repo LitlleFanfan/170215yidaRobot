@@ -49,13 +49,16 @@ namespace yidascan.DataAccess {
                 return true;
             } else {
                 if (rw[0] != rw[1] && rw[1] != writeCount) {//异常信号修正
-                    if (string.IsNullOrEmpty(groupName)) {
-                        opc.TryWrite(WriteSignal, writeCount);
-                    } else {
-                        opc.TryWrite(groupName, WriteSignal, writeCount);
+                    rw = ResetReadCount(opc);
+                    if (rw[0] != rw[1] && rw[0] != rw[1] + 1 && rw[1] != writeCount) {
+                        if (string.IsNullOrEmpty(groupName)) {
+                            opc.TryWrite(WriteSignal, writeCount);
+                        } else {
+                            opc.TryWrite(groupName, WriteSignal, writeCount);
+                        }
+                        FrmMain.logOpt.Write($"ERR来料 R {ReadSignal}: {rw[0]} W {WriteSignal}: {rw[1] },上次正常读到R:{readCount} W:{writeCount} ！{guid}",
+                            LogType.SIGNAL, LogViewType.OnlyFile);
                     }
-                    FrmMain.logOpt.Write($"ERR来料 R {ReadSignal}: {rw[0]} W {WriteSignal}: {rw[1] },上次正常读到R:{readCount} W:{writeCount} ！{guid}", 
-                        LogType.SIGNAL, LogViewType.OnlyFile);
                 }
                 return false;
             }
