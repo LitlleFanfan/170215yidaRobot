@@ -244,8 +244,7 @@ namespace yidascan {
                     var realoc = RealLocations.Single(x => x.realloc == LocMap[virtualloc]);
 
                     if (realoc.panelno == panelno) { return realoc.realloc; } else {
-                        // Unmap(realoc.realloc, "", "");
-                        // SetState(realoc.realloc, LocationState.FULL, "");
+                        FrmMain.logOpt.Write($"!来源: {nameof(Convert)}, 交地板号改变, 来料板号: {panelno}, 原交地板号: {realoc.panelno}");
                         automap(virtualloc, panelno);
                     };
                 }

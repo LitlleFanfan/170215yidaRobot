@@ -64,10 +64,10 @@ namespace ProduceComm {
                     var readStream = new StreamReader(myWebResponse.GetResponseStream(), Encoding.UTF8);
                     result = JsonConvert.DeserializeObject<Dictionary<string, string>>(readStream.ReadToEnd());
                     result.Add("ERPState", "OK");
-                    FrmMain.ERPAlarm(FrmMain.opcNone, FrmMain.opcParam, ERPAlarmNo.COMMUNICATION_OK);
+                    FrmMain.ERPAlarm(FrmMain.opcErp, FrmMain.opcParam, ERPAlarmNo.COMMUNICATION_OK);
                 }
             } catch (Exception ex) {
-                FrmMain.ERPAlarm(FrmMain.opcNone, FrmMain.opcParam, ERPAlarmNo.COMMUNICATION_ERROR);
+                FrmMain.ERPAlarm(FrmMain.opcErp, FrmMain.opcParam, ERPAlarmNo.COMMUNICATION_ERROR);
                 result = new Dictionary<string, string>() { { "ERPState", "Fail" }, { "ERR", "请求接口信息出错 " + ex } };
             }
             return result;

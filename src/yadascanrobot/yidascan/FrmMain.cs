@@ -29,7 +29,7 @@ namespace yidascan {
         public static OPCParam opcParam = new OPCParam();
 
         public static IOpcClient opcScan;
-        public static IOpcClient opcNone;
+        public static IOpcClient opcErp;
         public static IOpcClient opcWeigh;
         public static IOpcClient opcBUFL;
         public static IOpcClient opcACF;
@@ -139,10 +139,10 @@ namespace yidascan {
                 }
                 dtpDate.Value = taskQ.PanelNoFrefix;
 
-                ShowTaskQ();
+                ShowTaskQ();                
 
-                opcNone = CreateOpcClient("其它报警");
-                opcParam.None = new NoneOpcParame(opcNone);
+                // opcNone = CreateOpcClient("其它报警");
+                // opcParam.None = new NoneOpcParame(opcNone);
 
                 ShowTitle();
                 ShowTaskState(false);
@@ -184,7 +184,7 @@ namespace yidascan {
                 client.Close();
                 logOpt.Write($"OPC client {name}连接关闭。", LogType.NORMAL);
             } catch {
-                logOpt.Write($"!OPC client {name}连接关闭 失败。", LogType.NORMAL);
+                logOpt.Write($"!OPC client {name}连接关闭失败。", LogType.NORMAL);
             }
         }
 
@@ -257,7 +257,7 @@ namespace yidascan {
         private void StartRobotTask() {
             try {
                 logOpt.Write("机器人正在启动...", LogType.NORMAL);
-                RobotOpcClient = FrmMain.CreateOpcClient("机器人");
+                RobotOpcClient = CreateOpcClient("机器人");
                 opcParam.RobotParam = new OPCRobotParam(RobotOpcClient);
                 opcParam.InitBadShapeLocations(RobotOpcClient);
                 opcParam.InitBAreaFloorFinish(RobotOpcClient);
@@ -371,6 +371,9 @@ namespace yidascan {
 
                 // 删除号码菜单项
                 btnDeleteCodeFromQueueAndDb.Enabled = !isRun;
+
+                // 关闭opc连接进程
+                btnRestartOpcServer.Enabled = !isRun;
             }));
         }
 
@@ -403,6 +406,10 @@ namespace yidascan {
 
             SetButtonState(true);
             logOpt.Write(string.Format("!系统流程开始运行"), LogType.NORMAL);
+
+            resetOpcProc(); // 关闭opc连接进程。
+
+            setupOpcErp();
 
             initErpApi();
 
@@ -659,7 +666,7 @@ namespace yidascan {
                             PlcHelper.WriteCacheJob(CacheOpcClient, opcParam, cacheJobState.state, cacheJobState.savepos, cacheJobState.getpos, lc.LCode);
 
                             // 检查缓存位状况
-                            logCache(lc.ToLocation);                            
+                            logCache(lc.ToLocation);
 
 #if DEBUG
                             if (Math.Abs(lc.Cx + lc.Cy) > 1000) {
@@ -831,6 +838,7 @@ namespace yidascan {
             OpcClientClose(opcScan, "相机");
             OpcClientClose(opcBUFL, "B区手动完成");
             OpcClientClose(opcACF, "AC区完成");
+            OpcClientClose(opcErp, "其它报警");
 
             chkUseRobot.Enabled = true;
             SetButtonState(false);
@@ -1241,8 +1249,6 @@ namespace yidascan {
             } else {
                 try {
                     saveTaskQ();
-
-                    OpcClientClose(opcNone, "其它报警");
                 } catch (Exception ex) {
                     logOpt.Write("!关闭OPC异常。\n" + ex, LogType.NORMAL);
                 }
@@ -1721,12 +1727,48 @@ namespace yidascan {
 
         private void logCachedlables(string loc) {
             logOpt.Write("-----cached lables-----");
-            lock(TaskQueues.LOCK_LOCHELPER) {
+            lock (TaskQueues.LOCK_LOCHELPER) {
                 var q = taskQ.CacheSide.Where(x => x.labelcode != null && x.labelcode.ToLocation == loc);
                 foreach (var item in q) {
                     logOpt.Write($"id: {item.id}, lable: {item.labelcode.brief()}", LogType.BUFFER);
                 }
             }
+        }
+
+        private static void resetprocess(string procname, string args) {
+            try {
+                var p = Process.GetProcessesByName(procname).FirstOrDefault();
+                if (p != null) {
+                    var path = p.MainModule.FileName;
+                    p.Kill();
+                    p.WaitForExit(2000);
+                    logOpt.Write($"关闭opc进程完成: {procname}");
+
+                    var pnew = Process.Start(path, args);
+                    Thread.Sleep(2000);
+                    logOpt.Write($"启动opc进程完成: {procname}");
+                } else {
+                    logOpt.Write($"!进程没有找到: {procname}");
+                }
+            } catch (Exception ex) {
+                logOpt.Write($"!关闭opc进程失败: {procname}, {ex}");
+            }
+        }
+
+        private static void resetOpcProc() {
+            resetprocess("OPCDAServer", "-Embedding"); // 名字末尾不包括.exe
+            // stoptprocess("");
+        }
+
+        private void btnRestartOpcServer_Click(object sender, EventArgs e) {
+            if (!isrun) {
+                resetOpcProc();
+            } 
+        }
+
+        private void setupOpcErp() {
+            opcErp = CreateOpcClient("其它报警");
+            opcParam.None = new NoneOpcParame(opcErp);
         }
     }
 }
