@@ -5,10 +5,10 @@ public interface IOpcClient {
     int ReadInt(string slot);
     bool ReadBool(string slot);
     decimal ReadDecimal(string slot);
-    string ReadString(string groupname, string slot);
+    // string ReadString(string groupname, string slot);
     int ReadInt(string groupname, string slot);
-    bool ReadBool(string groupname, string slot);
-    decimal ReadDecimal(string groupname, string slot);
+    // bool ReadBool(string groupname, string slot);
+    // decimal ReadDecimal(string groupname, string slot);
     bool Write(string slot, object value);
     bool Write(string groupname, Dictionary<string, object> codeValue);
     bool Set(string slot, object value);

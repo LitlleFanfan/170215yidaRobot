@@ -34,7 +34,7 @@ namespace ProduceComm.OPC {
 
         public void AddSubscription(System.Data.DataTable p) {
             foreach (System.Data.DataRow pi in p.Rows) {
-                string value1 = pi["Code"].ToString();
+                var value1 = pi["Code"].ToString();
                 if (!string.IsNullOrEmpty(value1)) {
                     AddSubscription(value1);
                 }
@@ -42,7 +42,7 @@ namespace ProduceComm.OPC {
         }
         public bool AddSubscription(string code) {
             try {
-                Opc.Da.SubscriptionState groupstate = new Opc.Da.SubscriptionState();//定义组（订阅者）状态，相当于OPC规范中组的参数
+                var groupstate = new Opc.Da.SubscriptionState();//定义组（订阅者）状态，相当于OPC规范中组的参数
                 groupstate.Name = code;//组名
                 groupstate.ServerHandle = null;//服务器给该组分配的句柄。
                 groupstate.ClientHandle = Guid.NewGuid().ToString();//客户端给该组分配的句柄。
@@ -51,8 +51,8 @@ namespace ProduceComm.OPC {
                 groupstate.Deadband = 0;// 死区值，设为0时，服务器端该组内任何数据变化都通知组。
                 groupstate.Locale = null;//不设置地区值。  
 
-                Opc.Da.Subscription group = (Opc.Da.Subscription)m_server.CreateSubscription(groupstate);//创建组
-                Opc.Da.Item item = new Opc.Da.Item();
+                var group = (Opc.Da.Subscription)m_server.CreateSubscription(groupstate);//创建组
+                var item = new Opc.Da.Item();
                 item.ClientHandle = Guid.NewGuid().ToString();//客户端给该数据项分配的句柄。
                 item.ItemPath = null; //该数据项在服务器中的路径。
                 item.ItemName = code; //该数据项在服务器中的名字。
@@ -61,7 +61,7 @@ namespace ProduceComm.OPC {
                 groups.Add(code, group);
                 return true;
             } catch (Exception ex) {
-                clsSetting.loger.Error(string.Format("{0}添加订阅失败！{1}", code, ex));
+                clsSetting.loger.Error($"{code}添加订阅失败！{ex}");
                 return false;
             }
         }
@@ -74,7 +74,7 @@ namespace ProduceComm.OPC {
         /// <returns></returns>
         public bool AddSubscriptions(string goupname, List<string> codes, int updateRate = 500) {
             try {
-                Opc.Da.SubscriptionState groupstate = new Opc.Da.SubscriptionState();//定义组（订阅者）状态，相当于OPC规范中组的参数
+                var groupstate = new Opc.Da.SubscriptionState();//定义组（订阅者）状态，相当于OPC规范中组的参数
                 groupstate.Name = goupname;//组名
                 groupstate.ServerHandle = null;//服务器给该组分配的句柄。
                 groupstate.ClientHandle = Guid.NewGuid().ToString();//客户端给该组分配的句柄。
@@ -83,10 +83,10 @@ namespace ProduceComm.OPC {
                 groupstate.Deadband = 0;// 死区值，设为0时，服务器端该组内任何数据变化都通知组。
                 groupstate.Locale = null;//不设置地区值。  
 
-                Opc.Da.Subscription group = (Opc.Da.Subscription)m_server.CreateSubscription(groupstate);//创建组
-                List<Opc.Da.Item> items = new List<Opc.Da.Item>();
+                var group = (Opc.Da.Subscription)m_server.CreateSubscription(groupstate);//创建组
+                var items = new List<Opc.Da.Item>();
                 foreach (string tmp in codes) {
-                    Opc.Da.Item item = new Opc.Da.Item();
+                    var item = new Opc.Da.Item();
                     item.ClientHandle = Guid.NewGuid().ToString();//客户端给该数据项分配的句柄。
                     item.ItemPath = null; //该数据项在服务器中的路径。
                     item.ItemName = tmp; //该数据项在服务器中的名字。
@@ -96,25 +96,25 @@ namespace ProduceComm.OPC {
                 groups.Add(goupname, group);
                 return true;
             } catch (Exception ex) {
-                clsSetting.loger.Error(string.Format("{0}添加订阅失败！{1}", goupname, ex));
+                clsSetting.loger.Error($"添加订阅失败: {goupname}, {ex}");
                 return false;
             }
         }
 
         public bool Write(string groupname, Dictionary<string, object> codeValue) {
             if (string.IsNullOrEmpty(groupname)) {
-                yidascan.FrmMain.logOpt.Write($"!项目为空");
+                FrmMain.logOpt.Write($"!项目为空");
                 return false;
             }
             try {
                 if (!groups.Keys.Contains(groupname)) {
-                    clsSetting.loger.Error(string.Format("{0}未添加订阅！", groupname));
+                    clsSetting.loger.Error($"{groupname}未添加订阅！");
                     return false;
                 }
-                Opc.Da.Subscription group = groups[groupname];
-                List<Opc.Da.ItemValue> itemvalues = new List<Opc.Da.ItemValue>();
+                var group = groups[groupname];
+                var itemvalues = new List<Opc.Da.ItemValue>();
                 foreach (KeyValuePair<string, object> kv in codeValue) {
-                    Opc.Da.ItemValue iv = new Opc.Da.ItemValue(group.Items.First(item => item.ItemName == kv.Key));
+                    var iv = new Opc.Da.ItemValue(group.Items.First(item => item.ItemName == kv.Key));
                     iv.Value = kv.Value;
                     itemvalues.Add(iv);
                 }
@@ -122,7 +122,7 @@ namespace ProduceComm.OPC {
                 var rt = group.Write(itemvalues.ToArray());
                 return ParseResult(rt, (x) => { FrmMain.logOpt.Write(x); });
             } catch (Exception ex) {
-                yidascan.FrmMain.logOpt.Write(string.Format("!{0}写入失败！{1}", groupname, ex));
+                FrmMain.logOpt.Write($"!组写入失败: {groupname}, {ex}");
                 return false;
             }
         }
@@ -137,13 +137,12 @@ namespace ProduceComm.OPC {
                     clsSetting.loger.Error(string.Format("{0}未添加订阅！", code));
                     return false;
                 }
-                Opc.Da.ItemValue iv = new Opc.Da.ItemValue((Opc.ItemIdentifier)groups[code].Items[0]);
+                var iv = new Opc.Da.ItemValue((Opc.ItemIdentifier)groups[code].Items[0]);
                 iv.Value = value;
                 groups[code].Write(new Opc.Da.ItemValue[] { iv });
                 return true;
             } catch (Exception ex) {
-                yidascan.FrmMain.logOpt.Write(string.Format("!{0}写入失败！{1}", code, ex));
-                //OnError(new Exception("写入失败！", ex));
+                FrmMain.logOpt.Write($"!opc写入失败: source: {nameof(Write)}, {code}, {ex}");
                 return false;
             }
         }
@@ -176,7 +175,7 @@ namespace ProduceComm.OPC {
         /// <returns></returns>
         public bool Set(string code, object value) {
             if (string.IsNullOrEmpty(code)) {
-                yidascan.FrmMain.logOpt.Write($"!项目 {code} 为空！");
+                FrmMain.logOpt.Write($"!项目 {code} 为空！");
                 return false;
             }
 
@@ -221,21 +220,17 @@ namespace ProduceComm.OPC {
                 yidascan.FrmMain.logOpt.Write($"!项目为空");
                 return null;
             }
-            try {
-                if (!groups.Keys.Contains(groupname)) {
-                    clsSetting.loger.Error(string.Format("{0}未添加订阅！", code));
-                    return null;
-                }
-                Opc.Da.ItemValueResult[] values = groups[groupname].Read(new Opc.Da.Item[] { groups[groupname].Items.First(item => item.ItemName == code) });
 
-                if (values[0].Quality.Equals(Opc.Da.Quality.Good)) {
-                    return values[0].Value;
-                }
-                return null;
-            } catch (Exception ex) {
-                yidascan.FrmMain.logOpt.Write(string.Format("!{0}读取失败！{1}", code, ex));
+            if (!groups.Keys.Contains(groupname)) {
+                clsSetting.loger.Error($"{groupname}未添加订阅！");
                 return null;
             }
+            var values = groups[groupname].Read(new Opc.Da.Item[] { groups[groupname].Items.First(item => item.ItemName == code) });
+
+            if (values[0].Quality.Equals(Opc.Da.Quality.Good)) {
+                return values[0].Value;
+            }
+            return null;
         }
 
         public int ReadInt(string slot) {
@@ -243,7 +238,7 @@ namespace ProduceComm.OPC {
                 var val = Read(slot);
                 return val != null ? int.Parse(val.ToString().Trim()) : 0;
             } catch (Exception ex) {
-                yidascan.FrmMain.logOpt.Write(string.Format("!{0}读取失败!{1}", slot, ex));
+                FrmMain.logOpt.Write($"!opc读取失败, 节点: {slot}, {ex}");
                 return 0;
             }
         }
@@ -251,29 +246,19 @@ namespace ProduceComm.OPC {
         public string ReadString(string slot) {
             try {
                 var val = Read(slot);
-
-                if (val == null) {
-                    throw new Exception($"{slot}读到null。");
-                }
-
                 return val != null ? val.ToString() : string.Empty;
             } catch (Exception ex) {
-                yidascan.FrmMain.logOpt.Write(string.Format("!{0}读取失败!{1}", slot, ex));
+                FrmMain.logOpt.Write($"!opc读取失败, 节点: {slot}, {ex}");
                 return string.Empty;
             }
         }
 
         public bool ReadBool(string slot) {
             try {
-                var val = Read(slot);
-
-                if (val == null) {
-                    throw new Exception($"{slot}读到null。");
-                }
-
+                var val = Read(slot);                
                 return val != null ? bool.Parse(val.ToString().Trim()) : false;
             } catch (Exception ex) {
-                FrmMain.logOpt.Write($"!{slot}读取失败, {ex}");
+                FrmMain.logOpt.Write($"!opc读取失败, 节点: {slot}, {ex}");
                 return false;
             }
         }
@@ -283,7 +268,7 @@ namespace ProduceComm.OPC {
                 var val = Read(slot);
                 return val != null ? decimal.Parse(val.ToString().Trim()) : 0;
             } catch (Exception ex) {
-                yidascan.FrmMain.logOpt.Write(string.Format("!{0}读取失败!{1}", slot, ex));
+                FrmMain.logOpt.Write($"!opc读取失败, 节点: {slot}, {ex}");
                 return 0;
             }
         }
@@ -292,17 +277,7 @@ namespace ProduceComm.OPC {
             try {
                 m_server.Disconnect();
             } catch (Exception ex) {
-                clsSetting.loger.Error("关闭连接失败！", ex);
-            }
-        }
-
-        public string ReadString(string groupname, string slot) {
-            var val = Read(groupname, slot);
-            try {
-                return val != null ? val.ToString() : string.Empty;
-            } catch (Exception ex) {
-                yidascan.FrmMain.logOpt.Write(string.Format("!{0}读取失败!{1} {2}", slot, val, ex));
-                return string.Empty;
+                clsSetting.loger.Error("!opc关闭连接失败！", ex);
             }
         }
 
@@ -311,27 +286,8 @@ namespace ProduceComm.OPC {
             try {
                 return val != null ? int.Parse(val.ToString()) : 0;
             } catch (Exception ex) {
-                yidascan.FrmMain.logOpt.Write(string.Format("!{0}读取失败!{1} {2}", slot, val, ex));
-                return 0;
-            }
-        }
-
-        public bool ReadBool(string groupname, string slot) {
-            var val = Read(groupname, slot);
-            try {
-                return val != null ? bool.Parse(val.ToString()) : false;
-            } catch (Exception ex) {
-                yidascan.FrmMain.logOpt.Write(string.Format("!{0}读取失败!{1} {2}", slot, val, ex));
-                return false;
-            }
-        }
-
-        public decimal ReadDecimal(string groupname, string slot) {
-            var val = Read(groupname, slot);
-            try {
-                return val != null ? decimal.Parse(val.ToString()) : 0;
-            } catch (Exception ex) {
-                yidascan.FrmMain.logOpt.Write(string.Format("!{0}读取失败!{1} {2}", slot, val, ex));
+                var valexp = val == null ? "null" : val;
+                FrmMain.logOpt.Write($"!opc读取失败, 节点: {slot}, 值: {valexp}, {ex}");
                 return 0;
             }
         }
@@ -347,7 +303,7 @@ namespace ProduceComm.OPC {
                     Thread.Sleep(delay);
                 }
             }
-            throw new Exception($"OPC读取失败： {nameof(TryReadInt)}, slot: {slot}");
+            throw new Exception($"opc读取失败： {nameof(TryReadInt)}, slot: {slot}");
         }
 
         public bool TryReadBool(string slot, int delay = 20, int times = 10) {
@@ -359,7 +315,7 @@ namespace ProduceComm.OPC {
                     Thread.Sleep(delay);
                 }
             }
-            throw new Exception($"OPC读取失败： {nameof(TryReadBool)}, slot: {slot}");
+            throw new Exception($"opc读取失败： {nameof(TryReadBool)}, slot: {slot}");
         }
 
         public string TryReadString(string slot, int delay = 20, int times = 10) {
@@ -371,7 +327,7 @@ namespace ProduceComm.OPC {
                     Thread.Sleep(delay);
                 }
             }
-            throw new Exception($"OPC读取失败： {nameof(TryReadString)}, slot: {slot}");
+            throw new Exception($"opc读取失败： {nameof(TryReadString)}, slot: {slot}");
         }
 
         public decimal TryReadDecimal(string slot, int delay = 20, int times = 10) {
@@ -390,14 +346,14 @@ namespace ProduceComm.OPC {
             while (times-- > 0) {
                 try {
                     if (string.IsNullOrEmpty(slot)) {
-                        yidascan.FrmMain.logOpt.Write($"!项目为空");
+                        yidascan.FrmMain.logOpt.Write($"!source: {nameof(TryWrite)}, 节点为空");
                         return false;
                     }
                     if (!groups.Keys.Contains(slot)) {
                         clsSetting.loger.Error(string.Format("{0}未添加订阅！", slot));
                         return false;
                     }
-                    Opc.Da.ItemValue iv = new Opc.Da.ItemValue((Opc.ItemIdentifier)groups[slot].Items[0]);
+                    var iv = new Opc.Da.ItemValue((Opc.ItemIdentifier)groups[slot].Items[0]);
                     iv.Value = value;
                     groups[slot].Write(new Opc.Da.ItemValue[] { iv });
                     return true;
@@ -405,7 +361,8 @@ namespace ProduceComm.OPC {
                     Thread.Sleep(delay);
                 }
             }
-            throw new Exception($"OPC写入失败： {nameof(TryWrite)}, slot: {slot}");
+            var valexp = value == null ? "null" : value;
+            throw new Exception($"opc写入失败： {nameof(TryWrite)}, 节点: {slot}, 值: {valexp}");
         }
 
         #endregion

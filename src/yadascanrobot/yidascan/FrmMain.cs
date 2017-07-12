@@ -407,12 +407,8 @@ namespace yidascan {
             SetButtonState(true);
             logOpt.Write(string.Format("!系统流程开始运行"), LogType.NORMAL);
 
-            resetOpcProc(); // 关闭opc连接进程。
-
             setupOpcErp();
-
             initErpApi();
-
             PanelGen.Init(dtpDate.Value);
 
             StartScanner();
@@ -851,6 +847,8 @@ namespace yidascan {
 
             // 保存缓存位状态。
             saveTaskQ();
+
+            resetOpcProc(); // 关闭opc连接进程。
 
             logOpt.Write("停止操作完成。", LogType.NORMAL);
         }
@@ -1757,7 +1755,6 @@ namespace yidascan {
 
         private static void resetOpcProc() {
             resetprocess("OPCDAServer", "-Embedding"); // 名字末尾不包括.exe
-            // stoptprocess("");
         }
 
         private void btnRestartOpcServer_Click(object sender, EventArgs e) {
