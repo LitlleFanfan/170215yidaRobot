@@ -256,7 +256,7 @@ namespace yidascan {
 
         private void StartRobotTask() {
             try {
-                logOpt.Write("机器人正在启动...", LogType.NORMAL);
+                logOpt.Write("!机器人正在启动...", LogType.NORMAL);
                 RobotOpcClient = CreateOpcClient("机器人");
                 opcParam.RobotParam = new OPCRobotParam(RobotOpcClient);
                 opcParam.InitBadShapeLocations(RobotOpcClient);
@@ -272,18 +272,18 @@ namespace yidascan {
                         this.Invoke((Action)(() => { lblRobot.BackColor = Color.LightGreen; }));
 
                         SetRobotTip(true);
-                        logOpt.Write("开始机器人线程。", LogType.NORMAL);
+                        logOpt.Write("!开始机器人线程。", LogType.NORMAL);
 
                         robot.JobLoop(ref robotRun, lsvRobotA, lsvRobotB);
 
-                        logOpt.Write("机器人启动正常。", LogType.NORMAL);
+                        logOpt.Write("!机器人启动正常。", LogType.NORMAL);
                     } else {
                         SetRobotTip(false, "机器人网络故障");
                         logOpt.Write("!机器人网络故障。", LogType.NORMAL);
                     }
                 });
             } catch (Exception ex) {
-                logOpt.Write($"来源: {nameof(StartRobotTask)}机器人启动异常。{ex}", LogType.NORMAL);
+                logOpt.Write($"!来源: {nameof(StartRobotTask)}机器人启动异常。{ex}", LogType.NORMAL);
             }
         }
 
@@ -811,7 +811,7 @@ namespace yidascan {
 
                 OpcClientClose(RobotOpcClient, "机器人");
 
-                logOpt.Write("机器人任务停止。", LogType.NORMAL);
+                logOpt.Write("!机器人任务停止。", LogType.NORMAL);
                 SetRobotTip(false, "机器人停止");
             }
         }
@@ -1335,8 +1335,10 @@ namespace yidascan {
                         locationLbls[locationNo].BackColor = Color.Red;
                         break;
                     case LocationState.BUSY:
-                        locationLbls[locationNo].BackColor = Color.Orange;
-                        PanelInfo pi = LableCode.GetPanel(panelNo);
+                        locationLbls[locationNo].BackColor = TaskQueues.lochelper.isMapped(locationNo)
+                             ? Color.Orange : Color.LightGray;
+
+                        var pi = LableCode.GetPanel(panelNo);
                         if (pi != null) {
                             locationLbls[locationNo].Text = pi.CurrFloor.ToString();
                         } else {
@@ -1386,6 +1388,8 @@ namespace yidascan {
         }
 
         private void btnStartRobot_Click(object sender, EventArgs e) {
+            logOpt.Write("!手动启动机器人。");
+
             chkUseRobot.Checked = true;
 
             StartAllRobotTasks();
@@ -1394,6 +1398,7 @@ namespace yidascan {
 
         private void btnStopRobot_Click(object sender, EventArgs e) {
             if (CommonHelper.Confirm("确定停止机器人任务吗?")) {
+                logOpt.Write("!手动停止机器人。");
                 StopAllRobotTasks();
                 RefreshRobotMenuState();
             }
@@ -1707,13 +1712,23 @@ namespace yidascan {
             var views = new List<ListView> { lsvLableCode, lsvWeigh, lsvCacheBefor, lsvCacheQ1, lsvCacheQ2,
             lsvCacheQ3, lsvCacheQ4, lsvLableUp, lsvCatch1, lsvCatch2, lsvRobotA, lsvRobotB};
 
+            var cacheviews = new List<ListView> { lsvCacheQ1, lsvCacheQ2, lsvCacheQ3, lsvCacheQ4 };
+
             view = views.FirstOrDefault(x => x.Focused);
 
             if (view == null) { return; }
 
             if (view.SelectedItems.Count > 0) {
                 var item = view.SelectedItems[0].Text.Trim();
-                Clipboard.SetText(item);
+
+                var slices = item.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                if (cacheviews.Contains(view) && (slices.Length > 1)) {
+                    Clipboard.SetText(slices[1]);
+                } else if (slices.Length > 0) {
+                    Clipboard.SetText(slices[0]);
+                } else {
+                    Clipboard.SetText(item);
+                }
             }
         }
 
