@@ -32,7 +32,7 @@
             this.lbLocation = new System.Windows.Forms.Label();
             this.rbLow = new System.Windows.Forms.RadioButton();
             this.rbMedium = new System.Windows.Forms.RadioButton();
-            this.btnSave = new System.Windows.Forms.Button();
+            this.btnExit = new System.Windows.Forms.Button();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.stMsg = new System.Windows.Forms.ToolStripStatusLabel();
             this.groupBox1.SuspendLayout();
@@ -131,15 +131,15 @@
             this.rbMedium.Text = "中";
             this.rbMedium.UseVisualStyleBackColor = true;
             // 
-            // btnSave
+            // btnExit
             // 
-            this.btnSave.Location = new System.Drawing.Point(426, 292);
-            this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(125, 36);
-            this.btnSave.TabIndex = 4;
-            this.btnSave.Text = "保存";
-            this.btnSave.UseVisualStyleBackColor = true;
-            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+            this.btnExit.Location = new System.Drawing.Point(426, 292);
+            this.btnExit.Name = "btnExit";
+            this.btnExit.Size = new System.Drawing.Size(125, 36);
+            this.btnExit.TabIndex = 4;
+            this.btnExit.Text = "退出";
+            this.btnExit.UseVisualStyleBackColor = true;
+            this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
             // 
             // statusStrip1
             // 
@@ -163,7 +163,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(589, 435);
             this.Controls.Add(this.statusStrip1);
-            this.Controls.Add(this.btnSave);
+            this.Controls.Add(this.btnExit);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.btnSet);
             this.Controls.Add(this.listView1);
@@ -174,7 +174,7 @@
             this.MinimizeBox = false;
             this.Name = "wpriority";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "设置交地优先级";
+            this.Text = "设置实际交地优先级";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
@@ -192,7 +192,7 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.RadioButton rbLow;
         private System.Windows.Forms.RadioButton rbMedium;
-        private System.Windows.Forms.Button btnSave;
+        private System.Windows.Forms.Button btnExit;
         private System.Windows.Forms.ColumnHeader columnHeader1;
         private System.Windows.Forms.ColumnHeader columnHeader2;
         private System.Windows.Forms.Label lbLocation;

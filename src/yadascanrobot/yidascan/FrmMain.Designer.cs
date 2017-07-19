@@ -30,45 +30,45 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmMain));
-            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem21 = new System.Windows.Forms.ListViewItem(new string[] {
             "1                                     "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.Window, null);
-            System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem22 = new System.Windows.Forms.ListViewItem(new string[] {
             "2                                     "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.Window, null);
-            System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem23 = new System.Windows.Forms.ListViewItem(new string[] {
             "3                                     "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.Window, null);
-            System.Windows.Forms.ListViewItem listViewItem4 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem24 = new System.Windows.Forms.ListViewItem(new string[] {
             "4                                      "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.Window, null);
-            System.Windows.Forms.ListViewItem listViewItem5 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem25 = new System.Windows.Forms.ListViewItem(new string[] {
             "5                                      "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.Window, null);
-            System.Windows.Forms.ListViewItem listViewItem6 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem(new string[] {
             "6                                     "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.Window, null);
-            System.Windows.Forms.ListViewItem listViewItem7 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem(new string[] {
             "7                                     "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.Window, null);
-            System.Windows.Forms.ListViewItem listViewItem8 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem(new string[] {
             "8                                     "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.Window, null);
-            System.Windows.Forms.ListViewItem listViewItem9 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem4 = new System.Windows.Forms.ListViewItem(new string[] {
             "9                                     "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.Window, null);
-            System.Windows.Forms.ListViewItem listViewItem10 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem5 = new System.Windows.Forms.ListViewItem(new string[] {
             "10                                   "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.Window, null);
-            System.Windows.Forms.ListViewItem listViewItem11 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem6 = new System.Windows.Forms.ListViewItem(new string[] {
             "11                                   "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.Window, null);
-            System.Windows.Forms.ListViewItem listViewItem12 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem7 = new System.Windows.Forms.ListViewItem(new string[] {
             "12                                   "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.Window, null);
-            System.Windows.Forms.ListViewItem listViewItem13 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem8 = new System.Windows.Forms.ListViewItem(new string[] {
             "13                                   "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.Window, null);
-            System.Windows.Forms.ListViewItem listViewItem14 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem9 = new System.Windows.Forms.ListViewItem(new string[] {
             "14                                   "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.Window, null);
-            System.Windows.Forms.ListViewItem listViewItem15 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem10 = new System.Windows.Forms.ListViewItem(new string[] {
             "15                                   "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.Window, null);
-            System.Windows.Forms.ListViewItem listViewItem16 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem11 = new System.Windows.Forms.ListViewItem(new string[] {
             "16                                   "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.Window, null);
-            System.Windows.Forms.ListViewItem listViewItem17 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem12 = new System.Windows.Forms.ListViewItem(new string[] {
             "17                                    "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.Window, null);
-            System.Windows.Forms.ListViewItem listViewItem18 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem13 = new System.Windows.Forms.ListViewItem(new string[] {
             "18                                   "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.Window, null);
-            System.Windows.Forms.ListViewItem listViewItem19 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem14 = new System.Windows.Forms.ListViewItem(new string[] {
             "19                                   "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.Window, null);
-            System.Windows.Forms.ListViewItem listViewItem20 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem15 = new System.Windows.Forms.ListViewItem(new string[] {
             "20                                   "}, -1, System.Drawing.Color.Empty, System.Drawing.SystemColors.Window, null);
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.btnRun = new System.Windows.Forms.ToolStripButton();
@@ -202,6 +202,7 @@
             this.label12 = new System.Windows.Forms.Label();
             this.lbl1 = new System.Windows.Forms.Label();
             this.tRefreshRealLocState = new System.Windows.Forms.Timer(this.components);
+            this.btnLogQueues = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1.SuspendLayout();
             this.grbHandwork.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -356,6 +357,7 @@
             this.toolStripMenuItem6,
             this.btnSetPriority,
             this.toolStripMenuItem4,
+            this.btnLogQueues,
             this.btnBrowsePanels,
             this.btnSignalGen,
             this.toolStripMenuItem1,
@@ -376,64 +378,64 @@
             // btnStartRobot
             // 
             this.btnStartRobot.Name = "btnStartRobot";
-            this.btnStartRobot.Size = new System.Drawing.Size(232, 30);
+            this.btnStartRobot.Size = new System.Drawing.Size(293, 30);
             this.btnStartRobot.Text = "启动机器人任务";
             this.btnStartRobot.Click += new System.EventHandler(this.btnStartRobot_Click);
             // 
             // btnStopRobot
             // 
             this.btnStopRobot.Name = "btnStopRobot";
-            this.btnStopRobot.Size = new System.Drawing.Size(232, 30);
+            this.btnStopRobot.Size = new System.Drawing.Size(293, 30);
             this.btnStopRobot.Text = "停止机器人任务";
             this.btnStopRobot.Click += new System.EventHandler(this.btnStopRobot_Click);
             // 
             // toolStripMenuItem3
             // 
             this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-            this.toolStripMenuItem3.Size = new System.Drawing.Size(229, 6);
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(290, 6);
             // 
             // btnSearch
             // 
             this.btnSearch.Name = "btnSearch";
-            this.btnSearch.Size = new System.Drawing.Size(232, 30);
+            this.btnSearch.Size = new System.Drawing.Size(293, 30);
             this.btnSearch.Text = "查找号码";
             this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
             // 
             // btnDelete
             // 
             this.btnDelete.Name = "btnDelete";
-            this.btnDelete.Size = new System.Drawing.Size(232, 30);
+            this.btnDelete.Size = new System.Drawing.Size(293, 30);
             this.btnDelete.Text = "删除AC区号码(&D)";
             this.btnDelete.Click += new System.EventHandler(this.toolStripButton1_Click);
             // 
             // btnDeleteCodeFromQueueAndDb
             // 
             this.btnDeleteCodeFromQueueAndDb.Name = "btnDeleteCodeFromQueueAndDb";
-            this.btnDeleteCodeFromQueueAndDb.Size = new System.Drawing.Size(232, 30);
+            this.btnDeleteCodeFromQueueAndDb.Size = new System.Drawing.Size(293, 30);
             this.btnDeleteCodeFromQueueAndDb.Text = "删除B区号码";
             this.btnDeleteCodeFromQueueAndDb.Click += new System.EventHandler(this.btnCodeFromBarea_Click);
             // 
             // toolStripMenuItem6
             // 
             this.toolStripMenuItem6.Name = "toolStripMenuItem6";
-            this.toolStripMenuItem6.Size = new System.Drawing.Size(229, 6);
+            this.toolStripMenuItem6.Size = new System.Drawing.Size(290, 6);
             // 
             // btnSetPriority
             // 
             this.btnSetPriority.Name = "btnSetPriority";
-            this.btnSetPriority.Size = new System.Drawing.Size(232, 30);
+            this.btnSetPriority.Size = new System.Drawing.Size(293, 30);
             this.btnSetPriority.Text = "交地优先级设置";
             this.btnSetPriority.Click += new System.EventHandler(this.btnSetPriority_Click);
             // 
             // toolStripMenuItem4
             // 
             this.toolStripMenuItem4.Name = "toolStripMenuItem4";
-            this.toolStripMenuItem4.Size = new System.Drawing.Size(229, 6);
+            this.toolStripMenuItem4.Size = new System.Drawing.Size(290, 6);
             // 
             // btnBrowsePanels
             // 
             this.btnBrowsePanels.Name = "btnBrowsePanels";
-            this.btnBrowsePanels.Size = new System.Drawing.Size(232, 30);
+            this.btnBrowsePanels.Size = new System.Drawing.Size(293, 30);
             this.btnBrowsePanels.Text = "板状态浏览";
             this.btnBrowsePanels.Click += new System.EventHandler(this.btnBrowsePanels_Click);
             // 
@@ -441,59 +443,59 @@
             // 
             this.btnSignalGen.Name = "btnSignalGen";
             this.btnSignalGen.ShowShortcutKeys = false;
-            this.btnSignalGen.Size = new System.Drawing.Size(232, 30);
+            this.btnSignalGen.Size = new System.Drawing.Size(293, 30);
             this.btnSignalGen.Text = "模拟信号发生";
             this.btnSignalGen.Click += new System.EventHandler(this.btnSignalGen_Click);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(229, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(290, 6);
             // 
             // btnLoadTaskq
             // 
             this.btnLoadTaskq.Name = "btnLoadTaskq";
-            this.btnLoadTaskq.Size = new System.Drawing.Size(232, 30);
+            this.btnLoadTaskq.Size = new System.Drawing.Size(293, 30);
             this.btnLoadTaskq.Text = "加载号码数据";
             this.btnLoadTaskq.Click += new System.EventHandler(this.btnLoadTaskq_Click);
             // 
             // btnSaveTaskq
             // 
             this.btnSaveTaskq.Name = "btnSaveTaskq";
-            this.btnSaveTaskq.Size = new System.Drawing.Size(232, 30);
+            this.btnSaveTaskq.Size = new System.Drawing.Size(293, 30);
             this.btnSaveTaskq.Text = "保存号码数据";
             this.btnSaveTaskq.Click += new System.EventHandler(this.btnSaveTaskq_Click);
             // 
             // toolStripMenuItem2
             // 
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(229, 6);
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(290, 6);
             // 
             // btnRestartOpcServer
             // 
             this.btnRestartOpcServer.Name = "btnRestartOpcServer";
-            this.btnRestartOpcServer.Size = new System.Drawing.Size(232, 30);
+            this.btnRestartOpcServer.Size = new System.Drawing.Size(293, 30);
             this.btnRestartOpcServer.Text = "关闭opc连接服务";
             this.btnRestartOpcServer.Click += new System.EventHandler(this.btnRestartOpcServer_Click);
             // 
             // btnSelfTest
             // 
             this.btnSelfTest.Name = "btnSelfTest";
-            this.btnSelfTest.Size = new System.Drawing.Size(232, 30);
+            this.btnSelfTest.Size = new System.Drawing.Size(293, 30);
             this.btnSelfTest.Text = "self test";
             this.btnSelfTest.Click += new System.EventHandler(this.btnSelfTest_Click);
             // 
             // btnOpenLogDir
             // 
             this.btnOpenLogDir.Name = "btnOpenLogDir";
-            this.btnOpenLogDir.Size = new System.Drawing.Size(232, 30);
+            this.btnOpenLogDir.Size = new System.Drawing.Size(293, 30);
             this.btnOpenLogDir.Text = "日志";
             this.btnOpenLogDir.Click += new System.EventHandler(this.btnOpenLogDir_Click);
             // 
             // btnHelp
             // 
             this.btnHelp.Name = "btnHelp";
-            this.btnHelp.Size = new System.Drawing.Size(232, 30);
+            this.btnHelp.Size = new System.Drawing.Size(293, 30);
             this.btnHelp.Text = "帮助(&H)";
             this.btnHelp.Click += new System.EventHandler(this.btnHelp_Click);
             // 
@@ -1097,11 +1099,11 @@
             this.lsvCacheQ1.ContextMenuStrip = this.contextMenu;
             this.lsvCacheQ1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lsvCacheQ1.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem1,
-            listViewItem2,
-            listViewItem3,
-            listViewItem4,
-            listViewItem5});
+            listViewItem21,
+            listViewItem22,
+            listViewItem23,
+            listViewItem24,
+            listViewItem25});
             this.lsvCacheQ1.Location = new System.Drawing.Point(0, 0);
             this.lsvCacheQ1.Margin = new System.Windows.Forms.Padding(0, 0, 0, 3);
             this.lsvCacheQ1.Name = "lsvCacheQ1";
@@ -1116,11 +1118,11 @@
             this.lsvCacheQ2.ContextMenuStrip = this.contextMenu;
             this.lsvCacheQ2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lsvCacheQ2.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem6,
-            listViewItem7,
-            listViewItem8,
-            listViewItem9,
-            listViewItem10});
+            listViewItem1,
+            listViewItem2,
+            listViewItem3,
+            listViewItem4,
+            listViewItem5});
             this.lsvCacheQ2.Location = new System.Drawing.Point(0, 88);
             this.lsvCacheQ2.Margin = new System.Windows.Forms.Padding(0, 3, 0, 0);
             this.lsvCacheQ2.Name = "lsvCacheQ2";
@@ -1135,11 +1137,11 @@
             this.lsvCacheQ3.ContextMenuStrip = this.contextMenu;
             this.lsvCacheQ3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lsvCacheQ3.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem11,
-            listViewItem12,
-            listViewItem13,
-            listViewItem14,
-            listViewItem15});
+            listViewItem6,
+            listViewItem7,
+            listViewItem8,
+            listViewItem9,
+            listViewItem10});
             this.lsvCacheQ3.Location = new System.Drawing.Point(58, 0);
             this.lsvCacheQ3.Margin = new System.Windows.Forms.Padding(0, 0, 0, 3);
             this.lsvCacheQ3.Name = "lsvCacheQ3";
@@ -1154,11 +1156,11 @@
             this.lsvCacheQ4.ContextMenuStrip = this.contextMenu;
             this.lsvCacheQ4.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lsvCacheQ4.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem16,
-            listViewItem17,
-            listViewItem18,
-            listViewItem19,
-            listViewItem20});
+            listViewItem11,
+            listViewItem12,
+            listViewItem13,
+            listViewItem14,
+            listViewItem15});
             this.lsvCacheQ4.Location = new System.Drawing.Point(58, 88);
             this.lsvCacheQ4.Margin = new System.Windows.Forms.Padding(0, 3, 0, 0);
             this.lsvCacheQ4.Name = "lsvCacheQ4";
@@ -1470,7 +1472,7 @@
             this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 48F));
             this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 48F));
             this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 48F));
-            this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 57F));
+            this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 58F));
             this.tableLayoutPanel5.Controls.Add(this.lbl11, 10, 1);
             this.tableLayoutPanel5.Controls.Add(this.lbl10, 9, 1);
             this.tableLayoutPanel5.Controls.Add(this.lbl9, 8, 1);
@@ -1510,7 +1512,7 @@
             this.lbl11.Location = new System.Drawing.Point(496, 55);
             this.lbl11.Margin = new System.Windows.Forms.Padding(5);
             this.lbl11.Name = "lbl11";
-            this.lbl11.Size = new System.Drawing.Size(47, 39);
+            this.lbl11.Size = new System.Drawing.Size(48, 39);
             this.lbl11.TabIndex = 23;
             this.lbl11.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
@@ -1638,7 +1640,7 @@
             this.label22.Location = new System.Drawing.Point(492, 2);
             this.label22.Margin = new System.Windows.Forms.Padding(1);
             this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(55, 46);
+            this.label22.Size = new System.Drawing.Size(56, 46);
             this.label22.TabIndex = 12;
             this.label22.Text = "B11";
             this.label22.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -1781,6 +1783,13 @@
             this.tRefreshRealLocState.Enabled = true;
             this.tRefreshRealLocState.Interval = 5000;
             this.tRefreshRealLocState.Tick += new System.EventHandler(this.tRefreshRealLocState_Tick);
+            // 
+            // btnLogQueues
+            // 
+            this.btnLogQueues.Name = "btnLogQueues";
+            this.btnLogQueues.Size = new System.Drawing.Size(255, 30);
+            this.btnLogQueues.Text = "显示未上垛布卷号码";
+            this.btnLogQueues.Click += new System.EventHandler(this.btnLogQueues_Click);
             // 
             // FrmMain
             // 
@@ -1983,6 +1992,7 @@
         private System.Windows.Forms.ToolStripMenuItem mnuContextCopy;
         private System.Windows.Forms.Timer tRefreshRealLocState;
         private System.Windows.Forms.ToolStripMenuItem btnRestartOpcServer;
+        private System.Windows.Forms.ToolStripMenuItem btnLogQueues;
     }
 }
 

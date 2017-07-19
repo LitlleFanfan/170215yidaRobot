@@ -95,11 +95,8 @@ namespace yidascan {
 
         public bool JobTask(ref bool isrun, bool isSideA, Queue<RollPosition> robotRollQ, RollPosition roll, ListView lv) {
             // 等待板可放料
-            // 等待板可放料
-            if (PanelAvailable(roll.RealLocation)) {
-                FrmMain.logOpt.Write($"{roll.RealLocation} PushInQueue收到可放料信号", LogType.ROBOT_STACK);
-            } else {
-                FrmMain.logOpt.Write($"! {roll.RealLocation} PushInQueue未收到可放料信号，请检查板状态和是否有形状不规则报警。", LogType.ROBOT_STACK);
+            if (!PanelAvailable(roll.RealLocation)) { 
+                FrmMain.logOpt.Write($"!{roll.RealLocation}未收到可放料信号，请检查板状态和是否有形状不规则报警。", LogType.ROBOT_STACK);
                 return false;
             }
 
@@ -280,7 +277,5 @@ namespace yidascan {
                 }
             }
         }
-
-        public void WriteLocationState(IOpcClient client, OPCParam param) { }
     }
 }

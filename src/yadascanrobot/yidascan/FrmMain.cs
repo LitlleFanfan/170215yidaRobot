@@ -294,11 +294,13 @@ namespace yidascan {
             opcBUFL = CreateOpcClient("B区手动完成");
             opcParam.InitBAreaUserFinalLayer(opcBUFL);
 
+            // for should be within while loop.
             foreach (KeyValuePair<string, string> kv in opcParam.BAreaUserFinalLayer) {
                 Task.Factory.StartNew(() => {
                     const string SIGNAL_ON = "1";
                     const string SIGNAL_OFF = "0";
                     while (isrun) {
+                        // for kv in opcParam.BAreaUserFinalLayer
                         var signal = "";
                         lock (opcBUFL) {
                             signal = opcBUFL.TryReadString(kv.Value);
@@ -319,7 +321,7 @@ namespace yidascan {
                                 lock (opcBUFL) {
                                     opcBUFL.TryWrite(kv.Value, SIGNAL_OFF);
                                 }
-                                break;
+                                continue;
                             }
 
                             var pf = LableCode.GetPanel(panelNo);
@@ -329,7 +331,7 @@ namespace yidascan {
                                 lock (opcBUFL) {
                                     opcBUFL.TryWrite(kv.Value, SIGNAL_OFF);
                                 }
-                                break;
+                                continue;
                             }
                             logOpt.Write($"!实际交地{kv.Key} 收到人工完成信号。板号：{panelNo} ERP交地：{pf.ToLocation}", LogType.ROBOT_STACK);
 
@@ -346,13 +348,16 @@ namespace yidascan {
                             //处理满板信号
                             robot.NotifyOpcJobFinished(pf.PanelNo, pf.ToLocation, reallocation);
 
+                            logUnboardRolls(); // 未上板的布卷号码。
+
                             // plc复位信号。
                             lock (opcBUFL) {
                                 opcBUFL.TryWrite(kv.Value, SIGNAL_OFF);
                             }
                         }
+                        // end of for
                         Thread.Sleep(OPCClient.DELAY * 200);
-                    }
+                    } // end of while.
                 });
             }
         }
@@ -1690,6 +1695,7 @@ namespace yidascan {
 
         private void btnSetPriority_Click(object sender, EventArgs e) {
             using (var w = new wpriority()) {
+                w.locs = TaskQueues.lochelper;
                 w.ShowDialog();
             }
         }
@@ -1781,6 +1787,29 @@ namespace yidascan {
         private void setupOpcErp() {
             opcErp = CreateOpcClient("其它报警");
             opcParam.None = new NoneOpcParame(opcErp);
+        }
+
+        private void logQue(IEnumerable<string> q, string title) {
+            if (q.Count() > 0) {
+                foreach (var item in q) {
+                    logOpt.Write($"{title}, {item}", LogType.ROBOT_STACK);
+                }
+            }
+        }
+
+        private void logUnboardRolls() {
+            logOpt.Write("------未上垛布卷号码------", LogType.ROBOT_STACK);
+            lock (TaskQueues.LOCK_LOCHELPER) {
+                logQue(taskQ.LableUpQ.Select(x => x.brief()), "标签朝上队列");
+                logQue(taskQ.CatchAQ.Select(x => x.brief()), "抓料队列A");
+                logQue(taskQ.CatchBQ.Select(x => x.brief()), "抓料队列A");
+                logQue(taskQ.RobotRollAQ.Select(x => x.brief()), "机器人队列A");
+                logQue(taskQ.RobotRollBQ.Select(x => x.brief()), "机器人队列B");
+            } 
+        }
+
+        private void btnLogQueues_Click(object sender, EventArgs e) {
+            logUnboardRolls();
         }
     }
 }

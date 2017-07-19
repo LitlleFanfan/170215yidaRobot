@@ -15,13 +15,12 @@ namespace yidascan {
         public wpriority() {
             InitializeComponent();
 
-            loadDefaultConf();
-            showVirtualLocations();
+            showRealLocations();
         }
-        const string JSONFILE = "location_default.json";
+        
         public LocationHelper locs;
 
-        public void showVirtualLocations() {
+        public void showRealLocations() {
             listView1.Items.Clear();
             foreach (var item in locs.RealLocations) {
                 var vi = new ListViewItem {
@@ -31,13 +30,6 @@ namespace yidascan {
                 vi.Tag = item;
                 listView1.Items.Add(vi);
             }
-        }
-
-        private void loadDefaultConf() {
-            var exe = Assembly.GetExecutingAssembly().Location;
-            var exepath = Path.GetDirectoryName(exe);
-            var fn = Path.Combine(exepath, JSONFILE);
-            locs = LocationHelper.LoadConf(fn);
         }
 
         private void resetChecks() {
@@ -77,17 +69,11 @@ namespace yidascan {
                 selected.priority = Priority.LOW;
             }
             
-            showVirtualLocations();
+            showRealLocations();
         }
 
-        private void btnSave_Click(object sender, EventArgs e) {
-            var exe = Assembly.GetExecutingAssembly().Location;
-            var exepath = Path.GetDirectoryName(exe);
-            var fn = Path.Combine(exepath, JSONFILE);
-            locs.SaveConf(fn);
-
-            var td = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
-            stMsg.Text = $"{ JSONFILE}保存完成, {td}";
+        private void btnExit_Click(object sender, EventArgs e) {
+            Close();
         }
     }
 }

@@ -18,9 +18,18 @@ namespace yidascan {
 
         public wdeletebcode() {
             InitializeComponent();
+            showTitle();
         }
 
         private void btnDelete_Click(object sender, EventArgs e) {    
+            if (tabControl1.SelectedTab == pageSingle) {
+                deleteSingle();
+            } else if (tabControl1.SelectedTab == pageQueues) {
+                deleteQue();
+            }
+        }
+
+        private void deleteSingle() {
             var code = txtLabelCode.Text.Trim();
 
             if (code.Length != 12) {
@@ -35,6 +44,37 @@ namespace yidascan {
             } finally {
                 wmain.ShowTaskQ();
                 Cursor = Cursors.Default;
+            }
+        }
+
+        private void deleteQue() {
+            var data = new List<string>();
+            if (ckWeighQue.Checked) {
+                data = data.Union(FrmMain.taskQ.WeighQ.Select(x => x.LCode)).ToList();
+            }
+            if (ckBeforeCache.Checked) {
+                data = data.Union(FrmMain.taskQ.CacheQ.Select(x => x.LCode)).ToList();
+            }
+            if (ckCache.Checked) {
+                data = data.Union(FrmMain.taskQ.CacheSide.Where(x => x.labelcode != null)
+                    .Select(x => x.labelcode.LCode)).ToList();
+            }
+            if (ckLableUp.Checked) {
+                data = data.Union(FrmMain.taskQ.LableUpQ.Select(x => x.LCode)).ToList();
+            }
+            if (ckCatchQue.Checked) {
+                data = data.Union(FrmMain.taskQ.CatchAQ.Select(x => x.LCode)).ToList();
+                data = data.Union(FrmMain.taskQ.CatchBQ.Select(x => x.LCode)).ToList();
+            }
+            if (ckRobotQue.Checked) {
+                data = data.Union(FrmMain.taskQ.RobotRollAQ.Select(x => x.LabelCode)).ToList();
+                data = data.Union(FrmMain.taskQ.RobotRollBQ.Select(x => x.LabelCode)).ToList();
+            }
+
+            foreach (var item in data) {
+                DeleteCodeFromQueAndDb(item);
+                wmain.ShowTaskQ();           
+                Application.DoEvents();
             }
         }
 
@@ -149,7 +189,17 @@ namespace yidascan {
 
         private void log(string s) {
             lbxLog.Items.Insert(0, $"{lbxLog.Items.Count + 1} {s}");
+            FrmMain.logOpt.Write("!" + s);
         }
         #endregion
+
+        private void showTitle() {
+            var page = tabControl1.SelectedTab.Text;
+            Text = $"删除B区号码({page})";
+        }
+
+        private void tabControl1_Selected(object sender, TabControlEventArgs e) {
+            showTitle();
+        }
     }
 }
