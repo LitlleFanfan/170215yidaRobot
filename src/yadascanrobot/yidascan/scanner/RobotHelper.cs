@@ -9,6 +9,7 @@ using System.Linq;
 using Newtonsoft.Json;
 using yidascan.DataAccess;
 using System.Windows.Forms;
+using System.Net.Sockets;
 
 namespace yidascan {
     public enum PanelState {
@@ -300,7 +301,6 @@ namespace yidascan {
             // 读机器人的状态可能有错。
             try {
                 var status = rCtrl.GetPlayStatus();
-                log($"robot status: {JsonConvert.SerializeObject(status)}", LogType.ROBOT_STACK, LogViewType.OnlyFile);
 
                 if (status == null || status.Count == 0) {
                     return true;
@@ -311,6 +311,26 @@ namespace yidascan {
                 log($"来源: {nameof(IsBusy)}, {ex}", LogType.ROBOT_STACK, LogViewType.OnlyFile);
                 return true;
             }
+        }
+
+        public bool TryIsBusy() {
+            var times = 5;
+            while (times-- > 0) {
+                try {
+                    var status = rCtrl.GetPlayStatus();
+
+                    if (status == null || status.Count == 0) {
+                        continue;
+                    } else {
+                        return (status["Start"] || status["Hold"]);
+                    }
+                } catch (Exception ex) {
+                    log($"来源: {nameof(IsBusy)}, {ex}", LogType.ROBOT_STACK, LogViewType.OnlyFile);
+                }
+
+                Thread.Sleep(30);
+            }
+            return true;
         }
 
         public void NotifyOpcJobFinished(string panelNo, string tolocation, string reallocation) {
@@ -437,10 +457,6 @@ namespace yidascan {
         }
 
         public void JobLoop(ref bool isrunning, ListView la, ListView lb) {
-            //if (isrunning) {
-            //    WriteLocationState(client, param);
-            //}
-
             while (isrunning) {
                 var toSidea = true;
                 
@@ -466,10 +482,7 @@ namespace yidascan {
 
                     if (roll2 == null) {
                         log($"!来源: {nameof(DequeueRoll)}, 机器人队列中无此号码: {roll.LabelCode}", LogType.ROBOT_STACK);
-                    } else if (roll.LabelCode != roll2.LabelCode) {
-                        log($"!来源: {nameof(DequeueRoll)}, 机器人队列号码不一致: {roll.LabelCode}, {roll2.LabelCode}", LogType.ROBOT_STACK);
-                    }
-                    
+                    }                     
                 }
                 FrmMain.showRobotQue(robotRollQ, lv);                
             } catch (Exception ex) {
@@ -574,25 +587,30 @@ namespace yidascan {
             try {
                 var b5 = rCtrl.GetVariables(VariableType.B, 5, 1);
                 return (b5 != null && b5.ContainsKey(KEY) && b5[KEY] == V_ON_PANEL);
+            } catch(SocketException ex) {
+                log($"!来源: {nameof(IsRollOnPanel)}: 机器人网络异常, {ex}", LogType.ROBOT_STACK);
+                return false;
             } catch (Exception ex) {
                 log($"!来源: {nameof(IsRollOnPanel)}: {ex}", LogType.ROBOT_STACK, LogViewType.OnlyFile);
                 return false;
             }
         }
 
-        public bool PanelAvailable(string tolocation) {
+        public bool PanelAvailable(string realloc) {
 #if DEBUG
             // 用于测试
             return true;
 #endif
             try {
-                var s = client.ReadString(param.BAreaPanelState[tolocation]);
-                var canput = !client.ReadBool(param.BadShapeLocations[tolocation]);
+                var s = client.ReadString(param.BAreaPanelState[realloc]);
+                var canput = !client.ReadBool(param.BadShapeLocations[realloc]);
                 var layershape = canput ? "正常" : "坏型";
-                log($"实际交地: {tolocation}, 可放料信号板状态: {s}, 层形状状态: {layershape}", LogType.ROBOT_STACK);
+                if (s != "3") {
+                    log($"实际交地: {realloc}, 可放料信号板状态: {s}, 层形状状态: {layershape}", LogType.ROBOT_STACK);
+                }
                 return s == "2" && canput;
             } catch (Exception ex) {
-                log($"!来源: {nameof(PanelAvailable)}, 读可放料信号异常 tolocation: {tolocation} opc:{param.BadShapeLocations[tolocation]} err:{ex}", LogType.ROBOT_STACK);
+                log($"!来源: {nameof(PanelAvailable)}, 实际交地: {realloc}, 读可放料信号异常: {ex}", LogType.ROBOT_STACK);
                 return false;//临时
             }
         }
@@ -607,30 +625,6 @@ namespace yidascan {
         private static int LocOrder(string loc) {
             return 30 + int.Parse(loc.Substring(1));
         }
-
-        //public void WriteLocationState(IOpcClient client, OPCParam param) {
-        //    var running = FrmMain.robotRun;
-        //    Task.Run(() => {
-        //        while (running) {
-        //            Thread.Sleep(1500);
-        //            foreach (var k in param.BAreaPanelState) {
-        //                try {
-        //                    if (running) {
-        //                        // 读取交地状态
-        //                        var state = PlcHelper.ReadPanelState(client, k.Value);
-        //                        // 写入机器人
-        //                        lock (RobotHelper.LOCK_ROBOT) {
-        //                            rCtrl.SetVariables(RobotControl.VariableType.B, LocOrder(k.Key), 1, state.ToString());
-        //                        }
-        //                    }
-        //                } catch (Exception ex) {
-        //                    _log?.Invoke($"!来源: {nameof(WriteLocationState)}, {ex}", LogType.ROBOT_STACK, LogViewType.Both);
-        //                    break; // exit for loop
-        //                }
-        //            }
-        //        }
-        //    });
-        //}
     }
 }
 
