@@ -333,9 +333,9 @@ namespace yidascan {
             return true;
         }
 
-        public void NotifyOpcJobFinished(string panelNo, string tolocation, string reallocation) {
+        public void NotifyOpcJobFinished(string panelNo, string tolocation, string reallocation, bool panelfull) {
             try {
-                var pState = LableCode.IsAllRollOnPanel(panelNo) ? PanelState.Full : PanelState.HalfFull;
+                var pState = panelfull ? PanelState.Full : PanelState.HalfFull;
                 switch (pState) {
                     case PanelState.HalfFull:
                         var lcode = FrmMain.taskQ.UFGetPanelLastRoll(tolocation, panelNo);

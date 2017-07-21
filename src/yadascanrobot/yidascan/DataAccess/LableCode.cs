@@ -611,6 +611,7 @@ order by floorindex desc;";
             return false;
         }
 
+        [Obsolete("use areAllRollsOnBoard instead.")]
         public static bool IsAllRollOnPanel(string panelNo) {
             var sql = @"select * from LableCode where PanelNo=@PanelNo 
 and exists (select 1 from Panel where Panel.PanelNo=LableCode.PanelNo and (LableCode.Floor=Panel.CurrFloor or LableCode.Floor=Panel.CurrFloor-1)) 

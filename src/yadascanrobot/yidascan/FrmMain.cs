@@ -139,7 +139,7 @@ namespace yidascan {
                 }
                 dtpDate.Value = taskQ.PanelNoFrefix;
 
-                ShowTaskQ();                
+                ShowTaskQ();
 
                 // opcNone = CreateOpcClient("其它报警");
                 // opcParam.None = new NoneOpcParame(opcNone);
@@ -346,14 +346,15 @@ namespace yidascan {
                             }
 
                             //处理满板信号
-                            robot.NotifyOpcJobFinished(pf.PanelNo, pf.ToLocation, reallocation);
-
-                            logUnboardRolls(); // 未上板的布卷号码。
-
+                            var panelfull = areAllRollsOnBoard(pf.PanelNo, reallocation);
+                            robot.NotifyOpcJobFinished(pf.PanelNo, pf.ToLocation, reallocation, panelfull);
+                            
                             // plc复位信号。
                             lock (opcBUFL) {
                                 opcBUFL.TryWrite(kv.Value, SIGNAL_OFF);
                             }
+
+                            logUnboardRolls(); // 未上板的布卷号码。
                         }
                         // end of for
                         Thread.Sleep(OPCClient.DELAY * 200);
@@ -1781,7 +1782,7 @@ namespace yidascan {
         private void btnRestartOpcServer_Click(object sender, EventArgs e) {
             if (!isrun) {
                 resetOpcProc();
-            } 
+            }
         }
 
         private void setupOpcErp() {
@@ -1797,6 +1798,17 @@ namespace yidascan {
             }
         }
 
+        private bool areAllRollsOnBoard(string panelno, string realloc) {
+            lock (TaskQueues.LOCK_LOCHELPER) {
+                var v = taskQ.LableUpQ.Count(x => x.PanelNo == panelno && x.RealLocation == realloc)
+                + taskQ.CatchAQ.Count(x => x.PanelNo == panelno && x.RealLocation == realloc)
+                + taskQ.CatchBQ.Count(x => x.PanelNo == panelno && x.RealLocation == realloc)
+                + taskQ.RobotRollAQ.Count(x => x.PanelNo == panelno && x.RealLocation == realloc)
+                + taskQ.RobotRollBQ.Count(x => x.PanelNo == panelno && x.RealLocation == realloc);
+                return v == 0;
+            }
+        }
+
         private void logUnboardRolls() {
             logOpt.Write("------未上垛布卷号码------", LogType.ROBOT_STACK);
             lock (TaskQueues.LOCK_LOCHELPER) {
@@ -1805,7 +1817,7 @@ namespace yidascan {
                 logQue(taskQ.CatchBQ.Select(x => x.brief()), "抓料队列B");
                 logQue(taskQ.RobotRollAQ.Select(x => x.brief()), "机器人队列A");
                 logQue(taskQ.RobotRollBQ.Select(x => x.brief()), "机器人队列B");
-            } 
+            }
         }
 
         private void btnLogQueues_Click(object sender, EventArgs e) {
