@@ -416,10 +416,10 @@ namespace yidascan.DataAccess {
             return Helper.DataTableToObjList<PanelInfo>(dt)[0];
         }
 
-        public static bool SetMaxFloorAndFull(string tolocation) {
-            var sql = "update panel set maxfloor=currfloor,status= 5 where status!= 5 and tolocation = @tolocation";
+        public static bool SetMaxFloorAndFull(string panelno) {
+            var sql = "update panel set maxfloor=currfloor,status= 5 where status!= 5 and panelno = @panelno";
             var sp = new SqlParameter[]{
-                new SqlParameter("@tolocation",tolocation)};
+                new SqlParameter("@panelno",panelno)};
             return DataAccess.CreateDataAccess.sa.NonQuery(sql, sp);
         }
 

@@ -15,10 +15,17 @@ using ProduceComm.OPC;
 namespace yidascan {
     public partial class wdeletebcode : Form {
         public FrmMain wmain;
+        private CheckBox[] btns;
 
         public wdeletebcode() {
             InitializeComponent();
             showTitle();
+
+            btns = new CheckBox[] { ckBeforeCache, ckCache, ckCatchQue, ckLableUp, ckRobotQue, ckWeighQue };
+            refreshUI();
+            foreach (var btn in btns) {
+                btn.CheckedChanged += (s, a) => { refreshUI(); };
+            }            
         }
 
         private void btnDelete_Click(object sender, EventArgs e) {    
@@ -26,6 +33,13 @@ namespace yidascan {
                 deleteSingle();
             } else if (tabControl1.SelectedTab == pageQueues) {
                 deleteQue();
+            }
+        }
+
+        private void refreshUI() {
+            
+            foreach (var btn in btns) {
+                btn.ForeColor = btn.Checked ? Color.Red : SystemColors.ControlText;
             }
         }
 

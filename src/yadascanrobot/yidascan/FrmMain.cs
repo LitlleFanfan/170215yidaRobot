@@ -1802,7 +1802,7 @@ namespace yidascan {
             lock (TaskQueues.LOCK_LOCHELPER) {
                 logQue(taskQ.LableUpQ.Select(x => x.brief()), "标签朝上队列");
                 logQue(taskQ.CatchAQ.Select(x => x.brief()), "抓料队列A");
-                logQue(taskQ.CatchBQ.Select(x => x.brief()), "抓料队列A");
+                logQue(taskQ.CatchBQ.Select(x => x.brief()), "抓料队列B");
                 logQue(taskQ.RobotRollAQ.Select(x => x.brief()), "机器人队列A");
                 logQue(taskQ.RobotRollBQ.Select(x => x.brief()), "机器人队列B");
             } 

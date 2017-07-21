@@ -32,12 +32,12 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.pageSingle = new System.Windows.Forms.TabPage();
             this.pageQueues = new System.Windows.Forms.TabPage();
-            this.ckWeighQue = new System.Windows.Forms.CheckBox();
-            this.ckBeforeCache = new System.Windows.Forms.CheckBox();
-            this.ckCache = new System.Windows.Forms.CheckBox();
-            this.ckLableUp = new System.Windows.Forms.CheckBox();
-            this.ckCatchQue = new System.Windows.Forms.CheckBox();
             this.ckRobotQue = new System.Windows.Forms.CheckBox();
+            this.ckCatchQue = new System.Windows.Forms.CheckBox();
+            this.ckLableUp = new System.Windows.Forms.CheckBox();
+            this.ckCache = new System.Windows.Forms.CheckBox();
+            this.ckBeforeCache = new System.Windows.Forms.CheckBox();
+            this.ckWeighQue = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.pageSingle.SuspendLayout();
             this.pageQueues.SuspendLayout();
@@ -157,53 +157,17 @@
             this.pageQueues.Text = "一键清空队列";
             this.pageQueues.UseVisualStyleBackColor = true;
             // 
-            // ckWeighQue
+            // ckRobotQue
             // 
-            this.ckWeighQue.AutoSize = true;
-            this.ckWeighQue.Checked = true;
-            this.ckWeighQue.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.ckWeighQue.Location = new System.Drawing.Point(23, 18);
-            this.ckWeighQue.Name = "ckWeighQue";
-            this.ckWeighQue.Size = new System.Drawing.Size(104, 23);
-            this.ckWeighQue.TabIndex = 0;
-            this.ckWeighQue.Text = "称重队列";
-            this.ckWeighQue.UseVisualStyleBackColor = true;
-            // 
-            // ckBeforeCache
-            // 
-            this.ckBeforeCache.AutoSize = true;
-            this.ckBeforeCache.Checked = true;
-            this.ckBeforeCache.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.ckBeforeCache.Location = new System.Drawing.Point(154, 18);
-            this.ckBeforeCache.Name = "ckBeforeCache";
-            this.ckBeforeCache.Size = new System.Drawing.Size(123, 23);
-            this.ckBeforeCache.TabIndex = 1;
-            this.ckBeforeCache.Text = "缓存前队列";
-            this.ckBeforeCache.UseVisualStyleBackColor = true;
-            // 
-            // ckCache
-            // 
-            this.ckCache.AutoSize = true;
-            this.ckCache.Checked = true;
-            this.ckCache.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.ckCache.Location = new System.Drawing.Point(304, 18);
-            this.ckCache.Name = "ckCache";
-            this.ckCache.Size = new System.Drawing.Size(85, 23);
-            this.ckCache.TabIndex = 2;
-            this.ckCache.Text = "缓存位";
-            this.ckCache.UseVisualStyleBackColor = true;
-            // 
-            // ckLableUp
-            // 
-            this.ckLableUp.AutoSize = true;
-            this.ckLableUp.Checked = true;
-            this.ckLableUp.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.ckLableUp.Location = new System.Drawing.Point(416, 18);
-            this.ckLableUp.Name = "ckLableUp";
-            this.ckLableUp.Size = new System.Drawing.Size(142, 23);
-            this.ckLableUp.TabIndex = 3;
-            this.ckLableUp.Text = "标签朝上队列";
-            this.ckLableUp.UseVisualStyleBackColor = true;
+            this.ckRobotQue.AutoSize = true;
+            this.ckRobotQue.Checked = true;
+            this.ckRobotQue.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.ckRobotQue.Location = new System.Drawing.Point(154, 53);
+            this.ckRobotQue.Name = "ckRobotQue";
+            this.ckRobotQue.Size = new System.Drawing.Size(123, 23);
+            this.ckRobotQue.TabIndex = 5;
+            this.ckRobotQue.Text = "机器人队列";
+            this.ckRobotQue.UseVisualStyleBackColor = true;
             // 
             // ckCatchQue
             // 
@@ -217,17 +181,51 @@
             this.ckCatchQue.Text = "抓料队列";
             this.ckCatchQue.UseVisualStyleBackColor = true;
             // 
-            // ckRobotQue
+            // ckLableUp
             // 
-            this.ckRobotQue.AutoSize = true;
-            this.ckRobotQue.Checked = true;
-            this.ckRobotQue.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.ckRobotQue.Location = new System.Drawing.Point(154, 53);
-            this.ckRobotQue.Name = "ckRobotQue";
-            this.ckRobotQue.Size = new System.Drawing.Size(123, 23);
-            this.ckRobotQue.TabIndex = 5;
-            this.ckRobotQue.Text = "机器人队列";
-            this.ckRobotQue.UseVisualStyleBackColor = true;
+            this.ckLableUp.AutoSize = true;
+            this.ckLableUp.Checked = true;
+            this.ckLableUp.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.ckLableUp.Location = new System.Drawing.Point(416, 18);
+            this.ckLableUp.Name = "ckLableUp";
+            this.ckLableUp.Size = new System.Drawing.Size(142, 23);
+            this.ckLableUp.TabIndex = 3;
+            this.ckLableUp.Text = "标签朝上队列";
+            this.ckLableUp.UseVisualStyleBackColor = true;
+            // 
+            // ckCache
+            // 
+            this.ckCache.AutoSize = true;
+            this.ckCache.Location = new System.Drawing.Point(304, 18);
+            this.ckCache.Name = "ckCache";
+            this.ckCache.Size = new System.Drawing.Size(85, 23);
+            this.ckCache.TabIndex = 2;
+            this.ckCache.Text = "缓存位";
+            this.ckCache.UseVisualStyleBackColor = true;
+            // 
+            // ckBeforeCache
+            // 
+            this.ckBeforeCache.AutoSize = true;
+            this.ckBeforeCache.Checked = true;
+            this.ckBeforeCache.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.ckBeforeCache.Location = new System.Drawing.Point(154, 18);
+            this.ckBeforeCache.Name = "ckBeforeCache";
+            this.ckBeforeCache.Size = new System.Drawing.Size(123, 23);
+            this.ckBeforeCache.TabIndex = 1;
+            this.ckBeforeCache.Text = "缓存前队列";
+            this.ckBeforeCache.UseVisualStyleBackColor = true;
+            // 
+            // ckWeighQue
+            // 
+            this.ckWeighQue.AutoSize = true;
+            this.ckWeighQue.Checked = true;
+            this.ckWeighQue.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.ckWeighQue.Location = new System.Drawing.Point(23, 18);
+            this.ckWeighQue.Name = "ckWeighQue";
+            this.ckWeighQue.Size = new System.Drawing.Size(104, 23);
+            this.ckWeighQue.TabIndex = 0;
+            this.ckWeighQue.Text = "称重队列";
+            this.ckWeighQue.UseVisualStyleBackColor = true;
             // 
             // wdeletebcode
             // 

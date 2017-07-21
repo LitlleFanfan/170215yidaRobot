@@ -210,9 +210,14 @@ namespace ProduceComm.OPC {
                 return null;
             }
 
-            var values = groups[code].Read(groups[code].Items);
-            var ok = values.Count() > 0 && values[0].Quality.Equals(Opc.Da.Quality.Good);
-            return ok ? values[0].Value : null;
+            try {
+                var values = groups[code].Read(groups[code].Items);
+                var ok = values.Count() > 0 && values[0].Quality.Equals(Opc.Da.Quality.Good);
+                return ok ? values[0].Value : null;
+            } catch(Exception ex) {
+                FrmMain.logOpt.Write($"!来源: {nameof(Read)}, opc读异常, 节点: {code}, {ex}", LogType.NORMAL);
+                return null;
+            }
         }
 
         public object Read(string groupname, string code) {
