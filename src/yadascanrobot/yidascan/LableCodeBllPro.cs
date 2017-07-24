@@ -487,6 +487,10 @@ namespace yidascan {
         }
 
         private static CacheResult CalculateCacheState(CalResult rt, PanelInfo pinfo, List<LableCode> layerLabels, Action<string> onlog) {
+            // debug 2017.97.24
+            if (rt == null) { throw new Exception("rt空值。"); }
+            if (rt.CodeCome == null) { throw new Exception("rt.codecome空值。"); }
+
             var cre = new CacheResult {
                 SideState = new SideFullState(SideFullState.NO_FULL, null)
             };
@@ -510,7 +514,9 @@ namespace yidascan {
                     rt.CodeFromCache = cr.CodeFromCache;
                     rt.state = cr.state;
                 } else if (cre.SideState.state == SideFullState.EXCEED) {
-                    if (rt.CodeCome.Diameter + clsSetting.CacheIgnoredDiff > rt.CodeFromCache.Diameter) {
+                    if (rt.CodeFromCache == null) { onlog($"布卷exceed状态时，codefromcache空值。"); } // debug 2017.97.24
+                    var cachedRollDiameter = rt.CodeFromCache != null ? rt.CodeFromCache.Diameter : 0;
+                    if (rt.CodeCome.Diameter + clsSetting.CacheIgnoredDiff > cachedRollDiameter) {
                         rt.CodeFromCache = null;
                         rt.state = CacheState.Go;
                     } else {
