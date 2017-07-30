@@ -39,8 +39,8 @@ namespace yidascan {
                 lock (client) {
                     if (client.ReadBool(slot.Signal)) {
                         // 加入机器人布卷队列。
-                        var code1 = client.Read(slot.LCode1).ToString();
-                        var code2 = client.Read(slot.LCode2).ToString();
+                        var code1 = client.ReadString(slot.LCode1);
+                        var code2 = client.ReadString(slot.LCode2);
                         var fullcode = LableCode.MakeCode(code1, code2);
 
                         pushInQueue(fullcode, jobname);

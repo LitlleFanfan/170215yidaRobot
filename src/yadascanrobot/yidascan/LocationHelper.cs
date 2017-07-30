@@ -398,11 +398,9 @@ namespace yidascan {
         /// </summary>
         /// <param name="realloc"></param>
         public void OnReady(string realloc) {
-            var self = nameof(OnReady);
-
             var real = RealLocations.FirstOrDefault(x => x.realloc == realloc);
             if (real == null) {
-                throw new Exception($"来源: {self}, 交地错误: {realloc}");
+                throw new Exception($"来源: {nameof(OnReady)}, 交地错误: {realloc}");
             }
 
             if (real.state == LocationState.FULL) {

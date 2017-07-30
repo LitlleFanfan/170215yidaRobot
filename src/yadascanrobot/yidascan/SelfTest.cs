@@ -47,7 +47,7 @@ namespace yidascan {
             // var port = 11000;
             RobotControl.RobotControl robot;
             try {
-                robot = new RobotControl.RobotControl(ip);
+                robot = new RobotControl.RobotControl(ip, "11000");
 
                 robot.Connect();
                 var status = robot.GetPlayStatus();

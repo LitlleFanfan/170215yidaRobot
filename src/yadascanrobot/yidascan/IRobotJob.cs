@@ -9,7 +9,7 @@ using yidascan.DataAccess;
 
 namespace yidascan {
     public interface IRobotJob {
-        void setup(Action<string, string, LogViewType> loghandler, IOpcClient client, OPCParam param);
+        void setup(Action<bool, string> errorhandler, Action<string, string, LogViewType> loghandler, IOpcClient client, OPCParam param);
         bool IsConnected();
         void JobLoop(ref bool isrunning, ListView viewA, ListView viewB);
         bool JobTask(ref bool isrun, bool isSideA, Queue<RollPosition> robotRollQ, RollPosition roll, ListView lv);

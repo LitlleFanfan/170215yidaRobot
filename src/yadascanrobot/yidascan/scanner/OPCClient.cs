@@ -127,7 +127,8 @@ namespace ProduceComm.OPC {
             }
         }
 
-        public bool Write(string code, object value) {
+        [Obsolete("原来的write函数。")]
+        public bool Write_(string code, object value) {
             if (string.IsNullOrEmpty(code)) {
                 yidascan.FrmMain.logOpt.Write($"!项目为空");
                 return false;
@@ -169,11 +170,12 @@ namespace ProduceComm.OPC {
 
         /// <summary>
         /// 返回结果用ParseResult函数解析。
+        /// 应当替代write函数。
         /// </summary>
         /// <param name="code"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        public bool Set(string code, object value) {
+        public bool Write(string code, object value) {
             if (string.IsNullOrEmpty(code)) {
                 FrmMain.logOpt.Write($"!项目 {code} 为空！");
                 return false;
@@ -193,12 +195,12 @@ namespace ProduceComm.OPC {
 
                 return ParseResult(rt, (x) => { FrmMain.logOpt.Write(x); });
             } catch (Exception ex) {
-                yidascan.FrmMain.logOpt.Write($"!{code}写入失败: {ex}");
+                FrmMain.logOpt.Write($"!{code}写入失败: {ex}");
                 return false;
             }
         }
 
-        public object Read(string code) {
+        private object Read(string code) {
             if (string.IsNullOrEmpty(code)) {
                 FrmMain.logOpt.Write($"!{code}项目为空");
                 return null;
@@ -212,15 +214,29 @@ namespace ProduceComm.OPC {
 
             try {
                 var values = groups[code].Read(groups[code].Items);
-                var ok = values.Count() > 0 && values[0].Quality.Equals(Opc.Da.Quality.Good);
-                return ok ? values[0].Value : null;
+                if (values != null && values.Count() > 0) {
+                    var item = values.FirstOrDefault();
+                    if (item == null) {
+                        FrmMain.logOpt.Write($"!来源: {nameof(Read)}, opc读失败, 读到第一项为空, 节点: {code}");
+                        return null;
+                    }
+                    var quality = item.Quality;  
+                    
+                    if (quality == Opc.Da.Quality.Bad) {
+                        FrmMain.logOpt.Write($"!来源: {nameof(Read)}, opc读到坏值, 节点: {code}");
+                    }
+                                      
+                    return quality == Opc.Da.Quality.Good ? item.Value : null;
+                } else {
+                    return null;
+                }                
             } catch(Exception ex) {
-                FrmMain.logOpt.Write($"!来源: {nameof(Read)}, opc读异常, 节点: {code}, {ex}", LogType.NORMAL);
+                FrmMain.logOpt.Write($"!来源: {nameof(Read)}, opc读异常, 节点: {code}, {ex}");
                 return null;
             }
         }
 
-        public object Read(string groupname, string code) {
+        private object Read(string groupname, string code) {
             if (string.IsNullOrEmpty(groupname)) {
                 yidascan.FrmMain.logOpt.Write($"!项目为空");
                 return null;
@@ -230,12 +246,18 @@ namespace ProduceComm.OPC {
                 clsSetting.loger.Error($"{groupname}未添加订阅！");
                 return null;
             }
-            var values = groups[groupname].Read(new Opc.Da.Item[] { groups[groupname].Items.First(item => item.ItemName == code) });
 
-            if (values[0].Quality.Equals(Opc.Da.Quality.Good)) {
-                return values[0].Value;
+            try {
+                var values = groups[groupname].Read(new Opc.Da.Item[] { groups[groupname].Items.First(item => item.ItemName == code) });
+
+                if (values[0].Quality.Equals(Opc.Da.Quality.Good)) {
+                    return values[0].Value;
+                }
+                return null;
+            } catch (Exception ex) {
+                FrmMain.logOpt.Write($"!来源: {nameof(Read)}, opc读组异常, 节点: {code}, {ex}", LogType.NORMAL);
+                return null;
             }
-            return null;
         }
 
         public int ReadInt(string slot) {
@@ -350,18 +372,7 @@ namespace ProduceComm.OPC {
         public bool TryWrite(string slot, object value, int delay = 20, int times = 10) {
             while (times-- > 0) {
                 try {
-                    if (string.IsNullOrEmpty(slot)) {
-                        yidascan.FrmMain.logOpt.Write($"!source: {nameof(TryWrite)}, 节点为空");
-                        return false;
-                    }
-                    if (!groups.Keys.Contains(slot)) {
-                        clsSetting.loger.Error(string.Format("{0}未添加订阅！", slot));
-                        return false;
-                    }
-                    var iv = new Opc.Da.ItemValue((Opc.ItemIdentifier)groups[slot].Items[0]);
-                    iv.Value = value;
-                    groups[slot].Write(new Opc.Da.ItemValue[] { iv });
-                    return true;
+                    return Write(slot, value);
                 } catch {
                     Thread.Sleep(delay);
                 }

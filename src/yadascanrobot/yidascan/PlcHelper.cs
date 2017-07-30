@@ -156,9 +156,20 @@ namespace yidascan {
             client.TryWrite(param.BadShapeLocations[tolocation], BAD_SHAPE);
         }
 
-        public static int ReadPanelState(IOpcClient client, string itemname) {
-            var val = client.TryReadInt(itemname);
-            return val;// == 1 ? 1 : 0
+        public static void NotifyFullPanel(IOpcClient client, OPCParam param, string relloc) {
+            client.TryWrite(param.BAreaPanelFinish[relloc], true);
+            FrmMain.logOpt.Write($"{relloc}: 满板信号发出。slot: {param.BAreaPanelFinish[relloc]}", LogType.ROBOT_STACK);
+            const int SIGNAL_3 = 3;
+            client.TryWrite(param.BAreaPanelState[relloc], SIGNAL_3);
+            FrmMain.logOpt.Write($"{relloc}: 板状态信号发出，状态值: {SIGNAL_3}。slot: {param.BAreaPanelState[relloc]}", LogType.ROBOT_STACK);
+        }
+
+        public static void HeartBeat(IOpcClient client, string slot, int count) {
+            throw new NotImplementedException("not ready yet...");
+        }
+
+        public static int HeartBeatBack(IOpcClient client, string slot) {
+            throw new NotImplementedException("not ready yet...");
         }
     }
 }

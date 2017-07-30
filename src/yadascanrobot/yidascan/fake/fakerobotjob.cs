@@ -26,7 +26,7 @@ namespace yidascan {
             this.jobName = jobName;
         }
 
-        public void setup(Action<string, string, LogViewType> loghandler, IOpcClient client, OPCParam param) {
+        public void setup(Action<bool, string> errorhandler, Action<string, string, LogViewType> loghandler, IOpcClient client, OPCParam param) {
             this.loghandler = loghandler;
             this.client = client;
             this.param = param;

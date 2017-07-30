@@ -168,7 +168,9 @@ namespace yidascan.DataAccess {
             if (code != null) {
                 code.RealLocation = "";
 
-                code.RealLocation = lochelper.Convert(code.ToLocation, code.PanelNo);
+                lock (TaskQueues.LOCK_LOCHELPER) {
+                    code.RealLocation = lochelper.Convert(code.ToLocation, code.PanelNo);
+                }
 
                 if (string.IsNullOrEmpty(code.RealLocation)) {
                     var msg = $"!来源: {nameof(GetLableUpQ)},{code.LCode} 获取真实交地失败: {code.ToLocation}";

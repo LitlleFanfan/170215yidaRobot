@@ -11,7 +11,6 @@ public interface IOpcClient {
     // decimal ReadDecimal(string groupname, string slot);
     bool Write(string slot, object value);
     bool Write(string groupname, Dictionary<string, object> codeValue);
-    bool Set(string slot, object value);
     bool Open(string mAddr);
     void Close();
     void AddSubscription(System.Data.DataTable p);
