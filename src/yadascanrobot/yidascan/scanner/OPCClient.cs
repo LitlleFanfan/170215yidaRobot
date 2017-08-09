@@ -15,13 +15,21 @@ namespace ProduceComm.OPC {
 
         public bool Connected {
             get {
-                //return true;
                 return m_server != null && m_server.IsConnected;
             }
         }
 
-        public bool Open(string mAddr) {
-            servers = new OpcCom.ServerEnumerator().GetAvailableServers(Opc.Specification.COM_DA_20, mAddr, null);
+        public Action ResetServerOnDisconnect;
+
+        private static Opc.Server[] enumServers(string addr) {
+            using (var gen = new OpcCom.ServerEnumerator()) {
+                return gen.GetAvailableServers(Opc.Specification.COM_DA_20, addr, null);
+            }
+        }
+
+        public bool Open(string addr) {
+            servers = enumServers(addr);
+
             if (servers != null && servers.Count() > 0) {
                 m_server = (Opc.Da.Server)servers[0];
                 m_server.Connect();
@@ -101,14 +109,14 @@ namespace ProduceComm.OPC {
             }
         }
 
-        public bool Write(string groupname, Dictionary<string, object> codeValue) {
+        private bool Write(string groupname, Dictionary<string, object> codeValue) {
             if (string.IsNullOrEmpty(groupname)) {
                 FrmMain.logOpt.Write($"!项目为空");
                 return false;
             }
             try {
                 if (!groups.Keys.Contains(groupname)) {
-                    clsSetting.loger.Error($"{groupname}未添加订阅！");
+                    clsSetting.loger.Error($"!{groupname}未添加订阅！");
                     return false;
                 }
                 var group = groups[groupname];
@@ -123,27 +131,6 @@ namespace ProduceComm.OPC {
                 return ParseResult(rt, (x) => { FrmMain.logOpt.Write(x); });
             } catch (Exception ex) {
                 FrmMain.logOpt.Write($"!组写入失败: {groupname}, {ex}");
-                return false;
-            }
-        }
-
-        [Obsolete("原来的write函数。")]
-        public bool Write_(string code, object value) {
-            if (string.IsNullOrEmpty(code)) {
-                yidascan.FrmMain.logOpt.Write($"!项目为空");
-                return false;
-            }
-            try {
-                if (!groups.Keys.Contains(code)) {
-                    clsSetting.loger.Error(string.Format("{0}未添加订阅！", code));
-                    return false;
-                }
-                var iv = new Opc.Da.ItemValue((Opc.ItemIdentifier)groups[code].Items[0]);
-                iv.Value = value;
-                groups[code].Write(new Opc.Da.ItemValue[] { iv });
-                return true;
-            } catch (Exception ex) {
-                FrmMain.logOpt.Write($"!opc写入失败: source: {nameof(Write)}, {code}, {ex}");
                 return false;
             }
         }
@@ -175,7 +162,7 @@ namespace ProduceComm.OPC {
         /// <param name="code"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        public bool Write(string code, object value) {
+        private bool Write(string code, object value) {
             if (string.IsNullOrEmpty(code)) {
                 FrmMain.logOpt.Write($"!项目 {code} 为空！");
                 return false;
@@ -207,7 +194,7 @@ namespace ProduceComm.OPC {
             }
 
             if (!groups.Keys.Contains(code)) {
-                FrmMain.logOpt.Write($"{code}未添加订阅！", code);
+                FrmMain.logOpt.Write($"!{code}未添加订阅");
                 clsSetting.loger.Info(JsonConvert.SerializeObject(groups));
                 return null;
             }
@@ -232,18 +219,21 @@ namespace ProduceComm.OPC {
                 }                
             } catch(Exception ex) {
                 FrmMain.logOpt.Write($"!来源: {nameof(Read)}, opc读异常, 节点: {code}, {ex}");
+                ResetServerOnDisconnect?.Invoke();
+                FrmMain.logOpt.Write($"!复位opc server");
+                Thread.Sleep(500);
                 return null;
             }
         }
 
-        private object Read(string groupname, string code) {
+        private object GroupRead(string groupname, string code) {
             if (string.IsNullOrEmpty(groupname)) {
                 yidascan.FrmMain.logOpt.Write($"!项目为空");
                 return null;
             }
 
             if (!groups.Keys.Contains(groupname)) {
-                clsSetting.loger.Error($"{groupname}未添加订阅！");
+                clsSetting.loger.Error($"!{groupname}未添加订阅");
                 return null;
             }
 
@@ -255,12 +245,15 @@ namespace ProduceComm.OPC {
                 }
                 return null;
             } catch (Exception ex) {
-                FrmMain.logOpt.Write($"!来源: {nameof(Read)}, opc读组异常, 节点: {code}, {ex}", LogType.NORMAL);
+                FrmMain.logOpt.Write($"!来源: {nameof(GroupRead)}, opc读组异常, 节点: {code}, {ex}", LogType.NORMAL);
+                ResetServerOnDisconnect?.Invoke();
+                FrmMain.logOpt.Write($"!复位opc server");
+                Thread.Sleep(500);
                 return null;
             }
         }
 
-        public int ReadInt(string slot) {
+        private int ReadInt(string slot) {
             try {
                 var val = Read(slot);
                 return val != null ? int.Parse(val.ToString().Trim()) : 0;
@@ -270,7 +263,7 @@ namespace ProduceComm.OPC {
             }
         }
 
-        public string ReadString(string slot) {
+        private string ReadString(string slot) {
             try {
                 var val = Read(slot);
                 return val != null ? val.ToString() : string.Empty;
@@ -280,7 +273,7 @@ namespace ProduceComm.OPC {
             }
         }
 
-        public bool ReadBool(string slot) {
+        private bool ReadBool(string slot) {
             try {
                 var val = Read(slot);                
                 return val != null ? bool.Parse(val.ToString().Trim()) : false;
@@ -290,7 +283,7 @@ namespace ProduceComm.OPC {
             }
         }
 
-        public decimal ReadDecimal(string slot) {
+        private decimal ReadDecimal(string slot) {
             try {
                 var val = Read(slot);
                 return val != null ? decimal.Parse(val.ToString().Trim()) : 0;
@@ -308,8 +301,8 @@ namespace ProduceComm.OPC {
             }
         }
 
-        public int ReadInt(string groupname, string slot) {
-            var val = Read(groupname, slot);
+        private int GroupReadInt(string groupname, string slot) {
+            var val = GroupRead(groupname, slot);
             try {
                 return val != null ? int.Parse(val.ToString()) : 0;
             } catch (Exception ex) {
@@ -321,7 +314,19 @@ namespace ProduceComm.OPC {
 
         #region TRY_READ_AND_WRITE
 
-        public int TryReadInt(string slot, int delay = 20, int times = 10) {
+        public int TryGroupReadInt(string groupname, string slot, int delay = 50, int times = 10) {
+            while (times-- > 0) {
+                try {
+                    var val = GroupRead(groupname, slot);
+                    return val != null ? int.Parse(val.ToString().Trim()) : 0;
+                } catch {
+                    Thread.Sleep(delay);
+                }
+            }
+            throw new Exception($"opc读取失败： {nameof(TryGroupReadInt)}, slot: {slot}");
+        }
+
+        public int TryReadInt(string slot, int delay = 50, int times = 10) {
             while (times-- > 0) {
                 try {
                     var val = Read(slot);
@@ -333,7 +338,7 @@ namespace ProduceComm.OPC {
             throw new Exception($"opc读取失败： {nameof(TryReadInt)}, slot: {slot}");
         }
 
-        public bool TryReadBool(string slot, int delay = 20, int times = 10) {
+        public bool TryReadBool(string slot, int delay = 50, int times = 10) {
             while (times-- > 0) {
                 try {
                     var val = Read(slot);
@@ -345,7 +350,7 @@ namespace ProduceComm.OPC {
             throw new Exception($"opc读取失败： {nameof(TryReadBool)}, slot: {slot}");
         }
 
-        public string TryReadString(string slot, int delay = 20, int times = 10) {
+        public string TryReadString(string slot, int delay = 50, int times = 10) {
             while (times-- > 0) {
                 try {
                     var val = Read(slot);
@@ -357,7 +362,7 @@ namespace ProduceComm.OPC {
             throw new Exception($"opc读取失败： {nameof(TryReadString)}, slot: {slot}");
         }
 
-        public decimal TryReadDecimal(string slot, int delay = 20, int times = 10) {
+        public decimal TryReadDecimal(string slot, int delay = 50, int times = 10) {
             while (times-- > 0) {
                 try {
                     var val = Read(slot);
@@ -369,7 +374,7 @@ namespace ProduceComm.OPC {
             throw new Exception($"OPC读取失败： {nameof(TryReadDecimal)}, slot: {slot}");
         }
 
-        public bool TryWrite(string slot, object value, int delay = 20, int times = 10) {
+        public bool TryWrite(string slot, object value, int delay = 50, int times = 10) {
             while (times-- > 0) {
                 try {
                     return Write(slot, value);

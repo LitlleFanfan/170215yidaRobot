@@ -66,7 +66,7 @@ namespace commonhelper {
                         dic[kv.Key] = kv.Value;
                     } else {
                         dic.Add(kv.Key, kv.Value);
-                    }                    
+                    }
                 } catch {}
             }
             return dic;

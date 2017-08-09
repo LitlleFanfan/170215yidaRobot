@@ -538,39 +538,6 @@ namespace yidascan {
 
             return cre;
         }
-
-        [Obsolete("应当使用ErpHelper.NotifyPanelEnd")]
-        public static bool NotifyPanelEnd(IErpApi erpapi, string panelNo, out string msg, bool handwork = false) {
-            if (!string.IsNullOrEmpty(panelNo)) {
-                // 这个从数据库取似更合理。                
-                var data = LableCode.QueryLabelcodeByPanelNo(panelNo);
-
-                if (data == null) {
-                    msg = "!板号完成失败，未能查到数据库的标签。";
-                    return false;
-                }
-
-                var erpParam = new Dictionary<string, string>() {
-                        { "Board_No", panelNo },  // first item.
-                        { "AllBarCode", string.Join(",", data.ToArray()) } // second item.
-                    };
-                var re = erpapi.Post(clsSetting.PanelFinish, erpParam, clsSetting.ErpTimeout);
-
-                // show result.
-                if (re["ERPState"] == "OK") {
-                    if (re["State"] == "Fail") {
-                        msg = string.Format("!{0}板号{1}完成失败。{2}", (handwork ? "手工" : "自动"),
-                            JsonConvert.SerializeObject(erpParam), re["ERR"]);
-                    } else {
-                        msg = string.Format("{0}板号{1}完成成功。{2}", (handwork ? "手工" : "自动"),
-                            JsonConvert.SerializeObject(erpParam), re["Data"]);
-                        return true;
-                    }
-                }
-            }
-            msg = "!板号完成失败，板号为空。";
-            return false;
-        }
     }
 
     #endregion

@@ -60,14 +60,20 @@ namespace ProduceComm {
                 using (Stream reqStream = myHttpWebRequest.GetRequestStream()) {
                     reqStream.Write(bs, 0, bs.Length);
                 }
-                using (WebResponse myWebResponse = myHttpWebRequest.GetResponse()) {
-                    var readStream = new StreamReader(myWebResponse.GetResponseStream(), Encoding.UTF8);
+                using (WebResponse myWebResponse = myHttpWebRequest.GetResponse())
+                using (var readStream = new StreamReader(myWebResponse.GetResponseStream(), Encoding.UTF8)) {
                     result = JsonConvert.DeserializeObject<Dictionary<string, string>>(readStream.ReadToEnd());
                     result.Add("ERPState", "OK");
-                    FrmMain.ERPAlarm(FrmMain.opcErp, FrmMain.opcParam, ERPAlarmNo.COMMUNICATION_OK);
+                    lock (FrmMain.opcErp) {
+                        // FrmMain.ERPAlarm(FrmMain.opcErp, FrmMain.opcParam, ERPAlarmNo.COMMUNICATION_OK);
+                        PlcHelper.ERPAlarmNo(FrmMain.opcErp, FrmMain.opcParam, (int)ERPAlarmNo.COMMUNICATION_OK);
+                    }
                 }
             } catch (Exception ex) {
-                FrmMain.ERPAlarm(FrmMain.opcErp, FrmMain.opcParam, ERPAlarmNo.COMMUNICATION_ERROR);
+                lock (FrmMain.opcErp) {
+                    // FrmMain.ERPAlarm(FrmMain.opcErp, FrmMain.opcParam, ERPAlarmNo.COMMUNICATION_ERROR);
+                    PlcHelper.ERPAlarmNo(FrmMain.opcErp, FrmMain.opcParam, (int)ERPAlarmNo.COMMUNICATION_ERROR);
+                }
                 result = new Dictionary<string, string>() { { "ERPState", "Fail" }, { "ERR", "请求接口信息出错 " + ex } };
             }
             return result;

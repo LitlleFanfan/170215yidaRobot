@@ -9,22 +9,22 @@ namespace yidascan {
     public static class OpcHelper {
         public static string ReadACAreaLabel(IOpcClient client, LCodeSignal signal) {
             const int MAX_LEN = 6;
-            var r1 = client.ReadString(signal.LCode1);
-            var r2 = client.ReadString(signal.LCode2);
-            return r1.PadLeft(MAX_LEN, '0') + r2.PadLeft(MAX_LEN, '0');            
+            var r1 = client.TryReadString(signal.LCode1);
+            var r2 = client.TryReadString(signal.LCode2);
+            return r1.PadLeft(MAX_LEN, '0') + r2.PadLeft(MAX_LEN, '0');
         }
 
         public static int ReadWeighingSignal(IOpcClient client, OPCParam param) {
-            return client.ReadInt(param.WeighParam.GetWeigh);
+            return client.TryReadInt(param.WeighParam.GetWeigh);
         }
 
         public static void WriteWeighingSignal(IOpcClient client, OPCParam param, bool b) {
             var val = b ? "0" : "2";
-            client.Write(param.WeighParam.GetWeigh, val);
+            client.TryWrite(param.WeighParam.GetWeigh, val);
         }
 
         public static void WriteACAreaCompletionSignal(IOpcClient client, LCodeSignal signal) {
-            client.Write(signal.Signal, 0);
+            client.TryWrite(signal.Signal, 0);
         }
 
         /// <summary>
@@ -34,11 +34,11 @@ namespace yidascan {
         /// <param name="param">opc param</param>
         /// <returns></returns>
         public static bool ReadBeforeCacheSignal(IOpcClient client, OPCParam param) {
-            return client.ReadBool(param.CacheParam.BeforCacheStatus);            
+            return client.TryReadBool(param.CacheParam.BeforCacheStatus);
         }
 
         public static void ResetBeforeCacheSignal(IOpcClient client, OPCParam param) {
-            client.Write(param.CacheParam.BeforCacheStatus, false);
+            client.TryWrite(param.CacheParam.BeforCacheStatus, false);
         }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace yidascan {
         /// <param name="param">opc param.</param>
         /// <returns></returns>
         public static bool ReadScanState(IOpcClient client, OPCParam param) {
-            return client.ReadBool(param.ScanParam.ScanState);            
+            return client.TryReadBool(param.ScanParam.ScanState);
         }
 
         /// <summary>
@@ -61,21 +61,21 @@ namespace yidascan {
         /// <param name="camera">相机号</param>
         /// <param name="client">opc client</param>
         /// <param name="param">opc param</param>
-        public static void WriteScanOK(IOpcClient client, 
-            OPCParam param, 
-            string area, 
-            string numb, 
-            string label1, 
-            string label2, 
+        public static void WriteScanOK(IOpcClient client,
+            OPCParam param,
+            string area,
+            string numb,
+            string label1,
+            string label2,
             string camera) {
             // 交地
-            client.Write(param.ScanParam.ToLocationArea, area);
-            client.Write(param.ScanParam.ToLocationNo, numb);
+            client.TryWrite(param.ScanParam.ToLocationArea, area);
+            client.TryWrite(param.ScanParam.ToLocationNo, numb);
             // 标签条码
-            client.Write(param.ScanParam.ScanLable1, label1);
-            client.Write(param.ScanParam.ScanLable2, label2);
+            client.TryWrite(param.ScanParam.ScanLable1, label1);
+            client.TryWrite(param.ScanParam.ScanLable2, label2);
             // 相机
-            client.Write(param.ScanParam.PushAside, camera);
+            client.TryWrite(param.ScanParam.PushAside, camera);
             // 完成信号。
             WriteScanOK(client, param);
         }
@@ -86,7 +86,7 @@ namespace yidascan {
         /// <param name="client">opc client instance.</param>
         /// <param name="param">opc param</param>
         public static void WriteScanOK(IOpcClient client, OPCParam param) {
-            client.Write(param.ScanParam.ScanState, true);
+            client.TryWrite(param.ScanParam.ScanState, true);
         }
     }
 }

@@ -18,9 +18,9 @@ namespace yidascan {
                 var rand = new Random();
                 var value = count % 2;
 
-                client.Write(slot, value);
+                client.TryWrite(slot, value);
                 Thread.Sleep(20);
-                var rv = client.ReadInt(slot);
+                var rv = client.TryReadInt(slot);
 
                 diffcount += value == rv ? 0 : 1;
                 loghandler?.Invoke($"{value}, {rv}  diff count: {diffcount}  count: {count}");

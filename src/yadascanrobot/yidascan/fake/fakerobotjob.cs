@@ -116,37 +116,26 @@ namespace yidascan {
 
             if (TryRunJob(JOB_NAME)) {
                 log($"发出机器人示教器动作{JOB_NAME}命令成功。", LogType.ROBOT_STACK);
-                client.Write(param.RobotParam.RobotJobStart, true);
+                client.TryWrite(param.RobotParam.RobotJobStart, true);
             } else {
                 log($"!机器人示教器动作{JOB_NAME}发送失败。", LogType.ROBOT_STACK);
                 return false;
             }
+
             Thread.Sleep(RobotHelper.DELAY * 200);
-            log($"check roll is leaving from PLC: {roll.LabelCode}.", LogType.ROBOT_STACK, LogViewType.OnlyFile);
-            //删除对列布卷
-            var startTime = System.DateTime.Now;
-            var now = System.DateTime.Now;
-            var time = now - startTime;
+            
+            //删除对列布卷            
             while (isrun) {
-                var leaving = client.ReadBool(isSideA ? param.RobotParam.RobotStartA : param.RobotParam.RobotStartB);
+                var leaving = client.TryReadBool(isSideA ? param.RobotParam.RobotStartA : param.RobotParam.RobotStartB);
                 if (leaving) {
                     log($"roll is leaving: {roll.LabelCode}.", LogType.ROBOT_STACK, LogViewType.OnlyFile);
                     DequeueRoll(robotRollQ, roll, lv);
-                    client.Write(isSideA ? param.RobotParam.RobotStartA : param.RobotParam.RobotStartB, false);
+                    client.TryWrite(isSideA ? param.RobotParam.RobotStartA : param.RobotParam.RobotStartB, false);
                     break;
                 }
-                //now = System.DateTime.Now;
-                //time = now - startTime;
-                //if (time.Milliseconds > RobotHelper.DELAY * 600) {//等leaving信号超时，等3秒
-                //    break;
-                //}
+                
                 Thread.Sleep(RobotHelper.DELAY);
-            }
-
-            //var sleeptime = RobotHelper.DELAY * 1000 - time.Milliseconds;
-            //if (sleeptime > 0) {
-            //    Thread.Sleep(sleeptime);
-            //}
+            }            
 
             // 等待布卷上垛信号
             while (isrun) {
@@ -161,8 +150,6 @@ namespace yidascan {
                 }
                 Thread.Sleep(RobotHelper.DELAY * 20);
             }
-
-            // Thread.Sleep(RobotHelper.DELAY * 500);
 
             // 等待机器人结束码垛。
             while (isrun && IsBusy()) {

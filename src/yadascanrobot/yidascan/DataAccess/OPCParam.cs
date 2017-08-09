@@ -19,14 +19,14 @@ namespace yidascan.DataAccess {
         public string ReadSignal { get; set; }
         public string WriteSignal { get; set; }
 
-        public void LoadSN(IOpcClient opc, string readSignal, string writeSignal, string _groupName = "") {
+        public void LoadSN(string readSignal, string writeSignal, string _groupName = "") {
             groupName = _groupName;
             ReadSignal = readSignal;
             WriteSignal = writeSignal;
         }
 
         public bool ReadSN(IOpcClient opc) {
-            int[] rw = GetSignal(opc);
+            var rw = GetSignal(opc);
 
 #if DEBUG
             return true;
@@ -69,7 +69,7 @@ namespace yidascan.DataAccess {
         /// </summary>
         /// <param name="opc"></param>
         private int[] ResetReadCount(IOpcClient opc) {
-            int[] rw = new int[2];
+            var rw = new int[2];
             var count = 3;
             while (count-- > 0) {
                 Thread.Sleep(100);
@@ -82,19 +82,19 @@ namespace yidascan.DataAccess {
         }
 
         private int[] GetSignal(IOpcClient opc) {
-            int[] rw = new int[2];
+            var rw = new int[2];
             if (string.IsNullOrEmpty(groupName)) {
-                rw[0] = opc.ReadInt(ReadSignal);
-                rw[1] = opc.ReadInt(WriteSignal);
+                rw[0] = opc.TryReadInt(ReadSignal);
+                rw[1] = opc.TryReadInt(WriteSignal);
             } else {
-                rw[0] = opc.ReadInt(groupName, ReadSignal);
-                rw[1] = opc.ReadInt(groupName, WriteSignal);
+                rw[0] = opc.TryGroupReadInt(groupName, ReadSignal);
+                rw[1] = opc.TryGroupReadInt(groupName, WriteSignal);
             }
             return rw;
         }
 
         public bool WriteSN(IOpcClient opc) {
-            bool wstate = false;
+            var wstate = false;
             writeCount = readCount;
             try {
                 if (string.IsNullOrEmpty(groupName)) {
@@ -103,9 +103,9 @@ namespace yidascan.DataAccess {
                     wstate = opc.TryWrite(groupName, WriteSignal, writeCount);
                 }
             } catch (Exception ex) {
-                FrmMain.logOpt.Write($"!{WriteSignal}写失败！",LogType.SIGNAL,LogViewType.OnlyFile);
+                FrmMain.logOpt.Write($"!{WriteSignal}写失败, {ex}",LogType.SIGNAL);
             }
-            FrmMain.logOpt.Write($"来料复位 R {ReadSignal}: {readCount} W {WriteSignal}: {writeCount}！{guid}", LogType.SIGNAL, LogViewType.OnlyFile);
+            FrmMain.logOpt.Write($"来料复位 R {ReadSignal}: {readCount} W {WriteSignal}: {writeCount}！{guid}", LogType.SIGNAL);
 #if DEBUG
             return true;
 #endif
@@ -131,7 +131,7 @@ namespace yidascan.DataAccess {
         /// </summary>
         /// <param name="opc"></param>
         public LCodeSignal(IOpcClient opc, string cls) {
-            DataTable dt = OPCParam.Query(string.Format("where Class='{0}'", cls));
+            var dt = OPCParam.Query($"where Class='{cls}'");
             if (dt == null || dt.Rows.Count < 1) {
                 return;
             }
@@ -197,7 +197,7 @@ namespace yidascan.DataAccess {
         /// </summary>
         /// <param name="opc"></param>
         public OPCScanParam(IOpcClient opc) {
-            DataTable dt = OPCParam.Query($"where Class='{CFG}'");
+            var dt = OPCParam.Query($"where Class='{CFG}'");
             if (dt == null || dt.Rows.Count < 1) {
                 return;
             }
@@ -231,7 +231,7 @@ namespace yidascan.DataAccess {
         /// </summary>
         /// <param name="opc"></param>
         public OPCWeighParam(IOpcClient opc) {
-            DataTable dt = OPCParam.Query($"where Class='{CFG}'");
+            var dt = OPCParam.Query($"where Class='{CFG}'");
 
             FrmMain.logOpt.Write(JsonConvert.SerializeObject(dt), LogType.NORMAL, LogViewType.OnlyFile);
             if (dt == null || dt.Rows.Count < 1) {
@@ -247,7 +247,7 @@ namespace yidascan.DataAccess {
             }
 
             PlcSn = new PlcSignal();
-            PlcSn.LoadSN(opc, ReadSignal, WriteSignal);
+            PlcSn.LoadSN(ReadSignal, WriteSignal);
         }
     }
 
@@ -283,18 +283,13 @@ namespace yidascan.DataAccess {
 
         public PlcSignal PlcSn { get; set; }
 
-        //public string ReadSignalS { get; set; }
-        //public string WriteSignalS { get; set; }
-
-        //public PlcSignal PlcSnS { get; set; }
-
         public const string CFG = "Cache";
         /// <summary>
         /// 初始化参数同时添加订阅
         /// </summary>
         /// <param name="opc"></param>
         public OPCBeforCacheParam(IOpcClient opc) {
-            DataTable dt = OPCParam.Query($"where Class='{CFG}'");
+            var dt = OPCParam.Query($"where Class='{CFG}'");
             if (dt == null || dt.Rows.Count < 1) {
                 return;
             }
@@ -308,12 +303,8 @@ namespace yidascan.DataAccess {
             }
 
             PlcSn = new PlcSignal();
-            PlcSn.LoadSN(opc, ReadSignal, WriteSignal);
-
-            //PlcSnS = new PlcSignal();
-            //PlcSnS.LoadSN(opc, ReadSignalS, WriteSignalS);
+            PlcSn.LoadSN(ReadSignal, WriteSignal);
         }
-
     }
 
     public class OPCLableUpParam {
@@ -341,7 +332,7 @@ namespace yidascan.DataAccess {
         /// </summary>
         /// <param name="opc"></param>
         public OPCLableUpParam(IOpcClient opc) {
-            DataTable dt = OPCParam.Query($"where Class='{CFG}'");
+            var dt = OPCParam.Query($"where Class='{CFG}'");
             if (dt == null || dt.Rows.Count < 1) {
                 return;
             }
@@ -355,7 +346,7 @@ namespace yidascan.DataAccess {
             }
 
             PlcSn = new PlcSignal();
-            PlcSn.LoadSN(opc, ReadSignal, WriteSignal);
+            PlcSn.LoadSN(ReadSignal, WriteSignal);
         }
     }
 
@@ -380,7 +371,7 @@ namespace yidascan.DataAccess {
         /// </summary>
         /// <param name="opc"></param>
         public OPCRobotCarryParam(IOpcClient opc) {
-            DataTable dt = OPCParam.Query($"where Class='{CFG}'");
+            var dt = OPCParam.Query($"where Class='{CFG}'");
             if (dt == null || dt.Rows.Count < 1) {
                 return;
             }
@@ -394,10 +385,10 @@ namespace yidascan.DataAccess {
             }
 
             PlcSnA = new PlcSignal();
-            PlcSnA.LoadSN(opc, ReadSignalA, WriteSignalA);
+            PlcSnA.LoadSN(ReadSignalA, WriteSignalA);
 
             PlcSnB = new PlcSignal();
-            PlcSnB.LoadSN(opc, ReadSignalB, WriteSignalB);
+            PlcSnB.LoadSN(ReadSignalB, WriteSignalB);
         }
     }
 
@@ -424,7 +415,7 @@ namespace yidascan.DataAccess {
         /// </summary>
         /// <param name="opc"></param>
         public OPCRobotParam(IOpcClient opc) {
-            DataTable dt = OPCParam.Query($"where Class='{CFG}'");
+            var dt = OPCParam.Query($"where Class='{CFG}'");
             if (dt == null || dt.Rows.Count < 1) {
                 return;
             }
@@ -438,10 +429,10 @@ namespace yidascan.DataAccess {
             }
 
             PlcSnA = new PlcSignal();
-            PlcSnA.LoadSN(opc, ReadSignalA, WriteSignalA);
+            PlcSnA.LoadSN(ReadSignalA, WriteSignalA);
 
             PlcSnB = new PlcSignal();
-            PlcSnB.LoadSN(opc, ReadSignalB, WriteSignalB);
+            PlcSnB.LoadSN(ReadSignalB, WriteSignalB);
         }
     }
 
@@ -459,7 +450,7 @@ namespace yidascan.DataAccess {
         /// </summary>
         /// <param name="opc"></param>
         public NoneOpcParame(IOpcClient opc) {
-            DataTable dt = OPCParam.Query($"where Class='{CFG}'");
+            var dt = OPCParam.Query($"where Class='{CFG}'");
             if (dt == null || dt.Rows.Count < 1) {
                 return;
             }
@@ -499,14 +490,16 @@ namespace yidascan.DataAccess {
 
         public NoneOpcParame None;
 
+        public Dictionary<string, string> HeartBeat;
+
         public static DataTable Query(string where = "") {
-            string sql = $"select Name,Code,Class,Remark from NewOPCParam {where}";
+            var sql = $"select Name,Code,Class,Remark from NewOPCParam {where}";
             return DataAccess.CreateDataAccess.sa.Query(sql);
         }
 
         public bool InitBAreaPanelFinish(IOpcClient opc) {
             BAreaPanelFinish = new Dictionary<string, string>();
-            DataTable dt = Query(string.Format("where Class='BAreaPanelFinish'"));
+            var dt = Query("where Class='BAreaPanelFinish'");
             if (dt == null || dt.Rows.Count < 1) {
                 return false;
             }
@@ -518,7 +511,7 @@ namespace yidascan.DataAccess {
         }
         public bool InitBAreaFloorFinish(IOpcClient opc) {
             BAreaFloorFinish = new Dictionary<string, string>();
-            DataTable dt = Query(string.Format("where Class='BAreaFloorFinish'"));
+            var dt = Query("where Class='BAreaFloorFinish'");
             if (dt == null || dt.Rows.Count < 1) {
                 return false;
             }
@@ -530,7 +523,7 @@ namespace yidascan.DataAccess {
         }
         public bool InitBAreaPanelState(IOpcClient opc) {
             BAreaPanelState = new Dictionary<string, string>();
-            DataTable dt = Query(string.Format("where Class='BAreaPanelState'"));
+            var dt = Query("where Class='BAreaPanelState'");
             if (dt == null || dt.Rows.Count < 1) {
                 return false;
             }
@@ -542,7 +535,7 @@ namespace yidascan.DataAccess {
         }
         public bool InitBAreaUserFinalLayer(IOpcClient opc) {
             BAreaUserFinalLayer = new Dictionary<string, string>();
-            DataTable dt = Query(string.Format("where Class='BAreaUserFinalLayer'"));
+            var dt = Query("where Class='BAreaUserFinalLayer'");
             if (dt == null || dt.Rows.Count < 1) {
                 return false;
             }
@@ -554,7 +547,7 @@ namespace yidascan.DataAccess {
         }
         public bool InitBadShapeLocations(IOpcClient opc) {
             BadShapeLocations = new Dictionary<string, string>();
-            DataTable dt = Query(string.Format("where Class='BadShapeLocations'"));
+            var dt = Query("where Class='BadShapeLocations'");
             if (dt == null || dt.Rows.Count < 1) {
                 return false;
             }
@@ -566,18 +559,31 @@ namespace yidascan.DataAccess {
         }
 
         public bool InitACAreaFinish(IOpcClient opc) {
-            DataTable dt = Query("where Class like 'AArea%' or Class like 'CArea%'");
+            var dt = Query("where Class like 'AArea%' or Class like 'CArea%'");
             if (dt == null || dt.Rows.Count < 1) {
                 return false;
             }
-            ACAreaPanelFinish = new Dictionary<string, yidascan.DataAccess.LCodeSignal>();
+            ACAreaPanelFinish = new Dictionary<string, LCodeSignal>();
             string tmp;
             foreach (DataRow dr in dt.Rows) {
                 tmp = dr["Class"].ToString();
                 if (!ACAreaPanelFinish.ContainsKey(tmp)) {
-                    LCodeSignal p = new LCodeSignal(opc, tmp);
+                    var p = new LCodeSignal(opc, tmp);
                     ACAreaPanelFinish.Add(tmp, p);
                 }
+            }
+            return true;
+        }
+
+        public bool InitHeartBeat(IOpcClient client) {
+            HeartBeat = new Dictionary<string, string>();
+            var dt = Query("where Class='heartbeat'");
+            if (dt == null || dt.Rows.Count < 1) {
+                return false;
+            }
+            foreach (DataRow dr in dt.Rows) {
+                HeartBeat.Add(dr["Name"].ToString(), dr["Code"].ToString());
+                client.AddSubscription(dr["Code"].ToString());
             }
             return true;
         }

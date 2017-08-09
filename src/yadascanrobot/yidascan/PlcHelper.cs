@@ -22,6 +22,7 @@ namespace yidascan {
         /// 缓存处来料信号
         /// </summary>
         /// <param name="client"></param>
+        /// <param name="param"></param>
         /// <returns></returns>
         public static bool ReadCacheSignal(IOpcClient client, OPCParam param) {
             var r = param.CacheParam.PlcSn.ReadSN(client);
@@ -37,8 +38,10 @@ namespace yidascan {
         /// </summary>
         /// <param name="client">opc client.</param>
         /// <param name="job">动作编号。</param>
-        /// /// <param name="posSave">动作编号。</param>
-        /// /// <param name="posGet">动作编号。</param>
+        /// <param name="posSave">动作编号。</param>
+        /// <param name="posGet">动作编号。</param>
+        /// <param name="param"></param>
+        /// <param name="lcode"></param>
         public static void WriteCacheJob(IOpcClient client, OPCParam param, CacheState job, int posSave, int posGet, string lcode) {
             client.TryWrite(param.CacheParam.BeforCacheLable1, lcode.Substring(0, 6));
             client.TryWrite(param.CacheParam.BeforCacheLable2, lcode.Substring(6, 6));
@@ -57,6 +60,7 @@ namespace yidascan {
         /// <param name="client"></param>
         /// <param name="diameter">直径</param>
         /// <param name="channel">去向, 1 or 2.</param>
+        /// <param name="param"></param>
         public static void WriteLabelUpData(IOpcClient client, OPCParam param, decimal diameter, RollCatchChannel channel) {
             // diameter单位是毫米。
             client.TryWrite(param.LableUpParam.Diameter, diameter);
@@ -71,7 +75,8 @@ namespace yidascan {
         /// 抓料处来料信号。
         /// </summary>
         /// <param name="client"></param>
-        /// /// <param name="pos">抓料处位置编号。</param>
+        /// <param name="pos">抓料处位置编号。</param>
+        /// <param name="param"></param>
         /// <returns></returns>
         public static bool ReadItemCatchSignal(IOpcClient client, OPCParam param, int pos) {
             var slot = "";
@@ -80,7 +85,7 @@ namespace yidascan {
 
             if (slot == "") { throw new Exception("error pos."); }
 
-            return client.ReadBool(slot);
+            return client.TryReadBool(slot);
         }
 
         /// <summary>
@@ -88,6 +93,7 @@ namespace yidascan {
         /// </summary>
         /// <param name="client"></param>
         /// <param name="pos"></param>
+        /// <param name="param"></param>
         public static void ResetItemCatchSignal(IOpcClient client, OPCParam param, int pos) {
             var slot = "";
             if (pos == 1) { slot = param.RobotCarryParam.RobotCarryA; }
@@ -95,7 +101,7 @@ namespace yidascan {
 
             if (slot == "") { throw new Exception("error pos."); }
 
-            client.Write(slot, 0);
+            client.TryWrite(slot, 0);
         }
 
         /// <summary>
@@ -103,9 +109,9 @@ namespace yidascan {
         /// </summary>
         /// <param name="client"></param>
         /// <param name="param"></param>
-        /// <param name="errorcode">错误码</param>
-        public static void ERPAlarmNo(IOpcClient client, OPCParam param, int errorcode) {
-            client.Write(param.None.ERPAlarm, errorcode);
+        /// <param name="errorCode">错误码</param>
+        public static void ERPAlarmNo(IOpcClient client, OPCParam param, int errorCode) {
+            client.TryWrite(param.None.ERPAlarm, errorCode);
         }
 
         /// <summary>
@@ -115,9 +121,9 @@ namespace yidascan {
         /// <param name="param"></param>
         /// <param name="lcode">12位长的号码</param>
         public static void NotifyLabelCodeDeleted(IOpcClient client, OPCParam param, string lcode) {
-            client.Write(param.DeleteLCode.LCode1, lcode.Substring(0, 6));
-            client.Write(param.DeleteLCode.LCode2, lcode.Substring(6, 6));
-            client.Write(param.DeleteLCode.Signal, true);
+            client.TryWrite(param.DeleteLCode.LCode1, lcode.Substring(0, 6));
+            client.TryWrite(param.DeleteLCode.LCode2, lcode.Substring(6, 6));
+            client.TryWrite(param.DeleteLCode.Signal, true);
         }
 
         /// <summary>
@@ -129,7 +135,7 @@ namespace yidascan {
         /// <returns></returns>
         public static bool IsPanelAvailable(IOpcClient client, OPCParam param, string tolocation) {
             const string PANEL_OK = "2";
-            var s = client.ReadString(param.BAreaPanelState[tolocation]);
+            var s = client.TryReadString(param.BAreaPanelState[tolocation]);
             return s == PANEL_OK;
         }
 
@@ -151,6 +157,29 @@ namespace yidascan {
             client.TryWrite(param.ScanParam.PushAside, PUSH_ASIDE);
         }
 
+        public static bool IsPushedAside(IOpcClient client, OPCParam param, Action onResetError = null) {
+            var slot = param.ScanParam.PlcPushAside;
+            if (client.TryReadBool(slot)) {
+                var resetok = client.TryWrite(slot, 0);                
+                if(!resetok) {
+                    onResetError?.Invoke(); // 复位失败
+                }
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        public static bool WriteScanResult(IOpcClient client, OPCParam param, string area, string locationNo, string codepart1, string codepart2) {
+            client.TryWrite(param.ScanParam.ToLocationArea, area);
+            client.TryWrite(param.ScanParam.ToLocationNo, locationNo);
+            // write label.
+            client.TryWrite(param.ScanParam.ScanLable1, codepart1);
+            client.TryWrite(param.ScanParam.ScanLable2, codepart2);
+            // write camera no. and set state true.
+            return client.TryWrite(param.ScanParam.ScanState, true);
+        }
+
         public static void NotifyBadLayerShape(IOpcClient client, OPCParam param, string tolocation) {
             const int BAD_SHAPE = 1;
             client.TryWrite(param.BadShapeLocations[tolocation], BAD_SHAPE);
@@ -165,11 +194,17 @@ namespace yidascan {
         }
 
         public static void HeartBeat(IOpcClient client, string slot, int count) {
-            throw new NotImplementedException("not ready yet...");
+            client.TryWrite(slot, count);
         }
 
         public static int HeartBeatBack(IOpcClient client, string slot) {
-            throw new NotImplementedException("not ready yet...");
+            return client.TryReadInt(slot);
+        }
+
+        public static string GetLabelCodeWhenWeigh(IOpcClient client, OPCParam param) {
+            var code1 = client.TryReadString(param.WeighParam.LabelPart1).PadLeft(6, '0');
+            var code2 = client.TryReadString(param.WeighParam.LabelPart2).PadLeft(6, '0');
+            return code1 + code2;
         }
     }
 }

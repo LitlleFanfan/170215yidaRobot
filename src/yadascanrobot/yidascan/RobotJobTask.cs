@@ -37,15 +37,15 @@ namespace yidascan {
             while (isrun) {
                 // 两个任务共用一个client，故要加锁。
                 lock (client) {
-                    if (client.ReadBool(slot.Signal)) {
+                    if (client.TryReadBool(slot.Signal)) {
                         // 加入机器人布卷队列。
-                        var code1 = client.ReadString(slot.LCode1);
-                        var code2 = client.ReadString(slot.LCode2);
+                        var code1 = client.TryReadString(slot.LCode1);
+                        var code2 = client.TryReadString(slot.LCode2);
                         var fullcode = LableCode.MakeCode(code1, code2);
 
                         pushInQueue(fullcode, jobname);
 
-                        client.Write(slot.Signal, false);
+                        client.TryWrite(slot.Signal, false);
                     }
                 }
                 Thread.Sleep(5000);
@@ -68,7 +68,7 @@ namespace yidascan {
         private static bool PanelAvailable(string tolocation) {
             try {
                 lock (client) {
-                    var s = client.ReadString(param.BAreaPanelState[tolocation]);
+                    var s = client.TryReadString(param.BAreaPanelState[tolocation]);
                     return s == "2";
                 }
             } catch (Exception ex) {

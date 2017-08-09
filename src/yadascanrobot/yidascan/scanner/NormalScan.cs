@@ -12,7 +12,6 @@ namespace ProduceComm.Scanner {
         public delegate void HostErrEventHandler(Exception ex);
 
         private bool stoped;
-        public List<string> mlsAckData;
 
         private ICommunication icom;
 
@@ -22,7 +21,6 @@ namespace ProduceComm.Scanner {
         public NormalScan(string devicename, ICommunication _icom) {
             this.name = devicename;
             icom = _icom;
-            this.mlsAckData = new List<string>();
         }
 
         public bool Open() {
@@ -60,7 +58,7 @@ namespace ProduceComm.Scanner {
                     }
                     Thread.Sleep(1000);
                 }
-                logger("!扫描线程结束。");
+                logger?.Invoke("!扫描线程结束。");
             });
         }
 

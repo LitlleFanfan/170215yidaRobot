@@ -235,7 +235,7 @@ namespace yidascan.DataAccess {
         /// <param name="panelNo"></param>
         /// <returns></returns>
         public string UFGetPanelLastRoll(string tolocation, string panelNo) {
-            string lcode = string.Empty;
+            var lcode = string.Empty;
             LableCode lbup;
 
             // 检索标签朝上队列。            

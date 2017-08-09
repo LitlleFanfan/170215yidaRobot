@@ -26,11 +26,10 @@ namespace yidascan {
         }
 
         public string brief() {
-            if (labelcode == null) {
-                return $"{id.ToString().PadLeft(2, ' ')}";
-            } else {
-                return $"{id.ToString().PadLeft(2, ' ')} {labelcode.LCode} {labelcode.ToLocation} {labelcode.Diameter}";
-            }
+            var ids = id.ToString().PadLeft(2, ' ');
+            return labelcode == null 
+                ? $"{ids}"
+                : $"{ids} {labelcode.LCode} {labelcode.ToLocation} {labelcode.Diameter}";            
         }
     }
 
@@ -87,11 +86,11 @@ namespace yidascan {
 
             var head = lst.First();
             if (head.id > 10) {
-                var mean = 15.5;
+                const double mean = 15.5;
                 var dmin = (from x in lst select Math.Abs(x.id - mean)).Min();
                 return lst.First(x => { return Math.Abs(x.id - mean) == dmin; }).id;
             } else {
-                var mean = 5.5;
+                const double mean = 5.5;
                 var dmin = (from x in lst select Math.Abs(x.id - mean)).Min();
                 return lst.First(x => { return Math.Abs(x.id - mean) == dmin; }).id;
             }

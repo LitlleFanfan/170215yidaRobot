@@ -23,7 +23,7 @@ namespace yidascan {
         /// 在生产任务开始时初始化。
         /// PanelGen.Init(dtpDate.Value);
         /// </summary>
-        /// <param name="dtime"></param>       
+        /// <param name="dtime"></param>
         public static void Init(DateTime dtime) {
             lastPanelNo = InitPanelNo(dtime);
         }
@@ -41,7 +41,8 @@ namespace yidascan {
         private static string InitPanelNo(DateTime dtime) {
             string panelNo;
             lock (foo) {
-                panelNo = LableCode.GetLastPanelNo(string.Format("{0}", dtime.ToString(clsSetting.LABEL_CODE_DATE_FORMAT)));
+                // panelNo = LableCode.GetLastPanelNo(string.Format("{0}", dtime.ToString(clsSetting.LABEL_CODE_DATE_FORMAT)));
+                panelNo = LableCode.GetLastPanelNo($"{dtime.ToString(clsSetting.LABEL_CODE_DATE_FORMAT)}");
                 panelNo = string.IsNullOrEmpty(panelNo)
                     ? string.Format("{0}{1}", dtime.ToString(clsSetting.PANEL_PATTERN), "0000")
                     : (decimal.Parse(panelNo) + 1).ToString();
