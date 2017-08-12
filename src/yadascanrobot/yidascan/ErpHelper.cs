@@ -133,7 +133,7 @@ namespace yidascan {
             var dt = LableCode.QueryByLCode(code);
 
             if (dt != null) {
-                FrmMain.logOpt.Write("!号码重复: {code}}", LogType.NORMAL);
+                FrmMain.logOpt.Write($"!号码重复: {code}", LogType.NORMAL);
                 warnhandler?.Invoke("重复扫码", true);
             } else {
                 var str = new Dictionary<string, string>();

@@ -257,7 +257,7 @@ namespace yidascan {
                 if (mapped) {
                     return LocMap[virtualloc];
                 } else if (trytimes >= MAX_TRY) {
-                    FrmMain.logOpt.Write("!{virtual}没有可用的实际交地对应, 尝试次数: {trytimes}");
+                    FrmMain.logOpt.Write($"!{virtualloc}没有可用的实际交地对应, 尝试次数: {trytimes}");
                     return string.Empty;
                 } 
 

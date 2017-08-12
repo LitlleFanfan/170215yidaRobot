@@ -962,12 +962,6 @@ namespace yidascan {
             try {
                 ShowWarning(code, false);
 #if !DEBUG
-                //PLC已将布卷勾走
-                //if (client.TryReadBool(opcParam.ScanParam.PlcPushAside)) {
-                //    client.TryWrite(opcParam.ScanParam.PlcPushAside, 0);
-                //    logOpt.Write($"!采集超时, 收到勾料信号, {code}被勾走。");
-                //    return;
-                //}
                 lock (client) {
                     if (PlcHelper.IsPushedAside(client, opcParam)) {
                         logOpt.Write($"!采集超时, 收到勾料信号, {code}被勾走。");
@@ -987,7 +981,7 @@ namespace yidascan {
                     lock (client) {
                         PlcHelper.PushAside(client, opcParam);
                     }
-                    logOpt.Write($"!交地无效，发出勾料信号。");
+                    logOpt.Write($"!{code}交地无效，发出勾料信号。");
                     return;
                 }
 

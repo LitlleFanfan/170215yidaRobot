@@ -219,8 +219,8 @@ namespace ProduceComm.OPC {
                 }                
             } catch(Exception ex) {
                 FrmMain.logOpt.Write($"!来源: {nameof(Read)}, opc读异常, 节点: {code}, {ex}");
-                ResetServerOnDisconnect?.Invoke();
-                FrmMain.logOpt.Write($"!复位opc server");
+                // ResetServerOnDisconnect?.Invoke();
+                // FrmMain.logOpt.Write($"!复位opc server");
                 Thread.Sleep(500);
                 return null;
             }
@@ -246,8 +246,8 @@ namespace ProduceComm.OPC {
                 return null;
             } catch (Exception ex) {
                 FrmMain.logOpt.Write($"!来源: {nameof(GroupRead)}, opc读组异常, 节点: {code}, {ex}", LogType.NORMAL);
-                ResetServerOnDisconnect?.Invoke();
-                FrmMain.logOpt.Write($"!复位opc server");
+                // ResetServerOnDisconnect?.Invoke();
+                // FrmMain.logOpt.Write($"!复位opc server");
                 Thread.Sleep(500);
                 return null;
             }
