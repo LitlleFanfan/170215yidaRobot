@@ -41,6 +41,8 @@
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.stMessage = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
+            this.btnForceDisable = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -82,21 +84,23 @@
             // 
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.miEnable,
-            this.miDisable});
+            this.miDisable,
+            this.toolStripMenuItem1,
+            this.btnForceDisable});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(101, 48);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(153, 98);
             // 
             // miEnable
             // 
             this.miEnable.Name = "miEnable";
-            this.miEnable.Size = new System.Drawing.Size(100, 22);
+            this.miEnable.Size = new System.Drawing.Size(152, 22);
             this.miEnable.Text = "空闲";
             this.miEnable.Click += new System.EventHandler(this.miEnable_Click);
             // 
             // miDisable
             // 
             this.miDisable.Name = "miDisable";
-            this.miDisable.Size = new System.Drawing.Size(100, 22);
+            this.miDisable.Size = new System.Drawing.Size(152, 22);
             this.miDisable.Text = "禁用";
             this.miDisable.Click += new System.EventHandler(this.miDisable_Click);
             // 
@@ -183,6 +187,18 @@
             this.stMessage.Size = new System.Drawing.Size(32, 17);
             this.stMessage.Text = "状态";
             // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(149, 6);
+            // 
+            // btnForceDisable
+            // 
+            this.btnForceDisable.Name = "btnForceDisable";
+            this.btnForceDisable.Size = new System.Drawing.Size(152, 22);
+            this.btnForceDisable.Text = "强制禁用";
+            this.btnForceDisable.Click += new System.EventHandler(this.btnForceDisable_Click);
+            // 
             // wloc
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 19F);
@@ -229,5 +245,7 @@
         private System.Windows.Forms.ColumnHeader columnHeader4;
         private System.Windows.Forms.ColumnHeader columnHeader8;
         private System.Windows.Forms.ColumnHeader columnHeader9;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem btnForceDisable;
     }
 }

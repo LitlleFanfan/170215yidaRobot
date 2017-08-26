@@ -168,6 +168,26 @@ namespace yidascan {
                 ShowRealLocs();
             }
         }
+
+        private void btnForceDisable_Click(object sender, EventArgs e) {
+            var items = listView2.SelectedItems;
+
+            var item = items.Count > 0 ? (RealLoc)items[0].Tag : null;
+
+            if (item == null) {
+                MessageBox.Show("没有选中交地。");
+                return;
+            }
+
+            if (!CommonHelper.Confirm($"要强制设置实际交地{item.realloc}为禁止状态吗？")) {
+                return;
+            }
+
+            lock (TaskQueues.LOCK_LOCHELPER) {
+                locs.forceDisable(item.realloc);
+            }
+            ShowRealLocs();
+        }
     }
 }
 

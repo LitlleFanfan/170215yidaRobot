@@ -188,6 +188,10 @@ namespace yidascan {
         public string brief() {
             return $"{LabelCode} {ToLocation}/{RealLocation} {diameter} F{Floor}/{FloorIndex}";
         }
+
+        public string detail() {
+            return $"{LabelCode} {ToLocation}/{RealLocation} {diameter} F{Floor}/{FloorIndex} panel/{PanelNo}";
+        }
     }
 
     public class RobotHelper : IRobotJob, IDisposable {

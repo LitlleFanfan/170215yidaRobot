@@ -221,47 +221,38 @@ namespace yidascan {
         // 根据erp所指的交地，换算出真实交地
         public string Convert(string virtualloc, string panelno) {
             var rt = string.Empty;
-            const int MAX_TRY = 100; // 尝试时间, 10 * 10 * 6s.
-            var trytimes = 0; 
 
-            while (true) {
-                var mapped = false;
+            var mapped = false;
 
-                if (!LocMap.ContainsKey(virtualloc)) {
-                    throw new Exception($"来源: {nameof(Convert)}, 名义交地错误: {virtualloc}");
-                }
+            if (!LocMap.ContainsKey(virtualloc)) {
+                throw new Exception($"来源: {nameof(Convert)}, 名义交地错误: {virtualloc}");
+            }
 
-                // 已有可用的板。
-                var realoc1 = RealLocations.FirstOrDefault(x => x.panelno == panelno);
-                if (realoc1 != null) {
-                    return realoc1.realloc;
-                }               
+            // 已有可用的板。
+            var realoc1 = RealLocations.FirstOrDefault(x => x.panelno == panelno);
+            if (realoc1 != null) {
+                return realoc1.realloc;
+            }
 
-                // 匹配新交地
-                if (LocMap[virtualloc] == string.Empty) {
-                    // 没有匹配过，或原匹配已经码完。
+            // 匹配新交地
+            if (LocMap[virtualloc] == string.Empty) {
+                // 没有匹配过，或原匹配已经码完。
+                mapped = automap(virtualloc, panelno);
+            } else {
+                // 原匹配还没有码完。
+                var realoc = RealLocations.Single(x => x.realloc == LocMap[virtualloc]);
+
+                if (realoc.panelno == panelno) { return realoc.realloc; } else {
+                    FrmMain.logOpt.Write($"!来源: {nameof(Convert)}, 交地板号改变, 名义交地: {virtualloc}, 原实际交地: {realoc.realloc} 来料板号: {panelno}, 原交地板号: {realoc.panelno}");
                     mapped = automap(virtualloc, panelno);
-                } else {
-                    // 原匹配还没有码完。
-                    var realoc = RealLocations.Single(x => x.realloc == LocMap[virtualloc]);
+                };
+            }
 
-                    if (realoc.panelno == panelno) { return realoc.realloc; } else {
-                        FrmMain.logOpt.Write($"!来源: {nameof(Convert)}, 交地板号改变, 名义交地: {virtualloc}, 原实际交地: {realoc.realloc} 来料板号: {panelno}, 原交地板号: {realoc.panelno}");
-                        mapped = automap(virtualloc, panelno);
-                    };
-                }
-
-                // 验证是否成功
-                trytimes++;
-
-                if (mapped) {
-                    return LocMap[virtualloc];
-                } else if (trytimes >= MAX_TRY) {
-                    FrmMain.logOpt.Write($"!{virtualloc}没有可用的实际交地对应, 尝试次数: {trytimes}");
-                    return string.Empty;
-                } 
-
-                Thread.Sleep(6000);
+            if (mapped) {
+                return LocMap[virtualloc];
+            } else {
+                FrmMain.logOpt.Write($"!{virtualloc}没有可用的实际交地对应");
+                return string.Empty;
             }
         }
 
@@ -409,6 +400,22 @@ namespace yidascan {
                 Unmap(real.realloc, real.panelno, "");
                 SetState(realloc, LocationState.IDLE, "");
             }
+        }
+
+        private void setRealPriority(string realloc, Priority p) {
+            var loc = RealLocations.First(x => x.realloc == realloc);
+
+            if (loc == null) {
+                throw new Exception($"函数: {nameof(setRealPriority)}, 交地错误： {realloc}");
+            }
+
+            loc.priority = p;
+        }
+
+        public void forceDisable(string realloc) {
+            Unmap(realloc, "", "");
+            setRealPriority(realloc, Priority.DISABLE);
+            SetState(realloc, LocationState.IDLE, "");
         }
         #endregion
     }

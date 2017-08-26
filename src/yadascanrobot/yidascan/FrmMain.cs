@@ -274,79 +274,91 @@ namespace yidascan {
             }
         }
 
+
         /// <summary>
-        /// B区人工满板信号任务。
+        /// B区人工满板任务
         /// </summary>
-        private void BAreaUserFinalLayerTask() {
+        private void StartBAreaUserFinalLayerTask() {
             opcBUFL = CreateOpcClient("B区手动完成");
             opcParam.InitBAreaUserFinalLayer(opcBUFL);
 
             // for should be within while loop.
-            foreach (KeyValuePair<string, string> kv in opcParam.BAreaUserFinalLayer) {
-                Task.Factory.StartNew(() => {
-                    const string SIGNAL_ON = "1";
-                    const string SIGNAL_OFF = "0";
-                    while (isrun) {
+            Task.Factory.StartNew(() => {
+                const string SIGNAL_ON = "1";
+                const string SIGNAL_OFF = "0";
+                while (isrun) {
+                    foreach (KeyValuePair<string, string> kv in opcParam.BAreaUserFinalLayer) {
                         // for kv in opcParam.BAreaUserFinalLayer
-                        var signal = "";
-                        lock (opcBUFL) {
-                            signal = opcBUFL.TryReadString(kv.Value);
-                        }
+                        try {
+                            var signal = "";
 
-                        if (signal == SIGNAL_ON) {
-                            // kv.Key是交地。
-                            var reallocation = kv.Key;
-
-                            // 取实际交地对应板号
-                            var panelNo = "";
-                            lock (TaskQueues.LOCK_LOCHELPER) {
-                                panelNo = TaskQueues.lochelper.lookupVirtual(reallocation);
-                            }
-
-                            if (string.IsNullOrEmpty(panelNo)) {// plc复位信号。
-                                logOpt.Write($"!实际交地{kv.Key} 收到人工完成信号，人工满板失败。交地无对应板号。", LogType.ROBOT_STACK);
-                                lock (opcBUFL) {
-                                    opcBUFL.TryWrite(kv.Value, SIGNAL_OFF);
-                                }
-                                continue;
-                            }
-
-                            var pf = LableCode.GetPanel(panelNo);
-
-                            if (pf == null) {
-                                logOpt.Write($"!实际交地{kv.Key} 收到人工完成信号，人工满板失败。板号：{panelNo}  数据库中无对应板号。", LogType.ROBOT_STACK);
-                                lock (opcBUFL) {
-                                    opcBUFL.TryWrite(kv.Value, SIGNAL_OFF);
-                                }
-                                continue;
-                            }
-                            logOpt.Write($"!实际交地{kv.Key} 收到人工完成信号。板号：{panelNo} ERP交地：{pf.ToLocation}", LogType.ROBOT_STACK);
-
-                            LableCode.SetMaxFloorAndFull(panelNo);
-
-                            // 创建新的板信息。
-                            var newPanel = PanelGen.NewPanelNo();
-
-                            // 重新计算缓存区的布卷的坐标。
-                            lock (TaskQueues.LOCK_LOCHELPER) {
-                                cacheher.ReCalculateCoordinate(newPanel, pf.ToLocation);
-                            }
-
-                            //处理满板信号
-                            var panelfull = areAllRollsOnBoard(pf.PanelNo, reallocation);
-                            robot.NotifyOpcJobFinished(pf.PanelNo, pf.ToLocation, reallocation, panelfull);
-
-                            // plc复位信号。
                             lock (opcBUFL) {
-                                opcBUFL.TryWrite(kv.Value, SIGNAL_OFF);
+                                signal = opcBUFL.TryReadString(kv.Value);
                             }
 
-                            logUnboardRolls(); // 未上板的布卷号码。
-                        } // end of if
-                        Thread.Sleep(OPCClient.DELAY * 200);
-                    } // end of while.
-                });
-            }
+                            if (signal == SIGNAL_ON) {
+                                // kv.Key是交地。
+                                var reallocation = kv.Key;
+
+                                // 取实际交地对应板号
+                                var panelNo = "";
+                                lock (TaskQueues.LOCK_LOCHELPER) {
+                                    panelNo = TaskQueues.lochelper.lookupVirtual(reallocation);
+                                }
+
+                                if (string.IsNullOrEmpty(panelNo)) {// plc复位信号。
+                                    logOpt.Write($"!实际交地{kv.Key} 收到人工完成信号，人工满板失败。交地无对应板号。", LogType.ROBOT_STACK);
+                                    lock (opcBUFL) {
+                                        opcBUFL.TryWrite(kv.Value, SIGNAL_OFF);
+                                    }
+                                    continue;
+                                }
+
+                                var pf = LableCode.GetPanel(panelNo);
+
+                                if (pf == null) {
+                                    logOpt.Write($"!实际交地{kv.Key} 收到人工完成信号，板号：{panelNo}  数据库中无对应板号。", LogType.ROBOT_STACK);
+                                    lock (opcBUFL) {
+                                        opcBUFL.TryWrite(kv.Value, SIGNAL_OFF);
+                                    }
+                                    continue;
+                                }
+                                logOpt.Write($"!实际交地{kv.Key} 收到人工完成信号。板号：{panelNo} ERP交地：{pf.ToLocation}", LogType.ROBOT_STACK);
+
+                                LableCode.SetMaxFloorAndFull(panelNo);
+
+                                // 创建新的板信息。
+                                var newPanel = PanelGen.NewPanelNo();
+
+                                // 重新计算缓存区的布卷的坐标。
+                                lock (TaskQueues.LOCK_LOCHELPER) {
+                                    cacheher.ReCalculateCoordinate(newPanel, pf.ToLocation);
+                                }
+
+                                //处理满板信号
+                                var panelfull = areAllRollsOnBoard(pf.PanelNo, reallocation);
+
+                                logOpt.Write($"!布卷是否全部上垛: {panelfull}");
+
+                                robot.NotifyOpcJobFinished(pf.PanelNo, pf.ToLocation, reallocation, panelfull);
+
+                                // plc复位信号。
+                                lock (opcBUFL) {
+                                    opcBUFL.TryWrite(kv.Value, SIGNAL_OFF);
+                                }
+
+                                logUnboardRolls(); // 未上板的布卷号码。
+                            } // end of if
+
+                            Thread.Sleep(OPCClient.DELAY * 20);
+                        } catch ( Exception ex) {
+                            logOpt.Write($"!处理满板信号时发生异常, {ex}", LogType.ROBOT_STACK);
+                        }
+                    } // end of foreach.
+                    Thread.Sleep(OPCClient.DELAY * 400);
+                } // end of while
+                logOpt.Write($"!人工满板任务停止", LogType.ROBOT_STACK);
+            });
         }
 
         void SetButtonState(bool isRun) {
@@ -369,7 +381,7 @@ namespace yidascan {
             }));
         }
 
-        private void StartScanner() {
+        private void StartScannerTask() {
             const string CAMERA_1 = "1#相机";
             if (OpenPort(ref nscan1, CAMERA_1, FrmSet.pcfgScan1)) {
                 nscan1.logger = (string x) => { logOpt.Write(x, LogType.NORMAL); };
@@ -406,23 +418,23 @@ namespace yidascan {
             initErpApi();
             PanelGen.Init(dtpDate.Value);
 
-            StartScanner();
+            StartScannerTask();
             isrun = true;
 
-            WeighTask();
-            ACAreaFinishTask();
+            StartWeighTask();
+            StartACAreaFinishTask();
 
-            BeforCacheTask_new();
-            LableUpTask();
+            StartBeforCacheTask();
+            StartLableUpTask();
             StartRobotJobTask();
-            BAreaUserFinalLayerTask();
+            StartBAreaUserFinalLayerTask();
 
             StartAllRobotTasks();
 
             StartPanelEndTask(); // 自由板位，监听板准备好。
-            startDeadPanelDetectTask(); // 死板检测。
+            StartDeadPanelDetectTask(); // 死板检测。
 
-            startHeartBeating(); // 心跳包任务。
+            StartHeartBeatingTask(); // 心跳包任务。
 
             LogParam();
             // 焦点设在手工输入框。
@@ -433,7 +445,7 @@ namespace yidascan {
         }
 
         string lastweighLable = string.Empty;
-        private void WeighTask() {
+        private void StartWeighTask() {
             const int SUCCESS = 0;
             const int FAIL = 2;
 
@@ -491,7 +503,7 @@ namespace yidascan {
                             }
                         }
                     } catch (Exception ex) {
-                        logOpt.Write($"!来源: {nameof(WeighTask)} {ex}", LogType.NORMAL);
+                        logOpt.Write($"!来源: {nameof(StartWeighTask)} {ex}", LogType.NORMAL);
                     }
                 }
 
@@ -501,7 +513,7 @@ namespace yidascan {
             logOpt.Write("称重任务启动。", LogType.NORMAL);
         }
 
-        private void ACAreaFinishTask() {
+        private void StartACAreaFinishTask() {
             opcACF = CreateOpcClient("AC区完成");
             opcParam.InitACAreaFinish(opcACF);
             foreach (var kv in opcParam.ACAreaPanelFinish) {
@@ -520,7 +532,7 @@ namespace yidascan {
                                 }
                             }
                         } catch (Exception ex) {
-                            logOpt.Write($"!来源: {nameof(ACAreaFinishTask)}, {ex}");
+                            logOpt.Write($"!来源: {nameof(StartACAreaFinishTask)}, {ex}");
                         }
 
                         Thread.Sleep(OPCClient.DELAY * 2000);
@@ -590,7 +602,7 @@ namespace yidascan {
             return $"{d1}";
         }
 
-        private void BeforCacheTask_new() {
+        private void StartBeforCacheTask() {
             var CacheOpcClient = CreateOpcClient("缓存位");
             opcParam.CacheParam = new OPCBeforCacheParam(CacheOpcClient);
             Task.Factory.StartNew(() => {
@@ -609,7 +621,7 @@ namespace yidascan {
                                     var foo = taskQ.CacheQ.Peek();
                                     peek = foo.LCode;
                                 } catch (Exception ex) {
-                                    logOpt.Write($"来源: {nameof(BeforCacheTask_new)}, {ex}");
+                                    logOpt.Write($"来源: {nameof(StartBeforCacheTask)}, {ex}");
                                 }
                             }
 
@@ -618,13 +630,13 @@ namespace yidascan {
                             var lc = LableCode.QueryByLCode(peek);
 
                             if (lc == null) {
-                                logOpt.Write($"!来源: {nameof(BeforCacheTask_new)}, 缓存队列没有标签", LogType.BUFFER);
+                                logOpt.Write($"!来源: {nameof(StartBeforCacheTask)}, 缓存队列没有标签", LogType.BUFFER);
                                 continue;
                             }
 
                             // 检查重复计算。???
                             if (!string.IsNullOrEmpty(lc.PanelNo)) {
-                                logOpt.Write($"!来源: {nameof(BeforCacheTask_new)}, {lc.LCode} 标签重复。", LogType.BUFFER);
+                                logOpt.Write($"!来源: {nameof(StartBeforCacheTask)}, {lc.LCode} 标签重复。", LogType.BUFFER);
                                 continue;
                             }
 
@@ -674,7 +686,7 @@ namespace yidascan {
 #endif
                         }
                     } catch (Exception ex) {
-                        logOpt.Write($"!来源: {nameof(BeforCacheTask_new)}, {ex}", LogType.BUFFER);
+                        logOpt.Write($"!来源: {nameof(StartBeforCacheTask)}, {ex}", LogType.BUFFER);
                     }
                 }
                 OpcClientClose(CacheOpcClient, "缓存位");
@@ -703,7 +715,7 @@ namespace yidascan {
         /// <summary>
         /// 2期代码。
         /// </summary>
-        private void LableUpTask() {
+        private void StartLableUpTask() {
             var LabelUpOpcClient = CreateOpcClient("标签朝上");
             opcParam.LableUpParam = new OPCLableUpParam(LabelUpOpcClient);
 
@@ -717,7 +729,7 @@ namespace yidascan {
                                 logOpt.Write($"标签朝上来料信号。号码: {code.LCode}", LogType.ROLL_QUEUE);
 
                                 if (string.IsNullOrEmpty(code.RealLocation)) {
-                                    var msg = $"!来源: {nameof(LableUpTask)}, 真实交地是空值: {code.LCode}/{code.ToLocation}";
+                                    var msg = $"!来源: {nameof(StartLableUpTask)}, 真实交地是空值: {code.LCode}/{code.ToLocation}";
                                     logOpt.Write(msg, LogType.ROLL_QUEUE);
                                     throw new Exception(msg);
                                 }
@@ -741,7 +753,7 @@ namespace yidascan {
                             }
                         }
                     } catch (Exception ex) {
-                        logOpt.Write($"!来源: {nameof(LableUpTask)}, {ex}", LogType.ROLL_QUEUE);
+                        logOpt.Write($"!来源: {nameof(StartLableUpTask)}, {ex}", LogType.ROLL_QUEUE);
                     }
                     Thread.Sleep(OPCClient.DELAY * 200);
                 }
@@ -1113,15 +1125,18 @@ namespace yidascan {
             var lc = LableCode.QueryByLCode(lCode);
             if (lc == null) { return false; }
 
-            LableCodeBllPro.GetPanelNo(lc, "");
-            LableCode.Update(lc);
-            LableCode.SetPanelNo(lCode);
+            try {
+                LableCodeBllPro.GetPanelNo(lc, "");
+                LableCode.Update(lc);
+                LableCode.SetPanelNo(lCode);
+                LableCode.DeleteFinishPanel(lCode);
+            } catch (Exception ex) {
+                logOpt.Write($"!AC区交地{lc.ToLocation}完成信号处理异常, {ex}");
+            }
 
             string msg;
             var re = ErpHelper.NotifyPanelEnd(callErpApi, lc.PanelNo, out msg);
             logOpt.Write(string.Format("{0} {1}", lc.ToLocation, msg), LogType.NORMAL);
-
-            LableCode.DeleteFinishPanel(lCode);
 
             return re;
         }
@@ -1204,6 +1219,7 @@ namespace yidascan {
 
         private void btnLog_Click(object sender, EventArgs e) {
             openLocationWin();
+            refreshRealLocState();
         }
 
         #region LISTBOX_MESSAGES
@@ -1630,10 +1646,14 @@ namespace yidascan {
             }
         }
 
-        private void tRefreshRealLocState_Tick(object sender, EventArgs e) {
+        private void refreshRealLocState() {
             foreach (var item in TaskQueues.lochelper.RealLocations) {
                 SetReallocationState(item.realloc, item.state, item.priority, item.panelno);
             }
+        }
+
+        private void tRefreshRealLocState_Tick(object sender, EventArgs e) {
+            refreshRealLocState();
         }
 
         private static void logCachedlables(string loc) {
@@ -1691,11 +1711,11 @@ namespace yidascan {
 
         private static bool areAllRollsOnBoard(string panelno, string realloc) {
             lock (TaskQueues.LOCK_LOCHELPER) {
-                var v = taskQ.LableUpQ.Count(x => x.PanelNo == panelno && x.RealLocation == realloc)
-                + taskQ.CatchAQ.Count(x => x.PanelNo == panelno && x.RealLocation == realloc)
-                + taskQ.CatchBQ.Count(x => x.PanelNo == panelno && x.RealLocation == realloc)
-                + taskQ.RobotRollAQ.Count(x => x.PanelNo == panelno && x.RealLocation == realloc)
-                + taskQ.RobotRollBQ.Count(x => x.PanelNo == panelno && x.RealLocation == realloc);
+                var v = taskQ.LableUpQ.Count(x => x.RealLocation == realloc)
+                + taskQ.CatchAQ.Count(x => x.RealLocation == realloc)
+                + taskQ.CatchBQ.Count(x => x.RealLocation == realloc)
+                + taskQ.RobotRollAQ.Count(x => x.RealLocation == realloc)
+                + taskQ.RobotRollBQ.Count(x => x.RealLocation == realloc);
                 return v == 0;
             }
         }
@@ -1703,11 +1723,11 @@ namespace yidascan {
         private static void logUnboardRolls() {
             logOpt.Write("------未上垛布卷号码------", LogType.ROBOT_STACK);
             lock (TaskQueues.LOCK_LOCHELPER) {
-                logQue(taskQ.LableUpQ.Select(x => x.brief()), "标签朝上队列");
-                logQue(taskQ.CatchAQ.Select(x => x.brief()), "抓料队列A");
-                logQue(taskQ.CatchBQ.Select(x => x.brief()), "抓料队列B");
-                logQue(taskQ.RobotRollAQ.Select(x => x.brief()), "机器人队列A");
-                logQue(taskQ.RobotRollBQ.Select(x => x.brief()), "机器人队列B");
+                logQue(taskQ.LableUpQ.Select(x => x.detail()), "标签朝上队列");
+                logQue(taskQ.CatchAQ.Select(x => x.detail()), "抓料队列A");
+                logQue(taskQ.CatchBQ.Select(x => x.detail()), "抓料队列B");
+                logQue(taskQ.RobotRollAQ.Select(x => x.detail()), "机器人队列A");
+                logQue(taskQ.RobotRollBQ.Select(x => x.detail()), "机器人队列B");
             }
         }
 
@@ -1715,7 +1735,7 @@ namespace yidascan {
             logUnboardRolls();
         }
 
-        private void startDeadPanelDetectTask() {
+        private void StartDeadPanelDetectTask() {
             Task.Run(() => {
                 FrmMain.logOpt.Write("死板检测任务启动。");
                 var opcDeadPanelCheck = CreateOpcClient("死板检测");
@@ -1735,7 +1755,7 @@ namespace yidascan {
                         }
 
                     } catch (Exception ex) {
-                        FrmMain.logOpt.Write($"来源: {nameof(startDeadPanelDetectTask)}, {ex}");
+                        FrmMain.logOpt.Write($"来源: {nameof(StartDeadPanelDetectTask)}, {ex}");
                     }
 
                     Thread.Sleep(5 * 1000); // 5s.
@@ -1745,16 +1765,13 @@ namespace yidascan {
                 FrmMain.logOpt.Write("死板检测任务停止。");
             });
         }
-        
-        private void startHeartBeating() {
+
+        private void StartHeartBeatingTask() {
             const int interval = 500; // 0.5s.
 
-            //const string slotpc = "MicroWin.S7-1200-3.NewItem19";
-            //const string slotplc = "MicroWin.S7-1200-3.NewItem18";
-
-            const string sourcepc= "heartbeat-pc";
+            const string sourcepc = "heartbeat-pc";
             const string sourceplc = "heartbeat-plc";
-            
+
             Task.Run(() => {
                 logOpt.Write($"!心跳任务启动");
                 var signal = 0; // 1 or 0;
@@ -1787,7 +1804,7 @@ namespace yidascan {
                             }
                         }
                     } catch (Exception ex) {
-                        logOpt.Write($"!心跳包异常, 来源: {nameof(startHeartBeating)}, {ex}");
+                        logOpt.Write($"!心跳包异常, 来源: {nameof(StartHeartBeatingTask)}, {ex}");
                     }
 
                     Thread.Sleep(interval);

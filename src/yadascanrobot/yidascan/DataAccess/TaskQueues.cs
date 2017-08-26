@@ -107,7 +107,7 @@ namespace yidascan.DataAccess {
         private static RollPosition AddRobotRollQ(string lcode, string side) {
             var label = LableCode.QueryByLCode(lcode);
             if (label == null) {
-                onlog?.Invoke($"!{side} {lcode}找不到", LogType.ROLL_QUEUE);
+                onlog?.Invoke($"!{side} {lcode}在数据库中查不到", LogType.ROLL_QUEUE);
                 return null;
             }
             if (label.Status >= (int)LableState.OnPanel) {

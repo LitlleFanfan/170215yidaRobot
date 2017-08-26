@@ -859,6 +859,10 @@ and Status<3 and FloorIndex<>0";
             return $"{LCode} {ToLocation}/{RealLocation} {diameter} F{floor}/{floorIndex}";
         }
 
+        public string detail() {
+            return $"{LCode} {ToLocation}/{RealLocation} {diameter} F{Floor}/{FloorIndex} panel/{PanelNo}";
+        }
+
         private static List<CommandParameter> CreateLableCodeInsertHistory(LableCode c) {
             return new List<CommandParameter>() { new CommandParameter(
                                 "insert into LableCodeHis(LCode,ToLocation,PanelNo,Status,Floor,FloorIndex,Diameter,Length,Coordinates,Cx,Cy,Cz,Crz,GetOutLCode,Remark,[RealLocation]) " +
