@@ -22,17 +22,18 @@ namespace yidascan {
         /// <param name="panelNo"></param>
         /// <param name="msg"></param>
         /// <param name="handwork"></param>
+        /// <param name="realloc"></param>
         /// <returns></returns>
-        public static bool NotifyPanelEnd(IErpApi erpapi, string panelNo, out string msg, bool handwork = false) {
+        public static bool NotifyPanelEnd(IErpApi erpapi, string panelNo, string realloc, out string msg, bool handwork = false) {
             if (string.IsNullOrEmpty(panelNo)) {
-                msg = "!板号完成失败，板号为空。";
+                msg = $"!实际交地{realloc}/{panelNo}板号完成取消，板号为空。";
                 return false;
             }
             // 这个从数据库取似更合理。
             var data = LableCode.QueryLabelcodeByPanelNo(panelNo);
 
             if (data == null) {
-                msg = $"!{panelNo}板号完成失败，未能查到数据库的标签。";
+                msg = $"!实际交地{realloc}/{panelNo}板号完成取消，未能查到数据库的标签。";
                 return false;
             }
 

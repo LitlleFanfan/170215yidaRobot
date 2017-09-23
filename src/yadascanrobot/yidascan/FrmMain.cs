@@ -146,6 +146,19 @@ namespace yidascan {
                 SetButtonState(false);
                 InitCfgView();
 
+                // 检查板号是否用尽
+                try {
+                    var lastpanelno = PanelDb.GetLatestPanelNo();
+                    if (!string.IsNullOrEmpty(lastpanelno) && CommonHelper.IsPanelnoMax(lastpanelno)) {
+                        var msg = "板号用尽，请清料，并开启新任务。";
+                        CommonHelper.Warn(msg);
+                        logOpt.Write($"!{msg}");
+                    }
+                } catch (Exception ex) {
+                    logOpt.Write($"{ex}");
+                }
+                
+
 #if DEBUG
                 SignalGen.Init();
 #endif
@@ -274,6 +287,26 @@ namespace yidascan {
             }
         }
 
+        /// <summary>
+        /// 读两次以防止误信号。
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="slot"></param>
+        /// <param name="delay"></param>
+        /// <returns></returns>
+        private static string safeTryRead(IOpcClient client, string slot, int delay) {
+            var s1 = "";
+            var s2 = "";
+            lock (client) {
+                s1 = client.TryReadString(slot);
+            }
+            Thread.Sleep(delay);
+            lock(client) {
+                s2 = client.TryReadString(slot);
+            }
+
+            return s1 == s2 ? s1 : "";
+        }
 
         /// <summary>
         /// B区人工满板任务
@@ -288,13 +321,8 @@ namespace yidascan {
                 const string SIGNAL_OFF = "0";
                 while (isrun) {
                     foreach (KeyValuePair<string, string> kv in opcParam.BAreaUserFinalLayer) {
-                        // for kv in opcParam.BAreaUserFinalLayer
                         try {
-                            var signal = "";
-
-                            lock (opcBUFL) {
-                                signal = opcBUFL.TryReadString(kv.Value);
-                            }
+                            var signal = safeTryRead(opcBUFL, kv.Value, 1000);
 
                             if (signal == SIGNAL_ON) {
                                 // kv.Key是交地。
@@ -303,11 +331,11 @@ namespace yidascan {
                                 // 取实际交地对应板号
                                 var panelNo = "";
                                 lock (TaskQueues.LOCK_LOCHELPER) {
-                                    panelNo = TaskQueues.lochelper.lookupVirtual(reallocation);
+                                    panelNo = TaskQueues.lochelper.lookupPanel(reallocation);
                                 }
 
                                 if (string.IsNullOrEmpty(panelNo)) {// plc复位信号。
-                                    logOpt.Write($"!实际交地{kv.Key} 收到人工完成信号，人工满板失败。交地无对应板号。", LogType.ROBOT_STACK);
+                                    logOpt.Write($"!实际交地{kv.Key} 收到人工完成信号, 放弃, 原因: 交地无板号。", LogType.ROBOT_STACK);
                                     lock (opcBUFL) {
                                         opcBUFL.TryWrite(kv.Value, SIGNAL_OFF);
                                     }
@@ -317,7 +345,7 @@ namespace yidascan {
                                 var pf = LableCode.GetPanel(panelNo);
 
                                 if (pf == null) {
-                                    logOpt.Write($"!实际交地{kv.Key} 收到人工完成信号，板号：{panelNo}  数据库中无对应板号。", LogType.ROBOT_STACK);
+                                    logOpt.Write($"!实际交地{kv.Key} 收到人工完成信号, 放弃, 板号：{panelNo}  数据库中无对应板号。", LogType.ROBOT_STACK);
                                     lock (opcBUFL) {
                                         opcBUFL.TryWrite(kv.Value, SIGNAL_OFF);
                                     }
@@ -336,7 +364,7 @@ namespace yidascan {
                                 }
 
                                 //处理满板信号
-                                var panelfull = areAllRollsOnBoard(pf.PanelNo, reallocation);
+                                var panelfull = areAllRollsOnBoard(pf.PanelNo, pf.ToLocation);
 
                                 logOpt.Write($"!布卷是否全部上垛: {panelfull}");
 
@@ -1135,7 +1163,7 @@ namespace yidascan {
             }
 
             string msg;
-            var re = ErpHelper.NotifyPanelEnd(callErpApi, lc.PanelNo, out msg);
+            var re = ErpHelper.NotifyPanelEnd(callErpApi, lc.PanelNo, lc.ToLocation, out msg);
             logOpt.Write(string.Format("{0} {1}", lc.ToLocation, msg), LogType.NORMAL);
 
             return re;
@@ -1709,13 +1737,13 @@ namespace yidascan {
             }
         }
 
-        private static bool areAllRollsOnBoard(string panelno, string realloc) {
+        private static bool areAllRollsOnBoard(string panelno, string toloc) {
             lock (TaskQueues.LOCK_LOCHELPER) {
-                var v = taskQ.LableUpQ.Count(x => x.RealLocation == realloc)
-                + taskQ.CatchAQ.Count(x => x.RealLocation == realloc)
-                + taskQ.CatchBQ.Count(x => x.RealLocation == realloc)
-                + taskQ.RobotRollAQ.Count(x => x.RealLocation == realloc)
-                + taskQ.RobotRollBQ.Count(x => x.RealLocation == realloc);
+                var v = taskQ.LableUpQ.Count(x => x.ToLocation == toloc && x.PanelNo == panelno)
+                + taskQ.CatchAQ.Count(x => x.ToLocation == toloc && x.PanelNo == panelno)
+                + taskQ.CatchBQ.Count(x => x.ToLocation == toloc && x.PanelNo == panelno)
+                + taskQ.RobotRollAQ.Count(x => x.ToLocation == toloc && x.PanelNo == panelno)
+                + taskQ.RobotRollBQ.Count(x => x.ToLocation == toloc && x.PanelNo == panelno);
                 return v == 0;
             }
         }

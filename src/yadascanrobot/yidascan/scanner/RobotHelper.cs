@@ -342,7 +342,7 @@ namespace yidascan {
                         break;
                     case PanelState.Full:
                         string msg;
-                        ErpHelper.NotifyPanelEnd(erpapi, panelNo, out msg);
+                        ErpHelper.NotifyPanelEnd(erpapi, panelNo, reallocation, out msg);
                         log(msg, LogType.ROBOT_STACK);
 
                         LableCode.SetPanelFinished(panelNo);
@@ -379,7 +379,7 @@ namespace yidascan {
                         break;
                     case PanelState.Full:
                         string msg;
-                        ErpHelper.NotifyPanelEnd(erpapi, roll.PanelNo, out msg);
+                        ErpHelper.NotifyPanelEnd(erpapi, roll.PanelNo, roll.RealLocation, out msg);
                         log(msg, LogType.ROBOT_STACK);
 
                         LableCode.SetPanelFinished(roll.PanelNo);
@@ -409,7 +409,7 @@ namespace yidascan {
                     log("!---异常板满状态处理---", LogType.ROBOT_STACK);
                     roll.PnlState = PanelState.Full;
                     string msg;
-                    ErpHelper.NotifyPanelEnd(erpapi, roll.PanelNo, out msg);
+                    ErpHelper.NotifyPanelEnd(erpapi, roll.PanelNo, roll.RealLocation, out msg);
                     client.TryWrite(param.BAreaPanelFinish[roll.RealLocation], true);
 
                     log($"{roll.RealLocation}: 异常满板信号发出。slot: {param.BAreaPanelFinish[roll.RealLocation]}", LogType.ROBOT_STACK);
@@ -535,7 +535,8 @@ namespace yidascan {
             Thread.Sleep(RobotHelper.DELAY * 100); // 500ms.
 
             while (isrun) {
-                onerror?.Invoke(true, "等待抓料信号   ");
+                var side = isSideA ? "A" : "B";
+                onerror?.Invoke(true, $"等待抓料信号({side})   ");
 
                 var leaving = false;
                 lock (client) {
@@ -543,7 +544,7 @@ namespace yidascan {
                 }
 
                 if (!leaving) {
-                    onerror?.Invoke(true, $"等待抓料信号...");
+                    onerror?.Invoke(true, $"等待抓料信号({side})...");
                 }
 
                 if (leaving) {
@@ -553,9 +554,9 @@ namespace yidascan {
                     DequeueRoll(robotRollQ, roll, lv); // 出队列
                     LableCode.SetOnPanelState(roll.LabelCode); // 写数据库。                    
 
-                    var side = isSideA ? param.RobotParam.RobotStartA : param.RobotParam.RobotStartB;
+                    var sideslot = isSideA ? param.RobotParam.RobotStartA : param.RobotParam.RobotStartB;
                     lock (client) {
-                        client.TryWrite(side, false);
+                        client.TryWrite(sideslot, false);
                         if (isSideA) {
                             param.RobotParam.PlcSnA.WriteSN(client);
                         } else {

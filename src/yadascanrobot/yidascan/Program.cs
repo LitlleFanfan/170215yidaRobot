@@ -20,7 +20,8 @@ namespace yidascan {
             // 在创建mutex之后，执行此代码。
             if (!created) {
                 CommonHelper.Warn("已经有一个程序在运行。");
-                Application.Exit();
+                // Application.Exit();
+                return;
             }
 
             try {

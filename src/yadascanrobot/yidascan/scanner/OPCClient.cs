@@ -187,6 +187,39 @@ namespace ProduceComm.OPC {
             }
         }
 
+        private static string describeOpcError(Opc.Da.qualityBits q) {
+            switch (q) {
+                case Opc.Da.qualityBits.bad:
+                    return "坏值";
+                case Opc.Da.qualityBits.badCommFailure:
+                    return "comm failure";
+                case Opc.Da.qualityBits.badConfigurationError:
+                    return "配置错误";
+                case Opc.Da.qualityBits.badDeviceFailure:
+                    return "设备失败";
+                case Opc.Da.qualityBits.badLastKnownValue:
+                    return "comm failure, 取最近值";
+                case Opc.Da.qualityBits.badNotConnected:
+                    return "信号源失去连接";
+                case Opc.Da.qualityBits.badOutOfService:
+                    return "out of service";
+                case Opc.Da.qualityBits.badSensorFailure:
+                    return "传感器失败";
+                case Opc.Da.qualityBits.badWaitingForInitialData:
+                    return "等待初始数据";
+                case Opc.Da.qualityBits.uncertain:
+                    return "uncertain";
+                case Opc.Da.qualityBits.uncertainEUExceeded:
+                    return "uncertain EU exceeded";
+                case Opc.Da.qualityBits.uncertainLastUsableValue:
+                    return "uncertain last usable value";
+                case Opc.Da.qualityBits.uncertainSensorNotAccurate:
+                    return "uncertain sensor not accurate";
+                default:
+                    return "不明";
+            }
+        }
+
         private object Read(string code) {
             if (string.IsNullOrEmpty(code)) {
                 FrmMain.logOpt.Write($"!{code}项目为空");
@@ -207,17 +240,17 @@ namespace ProduceComm.OPC {
                         FrmMain.logOpt.Write($"!来源: {nameof(Read)}, opc读失败, 读到第一项为空, 节点: {code}");
                         return null;
                     }
-                    var quality = item.Quality;  
-                    
-                    if (quality == Opc.Da.Quality.Bad) {
-                        FrmMain.logOpt.Write($"!来源: {nameof(Read)}, opc读到坏值, 节点: {code}");
+                    var quality = item.Quality;
+
+                    if (quality != Opc.Da.Quality.Good) {
+                        FrmMain.logOpt.Write($"!来源: {nameof(Read)}, opc读到坏值, 节点: {code}, 错误码: {quality.QualityBits}, {describeOpcError(quality.QualityBits)}");
                     }
-                                      
+
                     return quality == Opc.Da.Quality.Good ? item.Value : null;
                 } else {
                     return null;
-                }                
-            } catch(Exception ex) {
+                }
+            } catch (Exception ex) {
                 FrmMain.logOpt.Write($"!来源: {nameof(Read)}, opc读异常, 节点: {code}, {ex}");
                 // ResetServerOnDisconnect?.Invoke();
                 // FrmMain.logOpt.Write($"!复位opc server");
@@ -275,7 +308,7 @@ namespace ProduceComm.OPC {
 
         private bool ReadBool(string slot) {
             try {
-                var val = Read(slot);                
+                var val = Read(slot);
                 return val != null ? bool.Parse(val.ToString().Trim()) : false;
             } catch (Exception ex) {
                 FrmMain.logOpt.Write($"!opc读取失败, 节点: {slot}, {ex}");

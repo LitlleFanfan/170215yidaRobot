@@ -86,6 +86,18 @@ namespace commonhelper {
         public static string describeEnum<T>(T obj) {
             return Enum.GetName(typeof(T), obj);
         }
+
+        // 板号的序列数是否要用完了。
+        // 板号共16位，最后4位是序数。
+        // 解析整数失败时，会抛出异常。
+        public static bool IsPanelnoMax(string panelno) {
+            const int MAX_SN = 8888;
+            const int PANELNO_LEN = 12;
+
+            var sns = panelno.Substring(PANELNO_LEN);
+            var sn = Int32.Parse(sns);
+            return sn > MAX_SN;
+        }
     }
 }
 

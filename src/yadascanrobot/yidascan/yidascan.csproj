@@ -134,6 +134,7 @@
     <Compile Include="LogType.cs" />
     <Compile Include="MessageCenter.cs" />
     <Compile Include="OpcHelper.cs" />
+    <Compile Include="PanelDb.cs" />
     <Compile Include="PanelGen.cs" />
     <Compile Include="PlcHelper.cs" />
     <Compile Include="Program.cs" />

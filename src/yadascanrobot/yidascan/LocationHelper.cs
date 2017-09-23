@@ -311,12 +311,12 @@ namespace yidascan {
             }
         }
 
-        public string lookupVirtual(string reallocation) {
+        public string lookupPanel(string reallocation) {
             var v = RealLocations.Where(x => x.realloc == reallocation);
             if (v.Count() == 1) {
                 return v.First().panelno;
             } else {
-                throw new Exception($"来源: {nameof(lookupVirtual)}, 查找不到{reallocation}对应的板。");
+                throw new Exception($"来源: {nameof(lookupPanel)}, 查找不到{reallocation}对应的板。");
             }
         }
 
