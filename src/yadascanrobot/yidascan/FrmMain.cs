@@ -157,7 +157,7 @@ namespace yidascan {
                 } catch (Exception ex) {
                     logOpt.Write($"{ex}");
                 }
-                
+
 
 #if DEBUG
                 SignalGen.Init();
@@ -301,7 +301,7 @@ namespace yidascan {
                 s1 = client.TryReadString(slot);
             }
             Thread.Sleep(delay);
-            lock(client) {
+            lock (client) {
                 s2 = client.TryReadString(slot);
             }
 
@@ -379,7 +379,7 @@ namespace yidascan {
                             } // end of if
 
                             Thread.Sleep(OPCClient.DELAY * 20);
-                        } catch ( Exception ex) {
+                        } catch (Exception ex) {
                             logOpt.Write($"!处理满板信号时发生异常, {ex}", LogType.ROBOT_STACK);
                         }
                     } // end of foreach.
@@ -1737,6 +1737,12 @@ namespace yidascan {
             }
         }
 
+        /// <summary>
+        /// /// 按照实际名义判断线上是否还有未上垛的布卷。
+        /// </summary>
+        /// <param name="panelno">板号</param>
+        /// <param name="toloc">名义交地</param>
+        /// <returns></returns>
         private static bool areAllRollsOnBoard(string panelno, string toloc) {
             lock (TaskQueues.LOCK_LOCHELPER) {
                 var v = taskQ.LableUpQ.Count(x => x.ToLocation == toloc && x.PanelNo == panelno)
@@ -1746,6 +1752,21 @@ namespace yidascan {
                 + taskQ.RobotRollBQ.Count(x => x.ToLocation == toloc && x.PanelNo == panelno);
                 return v == 0;
             }
+        }
+
+        /// <summary>
+        /// 按照实际交地判断线上是否还有未上垛的布卷。
+        /// </summary>
+        /// <param name="panelno">板号</param>
+        /// <param name="realloc">实际交地</param>
+        /// <returns></returns>
+        private static bool areAllRollsOnBoardEx(string panelno, string realloc) {
+            var v = taskQ.LableUpQ.Count(x => x.RealLocation == realloc && x.PanelNo == panelno)
+            + taskQ.CatchAQ.Count(x => x.RealLocation == realloc && x.PanelNo == panelno)
+            + taskQ.CatchBQ.Count(x => x.RealLocation == realloc && x.PanelNo == panelno)
+            + taskQ.RobotRollAQ.Count(x => x.RealLocation == realloc && x.PanelNo == panelno)
+            + taskQ.RobotRollBQ.Count(x => x.RealLocation == realloc && x.PanelNo == panelno);
+            return v == 0;
         }
 
         private static void logUnboardRolls() {
@@ -1772,14 +1793,15 @@ namespace yidascan {
                         IEnumerable<RealLoc> q;
                         lock (TaskQueues.LOCK_LOCHELPER) {
                             // 失去交地对应，状态忙，并且没有未上垛布卷的。
-                            q = TaskQueues.lochelper.RealLocations.Where(x => !TaskQueues.lochelper.isMapped(x.realloc) && x.state == LocationState.BUSY && areAllRollsOnBoard(x.panelno, x.realloc));
+                            q = TaskQueues.lochelper.RealLocations
+                            .Where(x => !TaskQueues.lochelper.isMapped(x.realloc) && x.state == LocationState.BUSY && areAllRollsOnBoardEx(x.panelno, x.realloc));
                         }
 
                         foreach (var item in q) {
                             lock (opcDeadPanelCheck) {
                                 robot.NotifyOpcJobFinished(item.panelno, "", item.realloc, true);
                             }
-                            FrmMain.logOpt.Write($"检测到满板{item.realloc}。");
+                            FrmMain.logOpt.Write($"死板检测任务检测到满板{item.realloc}。");
                         }
 
                     } catch (Exception ex) {
